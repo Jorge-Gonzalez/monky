@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macro Extension Test Page</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2em;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 1.5em;
+            font-weight: bold;
+        }
+        input[type="text"], textarea, div[contenteditable] {
+            width: 90%;
+            max-width: 600px;
+            padding: 8px;
+            margin-top: 0.5em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        div[contenteditable] {
+            background-color: white;
+            min-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Macro Extension Test Page</h1>
+    <p>Use this page to test the macro expansion in different types of input fields.</p>
+    <p>Try typing a macro command you have configured (e.g., <code>/sig</code>) in any of the fields below.</p>
+
+    <div>
+        <label for="simple-input">Simple Text Input</label>
+        <input type="text" id="simple-input" placeholder="Try a macro here...">
+    </div>
+
+    <div>
+        <label for="textarea-input">Text Area</label>
+        <textarea id="textarea-input" placeholder="Try a macro here..."></textarea>
+    </div>
+
+    <div>
+        <label for="contenteditable-plain">Content Editable Div (Plain)</label>
+        <div id="contenteditable-plain" contenteditable="true"></div>
+    </div>
+
+    <div>
+        <label for="contenteditable-rich">Content Editable Div (Rich Text)</label>
+        <div id="contenteditable-rich" contenteditable="true">
+            <p>This is some <b>bold text</b>. You can try a macro here. Or after this <i>italic text</i>. Even inside a list:</p>
+            <ul>
+                <li>Item 1</li>
+                <li>Try here: </li>
+            </ul>
+            <p>And some more text to finish.</p>
+        </div>
+    </div>
+
+</body>
+</html>
