@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import MacroForm from './MacroForm'
 import MacroListEditor from './MacroListEditor'
 import { useMacroStore } from '../../store/useMacroStore'
+import Settings from './Settings'
 
 export default function Editor(){
   const macros = useMacroStore(s=>s.macros)
@@ -11,6 +12,7 @@ export default function Editor(){
       <h1 className="text-2xl font-semibold mb-4 dark:text-gray-100">Editor de Macros</h1>
       <MacroForm editing={editing} onDone={()=>setEditing(null)} />
       <hr className="my-6" />
+      <Settings />
       <MacroListEditor macros={macros} onEdit={(m)=>setEditing(m)} />
     </div>
   )

@@ -1,18 +1,35 @@
 // @vitest-environment jsdom
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import Popup from './Popup'
 
 // Mock dependencies that are outside the component's direct control.
-vi.mock('../../store/useMacroStore')
-vi.mock('../../lib/i18n')
+const mockSetTheme = vi.fn()
+const mockState = {
+  config: {
+    disabledSites: [],
+    theme: 'system',
+    language: 'en',
+  },
+  macros: [],
+  toggleSiteDisabled: vi.fn(),
+  setTheme: mockSetTheme,
+}
+
+const useMacroStore = vi.fn().mockImplementation(selector => selector(mockState))
+useMacroStore.getState = () => mockState
+useMacroStore.subscribe = () => () => {} // Return an empty unsubscribe function
+
+// Mock the module to export our more complete mock
+vi.mock('../../store/useMacroStore', () => ({ useMacroStore }))
+
+vi.mock('../../lib/i18n');
 vi.mock('./MacroList', () => ({
   default: () => <div>MacroList Component</div>,
 }))
 
 describe('Popup Component', () => {
   // We need to use dynamic import here because of how vi.mock works (hoisting).
-  let useMacroStore: any
+  let Popup: any
   let t: any
 
   beforeEach(async () => {
@@ -20,10 +37,10 @@ describe('Popup Component', () => {
     vi.clearAllMocks()
 
     // Dynamically import mocked modules.
+    const popupModule = await import('./Popup')
+    Popup = popupModule.default
     const i18nModule = await import('../../lib/i18n')
     t = i18nModule.t
-    const storeModule = await import('../../store/useMacroStore')
-    useMacroStore = storeModule.useMacroStore
 
     // The `t` function will just return the key, so we can test for 'popup.title'
     // instead of the actual title string, which is more robust.
@@ -36,17 +53,6 @@ describe('Popup Component', () => {
   })
 
   it('should display the correct text keys and hostname', async () => {
-    // Arrange: Set up the store with some default state.
-    const mockState = {
-      config: {
-        disabledSites: [],
-        theme: 'system',
-      },
-      macros: [],
-      toggleSiteDisabled: vi.fn(),
-      setTheme: vi.fn(),
-    }
-    ;(useMacroStore as vi.Mock).mockImplementation(selector => selector(mockState))
 
     // Act: Render the component.
     render(<Popup />)
@@ -64,18 +70,6 @@ describe('Popup Component', () => {
 
   it('should call setTheme when theme buttons are clicked', async () => {
     // Arrange
-    const mockSetTheme = vi.fn()
-    const mockState = {
-      config: {
-        disabledSites: [],
-        theme: 'system',
-      },
-      macros: [],
-      toggleSiteDisabled: vi.fn(),
-      setTheme: mockSetTheme,
-    }
-    ;(useMacroStore as vi.Mock).mockImplementation(selector => selector(mockState))
-
     render(<Popup />)
 
     // Act & Assert

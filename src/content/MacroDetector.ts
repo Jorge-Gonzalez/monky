@@ -1,7 +1,6 @@
 import { useMacroStore } from "../store/useMacroStore"
 import { Macro, CoreState, updateStateOnKey, isExact } from "./detector-core"
 import { getActiveEditable, getSelection, replaceText, EditableEl } from "./editableUtils"
-import { loadMacros, listenMacrosChange } from "./macroStorage"
 import { isPrintableKey, UNSUPPORTED_KEYS } from "./keyUtils"
 import { defaultMacroConfig } from "../config/defaults"
 

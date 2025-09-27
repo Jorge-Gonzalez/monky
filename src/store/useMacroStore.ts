@@ -10,8 +10,11 @@ export type MacroConfig = {
   prefixes: string[]
   useCommitKeys?: boolean
   theme: ThemeMode
+  language?: Lang
 }
 type StoreOpResult = { success: boolean; error?: string }
+
+type Lang = 'es' | 'en'
 
 type MacroStore = {
   macros: Macro[]
@@ -27,6 +30,7 @@ type MacroStore = {
   setUseCommitKeys: (useCommitKeys: boolean) => void
   toggleSiteDisabled: (hostname: string) => void
   setTheme: (theme: ThemeMode) => void
+  setLanguage: (language: Lang) => void
 }
 
 // --- Standalone helper function ---
@@ -59,6 +63,7 @@ export const useMacroStore = create<MacroStore>()(
         prefixes: defaultMacroConfig.prefixes,
         theme: defaultMacroConfig.theme,
         useCommitKeys: defaultMacroConfig.useCommitKeys,
+        language: defaultMacroConfig.language,
       },
 
       // --- Actions ---
@@ -87,6 +92,8 @@ export const useMacroStore = create<MacroStore>()(
         set(s => ({ config: { ...s.config, useCommitKeys } })),
       setTheme: (theme: ThemeMode) =>
         set(s => ({ config: { ...s.config, theme } })),
+      setLanguage: (language: Lang) =>
+        set(s => ({ config: { ...s.config, language } })),
       toggleSiteDisabled: (hostname: string) =>
         set((s) => {
           const disabledSites = s.config.disabledSites || []
@@ -114,7 +121,7 @@ export const useMacroStore = create<MacroStore>()(
        * @param currentState The current (initial) state.
        * @returns The merged state.
        */
-      merge: (persistedState, currentState) => ({
+      merge: (persistedState: MacroStore, currentState) => ({
         ...currentState,
         ...persistedState,
         config: {
@@ -133,7 +140,10 @@ export const useMacroStore = create<MacroStore>()(
  */
 chrome.storage.onChanged.addListener((changes, area) => {
   // Check if the change happened in 'local' storage and if our store's data was the one that changed.
-  if (area === 'local' && changes[useMacroStore.persist.getOptions().name]) {
-    useMacroStore.persist.rehydrate()
+  if (area === 'local') {
+    const storeName = useMacroStore.persist.getOptions().name;
+    if (storeName && changes[storeName]) {
+      useMacroStore.persist.rehydrate();
+    }
   }
-})
+});
