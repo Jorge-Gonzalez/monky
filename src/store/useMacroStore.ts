@@ -125,3 +125,15 @@ export const useMacroStore = create<MacroStore>()(
     }
   )
 )
+
+/**
+ * This listener will automatically rehydrate the store in the current context
+ * (e.g., the content script) whenever the data in chrome.storage.local changes
+ * due to an action in another context (e.g., the popup).
+ */
+chrome.storage.onChanged.addListener((changes, area) => {
+  // Check if the change happened in 'local' storage and if our store's data was the one that changed.
+  if (area === 'local' && changes[useMacroStore.persist.getOptions().name]) {
+    useMacroStore.persist.rehydrate()
+  }
+})

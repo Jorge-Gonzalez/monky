@@ -35,5 +35,9 @@ vi.stubGlobal('chrome', {
       set: vi.fn().mockResolvedValue(undefined),
       remove: vi.fn().mockResolvedValue(undefined),
     },
+    onChanged: {
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+    },
   },
 });

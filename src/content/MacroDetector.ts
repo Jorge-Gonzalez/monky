@@ -36,22 +36,11 @@ let config = {
 /**
  * Attaches the global keydown and blur event listeners.
  */
-function attachListeners() {
+function attachListeners(): void {
   if (listenersAttached) return
   window.addEventListener("keydown", onKeyDown, true)
   window.addEventListener("blur", onBlur, true)
   listenersAttached = true
-}
-
-/**
- * Detaches the global keydown and blur event listeners and resets state.
- */
-function detachListeners() {
-  if (!listenersAttached) return
-  window.removeEventListener("keydown", onKeyDown, true)
-  window.removeEventListener("blur", onBlur, true)
-  listenersAttached = false
-  cancelDetection() // Ensure state is clean
 }
 /**
  * Updates the internal configuration from the macro store.
@@ -62,13 +51,6 @@ function updateConfig() {
     useCommitKeys: storeConfig.useCommitKeys ?? false,
     prefixes: storeConfig.prefixes || defaultMacroConfig.prefixes,
     disabledSites: storeConfig.disabledSites || [],
-  }
-
-  // Dynamically attach or detach listeners based on the new config.
-  if (config.disabledSites.includes(window.location.hostname)) {
-    detachListeners()
-  } else {
-    attachListeners()
   }
 }
 
@@ -243,36 +225,30 @@ export function onBlur() {
 }
 
 /**
- * Initializes the macro detection service by loading data and setting up event listeners.
+ * Initializes the macro detection service by attaching event listeners
+ * and subscribing to config changes.
  */
-export async function initMacroDetector() {
-  // The store rehydration from chrome.storage is asynchronous.
-  // We must wait for it to complete before we can reliably check the config.
-  const hydrationPromise = new Promise<void>(resolve => {
-    // If the store is already hydrated, resolve immediately.
-    if (useMacroStore.persist.hasHydrated()) {
-      resolve()
-    } else {
-      // Otherwise, wait for the hydration to finish.
-      useMacroStore.persist.onFinishHydration(() => resolve())
-    }
-  })
-
-  await Promise.all([hydrationPromise, loadMacros().then(loaded => (macros = loaded))])
-
-  // Now that the store is hydrated and macros are loaded, run the first config check.
+export function initMacroDetector(): void {
+  attachListeners()
   updateConfig()
-
-  // Subscribe to future store changes to dynamically enable/disable the detector.
   useMacroStore.subscribe(updateConfig)
-  listenMacrosChange(next => {
-    macros = next
-  })
+}
+
+/**
+ * Updates the list of macros the detector works with.
+ * @param newMacros The new list of macros.
+ */
+export function setDetectorMacros(newMacros: Macro[]): void {
+  macros = newMacros
 }
 
 /**
  * Removes all event listeners set up by the macro detector.
  */
-export function cleanupMacroDetector() {
-  detachListeners()
+export function cleanupMacroDetector(): void {
+  if (!listenersAttached) return
+  window.removeEventListener("keydown", onKeyDown, true)
+  window.removeEventListener("blur", onBlur, true)
+  listenersAttached = false
+  cancelDetection() // Ensure state is clean
 }
