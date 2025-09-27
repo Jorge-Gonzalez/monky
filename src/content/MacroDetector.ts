@@ -26,12 +26,33 @@ let activeEl: EditableEl = null
 let state: CoreState = { active: false, buffer: "" }
 let timer: number = 0
 let selectionOnSchedule: { start: number; end: number } | null = null
+let listenersAttached = false
 let config = {
   useCommitKeys: false,
   prefixes: defaultMacroConfig.prefixes,
   disabledSites: [] as string[],
 }
 
+/**
+ * Attaches the global keydown and blur event listeners.
+ */
+function attachListeners() {
+  if (listenersAttached) return
+  window.addEventListener("keydown", onKeyDown, true)
+  window.addEventListener("blur", onBlur, true)
+  listenersAttached = true
+}
+
+/**
+ * Detaches the global keydown and blur event listeners and resets state.
+ */
+function detachListeners() {
+  if (!listenersAttached) return
+  window.removeEventListener("keydown", onKeyDown, true)
+  window.removeEventListener("blur", onBlur, true)
+  listenersAttached = false
+  cancelDetection() // Ensure state is clean
+}
 /**
  * Updates the internal configuration from the macro store.
  */
@@ -41,6 +62,13 @@ function updateConfig() {
     useCommitKeys: storeConfig.useCommitKeys ?? false,
     prefixes: storeConfig.prefixes || defaultMacroConfig.prefixes,
     disabledSites: storeConfig.disabledSites || [],
+  }
+
+  // Dynamically attach or detach listeners based on the new config.
+  if (config.disabledSites.includes(window.location.hostname)) {
+    detachListeners()
+  } else {
+    attachListeners()
   }
 }
 
@@ -145,6 +173,11 @@ function scheduleConfirmIfExact(sel: { start: number; end: number } | null): boo
  * Main event handler for `keydown` events.
  */
 export function onKeyDown(e: KeyboardEvent) {
+  // This check is now a safeguard, as the listener should be detached.
+  if (config.disabledSites.includes(window.location.hostname)) {
+    return
+  }
+
   const editable = getActiveEditable(e.target)
   if (!editable) {
     if (state.active) cancelDetection()
@@ -213,35 +246,33 @@ export function onBlur() {
  * Initializes the macro detection service by loading data and setting up event listeners.
  */
 export async function initMacroDetector() {
-  // We need to get the config first to check if the site is disabled.
-  // This relies on the store being synchronously available after import.
-  const initialConfig = useMacroStore.getState().config
-  const disabledSites = initialConfig.disabledSites || []
-
-  if (disabledSites.includes(window.location.hostname)) {
-    console.log(`[MacroDetector] Extension disabled on ${window.location.hostname}.`)
-    return
-  }
-
-  macros = await loadMacros()
-  updateConfig()
-
-  window.addEventListener("keydown", onKeyDown, true)
-  window.addEventListener("blur", onBlur, true)
-
-  listenMacrosChange(next => {
-    macros = next
-    updateConfig()
+  // The store rehydration from chrome.storage is asynchronous.
+  // We must wait for it to complete before we can reliably check the config.
+  const hydrationPromise = new Promise<void>(resolve => {
+    // If the store is already hydrated, resolve immediately.
+    if (useMacroStore.persist.hasHydrated()) {
+      resolve()
+    } else {
+      // Otherwise, wait for the hydration to finish.
+      useMacroStore.persist.onFinishHydration(() => resolve())
+    }
   })
 
-  // Keep the module's config in sync with any changes in the store.
+  await Promise.all([hydrationPromise, loadMacros().then(loaded => (macros = loaded))])
+
+  // Now that the store is hydrated and macros are loaded, run the first config check.
+  updateConfig()
+
+  // Subscribe to future store changes to dynamically enable/disable the detector.
   useMacroStore.subscribe(updateConfig)
+  listenMacrosChange(next => {
+    macros = next
+  })
 }
 
 /**
  * Removes all event listeners set up by the macro detector.
  */
 export function cleanupMacroDetector() {
-  window.removeEventListener("keydown", onKeyDown, true)
-  window.removeEventListener("blur", onBlur, true)
+  detachListeners()
 }

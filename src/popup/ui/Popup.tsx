@@ -2,21 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useMacroStore } from '../../store/useMacroStore'
 import { t } from '../../lib/i18n'
 import MacroList from './MacroList'
+import SiteToggle from './SiteToggle'
 
 export default function Popup(){
   const [pending, setPending] = useState(0)
-  const [hostname, setHostname] = useState<string | null>(null)
 
   const macros = useMacroStore(state => state.macros)
   const {
-    disabledSites,
     theme,
-    toggleSiteDisabled,
     setTheme
   } = useMacroStore(state => ({
-    disabledSites: state.config.disabledSites || [],
     theme: state.config.theme ?? 'system',
-    toggleSiteDisabled: state.toggleSiteDisabled,
     setTheme: state.setTheme,
   }));
 
@@ -27,22 +23,8 @@ export default function Popup(){
     }
     chrome.runtime.onMessage.addListener(handler)
 
-    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-      if (tabs[0]?.url) {
-        try {
-          const url = new URL(tabs[0].url)
-          setHostname(url.hostname)
-        } catch (e) {
-          // Not a valid URL (e.g., chrome://extensions), do nothing
-          setHostname(null)
-        }
-      }
-    })
-
     return () => chrome.runtime.onMessage.removeListener(handler)
   },[])
-
-  const isEnabledOnCurrentSite = hostname ? !disabledSites.includes(hostname) : false
 
   return (
     <div className="p-3 w-64 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -57,23 +39,7 @@ export default function Popup(){
       </div>
       <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{pending ? t('popup.pending', { count: pending }) : t('popup.synced')}</p>
 
-      {hostname && (
-        <div className="flex items-center justify-between p-2 my-2 border rounded-md bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-          <div className="text-sm">
-            <p className="font-medium">{t('popup.macrosOnThisSite')}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 truncate" title={hostname}>{hostname}</p>
-          </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              className="sr-only peer"
-              checked={isEnabledOnCurrentSite}
-              onChange={() => toggleSiteDisabled(hostname)}
-            />
-            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-          </label>
-        </div>
-      )}
+      <SiteToggle />
 
       <MacroList macros={macros} />
 

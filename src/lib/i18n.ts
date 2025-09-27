@@ -12,6 +12,7 @@ const translations = {
     'popup.pending': '🔄 {{count}} pendientes',
     'popup.synced': '✅ Todo sincronizado',
     'popup.macrosOnThisSite': 'Macros en este sitio',
+    'popup.localFile': 'Archivo local',
     'popup.newMacro': 'Nuevo macro',
 
     // Macro Form

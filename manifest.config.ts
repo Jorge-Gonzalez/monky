@@ -5,7 +5,7 @@ export default defineManifest({
   name: 'Macro Replacer',
   version: '0.1.0',
   description: 'Reemplaza macros por texto en inputs y textareas con prefijos configurables.',
-  permissions: ['storage', 'alarms'],
+  permissions: ['storage', 'alarms', 'tabs'],
   host_permissions: ['http://localhost:3000/*'],
   content_scripts: [
     {
