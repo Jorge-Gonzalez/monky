@@ -3,7 +3,7 @@ import { MacroConfig, Macro } from "../store/useMacroStore"
 export const defaultMacroConfig: MacroConfig = {
   disabledSites: [],
   prefixes: ["/", ";"],
-  theme: "system",
+  theme: "light",
   useCommitKeys: false, // Default to auto-commit
 }
 

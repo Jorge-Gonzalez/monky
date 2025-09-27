@@ -15,3 +15,25 @@ vi.stubGlobal(
     dispatchEvent: vi.fn(),
   })),
 )
+
+// Mock the `chrome` global object for browser extension APIs.
+vi.stubGlobal('chrome', {
+  runtime: {
+    onMessage: {
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+    },
+    getURL: (path: string) => `chrome-extension://mock/${path}`,
+  },
+  tabs: {
+    query: vi.fn(),
+    create: vi.fn(),
+  },
+  storage: {
+    local: {
+      get: vi.fn().mockResolvedValue({}),
+      set: vi.fn().mockResolvedValue(undefined),
+      remove: vi.fn().mockResolvedValue(undefined),
+    },
+  },
+});

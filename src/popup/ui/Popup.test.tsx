@@ -10,22 +10,6 @@ vi.mock('./MacroList', () => ({
   default: () => <div>MacroList Component</div>,
 }))
 
-// Set up a global mock for the 'chrome' browser APIs.
-const mockChrome = {
-  runtime: {
-    onMessage: {
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-    },
-    getURL: vi.fn(path => `chrome-extension://mock/${path}`),
-  },
-  tabs: {
-    query: vi.fn(),
-    create: vi.fn(),
-  },
-}
-vi.stubGlobal('chrome', mockChrome)
-
 describe('Popup Component', () => {
   // We need to use dynamic import here because of how vi.mock works (hoisting).
   let useMacroStore: any
@@ -46,7 +30,7 @@ describe('Popup Component', () => {
     ;(t as vi.Mock).mockImplementation(key => key)
 
     // Mock the tabs query to simulate being on a specific website.
-    mockChrome.tabs.query.mockImplementation((_, callback) => {
+    vi.mocked(chrome.tabs.query).mockImplementation((_, callback) => {
       callback([{ url: 'https://example.com' }])
     })
   })

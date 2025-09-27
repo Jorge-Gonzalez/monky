@@ -2,12 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useMacroStore } from '../../store/useMacroStore'
 import { t } from '../../lib/i18n'
 import MacroList from './MacroList'
-import { useTheme } from '../../hooks/useTheme';
 
 export default function Popup(){
-  // Call the hook to apply the theme to the <html> tag
-  useTheme();
-
   const [pending, setPending] = useState(0)
   const [hostname, setHostname] = useState<string | null>(null)
 

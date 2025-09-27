@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware'
 import { defaultMacroConfig } from '../config/defaults'
 import { dummyMacros } from '../config/defaults'
 
@@ -32,6 +32,20 @@ type MacroStore = {
 // --- Standalone helper function ---
 function commandExists(macros: Macro[], command: string, currentId?: Macro['id']): boolean {
   return macros.some(m => m.command === command && String(m.id) !== String(currentId))
+}
+
+// Custom storage object for Chrome extension storage.
+const chromeStorage: StateStorage = {
+  getItem: async (name: string): Promise<string | null> => {
+    const result = await chrome.storage.local.get(name)
+    return result[name] ?? null
+  },
+  setItem: async (name: string, value: string): Promise<void> => {
+    await chrome.storage.local.set({ [name]: value })
+  },
+  removeItem: async (name: string): Promise<void> => {
+    await chrome.storage.local.remove(name)
+  },
 }
 
 export const useMacroStore = create<MacroStore>()(
@@ -74,21 +88,40 @@ export const useMacroStore = create<MacroStore>()(
       setTheme: (theme: ThemeMode) =>
         set(s => ({ config: { ...s.config, theme } })),
       toggleSiteDisabled: (hostname: string) =>
-        set((state) => {
-          const disabledSites = state.config.disabledSites || []
+        set((s) => {
+          const disabledSites = s.config.disabledSites || []
           const isCurrentlyDisabled = disabledSites.includes(hostname)
           const newDisabledSites = isCurrentlyDisabled
-            ? [...disabledSites, hostname] // Add to disabled list
-            : disabledSites.filter((site) => site !== hostname) // Remove from disabled list
+            ? disabledSites.filter((site) => site !== hostname) // Remove from disabled list
+            : [...disabledSites, hostname] // Add to disabled list
 
           return {
             config: {
-              ...state.config,
+              ...s.config,
               disabledSites: newDisabledSites,
             },
           }
         }),
     }),
-    { name: 'macro-storage' }
+    {
+      name: 'macro-storage',
+      storage: createJSONStorage(() => chromeStorage),
+      /**
+       * A custom merge function to perform a deep merge on the `config` object.
+       * This ensures that new default values in `defaultMacroConfig` are not
+       * overwritten by an older persisted state that might not have them.
+       * @param persistedState The state loaded from storage.
+       * @param currentState The current (initial) state.
+       * @returns The merged state.
+       */
+      merge: (persistedState, currentState) => ({
+        ...currentState,
+        ...persistedState,
+        config: {
+          ...currentState.config,
+          ...(persistedState as MacroStore).config,
+        },
+      }),
+    }
   )
 )

@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import { useMacroStore } from "../store/useMacroStore"
+import { use } from "react"
 
 // Mock the storage and its listeners
 vi.mock("./macroStorage", async () => {
@@ -18,7 +19,7 @@ vi.mock("./macroStorage", async () => {
 
 // Import the content script logic after mocks are set up.
 // The `init()` call inside index.ts will use the mocked `loadMacros`.
-await import("./index")
+await import("./main")
 
 describe("Content Script: Macro Replacement", () => {
   // Helper to simulate typing a character
@@ -60,7 +61,7 @@ describe("Content Script: Macro Replacement", () => {
   beforeEach(() => {
     vi.useFakeTimers()
     // Set default prefixes for the store
-    useMacroStore.setState({ config: { prefixes: ["/"] } })
+    useMacroStore.setState(s => ({ config: { ...s.config, prefixes: ["/"] } }))
   })
 
   afterEach(() => {

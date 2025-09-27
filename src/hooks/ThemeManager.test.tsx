@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { renderHook, act } from '@testing-library/react'
+import { render, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useMacroStore } from '../store/useMacroStore'
 
@@ -19,16 +19,14 @@ const MOCK_MATCH_MEDIA = {
 
 vi.stubGlobal('matchMedia', () => MOCK_MATCH_MEDIA)
 
-describe('useTheme hook', () => {
-  let useTheme: any;
+describe('ThemeManager component', () => {
+  let ThemeManager: any;
   const mockedUseMacroStore = vi.mocked(useMacroStore)
 
   beforeEach(async () => {
     // Reset mocks and DOM before each test
-    // Dynamically import the hook to ensure it uses the mocked MQL
-    // This is necessary because MQL is defined at the module level in useTheme.ts
-    const module = await import('./useTheme');
-    useTheme = module.useTheme;
+    const module = await import('./ThemeManager');
+    ThemeManager = module.ThemeManager;
 
     vi.clearAllMocks()
     document.documentElement.classList.remove('dark')
@@ -38,7 +36,7 @@ describe('useTheme hook', () => {
   it('should not apply dark class for light theme', () => {
     mockedUseMacroStore.mockImplementation(selector => selector({ config: { theme: 'light' } }) as any)
 
-    renderHook(() => useTheme())
+    render(<ThemeManager />)
 
     expect(document.documentElement.classList.contains('dark')).toBe(false)
   })
@@ -46,7 +44,7 @@ describe('useTheme hook', () => {
   it('should apply dark class for dark theme', () => {
     mockedUseMacroStore.mockImplementation(selector => selector({ config: { theme: 'dark' } }) as any)
 
-    renderHook(() => useTheme())
+    render(<ThemeManager />)
 
     expect(document.documentElement.classList.contains('dark')).toBe(true)
   })
@@ -56,7 +54,7 @@ describe('useTheme hook', () => {
       MOCK_MATCH_MEDIA.matches = false
       mockedUseMacroStore.mockImplementation(selector => selector({ config: { theme: 'system' } }) as any)
 
-      renderHook(() => useTheme())
+      render(<ThemeManager />)
 
       expect(document.documentElement.classList.contains('dark')).toBe(false)
     })
@@ -65,7 +63,7 @@ describe('useTheme hook', () => {
       MOCK_MATCH_MEDIA.matches = true
       mockedUseMacroStore.mockImplementation(selector => selector({ config: { theme: 'system' } }) as any)
 
-      renderHook(() => useTheme())
+      render(<ThemeManager />)
 
       expect(document.documentElement.classList.contains('dark')).toBe(true)
     })
@@ -74,7 +72,7 @@ describe('useTheme hook', () => {
       MOCK_MATCH_MEDIA.matches = false
       mockedUseMacroStore.mockImplementation(selector => selector({ config: { theme: 'system' } }) as any)
 
-      renderHook(() => useTheme())
+      render(<ThemeManager />)
       expect(document.documentElement.classList.contains('dark')).toBe(false)
 
       // Find the change handler the hook registered

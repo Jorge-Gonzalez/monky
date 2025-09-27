@@ -2,10 +2,8 @@ import React, { useState } from 'react'
 import MacroForm from './MacroForm'
 import MacroListEditor from './MacroListEditor'
 import { useMacroStore } from '../../store/useMacroStore'
-import { useTheme } from '../../hooks/useTheme';
 
 export default function Editor(){
-  useTheme(); // Apply the theme to the <html> tag
   const macros = useMacroStore(s=>s.macros)
   const [editing, setEditing] = useState<any|null>(null)
   return (
