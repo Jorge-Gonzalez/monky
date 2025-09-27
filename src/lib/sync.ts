@@ -1,5 +1,5 @@
 import { apiFetch } from './api'
-import { getStoreApi } from '../store/useMacroStore'
+import { useMacroStore } from '../store/useMacroStore'
 
 const LOCAL_KEY = 'macros'
 const QUEUE_KEY = 'pendingOps'
@@ -59,8 +59,7 @@ export async function syncMacros(){
   const local = await getLocalMacros()
   const merged = mergeByUpdated(local, remote)
   await setLocalMacros(merged)
-  const { setMacros } = getStoreApi()
-  setMacros(merged)
+  useMacroStore.getState().setMacros(merged)
   await flushQueue()
   chrome.runtime.sendMessage({ type:'macros-updated' }).catch(()=>{})
 }
@@ -68,8 +67,8 @@ export async function syncMacros(){
 export async function createMacroLocalFirst(macro){
   const list = await getLocalMacros()
   const localItem = { ...macro, updated_at: nowIso() }
-  list.push(localItem); await setLocalMacros(list)
-  getStoreApi().setMacros(list)
+  list.push(localItem); await setLocalMacros(list);
+  useMacroStore.getState().setMacros(list)
   try {
     const res = await apiFetch('/macros', { method:'POST', body: JSON.stringify(macro) })
     if (!res.ok) throw new Error('net')
@@ -83,7 +82,7 @@ export async function createMacroLocalFirst(macro){
 
 export async function updateMacroLocalFirst(macro){
   const list = await getLocalMacros(); const idx = list.findIndex(m => String(m.id)===String(macro.id))
-  if (idx>=0){ list[idx] = { ...list[idx], ...macro, updated_at: nowIso() }; await setLocalMacros(list); getStoreApi().setMacros(list) }
+  if (idx>=0){ list[idx] = { ...list[idx], ...macro, updated_at: nowIso() }; await setLocalMacros(list); useMacroStore.getState().setMacros(list) }
   try {
     const res = await apiFetch(`/macros/${macro.id}`, { method:'PUT', body: JSON.stringify(macro) })
     if (!res.ok) throw new Error('net')
@@ -97,7 +96,7 @@ export async function updateMacroLocalFirst(macro){
 
 export async function deleteMacroLocalFirst(id){
   const list = await getLocalMacros(); const next = list.filter(m => String(m.id)!==String(id))
-  await setLocalMacros(next); getStoreApi().setMacros(next)
+  await setLocalMacros(next); useMacroStore.getState().setMacros(next)
   try {
     const res = await apiFetch(`/macros/${id}`, { method:'DELETE' })
     if (!res.ok) throw new Error('net')

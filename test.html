@@ -14,11 +14,21 @@
           { id: '3', command: '/signature', text: 'My Full Signature' },
         ]
 
+        // --- DEV CONFIG ---
+        // You can change this to test different settings.
+        const mockConfig = {
+          useCommitKeys: false,
+          prefixes: ['/'],
+          // Add 'localhost' to this array to test the disabled state.
+          disabledSites: [],
+        }
+        // ------------------
+
         globalThis.chrome = globalThis.chrome || {}
         globalThis.chrome.storage = {
           local: {
             get: (keys, callback) => {
-              const result = { macros: mockMacros }
+              const result = { macros: mockMacros, config: mockConfig }
               console.log('[DEV] chrome.storage.local.get', keys, '->', result)
               if (callback) {
                 callback(result)

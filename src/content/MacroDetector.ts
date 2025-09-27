@@ -29,6 +29,7 @@ let selectionOnSchedule: { start: number; end: number } | null = null
 let config = {
   useCommitKeys: false,
   prefixes: defaultMacroConfig.prefixes,
+  disabledSites: [] as string[],
 }
 
 /**
@@ -39,6 +40,7 @@ function updateConfig() {
   config = {
     useCommitKeys: storeConfig.useCommitKeys ?? false,
     prefixes: storeConfig.prefixes || defaultMacroConfig.prefixes,
+    disabledSites: storeConfig.disabledSites || [],
   }
 }
 
@@ -142,7 +144,7 @@ function scheduleConfirmIfExact(sel: { start: number; end: number } | null): boo
 /**
  * Main event handler for `keydown` events.
  */
-function onKeyDown(e: KeyboardEvent) {
+export function onKeyDown(e: KeyboardEvent) {
   const editable = getActiveEditable(e.target)
   if (!editable) {
     if (state.active) cancelDetection()
@@ -203,7 +205,7 @@ function onKeyDown(e: KeyboardEvent) {
 /**
  * Resets detection state when the user clicks away.
  */
-function onBlur() {
+export function onBlur() {
   cancelDetection()
 }
 
@@ -211,6 +213,16 @@ function onBlur() {
  * Initializes the macro detection service by loading data and setting up event listeners.
  */
 export async function initMacroDetector() {
+  // We need to get the config first to check if the site is disabled.
+  // This relies on the store being synchronously available after import.
+  const initialConfig = useMacroStore.getState().config
+  const disabledSites = initialConfig.disabledSites || []
+
+  if (disabledSites.includes(window.location.hostname)) {
+    console.log(`[MacroDetector] Extension disabled on ${window.location.hostname}.`)
+    return
+  }
+
   macros = await loadMacros()
   updateConfig()
 
@@ -224,4 +236,12 @@ export async function initMacroDetector() {
 
   // Keep the module's config in sync with any changes in the store.
   useMacroStore.subscribe(updateConfig)
+}
+
+/**
+ * Removes all event listeners set up by the macro detector.
+ */
+export function cleanupMacroDetector() {
+  window.removeEventListener("keydown", onKeyDown, true)
+  window.removeEventListener("blur", onBlur, true)
 }
