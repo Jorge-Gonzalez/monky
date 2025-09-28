@@ -1,5 +1,6 @@
 import React from 'react'
 import { useMacroStore, type MacroConfig } from '../../store/useMacroStore'
+import { t } from '../../lib/i18n'
 
 export default function Settings() {
   const { language, setLanguage } = useMacroStore(state => ({
@@ -13,10 +14,10 @@ export default function Settings() {
 
   return (
     <div className="mt-8 p-4 border rounded-lg bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-      <h2 className="text-lg font-semibold mb-3">Settings</h2>
+      <h2 className="text-lg font-semibold mb-3">{t('settings.title')}</h2>
       <div className="flex items-center gap-4">
         <label htmlFor="language-select" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Language
+          {t('settings.language')}
         </label>
         <select id="language-select" value={language} onChange={handleLanguageChange} className="border rounded p-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500">
           <option value="en">English</option>

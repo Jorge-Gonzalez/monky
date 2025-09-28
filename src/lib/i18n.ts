@@ -10,6 +10,20 @@ const translations = {
       unexpected: 'An unexpected error occurred. Please try again.',
     },
 
+    // Editor
+    editor: {
+      title: 'Macro Editor',
+    },
+    macroListEditor: {
+      noMacros: 'No macros found.'
+    },
+
+    // Settings
+    settings: {
+      title: 'Settings',
+      language: 'Language',
+    },
+
     // Popup
     popup: {
       title: '📑 My Macros',
@@ -18,6 +32,15 @@ const translations = {
       macrosOnThisSite: 'Macros on this site',
       localFile: 'Local file',
       newMacro: 'New macro',
+    },
+
+    macroItem: {
+      edit: '✏️ Edit',
+      delete: '🗑 Delete',
+    },
+
+    macroList: {
+      noMacros: 'No macros found.'
     },
 
     // Macro Form
@@ -29,6 +52,16 @@ const translations = {
       saveButton: 'Save',
       cancelButton: 'Cancel',
     },
+
+    options: {
+      title: 'Extension Options',
+    },
+
+    replacementMode: {
+      title: 'Replacement Mode',
+      auto: 'Automatic (on match)',
+      manual: 'Manual (with Space, Enter, or Tab)'
+    },
   },
   es: {
     // Errors
@@ -36,6 +69,22 @@ const translations = {
       duplicateCommand: 'El comando "{{command}}" ya está en uso. Por favor, elige otro.',
       unexpected: 'Ocurrió un error inesperado. Por favor, intenta de nuevo.',
     },
+
+    // Editor
+    editor: {
+      title: 'Editor de Macros',
+    },
+
+    macroListEditor: {
+      noMacros: 'No hay macros creados.'
+    },
+
+    // Settings
+    settings: {
+      title: 'Configuración',
+      language: 'Idioma',
+    },
+
 
     // Popup
     popup: {
@@ -47,6 +96,15 @@ const translations = {
       newMacro: 'Nuevo macro',
     },
 
+    macroItem: {
+      edit: '✏️ Editar',
+      delete: '🗑 Eliminar',
+    },
+
+    macroList: {
+      noMacros: 'No hay macros creados.'
+    },
+
     // Macro Form
     macroForm: {
       triggerLabel: 'Trigger',
@@ -55,6 +113,16 @@ const translations = {
       updateButton: 'Actualizar',
       saveButton: 'Guardar',
       cancelButton: 'Cancelar',
+    },
+
+    options: {
+      title: 'Opciones de la Extensión',
+    },
+
+    replacementMode: {
+      title: 'Modo de Sustitución',
+      auto: 'Automático (al coincidir)',
+      manual: 'Manual (con Espacio, Enter, o Tab)'
     },
   },
   // You could add more languages here in the future, e.g., en: { ... }

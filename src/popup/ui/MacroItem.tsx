@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useMacroStore } from '../../store/useMacroStore'
 import { Macro } from '../../types'
+import { t } from '../../lib/i18n'
 
 interface MacroItemProps {
   macro: Macro
@@ -19,8 +20,8 @@ export default function MacroItem({ macro }: MacroItemProps) {
         <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-600">
           <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 p-2 rounded">{macro.text}</pre>
           <div className="flex gap-2 mt-2">
-            <button className="px-2 py-1 text-white bg-yellow-600 rounded text-sm" onClick={()=>chrome.runtime.openOptionsPage()}>✏️ Editar</button>
-            <button className="px-2 py-1 text-white bg-red-600 rounded text-sm" onClick={()=>remove(macro.id)}>🗑 Eliminar</button>
+            <button className="px-2 py-1 text-white bg-yellow-600 rounded text-sm" onClick={()=>chrome.runtime.openOptionsPage()}>{t('macroItem.edit')}</button>
+            <button className="px-2 py-1 text-white bg-red-600 rounded text-sm" onClick={()=>remove(macro.id)}>{t('macroItem.delete')}</button>
           </div>
         </div>
       )}

@@ -1,6 +1,7 @@
 import { useMacroStore } from '../../store/useMacroStore'
+import { t } from '../../lib/i18n'
 
-export function BehaviorEditor() {
+export function ReplacementMode() {
   const { config, setUseCommitKeys } = useMacroStore()
 
   // If useCommitKeys is not defined, default to false (auto-commit)
@@ -8,7 +9,7 @@ export function BehaviorEditor() {
 
   return (
     <div className="p-4 border rounded-lg mt-4">
-      <h3 className="font-bold mb-2">Comportamiento de Reemplazo</h3>
+      <h3 className="font-bold mb-2">{t('replacementMode.title')}</h3>
       <div className="flex items-center space-x-4">
         <label className="flex items-center cursor-pointer">
           <input
@@ -18,7 +19,7 @@ export function BehaviorEditor() {
             onChange={() => setUseCommitKeys(false)}
             className="mr-2"
           />
-          Automático (al coincidir)
+          {t('replacementMode.auto')}
         </label>
         <label className="flex items-center cursor-pointer">
           <input
@@ -28,7 +29,7 @@ export function BehaviorEditor() {
             onChange={() => setUseCommitKeys(true)}
             className="mr-2"
           />
-          Manual (con Espacio, Enter, o Tab)
+          {t('replacementMode.manual')}
         </label>
       </div>
       <p className="text-sm text-gray-500 mt-2">
