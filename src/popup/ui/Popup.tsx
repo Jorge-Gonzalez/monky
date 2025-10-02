@@ -1,8 +1,8 @@
 import React from 'react';
 import { useMacroStore } from '../../store/useMacroStore'
 import { t } from '../../lib/i18n'
-import MacroList from './MacroList'
 import SiteToggle from './SiteToggle'
+import { MacroSearch } from './MacroSearch';
 import { usePopup } from '../hooks/usePopup';
 
 export default function Popup(){
@@ -17,7 +17,7 @@ export default function Popup(){
   }));
 
   return (
-    <div className="p-3 w-64 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div className="p-3 w-64 text-gray-900 dark:text-gray-100">
       <div className="flex justify-between items-center mb-1">
         <h1 className="text-lg font-semibold">{t('popup.title')}</h1>
         {/* Theme switcher */}
@@ -31,7 +31,7 @@ export default function Popup(){
 
       <SiteToggle />
 
-      <MacroList macros={macros} />
+      <MacroSearch macros={macros} />
 
       <button
         onClick={() => chrome.tabs.create({ url: chrome.runtime.getURL('src/editor/index.html') })}

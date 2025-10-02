@@ -36,6 +36,7 @@ const translations = {
       synced: '✅ Synced',
       macrosOnThisSite: 'Macros on this site',
       localFile: 'Local file',
+      searchPlaceholder: 'Search macros...',
       newMacro: 'New macro',
     },
 
@@ -60,6 +61,10 @@ const translations = {
 
     options: {
       title: 'Extension Options',
+      prefixEditor: {
+        title: 'Macro Prefixes',
+        description: 'Select the characters that can start a macro trigger (e.g., /brb).',
+      },
     },
 
     replacementMode: {
@@ -103,6 +108,7 @@ const translations = {
       synced: '✅ Todo sincronizado',
       macrosOnThisSite: 'Macros en este sitio',
       localFile: 'Archivo local',
+      searchPlaceholder: 'Search macros...',
       newMacro: 'Nuevo macro',
     },
 
@@ -127,6 +133,10 @@ const translations = {
 
     options: {
       title: 'Opciones de la Extensión',
+      prefixEditor: {
+        title: 'Prefijos de Macro',
+        description: 'Selecciona los caracteres que pueden iniciar un trigger de macro (ej. /brb).',
+      },
     },
 
     replacementMode: {

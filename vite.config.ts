@@ -30,5 +30,8 @@ export default defineConfig({
     environment: 'jsdom',
     // Add this line to your config
     setupFiles: './vitest.setup.ts',
+    deps: {
+      interopDefault: true,
+    },
   },
 })
