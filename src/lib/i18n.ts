@@ -18,6 +18,11 @@ const translations = {
       noMacros: 'No macros found.'
     },
 
+    macroItemEditor: {
+      edit: '✏️ Edit',
+      delete: '🗑 Delete',
+    },
+
     // Settings
     settings: {
       title: 'Settings',
@@ -77,6 +82,11 @@ const translations = {
 
     macroListEditor: {
       noMacros: 'No hay macros creados.'
+    },
+
+    macroItemEditor: {
+      edit: '✏️ Editar',
+      delete: '🗑 Eliminar',
     },
 
     // Settings

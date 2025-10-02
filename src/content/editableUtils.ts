@@ -1,6 +1,4 @@
-import type { Macro } from "./detector-core"
-
-export type EditableEl = HTMLInputElement | HTMLTextAreaElement | HTMLElement | null
+import type { Macro, EditableEl } from '../types'
 
 export function getActiveEditable(target: EventTarget | null): EditableEl {
   if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {

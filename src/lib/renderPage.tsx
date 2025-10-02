@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { ThemeManager } from '../hooks/ThemeManager';
+import { ThemeManager } from './ThemeManager';
 
 /**
  * Renders a React component into the DOM's 'root' element,

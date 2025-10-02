@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:verbose": "vitest run --reporter=verbose",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write ."
   },

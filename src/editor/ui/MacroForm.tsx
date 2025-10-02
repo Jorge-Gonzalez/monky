@@ -41,7 +41,9 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
       result = addMacro(newMacro)
       if (result.success) {
         await createMacroLocalFirst(newMacro)
-        onDone()
+        // Reset form for next entry, onDone() is for finishing an edit.
+        setCommand('')
+        setText('')
       }
     }
 
@@ -53,8 +55,9 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('macroForm.triggerLabel')}</label>
+        <label htmlFor="macro-command" className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('macroForm.triggerLabel')}</label>
         <input
+          id="macro-command"
           className="border rounded p-2 w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500"
           value={command}
           onChange={e=>setCommand(e.target.value)}
@@ -63,15 +66,23 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('macroForm.textLabel')}</label>
+        <label htmlFor="macro-text" className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('macroForm.textLabel')}</label>
         <textarea
+          id="macro-text"
           className="border rounded p-2 w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500"
           rows={6}
           value={text}
           onChange={e=>setText(e.target.value)}
         />
       </div>
-      <label className="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" checked={isSensitive} onChange={e=>setSensitive(e.target.checked)}/> {t('macroForm.sensitiveLabel')}</label>
+      <label className="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+        <input 
+          type="checkbox" 
+          checked={isSensitive} 
+          onChange={e=>setSensitive(e.target.checked)}
+        /> 
+        {t('macroForm.sensitiveLabel')}
+      </label>
       {error && <p className="text-red-600 dark:text-red-400 text-sm font-medium">{error}</p>}
       <div className="flex gap-2">
         <button type="submit" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition-colors duration-200">{editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}</button>

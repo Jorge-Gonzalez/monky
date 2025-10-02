@@ -2,19 +2,9 @@ import { create } from 'zustand'
 import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware'
 import { defaultMacroConfig } from '../config/defaults'
 import { dummyMacros } from '../config/defaults'
+import { Macro, ThemeMode, Lang, MacroConfig } from '../types'
 
-export type Macro = { id: number|string; command: string; text: string; updated_at?: string; is_sensitive?: boolean }
-export type ThemeMode = 'light' | 'dark' | 'system'
-export type MacroConfig = {
-  disabledSites: string[]
-  prefixes: string[]
-  useCommitKeys?: boolean
-  theme: ThemeMode
-  language?: Lang
-}
 type StoreOpResult = { success: boolean; error?: string }
-
-type Lang = 'es' | 'en'
 
 type MacroStore = {
   macros: Macro[]

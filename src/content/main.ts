@@ -1,5 +1,5 @@
 import { useMacroStore } from "../store/useMacroStore"
-import { initMacroDetector, cleanupMacroDetector, setDetectorMacros } from "./MacroDetector"
+import { initMacroDetector, cleanupMacroDetector, setDetectorMacros } from "./macroDetector"
 import { loadMacros, listenMacrosChange } from "./macroStorage"
 
 let isDetectorActive = false

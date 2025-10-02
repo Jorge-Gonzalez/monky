@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useMacroStore } from '../../store/useMacroStore'
 import { t } from '../../lib/i18n'
 import MacroList from './MacroList'
 import SiteToggle from './SiteToggle'
+import { usePopup } from '../hooks/usePopup';
 
 export default function Popup(){
-  const [pending, setPending] = useState(0)
-
+  const { pending } = usePopup()
   const macros = useMacroStore(state => state.macros)
   const {
     theme,
@@ -15,16 +15,6 @@ export default function Popup(){
     theme: state.config.theme ?? 'system',
     setTheme: state.setTheme,
   }));
-
-  useEffect(()=>{
-    const handler = (msg:any) => {
-      if (msg?.type === 'pendingCount') setPending(msg.count)
-      if (msg?.type === 'macros-updated') { /* store already updated */ }
-    }
-    chrome.runtime.onMessage.addListener(handler)
-
-    return () => chrome.runtime.onMessage.removeListener(handler)
-  },[])
 
   return (
     <div className="p-3 w-64 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">

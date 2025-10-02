@@ -100,7 +100,6 @@ export async function deleteMacroLocalFirst(id){
   try {
     const res = await apiFetch(`/macros/${id}`, { method:'DELETE' })
     if (!res.ok) throw new Error('net')
-    await syncMacros()
   } catch {
     const q = await getQueue(); q.push({ op:'delete', id, ts: Date.now() }); await setQueue(q)
     chrome.runtime.sendMessage({ type:'pendingCount', count: (await getQueue()).length }).catch(()=>{})

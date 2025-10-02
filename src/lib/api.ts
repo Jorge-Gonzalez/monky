@@ -16,7 +16,12 @@ export async function apiFetch(path: string, opts: { headers?: HeadersInit, [key
   try {
     res = await fetch(`${base}${path}`, { ...opts, headers })
   } catch (e) {
-    return new Response(null, { status: 0, statusText: 'NetworkError' })
+    // Cannot create a Response with status 0.
+    // Return a custom object that mimics a failed response for network errors.
+    return {
+      ok: false, status: 0, statusText: 'NetworkError',
+      json: () => Promise.resolve({}), text: () => Promise.resolve(''),
+    } as Response
   }
   if (res.status !== 401) return res
   if (!refresh) return res
