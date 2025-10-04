@@ -8,22 +8,15 @@ export default defineConfig({
   plugins: [react(), crx({ manifest })],
   build: {
     outDir: 'dist',
-    rollupOptions: {
-      input: {
-        popup: resolve(__dirname, 'src/popup/index.html'),
-        editor: resolve(__dirname, 'src/editor/index.html')
-      },
-      output: {
-        entryFileNames: `[name].js`,
-        chunkFileNames: `[name].js`,
-        assetFileNames: `[name].[ext]`
-      }
-    },
-    minify: 'esbuild'
+    minify: 'esbuild',
   },
   server: {
     port: 3000, // Try a different port like 3000
-    host: true
+    host: true,
+    hmr: {
+      host: 'localhost',
+      protocol: 'ws',
+    },
   },
   test: {
     globals: true,

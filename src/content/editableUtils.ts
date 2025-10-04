@@ -20,9 +20,17 @@ function findTextNodeForOffset(root: Node, offset: number): { node: Text; offset
   let currentNode: Node | null = walker.nextNode()
   let accumulatedOffset = 0
   while (currentNode) {
-    const nodeLength = (currentNode.textContent || "").length
+    const nodeLength = (currentNode.textContent ?? "").length
     if (accumulatedOffset + nodeLength >= offset) {
-      return { node: currentNode as Text, offsetInNode: offset - accumulatedOffset }
+      const offsetInNode = offset - accumulatedOffset
+      // If we are at the very end of a text node, and there's a next text node,
+      // it's more accurate to return the beginning of the next node. This handles
+      // cases where the selection starts exactly between two nodes.
+      if (offsetInNode === nodeLength) {
+        const nextNode = walker.nextNode()
+        if (nextNode) return { node: nextNode as Text, offsetInNode: 0 }
+      }
+      return { node: currentNode as Text, offsetInNode }
     }
     accumulatedOffset += nodeLength
     currentNode = walker.nextNode()
@@ -112,14 +120,32 @@ function setCursorAtOffset(root: Node, offset: number) {
  * Replaces text in a contenteditable element using various strategies.
  */
 function replaceTextInContentEditable(el: HTMLElement, macro: Macro, startPos: number, selEnd: number) {
+  const isInsertingHTML = macro.contentType === 'text/html' && macro.html
+  
   // Strategy 1: Fast path for elements with a single text node.
   const firstChild = el.firstChild
   if (firstChild && firstChild.nodeType === Node.TEXT_NODE && el.childNodes.length === 1) {
     const textNode = firstChild as Text
     const before = textNode.data.slice(0, startPos)
-    const after = textNode.data.slice(selEnd)
-    textNode.data = before + macro.text + after
-    setCursorAtOffset(el, before.length + macro.text.length)
+    const after = textNode.data.slice(selEnd)    
+    if (isInsertingHTML) {
+      const tempDiv = document.createElement('div')
+      tempDiv.innerHTML = macro.html
+      const nodesToInsert = Array.from(tempDiv.childNodes)
+      const lastNode = nodesToInsert[nodesToInsert.length - 1]
+      
+      textNode.data = before // Keep text before the macro
+      let finalNode: Node = textNode
+      nodesToInsert.forEach(node => {
+        el.insertBefore(node, textNode.nextSibling)
+        finalNode = node
+      })
+      el.insertBefore(document.createTextNode(after), finalNode.nextSibling)
+      setCursorAfterNode(finalNode)
+    } else {
+      textNode.data = before + macro.text + after
+      setCursorAtOffset(el, before.length + macro.text.length)
+    }
     return
   }
 
@@ -128,6 +154,93 @@ function replaceTextInContentEditable(el: HTMLElement, macro: Macro, startPos: n
   const end = findTextNodeForOffset(el, selEnd)
 
   if (start && end) {
+    const isInsertingHTML = macro.contentType === 'text/html' && macro.html
+
+    // Special handling for replacement within a single text node
+    if (start.node === end.node) {
+      const textNode = start.node
+      const parent = textNode.parentNode
+      
+      // Split the text node at the start and end positions
+      const beforeText = textNode.data.substring(0, start.offsetInNode)
+      const afterText = textNode.data.substring(end.offsetInNode)
+      
+      if (isInsertingHTML) {
+        // Parse the HTML to insert
+        const tempDiv = document.createElement('div')
+        tempDiv.innerHTML = macro.html
+        const nodesToInsert = Array.from(tempDiv.childNodes)
+        const lastNode = nodesToInsert[nodesToInsert.length - 1]
+        
+        // Replace the original text node with: before + HTML nodes + after
+        if (parent) {
+          // Insert before text only if not empty
+          if (beforeText) {
+            parent.insertBefore(document.createTextNode(beforeText), textNode)
+          }
+          // Insert HTML nodes
+          nodesToInsert.forEach(node => parent.insertBefore(node, textNode))
+          // Insert after text only if not empty  
+          if (afterText) {
+            parent.insertBefore(document.createTextNode(afterText), textNode)
+          }
+          // Remove the original text node
+          parent.removeChild(textNode)
+          
+          if (lastNode) {
+            setCursorAfterNode(lastNode)
+          }
+        }
+      } else {
+        // Plain text replacement - just update the text node
+        textNode.data = beforeText + macro.text + afterText
+        setCursorAtOffset(el, startPos + macro.text.length)
+      }
+      return
+    }
+    
+    // Special case: end is at position 0 of next node (selection ends exactly at node boundary)
+    // In this case, we're replacing from start to the end of the start node
+    if (start.node !== end.node && end.offsetInNode === 0) {
+      const textNode = start.node
+      const parent = textNode.parentNode
+      
+      const beforeText = textNode.data.substring(0, start.offsetInNode)
+      // afterText is empty because we're replacing to the end of this node
+      
+      if (isInsertingHTML) {
+        // Parse the HTML to insert
+        const tempDiv = document.createElement('div')
+        tempDiv.innerHTML = macro.html
+        const nodesToInsert = Array.from(tempDiv.childNodes)
+        const lastNode = nodesToInsert[nodesToInsert.length - 1]
+        
+        // Replace within the parent element
+        if (parent) {
+          if (beforeText) {
+            parent.insertBefore(document.createTextNode(beforeText), textNode)
+          }
+          nodesToInsert.forEach(node => parent.insertBefore(node, textNode))
+          parent.removeChild(textNode)
+          
+          if (lastNode) {
+            setCursorAfterNode(lastNode)
+          }
+        }
+      } else {
+        // Plain text replacement
+        if (parent) {
+          const newText = beforeText + macro.text
+          const newTextNode = document.createTextNode(newText)
+          parent.insertBefore(newTextNode, textNode)
+          parent.removeChild(textNode)
+          setCursorAtOffset(el, startPos + macro.text.length)
+        }
+      }
+      return
+    }
+
+    // For non-HTML or multi-node selections, use range-based approach
     const range = document.createRange()
     range.setStart(start.node, start.offsetInNode)
     range.setEnd(end.node, end.offsetInNode)
@@ -136,21 +249,43 @@ function replaceTextInContentEditable(el: HTMLElement, macro: Macro, startPos: n
     // and that text node is the only child of its parent,
     // expand the range to include the parent element itself.
     // This helps delete tags like <i>cro</i> instead of just leaving <i></i>.
-    if (
-      end.offsetInNode === end.node.length &&
-      end.node.parentNode &&
-      end.node.parentNode !== el &&
-      end.node.parentNode.childNodes.length === 1
-    ) {
-      range.setEndAfter(end.node.parentNode)
+    // But don't do this when inserting HTML, as we want to preserve the parent structure.
+    if (!isInsertingHTML) {
+      // If the selection spans the entire content of a parent element, expand the range to include that parent.
+      if (start.offsetInNode === 0 && start.node.parentNode && start.node.parentNode !== el && start.node.parentNode.childNodes.length === 1) {
+        range.setStartBefore(start.node.parentNode)
+      }
+
+      // Same check for the end of the range.
+      if (end.offsetInNode === end.node.length && end.node.parentNode && end.node.parentNode !== el && end.node.parentNode.childNodes.length === 1) {
+        range.setEndAfter(end.node.parentNode)
+      }
     }
 
     range.deleteContents()
 
-    const insertedNode = document.createTextNode(macro.text)
-    range.insertNode(insertedNode)
-    setCursorAfterNode(insertedNode)
-    return
+    if (isInsertingHTML) {
+      // Insert as HTML
+      const tempDiv = document.createElement('div')
+      tempDiv.innerHTML = macro.html
+      const fragment = document.createDocumentFragment()
+      let lastNode: Node | null = null
+      while (tempDiv.firstChild) {
+        lastNode = tempDiv.firstChild
+        fragment.appendChild(lastNode)
+      }
+      
+      range.insertNode(fragment)
+      if (lastNode) {
+        setCursorAfterNode(lastNode)
+      }
+    } else {
+      // Insert as plain text
+      const insertedNode = document.createTextNode(macro.text)
+      range.insertNode(insertedNode)
+      setCursorAfterNode(insertedNode)
+    }
+    return;
   }
 
   // Strategy 3: Fallback using execCommand.

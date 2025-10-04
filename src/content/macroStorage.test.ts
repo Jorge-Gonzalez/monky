@@ -28,15 +28,25 @@ describe('macroStorage', () => {
         { id: 2, trigger: ';hello', text: 'hello world' }
       ]
       
-      mockGet.mockResolvedValueOnce({ macros: mockMacros })
+      mockGet.mockResolvedValueOnce({ 'macro-storage': { state: { macros: mockMacros } } })
       
       const result = await loadMacros()
       
       expect(result).toEqual([
-        { id: 1, command: '/test', text: 'test text' },
-        { id: 2, command: ';hello', text: 'hello world' }
+        { id: 1, command: '/test', text: 'test text', html: undefined, contentType: undefined, is_sensitive: undefined },
+        { id: 2, command: ';hello', text: 'hello world', html: undefined, contentType: undefined, is_sensitive: undefined }
       ])
-      expect(mockGet).toHaveBeenCalledWith('macros')
+      expect(mockGet).toHaveBeenCalledWith('macro-storage')
+    })
+
+    it('should correctly map new properties', async () => {
+      const mockMacros = [
+        { id: 1, command: '/html', text: 'html text', html: '<b>html</b>', contentType: 'text/html', is_sensitive: true },
+      ]
+      mockGet.mockResolvedValueOnce({ 'macro-storage': { state: { macros: mockMacros } } })
+      const result = await loadMacros()
+      expect(result).toEqual(mockMacros)
+      expect(mockGet).toHaveBeenCalledWith('macro-storage')
     })
 
     it('returns empty array when no macros exist', async () => {
@@ -54,19 +64,19 @@ describe('macroStorage', () => {
         { id: 3, text: 'test text' } // Missing command
       ]
       
-      mockGet.mockResolvedValueOnce({ macros: malformedMacros })
+      mockGet.mockResolvedValueOnce({ 'macro-storage': { state: { macros: malformedMacros } } })
       
       const result = await loadMacros()
       
       expect(result).toEqual([
-        { id: 1, command: '', text: '' },
-        { id: 2, command: '/test', text: '' },
-        { id: 3, command: '', text: 'test text' }
+        { id: 1, command: '', text: '', html: undefined, contentType: undefined, is_sensitive: undefined },
+        { id: 2, command: '/test', text: '', html: undefined, contentType: undefined, is_sensitive: undefined },
+        { id: 3, command: '', text: 'test text', html: undefined, contentType: undefined, is_sensitive: undefined }
       ])
     })
 
     it('handles non-array macro storage', async () => {
-      mockGet.mockResolvedValueOnce({ macros: 'not-an-array' })
+      mockGet.mockResolvedValueOnce({ 'macro-storage': { state: { macros: 'not-an-array' } } })
       
       const result = await loadMacros()
       
@@ -97,11 +107,11 @@ describe('macroStorage', () => {
       const listener = mockAddListener.mock.calls[0][0]
       
       // Call the listener with mock change data
-      listener({ macros: { newValue: mockMacros } }, 'local')
+      listener({ 'macro-storage': { newValue: { state: { macros: mockMacros } } } }, 'local')
       
       expect(callback).toHaveBeenCalledWith([
-        { id: 1, command: '/test', text: 'test text' },
-        { id: 2, command: ';hello', text: 'hello world' }
+        { id: 1, command: '/test', text: 'test text', html: undefined, contentType: undefined, is_sensitive: undefined },
+        { id: 2, command: ';hello', text: 'hello world', html: undefined, contentType: undefined, is_sensitive: undefined }
       ])
     })
 
@@ -111,7 +121,7 @@ describe('macroStorage', () => {
       listenMacrosChange(callback)
       
       const listener = mockAddListener.mock.calls[0][0]
-      listener({ macros: { newValue: [] } }, 'sync')
+      listener({ 'macro-storage': { newValue: { state: { macros: [] } } } }, 'sync')
       
       expect(callback).not.toHaveBeenCalled()
     })
@@ -122,7 +132,7 @@ describe('macroStorage', () => {
       listenMacrosChange(callback)
       
       const listener = mockAddListener.mock.calls[0][0]
-      listener({ macros: {} }, 'local') // No newValue
+      listener({ 'macro-storage': {} }, 'local') // No newValue
       
       expect(callback).toHaveBeenCalledWith([])
     })
