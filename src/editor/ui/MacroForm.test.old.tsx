@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import MacroForm from './MacroForm'
 
@@ -18,30 +18,64 @@ vi.mock('../../lib/errors', () => ({
   getErrorMessage: vi.fn((error) => error),
 }))
 
-// Mock medium-editor
-const mockSubscribe = vi.fn()
-const mockDestroy = vi.fn()
-let editableInputCallback: (() => void) | null = null
+// Mock TipTap components
+let mockOnUpdate: ((params: { editor: any }) => void) | null = null
 
 const mockEditor = {
-  subscribe: vi.fn((eventName: string, callback: () => void) => {
-    if (eventName === 'editableInput') {
-      editableInputCallback = callback
-    }
-    mockSubscribe(eventName, callback)
-  }),
-  destroy: mockDestroy,
+  getHTML: vi.fn(() => ''),
+  commands: {
+    setContent: vi.fn(),
+  },
+  isActive: vi.fn(() => false),
+  chain: vi.fn(() => ({
+    focus: vi.fn(() => ({
+      toggleBold: vi.fn(() => ({ run: vi.fn() })),
+      toggleItalic: vi.fn(() => ({ run: vi.fn() })),
+      toggleBulletList: vi.fn(() => ({ run: vi.fn() })),
+      toggleOrderedList: vi.fn(() => ({ run: vi.fn() })),
+      setLink: vi.fn(() => ({ run: vi.fn() })),
+      unsetLink: vi.fn(() => ({ run: vi.fn() })),
+    })),
+  })),
 }
 
-vi.mock('medium-editor', () => {
-  return {
-    default: vi.fn(() => mockEditor),
-  }
-})
+vi.mock('@tiptap/react', () => ({
+  useEditor: vi.fn((config: any) => {
+    // Store the onUpdate callback so we can call it in tests
+    mockOnUpdate = config?.onUpdate || null
+    return mockEditor
+  }),
+  EditorContent: ({ editor, className }: { editor: any, className: string }) => (
+    <div 
+      className={className}
+      data-testid="tiptap-editor"
+      contentEditable={true}
+      suppressContentEditableWarning={true}
+      onInput={(e: any) => {
+        // Simulate TipTap's onUpdate behavior
+        if (mockOnUpdate) {
+          mockOnUpdate({ editor: mockEditor })
+        }
+      }}
+    >
+      <div className="tiptap-content" data-testid="tiptap-content">
+        {mockEditor.getHTML()}
+      </div>
+    </div>
+  ),
+}))
 
-// Mock medium-editor CSS imports
-vi.mock('medium-editor/dist/css/medium-editor.css', () => ({}))
-vi.mock('medium-editor/dist/css/themes/default.css', () => ({}))
+vi.mock('@tiptap/starter-kit', () => ({
+  default: {
+    configure: vi.fn(() => ({})),
+  },
+}))
+
+vi.mock('@tiptap/extension-link', () => ({
+  default: {
+    configure: vi.fn(() => ({})),
+  },
+}))
 
 // Mock the store to be self-contained, avoiding the need for dynamic imports.
 const mockAddMacro = vi.fn()
@@ -63,9 +97,10 @@ describe('MacroForm Component', () => {
     // Reset mock implementations for each test
     mockAddMacro.mockReturnValue({ success: true })
     mockUpdateMacro.mockReturnValue({ success: true })
-    mockSubscribe.mockClear()
-    mockDestroy.mockClear()
-    editableInputCallback = null
+    // Reset editor mock
+    mockEditor.getHTML.mockReturnValue('')
+    mockEditor.commands.setContent.mockClear()
+    mockOnUpdate = null
   })
 
   it('renders without crashing', () => {
@@ -79,39 +114,39 @@ describe('MacroForm Component', () => {
     
     expect(screen.getByLabelText('macroForm.triggerLabel')).toBeInTheDocument()
     expect(screen.getByText('macroForm.textLabel')).toBeInTheDocument()
+    expect(screen.getByTestId('tiptap-editor')).toBeInTheDocument()
     expect(screen.getByRole('checkbox')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'macroForm.saveButton' })).toBeInTheDocument()
   })
 
-  it('allows user to input command', () => {
+  it('allows user to input command and text', () => {
     render(<MacroForm editing={null} onDone={mockOnDone} />)
     
     const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+    const editorElement = screen.getByTestId('tiptap-editor')
     
     fireEvent.change(commandInput, { target: { value: '/test' } })
     
+    // Simulate typing in the TipTap editor
+    fireEvent.input(editorElement, { target: { textContent: 'Test text' } })
+    mockEditor.getHTML.mockReturnValue('<p>Test text</p>')
+    
     expect(commandInput).toHaveValue('/test')
+    expect(mockEditor.getHTML()).toBe('<p>Test text</p>')
   })
 
   it('calls addMacro on submit when creating a new macro', async () => {
     render(<MacroForm editing={null} onDone={mockOnDone} />)
     
     const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+    const editorElement = screen.getByTestId('tiptap-editor')
     const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
     
     fireEvent.change(commandInput, { target: { value: '/test' } })
     
-    // Simulate medium-editor content change
-    const editorDiv = document.querySelector('.prose') as HTMLElement
-    if (editorDiv) {
-      editorDiv.innerHTML = '<p>Test text</p>'
-      // Trigger the medium-editor callback that updates the component state
-      if (editableInputCallback) {
-        act(() => {
-          editableInputCallback()
-        })
-      }
-    }
+    // Simulate typing in the TipTap editor and update the mock to return the new content
+    mockEditor.getHTML.mockReturnValue('<p>Test text</p>')
+    fireEvent.input(editorElement, { target: { textContent: 'Test text' } })
     
     fireEvent.click(submitButton)
 
@@ -141,6 +176,7 @@ describe('MacroForm Component', () => {
     expect(screen.getByRole('button', { name: 'macroForm.updateButton' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'macroForm.cancelButton' })).toBeInTheDocument()
     expect(screen.getByDisplayValue('/old')).toBeInTheDocument()
+    expect(mockEditor.commands.setContent).toHaveBeenCalledWith('Old text')
     expect(screen.getByRole('checkbox')).toBeChecked()
   })
 
@@ -149,21 +185,14 @@ describe('MacroForm Component', () => {
     render(<MacroForm editing={editingMacro} onDone={mockOnDone} />)
 
     const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+    const editorElement = screen.getByTestId('tiptap-editor')
     const updateButton = screen.getByRole('button', { name: 'macroForm.updateButton' })
 
     fireEvent.change(commandInput, { target: { value: '/new' } })
     
-    // Simulate medium-editor content change
-    const editorDiv = document.querySelector('.prose') as HTMLElement
-    if (editorDiv) {
-      editorDiv.innerHTML = '<p>New text</p>'
-      // Trigger the medium-editor callback that updates the component state
-      if (editableInputCallback) {
-        act(() => {
-          editableInputCallback()
-        })
-      }
-    }
+    // Simulate typing in the TipTap editor and update the mock to return the new content
+    mockEditor.getHTML.mockReturnValue('<p>New text</p>')
+    fireEvent.input(editorElement, { target: { textContent: 'New text' } })
     
     fireEvent.click(updateButton)
 
@@ -179,11 +208,18 @@ describe('MacroForm Component', () => {
     })
   })
 
-  it('does not submit if command is empty', () => {
+  it('does not submit if command or text is empty', () => {
     render(<MacroForm editing={null} onDone={mockOnDone} />)
     const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
 
     // Test with empty fields
+    fireEvent.click(submitButton)
+    expect(mockAddMacro).not.toHaveBeenCalled()
+
+    // Test with only command (empty editor)
+    const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+    fireEvent.change(commandInput, { target: { value: '/test' } })
+    mockEditor.getHTML.mockReturnValue('')
     fireEvent.click(submitButton)
     expect(mockAddMacro).not.toHaveBeenCalled()
   })
@@ -192,21 +228,14 @@ describe('MacroForm Component', () => {
     render(<MacroForm editing={null} onDone={mockOnDone} />)
     
     const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+    const editorElement = screen.getByTestId('tiptap-editor')
     const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
     
     fireEvent.change(commandInput, { target: { value: '/rich' } })
     
     // Simulate rich content with bold text
-    const editorDiv = document.querySelector('.prose') as HTMLElement
-    if (editorDiv) {
-      editorDiv.innerHTML = '<p><strong>Bold text</strong></p>'
-      // Trigger the medium-editor callback that updates the component state
-      if (editableInputCallback) {
-        act(() => {
-          editableInputCallback()
-        })
-      }
-    }
+    mockEditor.getHTML.mockReturnValue('<p><strong>Bold text</strong></p>')
+    fireEvent.input(editorElement, { target: { textContent: 'Bold text' } })
     
     fireEvent.click(submitButton)
 
@@ -230,35 +259,15 @@ describe('MacroForm Component', () => {
     render(<MacroForm editing={null} onDone={mockOnDone} />)
     fireEvent.change(screen.getByLabelText('macroForm.triggerLabel'), { target: { value: '/fail' } })
     
-    // Simulate some text content
-    const editorDiv = document.querySelector('.prose') as HTMLElement
-    if (editorDiv) {
-      editorDiv.innerHTML = '<p>This will fail</p>'
-      // Trigger the medium-editor callback that updates the component state
-      if (editableInputCallback) {
-        act(() => {
-          editableInputCallback()
-        })
-      }
-    }
+    // Simulate typing in the TipTap editor and update the mock to return the new content
+    mockEditor.getHTML.mockReturnValue('<p>This will fail</p>')
+    const editorElement = screen.getByTestId('tiptap-editor')
+    fireEvent.input(editorElement, { target: { textContent: 'This will fail' } })
 
     // Act
     fireEvent.click(screen.getByRole('button', { name: 'macroForm.saveButton' }))
 
     // Assert
     expect(await screen.findByText(errorMessage)).toBeInTheDocument()
-  })
-
-  it('initializes and destroys medium editor correctly', async () => {
-    const { unmount } = render(<MacroForm editing={null} onDone={mockOnDone} />)
-    
-    // Wait for the effect to run
-    await waitFor(() => {
-      expect(mockSubscribe).toHaveBeenCalledWith('editableInput', expect.any(Function))
-    })
-    
-    // Unmount to trigger cleanup
-    unmount()
-    expect(mockDestroy).toHaveBeenCalled()
   })
 })

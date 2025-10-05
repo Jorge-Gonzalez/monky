@@ -145,12 +145,20 @@ function replaceTextInContentEditable(el: HTMLElement, macro: Macro, startPos: n
       const lastNode = nodesToInsert[nodesToInsert.length - 1]
       
       textNode.data = before // Keep text before the macro
+      let currentNode: Node = textNode // Track the node we just inserted after
       let finalNode: Node = textNode
+      
       nodesToInsert.forEach(node => {
-        el.insertBefore(node, textNode.nextSibling)
+        // Insert after the current node
+        el.insertBefore(node, currentNode.nextSibling)
+        currentNode = node // Update reference to the node we just inserted
         finalNode = node
       })
-      el.insertBefore(document.createTextNode(after), finalNode.nextSibling)
+      
+      // Insert the "after" text after the last inserted node
+      if (after) {
+        el.insertBefore(document.createTextNode(after), finalNode.nextSibling)
+      }
       setCursorAfterNode(finalNode)
     } else {
       textNode.data = before + macro.text + after

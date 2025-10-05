@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react'
-import * as MediumEditor from 'medium-editor'
+import MediumEditor from 'medium-editor'
 import { useMacroStore } from '../../store/useMacroStore'
 import { createMacroLocalFirst, updateMacroLocalFirst } from '../../lib/sync'
 import { getErrorMessage } from '../../lib/errors'
 import { t } from '../../lib/i18n'
 import 'medium-editor/dist/css/medium-editor.css'
 import 'medium-editor/dist/css/themes/default.css'
-import { icons } from './icons'
 
 export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone:()=>void }){
   const addMacro = useMacroStore(s=>s.addMacro)
@@ -15,79 +14,33 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
   const [text, setText] = useState('')
   const [isSensitive, setSensitive] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  
-  const editorRef = useRef<HTMLDivElement>(null)
-  const mediumEditor = useRef<any>(null)
 
-  // Initialize Medium Editor
-  useEffect(() => {
-    if (editorRef.current && !mediumEditor.current) {
-      try {
-        mediumEditor.current = new MediumEditor.default(editorRef.current, {
-          toolbar: {
-            buttons: [
-              {
-                name: 'bold',
-                contentFA: icons.bold
-              },
-              {
-                name: 'italic',
-                contentFA: icons.italic
-              },
-              {
-                name: 'underline',
-                contentFA: icons.underline
-              },
-              {
-                name: 'anchor',
-                contentFA: icons.anchor
-              },
-              {
-                name: 'unorderedlist',
-                contentFA: icons.unorderedlist
-              },
-              {
-                name: 'orderedlist',
-                contentFA: icons.orderedlist
-              }
-            ]
-          },
-          placeholder: {
-            text: 'Enter your macro content...'
-          }
-        })
-
-        // Listen for content changes
-        mediumEditor.current.subscribe('editableInput', () => {
-          if (editorRef.current) {
-            setText(editorRef.current.innerHTML)
-          }
-        })
-      } catch (error) {
-        console.error('Failed to initialize Medium Editor:', error)
-        // Fallback - make element editable without medium-editor
-        if (editorRef.current) {
-          editorRef.current.contentEditable = 'true'
-          editorRef.current.addEventListener('input', () => {
-            if (editorRef.current) {
-              setText(editorRef.current.innerHTML)
-            }
-          })
+  // Initialize TipTap editor
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        heading: false, // Disable headings for snippets
+        codeBlock: false, // Disable code blocks
+        link: false, // Disable StarterKit's basic link to avoid conflict
+      }),
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          target: '_blank',
+          rel: 'noopener noreferrer',
         }
-      }
+      })
+    ],
+    content: '',
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm dark:prose-invert max-w-none focus:outline-none p-3 min-h-[150px]',
+      },
+    },
+    onUpdate: ({ editor }) => {
+      setText(editor.getHTML())
     }
-
-    return () => {
-      if (mediumEditor.current) {
-        try {
-          mediumEditor.current.destroy()
-        } catch (error) {
-          console.error('Error destroying Medium Editor:', error)
-        }
-        mediumEditor.current = null
-      }
-    }
-  }, [])
+  })
 
   useEffect(()=>{
     if (editing){ 
@@ -96,23 +49,21 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
       const content = editing.html || editing.text
       setText(content)
       setSensitive(!!editing.is_sensitive)
-      
       // Update editor content
-      if (editorRef.current) {
-        editorRef.current.innerHTML = content
+      if (editor) {
+        editor.commands.setContent(content)
       }
     } else { 
       setCommand('')
       setText('')
       setSensitive(false)
-      
       // Clear editor content
-      if (editorRef.current) {
-        editorRef.current.innerHTML = ''
+      if (editor) {
+        editor.commands.setContent('')
       }
     }
     setError(null)
-  }, [editing])
+  }, [editing, editor])
 
   // Clear error when user starts typing
   useEffect(() => {
@@ -121,12 +72,15 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
 
   // Helper function to detect if content has rich formatting
   function hasRichFormatting(html: string): boolean {
+    // Remove the outer <p> tag and check if there's any other formatting
+    const withoutOuterP = html.replace(/^<p>([\s\S]*)<\/p>$/, '$1')
+    
     // Check for rich formatting elements
     const richElements = /<(?:strong|b|em|i|u|ul|ol|li|br|a\s|span\s)/i
-    const hasRichElements = richElements.test(html)
+    const hasRichElements = richElements.test(withoutOuterP)
     
     // Check if content has line breaks that would need <br> tags
-    const hasLineBreaks = html.includes('<br')
+    const hasLineBreaks = withoutOuterP.includes('\n') || html.includes('<br')
     
     return hasRichElements || hasLineBreaks
   }
@@ -137,9 +91,7 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
     const tempDiv = document.createElement('div')
     tempDiv.innerHTML = html
     return tempDiv.textContent || tempDiv.innerText || ''
-  }
-
-  async function onSubmit(e:React.FormEvent){
+  }  async function onSubmit(e:React.FormEvent){
     e.preventDefault()
     setError(null)
     if (!command.trim() || !text.trim()) return
@@ -171,8 +123,8 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
         // Reset form for next entry
         setCommand('')
         setText('')
-        if (editorRef.current) {
-          editorRef.current.innerHTML = ''
+        if (editor) {
+          editor.commands.setContent('')
         }
       }
     }
@@ -180,6 +132,8 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
       setError(getErrorMessage(result.error, command))
     }
   }
+
+  if (!editor) return null
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
@@ -202,14 +156,89 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
           {t('macroForm.textLabel')}
         </label>
         
-        {/* Medium Editor */}
-        <div 
-          ref={editorRef}
-          contentEditable
-          suppressContentEditableWarning
-          className="border rounded-md bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 overflow-auto min-h-[150px] p-3 prose prose-sm max-w-none dark:prose-invert medium-editor-element"
-          style={{ outline: 'none', minHeight: '150px' }}
-          data-placeholder="Enter your macro content..."
+        {/* Toolbar */}
+        <div className="flex flex-wrap gap-1 p-2 border border-b-0 rounded-t-md bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700">
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            className={`px-3 py-1.5 rounded text-sm font-semibold transition-colors ${
+              editor.isActive('bold')
+                ? 'bg-blue-600 text-white'
+                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600'
+            }`}
+            title="Bold (Ctrl/Cmd+B)"
+          >
+            B
+          </button>
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            className={`px-3 py-1.5 rounded text-sm italic transition-colors ${
+              editor.isActive('italic')
+                ? 'bg-blue-600 text-white'
+                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600'
+            }`}
+            title="Italic (Ctrl/Cmd+I)"
+          >
+            I
+          </button>
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().toggleBulletList().run()}
+            className={`px-3 py-1.5 rounded text-sm transition-colors ${
+              editor.isActive('bulletList')
+                ? 'bg-blue-600 text-white'
+                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600'
+            }`}
+            title="Bullet List"
+          >
+            • List
+          </button>
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().toggleOrderedList().run()}
+            className={`px-3 py-1.5 rounded text-sm transition-colors ${
+              editor.isActive('orderedList')
+                ? 'bg-blue-600 text-white'
+                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600'
+            }`}
+            title="Numbered List"
+          >
+            1. List
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              const url = window.prompt('Enter URL:')
+              if (url) {
+                editor.chain().focus().setLink({ href: url }).run()
+              }
+            }}
+            className={`px-3 py-1.5 rounded text-sm transition-colors ${
+              editor.isActive('link')
+                ? 'bg-blue-600 text-white'
+                : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600'
+            }`}
+            title="Add Link"
+          >
+            🔗 Link
+          </button>
+          {editor.isActive('link') && (
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().unsetLink().run()}
+              className="px-3 py-1.5 rounded text-sm bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-800 border border-red-300 dark:border-red-700 transition-colors"
+              title="Remove Link"
+            >
+              ✕ Link
+            </button>
+          )}
+        </div>
+
+        {/* Editor */}
+        <EditorContent 
+          editor={editor}
+          className="border rounded-b-md bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 overflow-auto min-h-[100px] p-3 prose prose-sm max-w-none dark:prose-invert"
         />
       </div>
 

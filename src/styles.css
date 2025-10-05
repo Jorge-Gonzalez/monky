@@ -92,6 +92,56 @@ li.ProseMirror-selectednode:after {
   color: #1d4ed8;
 }
 
+/* Medium Editor Styles */
+.medium-editor-element {
+  outline: none !important;
+  min-height: 150px;
+}
+
+.medium-editor-element:focus {
+  outline: none !important;
+}
+
+/* Dark theme support for medium-editor */
+.dark .medium-editor-element {
+  color: #f3f4f6;
+}
+
+.dark .medium-editor-toolbar {
+  background: #374151 !important;
+  border-color: #4b5563 !important;
+}
+
+.dark .medium-editor-toolbar li button {
+  background: #374151 !important;
+  color: #f3f4f6 !important;
+  border-color: #4b5563 !important;
+}
+
+.dark .medium-editor-toolbar li button:hover {
+  background: #4b5563 !important;
+}
+
+.dark .medium-editor-toolbar li .medium-editor-button-active {
+  background: #3b82f6 !important;
+  color: white !important;
+}
+
+/* Custom medium-editor toolbar positioning */
+.medium-editor-toolbar {
+  z-index: 1000;
+}
+
+/* Ensure lists look good */
+.medium-editor-element ul,
+.medium-editor-element ol {
+  padding-left: 1.5em;
+}
+
+.medium-editor-element li {
+  margin: 0.25em 0;
+}
+
 /* small helper */
 .popup-container { width: 320px; }
 body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }

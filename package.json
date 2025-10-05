@@ -18,12 +18,9 @@
     "dev:status": "lsof -i:5173,3001 || echo 'No development servers running'"
   },
   "dependencies": {
-    "@tiptap/extension-link": "^3.6.5",
-    "@tiptap/react": "^3.6.5",
-    "@tiptap/starter-kit": "^3.6.5",
     "dompurify": "^3.2.7",
     "fuzzysort": "^3.1.0",
-    "prosemirror-view": "^1.41.2",
+    "medium-editor": "^5.23.3",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "zustand": "^4.5.2"
@@ -36,6 +33,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/chrome": "^0.1.4",
     "@types/dompurify": "^3.0.5",
+    "@types/medium-editor": "^5.0.8",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.1",
