@@ -6,7 +6,10 @@ export default defineManifest({
   version: '0.1.0',
   description: 'Reemplaza macros por texto en inputs y textareas con prefijos configurables.',
   permissions: ['storage', 'alarms', 'tabs'],
-  host_permissions: ['http://localhost:3000/*'],
+  host_permissions: ['http://localhost:5173/*'],
+  content_security_policy: {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+  },
   content_scripts: [
     {
       matches: ['<all_urls>'],
@@ -26,5 +29,11 @@ export default defineManifest({
   background: {
     service_worker: 'src/background/index.ts'
   },
-  options_page: 'src/options/index.html'
+  options_page: 'src/options/index.html',
+  web_accessible_resources: [
+    {
+      resources: ['src/editor/index.html'],
+      matches: ['<all_urls>']
+    }
+  ]
 })

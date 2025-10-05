@@ -2,20 +2,29 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { crx } from '@crxjs/vite-plugin'
 import manifest from './manifest.config'
-import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [react(), crx({ manifest })],
   build: {
     outDir: 'dist',
     minify: 'esbuild',
+    rollupOptions: {
+      input: {
+        // Add explicit entry points for all HTML pages
+        popup: 'src/popup/index.html',
+        options: 'src/options/index.html',
+        editor: 'src/editor/index.html',
+      },
+    },
   },
   server: {
-    port: 3000, // Try a different port like 3000
+    port: 5173, // Try a different port like 3000
     host: true,
+    strictPort: true,
     hmr: {
       host: 'localhost',
       protocol: 'ws',
+      clientPort: 5173,
     },
   },
   test: {

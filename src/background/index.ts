@@ -16,4 +16,17 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     syncMacros().then(() => sendResponse({ ok: true }))
     return true
   }
+  
+  // Developer utility: reload content scripts
+  if (msg === 'reload-content-scripts') {
+    chrome.tabs.query({}, (tabs) => {
+      tabs.forEach(tab => {
+        if (tab.id) {
+          chrome.tabs.reload(tab.id)
+        }
+      })
+      sendResponse({ reloaded: tabs.length })
+    })
+    return true
+  }
 })

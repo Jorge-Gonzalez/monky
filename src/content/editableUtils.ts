@@ -79,9 +79,19 @@ function replaceTextInInput(
   const value = el.value
   const before = value.slice(0, startPos)
   const after = value.slice(selEnd)
-  el.value = before + macro.text + after
+  
+  // For input/textarea, use HTML content if available but convert to plain text
+  let replacementText = macro.text
+  if (macro.contentType === 'text/html' && macro.html) {
+    // Create a temporary element to extract plain text from HTML
+    const tempDiv = document.createElement('div')
+    tempDiv.innerHTML = macro.html
+    replacementText = tempDiv.textContent || tempDiv.innerText || macro.text
+  }
+  
+  el.value = before + replacementText + after
 
-  const caretPosition = before.length + macro.text.length
+  const caretPosition = before.length + replacementText.length
   el.setSelectionRange(caretPosition, caretPosition)
 }
 

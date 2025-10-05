@@ -115,6 +115,7 @@ function commitReplace(macro: Macro, sel: { start: number; end: number } | null,
     cancelDetection()
     return
   }
+  
   replaceText(activeEl, macro, commandStart, endPos)
   cancelDetection()
 }

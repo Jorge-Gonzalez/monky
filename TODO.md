@@ -6,3 +6,4 @@
     por ej la seleccion de habilitar y deshabilitar.
 - fuzzy find
 - autocompletion list with tab
+- conver the popup in a side panel

@@ -56,6 +56,62 @@
             }
         }
     </style>
+    <script>
+      // Handle extension context invalidation errors gracefully
+      window.addEventListener('error', function(event) {
+        if (event.error && event.error.message && 
+            event.error.message.includes('Extension context invalidated')) {
+          console.warn('[DEV] Extension context invalidated - this is expected when testing outside extension context');
+          event.preventDefault(); // Prevent the error from showing in console
+          return true;
+        }
+      });
+
+      // Simple mock for chrome APIs for development with Vite dev server
+      if (typeof globalThis.chrome?.storage === 'undefined') {
+        console.log('[DEV] Mocking chrome.storage API for live reload server.')
+
+        const mockMacros = [
+          { id: '1', command: '/sig', text: 'My Signature' },
+          { id: '2', command: '/brb', text: 'Be right back' },
+          { id: '3', command: '/signature', text: 'My Full Signature' },
+        ]
+
+        // --- DEV CONFIG ---
+        // You can change this to test different settings.
+        const mockConfig = {
+          useCommitKeys: false,
+          prefixes: ['/'],
+          // Add 'localhost' to this array to test the disabled state.
+          disabledSites: [],
+        }
+        // ------------------
+
+        globalThis.chrome = globalThis.chrome || {}
+        globalThis.chrome.storage = {
+          local: {
+            get: (keys, callback) => {
+              const result = { macros: mockMacros, config: mockConfig }
+              console.log('[DEV] chrome.storage.local.get', keys, '->', result)
+              if (callback) {
+                callback(result)
+              }
+              return Promise.resolve(result)
+            },
+            set: (items, callback) => {
+              console.log('[DEV] chrome.storage.local.set', items)
+              if (callback) {
+                callback()
+              }
+              return Promise.resolve()
+            },
+          },
+          onChanged: {
+            addListener: () => {},
+          },
+        }
+      }
+    </script>
 </head>
 <body>
     <h1>Macro Extension Test Page</h1>
@@ -89,5 +145,32 @@
         </div>
     </div>
 
+    <!-- Load the development content script (no extension context needed) -->
+    <script type="module">
+      // Load development version of content script to avoid extension context issues
+      try {
+        console.log('[DEV] Loading macro detection system...');
+        
+        // Import the development version that doesn't include CRXJS HMR
+        await import('http://localhost:5173/src/content/main.dev.ts');
+        
+        console.log('[DEV] ✅ Content script loaded successfully');
+      } catch (error) {
+        console.error('[DEV] ❌ Failed to load content script:', error);
+        console.log('[DEV] Make sure HMR server is running: npm run dev');
+        
+        // Fallback to regular version if dev version fails
+        try {
+          console.log('[DEV] Trying fallback to regular content script...');
+          const { onExecute } = await import('http://localhost:5173/src/content/main.ts');
+          if (onExecute) {
+            onExecute();
+          }
+          console.log('[DEV] ✅ Fallback content script loaded');
+        } catch (fallbackError) {
+          console.error('[DEV] ❌ Fallback also failed:', fallbackError);
+        }
+      }
+    </script>
 </body>
 </html>

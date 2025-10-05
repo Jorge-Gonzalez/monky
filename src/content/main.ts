@@ -44,4 +44,12 @@ async function main() {
   manageDetectorState()
 }
 
-main()
+// Export onExecute function for CRXJS plugin compatibility
+export function onExecute() {
+  main()
+}
+
+// For direct script execution (e.g., in development)
+if (typeof window !== 'undefined') {
+  main()
+}
