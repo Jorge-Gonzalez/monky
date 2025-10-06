@@ -56,65 +56,13 @@
             }
         }
     </style>
-    <script>
-      // Handle extension context invalidation errors gracefully
-      window.addEventListener('error', function(event) {
-        if (event.error && event.error.message && 
-            event.error.message.includes('Extension context invalidated')) {
-          console.warn('[DEV] Extension context invalidated - this is expected when testing outside extension context');
-          event.preventDefault(); // Prevent the error from showing in console
-          return true;
-        }
-      });
 
-      // Simple mock for chrome APIs for development with Vite dev server
-      if (typeof globalThis.chrome?.storage === 'undefined') {
-        console.log('[DEV] Mocking chrome.storage API for live reload server.')
-
-        const mockMacros = [
-          { id: '1', command: '/sig', text: 'My Signature' },
-          { id: '2', command: '/brb', text: 'Be right back' },
-          { id: '3', command: '/signature', text: 'My Full Signature' },
-        ]
-
-        // --- DEV CONFIG ---
-        // You can change this to test different settings.
-        const mockConfig = {
-          useCommitKeys: false,
-          prefixes: ['/'],
-          // Add 'localhost' to this array to test the disabled state.
-          disabledSites: [],
-        }
-        // ------------------
-
-        globalThis.chrome = globalThis.chrome || {}
-        globalThis.chrome.storage = {
-          local: {
-            get: (keys, callback) => {
-              const result = { macros: mockMacros, config: mockConfig }
-              console.log('[DEV] chrome.storage.local.get', keys, '->', result)
-              if (callback) {
-                callback(result)
-              }
-              return Promise.resolve(result)
-            },
-            set: (items, callback) => {
-              console.log('[DEV] chrome.storage.local.set', items)
-              if (callback) {
-                callback()
-              }
-              return Promise.resolve()
-            },
-          },
-          onChanged: {
-            addListener: () => {},
-          },
-        }
-      }
-    </script>
 </head>
 <body>
     <h1>Macro Extension Test Page</h1>
+    <div id="connection-status" style="padding: 10px; margin-bottom: 20px; border-radius: 4px; background-color: #ffeaa7; border: 1px solid #fdcb6e;">
+        📡 <span id="status-text">Checking live reload connection...</span>
+    </div>
     <p>Use this page to test the macro expansion in different types of input fields.</p>
     <p>Try typing a macro command you have configured (e.g., <code>/sig</code>) in any of the fields below.</p>
 
@@ -145,32 +93,65 @@
         </div>
     </div>
 
-    <!-- Load the development content script (no extension context needed) -->
-    <script type="module">
-      // Load development version of content script to avoid extension context issues
-      try {
-        console.log('[DEV] Loading macro detection system...');
-        
-        // Import the development version that doesn't include CRXJS HMR
-        await import('http://localhost:5173/src/content/main.dev.ts');
-        
-        console.log('[DEV] ✅ Content script loaded successfully');
-      } catch (error) {
-        console.error('[DEV] ❌ Failed to load content script:', error);
-        console.log('[DEV] Make sure HMR server is running: npm run dev');
-        
-        // Fallback to regular version if dev version fails
-        try {
-          console.log('[DEV] Trying fallback to regular content script...');
-          const { onExecute } = await import('http://localhost:5173/src/content/main.ts');
-          if (onExecute) {
-            onExecute();
-          }
-          console.log('[DEV] ✅ Fallback content script loaded');
-        } catch (fallbackError) {
-          console.error('[DEV] ❌ Fallback also failed:', fallbackError);
+    <script>
+        // Visual connection status indicator
+        function updateConnectionStatus(connected, message) {
+            const statusDiv = document.getElementById('connection-status');
+            const statusText = document.getElementById('status-text');
+            
+            if (connected) {
+                statusDiv.style.backgroundColor = '#1f2937';
+                statusDiv.style.borderColor = '#10b981';
+                statusDiv.style.color = '#10b981';
+                statusText.textContent = '✅ ' + message;
+            } else {
+                statusDiv.style.backgroundColor = '#1f2937';
+                statusDiv.style.borderColor = '#ef4444';
+                statusDiv.style.color = '#ef4444';
+                statusText.textContent = '❌ ' + message;
+            }
         }
-      }
+
+        // Check if we're being served through the live reload server
+        if (location.protocol === 'file:') {
+            updateConnectionStatus(false, 'Open http://localhost:3000/test.html for live reload');
+        } else {
+            updateConnectionStatus(false, 'Connecting to live reload server...');
+        }
+
+        // Override console.log to capture live reload messages
+        const originalLog = console.log;
+        console.log = function(...args) {
+            const message = args.join(' ');
+            if (message.includes('[LIVE RELOAD] Connected')) {
+                updateConnectionStatus(true, 'Live reload connected - extension changes will auto-refresh this page');
+            } else if (message.includes('[LIVE RELOAD] Could not connect')) {
+                updateConnectionStatus(false, 'Live reload server not running - start with "npm run dev:full"');
+            } else if (message.includes('[LIVE RELOAD] Extension files changed')) {
+                updateConnectionStatus(true, 'Extension files changed - reloading page...');
+            }
+            originalLog.apply(console, args);
+        };
+
+        // Manual WebSocket connection for live reload (fallback)
+        (function() {
+            const ws = new WebSocket('ws://localhost:3001');
+            ws.onmessage = function(event) {
+                if (event.data === 'reload') {
+                    console.log('[LIVE RELOAD] Extension files changed, reloading...');
+                    location.reload();
+                }
+            };
+            ws.onopen = function() {
+                console.log('[LIVE RELOAD] Connected to live reload server');
+            };
+            ws.onerror = function(error) {
+                console.log('[LIVE RELOAD] Could not connect to live reload server', error);
+            };
+            ws.onclose = function() {
+                console.log('[LIVE RELOAD] Disconnected from live reload server');
+            };
+        })();
     </script>
 </body>
 </html>
