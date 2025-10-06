@@ -51,6 +51,12 @@ vi.mock('../../store/useMacroStore', () => ({
     selector({
       addMacro: mockAddMacro,
       updateMacro: mockUpdateMacro,
+      config: {
+        prefixes: ['/'],
+        theme: 'light',
+        useCommitKeys: false,
+        disabledSites: []
+      }
     }),
   ),
 }))
@@ -260,5 +266,457 @@ describe('MacroForm Component', () => {
     // Unmount to trigger cleanup
     unmount()
     expect(mockDestroy).toHaveBeenCalled()
+  })
+
+  // New tests for validation behavior
+  describe('Form Validation', () => {
+    it('disables submit button when command is empty', () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
+      expect(submitButton).toBeDisabled()
+      expect(submitButton).toHaveClass('cursor-not-allowed')
+    })
+
+    it('disables submit button when text is empty (valid command, no content)', () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: '/test' } })
+      
+      const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
+      expect(submitButton).toBeDisabled()
+      expect(submitButton).toHaveClass('cursor-not-allowed')
+    })
+
+    it('keeps submit button disabled when valid command is entered but no text content is added', () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      // Start with empty form - button should be disabled
+      const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
+      expect(submitButton).toBeDisabled()
+      
+      // Add valid command - button should still be disabled (no content)
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: '/validcommand' } })
+      expect(submitButton).toBeDisabled()
+      expect(submitButton).toHaveClass('bg-gray-300', 'cursor-not-allowed')
+      
+      // Verify command input styling is correct (valid command)
+      expect(commandInput).toHaveClass('border-gray-300', 'focus:ring-blue-500')
+      expect(commandInput).not.toHaveClass('border-red-300')
+    })
+
+    it('disables submit button when command has invalid prefix', () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: 'invalidcommand' } })
+      
+      // Simulate some text content
+      const editorDiv = document.querySelector('.prose') as HTMLElement
+      if (editorDiv) {
+        editorDiv.innerHTML = '<p>Some text</p>'
+        if (editableInputCallback) {
+          act(() => {
+            editableInputCallback()
+          })
+        }
+      }
+      
+      const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
+      expect(submitButton).toBeDisabled()
+    })
+
+    it('enables submit button when both command and text are valid', () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: '/test' } })
+      
+      // Simulate some text content
+      const editorDiv = document.querySelector('.prose') as HTMLElement
+      if (editorDiv) {
+        editorDiv.innerHTML = '<p>Some text</p>'
+        if (editableInputCallback) {
+          act(() => {
+            editableInputCallback()
+          })
+        }
+      }
+      
+      const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
+      expect(submitButton).not.toBeDisabled()
+      expect(submitButton).not.toHaveClass('cursor-not-allowed')
+    })
+
+    it('shows validation error for invalid prefix', () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: 'invalidcommand' } })
+      
+      expect(screen.getByText(/Command must start with:/)).toBeInTheDocument()
+    })
+
+    it('shows red border for invalid command input', () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: 'invalidcommand' } })
+      
+      expect(commandInput).toHaveClass('border-red-300', 'focus:ring-red-500')
+    })
+
+    it('shows normal border for valid command input', () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: '/validcommand' } })
+      
+      expect(commandInput).toHaveClass('border-gray-300', 'focus:ring-blue-500')
+      expect(commandInput).not.toHaveClass('border-red-300')
+    })
+
+    it('prevents form submission with validation error message when command is invalid', async () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: 'invalidcommand' } })
+      
+      // Simulate some text content
+      const editorDiv = document.querySelector('.prose') as HTMLElement
+      if (editorDiv) {
+        editorDiv.innerHTML = '<p>Some text</p>'
+        if (editableInputCallback) {
+          act(() => {
+            editableInputCallback()
+          })
+        }
+      }
+      
+      // Force click the disabled button (simulate form submission somehow)
+      const form = commandInput.closest('form')
+      if (form) {
+        fireEvent.submit(form)
+      }
+      
+      // Should show validation error
+      await waitFor(() => {
+        expect(screen.getByText(/Command must start with:/)).toBeInTheDocument()
+      })
+      
+      expect(mockAddMacro).not.toHaveBeenCalled()
+    })
+
+    it('prevents form submission when text is empty', async () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: '/test' } })
+      
+      // Leave text empty
+      const form = commandInput.closest('form')
+      if (form) {
+        fireEvent.submit(form)
+      }
+      
+      await waitFor(() => {
+        expect(screen.getByText('Text content is required')).toBeInTheDocument()
+      })
+      
+      expect(mockAddMacro).not.toHaveBeenCalled()
+    })
+
+    it('updates placeholder text based on first prefix', () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      expect(commandInput).toHaveAttribute('placeholder', 'e.g., /sig')
+    })
+  })
+
+  // New tests for rich text behavior
+  describe('Rich Text Support', () => {
+    it('initializes medium-editor with rich text paste support', async () => {
+      const MediumEditor = await import('medium-editor')
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      await waitFor(() => {
+        expect(MediumEditor.default).toHaveBeenCalledWith(
+          expect.any(HTMLElement),
+          expect.objectContaining({
+            paste: {
+              forcePlainText: false,
+              cleanPastedHTML: true,
+              cleanReplacements: [],
+              cleanAttrs: ['class', 'style', 'dir'],
+              cleanTags: ['meta']
+            }
+          })
+        )
+      })
+    })
+
+    it('handles complex rich content with lists correctly', async () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: '/complex' } })
+      
+      // Simulate complex rich content with lists
+      const editorDiv = document.querySelector('.prose') as HTMLElement
+      if (editorDiv) {
+        editorDiv.innerHTML = '<p><b>La lista reloaded 3</b></p><ul><li>uno</li><li>dos</li><li>tres</li></ul><p>Otra mas</p>'
+        if (editableInputCallback) {
+          act(() => {
+            editableInputCallback()
+          })
+        }
+      }
+      
+      const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
+      fireEvent.click(submitButton)
+
+      await waitFor(() => {
+        expect(mockAddMacro).toHaveBeenCalledWith({
+          id: expect.any(Number),
+          command: '/complex',
+          text: expect.stringMatching(/La lista reloaded 3\s*\n\s*• uno\s*\n\s*• dos\s*\n\s*• tres\s*\n\s*Otra mas/),
+          html: '<p><b>La lista reloaded 3</b></p><ul><li>uno</li><li>dos</li><li>tres</li></ul><p>Otra mas</p>',
+          contentType: 'text/html',
+          is_sensitive: false,
+        })
+      })
+    })
+
+    it('handles ordered lists correctly in HTML-to-text conversion', async () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: '/ordered' } })
+      
+      // Simulate ordered list content
+      const editorDiv = document.querySelector('.prose') as HTMLElement
+      if (editorDiv) {
+        editorDiv.innerHTML = '<ol><li>First item</li><li>Second item</li></ol>'
+        if (editableInputCallback) {
+          act(() => {
+            editableInputCallback()
+          })
+        }
+      }
+      
+      const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
+      fireEvent.click(submitButton)
+
+      await waitFor(() => {
+        expect(mockAddMacro).toHaveBeenCalledWith({
+          id: expect.any(Number),
+          command: '/ordered',
+          text: expect.stringContaining('1. First item\n2. Second item'),
+          html: '<ol><li>First item</li><li>Second item</li></ol>',
+          contentType: 'text/html',
+          is_sensitive: false,
+        })
+      })
+    })
+
+    it('handles line breaks correctly in HTML-to-text conversion', async () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: '/linebreaks' } })
+      
+      // Simulate content with line breaks
+      const editorDiv = document.querySelector('.prose') as HTMLElement
+      if (editorDiv) {
+        editorDiv.innerHTML = '<p>Esto es un parrafo<br>dividido en dos lineas.</p><p>Y esto es otro parrafo aparte.</p>'
+        if (editableInputCallback) {
+          act(() => {
+            editableInputCallback()
+          })
+        }
+      }
+      
+      const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
+      fireEvent.click(submitButton)
+
+      await waitFor(() => {
+        expect(mockAddMacro).toHaveBeenCalledWith({
+          id: expect.any(Number),
+          command: '/linebreaks',
+          text: expect.stringContaining('Esto es un parrafo\ndividido en dos lineas.\n\nY esto es otro parrafo aparte.'),
+          html: '<p>Esto es un parrafo<br>dividido en dos lineas.</p><p>Y esto es otro parrafo aparte.</p>',
+          contentType: 'text/html',
+          is_sensitive: false,
+        })
+      })
+    })
+
+    it('falls back to plain text when HTML parsing fails', async () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: '/fallback' } })
+      
+      // Simulate malformed HTML that might cause parsing issues
+      const editorDiv = document.querySelector('.prose') as HTMLElement
+      if (editorDiv) {
+        editorDiv.innerHTML = 'Just plain text without tags'
+        if (editableInputCallback) {
+          act(() => {
+            editableInputCallback()
+          })
+        }
+      }
+      
+      const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
+      fireEvent.click(submitButton)
+
+      await waitFor(() => {
+        expect(mockAddMacro).toHaveBeenCalledWith({
+          id: expect.any(Number),
+          command: '/fallback',
+          text: 'Just plain text without tags',
+          html: undefined, // No HTML for plain text
+          contentType: 'text/plain',
+          is_sensitive: false,
+        })
+      })
+    })
+
+    it('handles complex content with proper spacing after lists', async () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: '/spacing' } })
+      
+      // Your exact example HTML
+      const complexHTML = '<p><b>La lista reloaded 3</b></p><p>Cuidado <i>pierde</i></p><ul><li>uno</li><li>dos</li><li>tres</li></ul><p>Otra mas</p><ol><li>algo</li><li>mas</li></ol><p>Esto es un parrafo<br>dividido en dos lineas.</p><p>Y esto es otro parrafo aparte.</p>'
+      
+      const editorDiv = document.querySelector('.prose') as HTMLElement
+      if (editorDiv) {
+        editorDiv.innerHTML = complexHTML
+        if (editableInputCallback) {
+          act(() => {
+            editableInputCallback()
+          })
+        }
+      }
+      
+      const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
+      fireEvent.click(submitButton)
+
+      await waitFor(() => {
+        expect(mockAddMacro).toHaveBeenCalledWith({
+          id: expect.any(Number),
+          command: '/spacing',
+          text: expect.stringMatching(/La lista reloaded 3\s*\n\s*Cuidado pierde\s*\n\s*• uno\s*\n\s*• dos\s*\n\s*• tres\s*\n\s*Otra mas\s*\n\s*1\. algo\s*\n\s*2\. mas\s*\n\s*Esto es un parrafo\s*\n\s*dividido en dos lineas\.\s*\n\s*Y esto es otro parrafo aparte/),
+          html: complexHTML,
+          contentType: 'text/html',
+          is_sensitive: false,
+        })
+      })
+    })
+
+    it('handles blockquotes with proper formatting and spacing', async () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: '/quote' } })
+
+      const blockquoteHTML = '<blockquote>This is a quoted text that spans multiple lines.</blockquote><p>Regular paragraph after quote.</p>'
+      
+      const editorDiv = document.querySelector('.prose') as HTMLElement
+      if (editorDiv) {
+        editorDiv.innerHTML = blockquoteHTML
+        if (editableInputCallback) {
+          act(() => {
+            editableInputCallback()
+          })
+        }
+      }
+
+      const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
+      fireEvent.click(submitButton)
+
+      await waitFor(() => {
+        expect(mockAddMacro).toHaveBeenCalledWith({
+          id: expect.any(Number),
+          command: '/quote',
+          text: expect.stringMatching(/> This is a quoted text that spans multiple lines\.\s*\n\s*Regular paragraph after quote\./),
+          html: blockquoteHTML,
+          contentType: 'text/html',
+          is_sensitive: false,
+        })
+      })
+    })
+
+    it('handles nested blockquotes with proper indentation', async () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: '/nested' } })
+
+      const nestedBlockquoteHTML = '<blockquote>Outer quote<blockquote>Inner quote</blockquote>Back to outer</blockquote>'
+      
+      const editorDiv = document.querySelector('.prose') as HTMLElement
+      if (editorDiv) {
+        editorDiv.innerHTML = nestedBlockquoteHTML
+        if (editableInputCallback) {
+          act(() => {
+            editableInputCallback()
+          })
+        }
+      }
+
+      const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
+      fireEvent.click(submitButton)
+
+      await waitFor(() => {
+        expect(mockAddMacro).toHaveBeenCalledWith({
+          id: expect.any(Number),
+          command: '/nested',
+          text: expect.stringMatching(/> Outer quote\s*\n\s*> Inner quote\s*\n\s*> Back to outer/),
+          html: nestedBlockquoteHTML,
+          contentType: 'text/html',
+          is_sensitive: false,
+        })
+      })
+    })
+
+    it('handles blockquotes mixed with other content', async () => {
+      render(<MacroForm editing={null} onDone={mockOnDone} />)
+      
+      const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+      fireEvent.change(commandInput, { target: { value: '/mixed' } })
+
+      const mixedHTML = '<p>Introduction paragraph</p><blockquote>Important quote here</blockquote><ul><li>First item</li><li>Second item</li></ul><blockquote>Another quote</blockquote><p>Final paragraph</p>'
+      
+      const editorDiv = document.querySelector('.prose') as HTMLElement
+      if (editorDiv) {
+        editorDiv.innerHTML = mixedHTML
+        if (editableInputCallback) {
+          act(() => {
+            editableInputCallback()
+          })
+        }
+      }
+
+      const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
+      fireEvent.click(submitButton)
+
+      await waitFor(() => {
+        expect(mockAddMacro).toHaveBeenCalledWith({
+          id: expect.any(Number),
+          command: '/mixed',
+          text: expect.stringMatching(/Introduction paragraph\s*\n\s*> Important quote here\s*\n\s*• First item\s*\n\s*• Second item\s*\n\s*> Another quote\s*\n\s*Final paragraph/),
+          html: mixedHTML,
+          contentType: 'text/html',
+          is_sensitive: false,
+        })
+      })
+    })
   })
 })

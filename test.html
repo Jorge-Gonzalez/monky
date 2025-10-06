@@ -9,10 +9,17 @@
         console.log('[DEV] Mocking chrome.storage API for live reload server.')
 
         const mockMacros = [
-          { id: '1', command: '/sig', text: 'My Signature' },
-          { id: '2', command: '/brb', text: 'Be right back' },
-          { id: '3', command: '/signature', text: 'My Full Signature' },
-        ]
+          { id: '1', command: '/sig', text: 'My Signature', contentType: 'text/plain' },
+          { id: '2', command: '/brb', text: 'Be right back', contentType: 'text/plain' },
+          {
+            id: '3',
+            command: '/nova',
+            contentType: 'text/html',
+            html: '<p><b>A list</b></p><ul><li>one</li><li>two</li></ul><p>And a number:</p><ol><li>first</li></ol>',
+            // This is the correctly formatted plain text that your content script should use.
+            text: 'A list\n\n• one\n• two\n\nAnd a number:\n\n1. first'
+          }
+        ];
 
         // --- DEV CONFIG ---
         // You can change this to test different settings.

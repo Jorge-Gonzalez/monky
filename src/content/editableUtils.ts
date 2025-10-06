@@ -80,13 +80,16 @@ function replaceTextInInput(
   const before = value.slice(0, startPos)
   const after = value.slice(selEnd)
   
-  // For input/textarea, use HTML content if available but convert to plain text
+  // For input/textarea, use the properly formatted text property
+  // The text property should already contain formatted content (with line breaks, bullets, etc.)
   let replacementText = macro.text
-  if (macro.contentType === 'text/html' && macro.html) {
+  
+  // Only extract from HTML if text property is missing or empty
+  if ((!macro.text || macro.text.trim() === '') && macro.contentType === 'text/html' && macro.html) {
     // Create a temporary element to extract plain text from HTML
     const tempDiv = document.createElement('div')
     tempDiv.innerHTML = macro.html
-    replacementText = tempDiv.textContent || tempDiv.innerText || macro.text
+    replacementText = tempDiv.textContent || tempDiv.innerText || ''
   }
   
   el.value = before + replacementText + after

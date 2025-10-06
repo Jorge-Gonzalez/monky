@@ -29,4 +29,11 @@ export const icons = {
   orderedlist: `<svg ${iconProps}>
     <line x1="10" y1="6" x2="21" y2="6"></line><line x1="10" y1="12" x2="21" y2="12"></line><line x1="10" y1="18" x2="21" y2="18"></line><path d="M4 6h1v4"></path><path d="M4 10h2"></path><path d="M6 18H4l-2-2h3"></path>
   </svg>`,
+
+  quote: `<svg ${iconProps}>
+    <path d="M9 10H7a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1z"></path>
+    <path d="M19 10h-2a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1z"></path>
+    <path d="M7 10v-1a3 3 0 0 1 3-3"></path>
+    <path d="M17 10v-1a3 3 0 0 1 3-3"></path>
+  </svg>`,
 };

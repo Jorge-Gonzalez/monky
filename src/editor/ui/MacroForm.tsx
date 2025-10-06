@@ -11,6 +11,7 @@ import { icons } from './icons'
 export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone:()=>void }){
   const addMacro = useMacroStore(s=>s.addMacro)
   const updateMacro = useMacroStore(s=>s.updateMacro)
+  const prefixes = useMacroStore(s => s.config?.prefixes || ['/'])
   const [command, setCommand] = useState('')
   const [text, setText] = useState('')
   const [isSensitive, setSensitive] = useState(false)
@@ -49,11 +50,22 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
               {
                 name: 'orderedlist',
                 contentFA: icons.orderedlist
+              },
+              {
+                name: 'quote',
+                contentFA: icons.quote
               }
             ]
           },
           placeholder: {
             text: 'Enter your macro content...'
+          },
+          paste: {
+            forcePlainText: false,
+            cleanPastedHTML: true,
+            cleanReplacements: [],
+            cleanAttrs: ['class', 'style', 'dir'],
+            cleanTags: ['meta']
           }
         })
 
@@ -65,15 +77,6 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
         })
       } catch (error) {
         console.error('Failed to initialize Medium Editor:', error)
-        // Fallback - make element editable without medium-editor
-        if (editorRef.current) {
-          editorRef.current.contentEditable = 'true'
-          editorRef.current.addEventListener('input', () => {
-            if (editorRef.current) {
-              setText(editorRef.current.innerHTML)
-            }
-          })
-        }
       }
     }
 
@@ -119,6 +122,20 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
     if (error) setError(null)
   }, [command, text])
 
+  // Form validation
+  const isCommandValid = command.trim() !== '' && prefixes.some(prefix => command.startsWith(prefix))
+  const isTextValid = text.trim() !== ''
+  const isFormValid = isCommandValid && isTextValid
+  
+  // Helper function to validate command prefix
+  function validateCommand(cmd: string): string | null {
+    if (!cmd.trim()) return 'Command is required'
+    if (!prefixes.some(prefix => cmd.startsWith(prefix))) {
+      return `Command must start with one of: ${prefixes.join(', ')}`
+    }
+    return null
+  }
+
   // Helper function to detect if content has rich formatting
   function hasRichFormatting(html: string): boolean {
     // Check for rich formatting elements
@@ -130,19 +147,146 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
     
     return hasRichElements || hasLineBreaks
   }
+
+  // Helper function to traverse the DOM and extract text giving semantic meaning to lists and line breaks
+  function traverse(node: Node, text: string, listCounters: number[]): string {
+    if (node.nodeType === Node.TEXT_NODE) {
+      // Append text content, collapsing whitespace
+      let textContent = node.textContent?.replace(/\s+/g, ' ') || '';
+      
+      // If we're inside a blockquote, add prefix to each line
+      const blockquote = (node.parentElement as HTMLElement)?.closest('blockquote');
+      if (blockquote) {
+        textContent = textContent.split('\n').map(line => 
+          line.trim() ? `> ${line}` : line
+        ).join('\n');
+      }
+      
+      text += textContent;
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const element = node as HTMLElement;
+      const tagName = element.tagName.toLowerCase();
+      const isBlock = ['div', 'p', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre'].includes(tagName);
+      const isList = ['ul', 'ol'].includes(tagName);
+      const isListItem = tagName === 'li';
+
+      // Handle line breaks for <br> tags
+      if (tagName === 'br') {
+        text += '\n';
+        return text;
+      }
+
+      // Handle start of lists
+      if (isList) {
+        // Add line break before list starts (if not already at start of line)
+        if (text.length > 0 && !text.endsWith('\n')) {
+          text += '\n';
+        }
+        if (tagName === 'ol') {
+          listCounters.push(1); // Start new ordered list counter
+        }
+      }
+      
+      // Handle blockquotes
+      else if (tagName === 'blockquote') {
+        // Add line break before blockquote starts (if not already at start of line)
+        if (text.length > 0 && !text.endsWith('\n')) {
+          text += '\n';
+        }
+      }
+      
+      // Handle list items
+      else if (isListItem) {
+        // Ensure each list item starts on a new line
+        if (text.length > 0 && !text.endsWith('\n')) {
+          text += '\n';
+        }
+        const parentTag = element.parentElement?.tagName.toLowerCase();
+        if (parentTag === 'ol') {
+          const counter = listCounters[listCounters.length - 1]++;
+          text += `${counter}. `;
+        } else { // Handles 'ul' and standalone 'li'
+          text += '• ';
+        }
+      }
+      
+      // Handle other block elements
+      else if (isBlock) {
+        // Add line break before block element (if not already at start of line)
+        if (text.length > 0 && !text.endsWith('\n')) {
+          text += '\n';
+        }
+      }
+
+      // Process all child nodes
+      for (const child of Array.from(element.childNodes)) {
+        text = traverse(child, text, listCounters);
+      }
+
+      // Handle end of elements
+      if (isList) {
+        if (tagName === 'ol') {
+          listCounters.pop(); // End of ordered list, remove its counter
+        }
+        // Add extra line break after list ends for spacing
+        if (!text.endsWith('\n')) {
+          text += '\n';
+        }
+        // Add another line break for proper spacing after lists
+        if (!text.endsWith('\n\n')) {
+          text += '\n';
+        }
+      } else if (tagName === 'blockquote') {
+        // Add extra line break after blockquote for spacing
+        if (!text.endsWith('\n')) {
+          text += '\n';
+        }
+        // Add another line break for proper spacing after blockquotes
+        if (!text.endsWith('\n\n')) {
+          text += '\n';
+        }
+      } else if (isBlock && !isListItem) {
+        // Add line break after block elements (except list items, which are handled above)
+        if (!text.endsWith('\n')) {
+          text += '\n';
+        }
+        // Add extra line break after paragraphs for better readability
+        if (tagName === 'p' && !text.endsWith('\n\n')) {
+          text += '\n';
+        }
+      }
+    }
+    return text;
+  }
   
   // Helper function to extract plain text from HTML
   function extractPlainText(html: string): string {
-    // Create a temporary element to extract text content
-    const tempDiv = document.createElement('div')
-    tempDiv.innerHTML = html
-    return tempDiv.textContent || tempDiv.innerText || ''
+    const tempEl = document.createElement('div');
+    tempEl.innerHTML = html;
+
+    let text = '';
+    const listCounters: number[] = [];
+
+    text = traverse(tempEl, text, listCounters);
+    // Clean up extra newlines and trim whitespace
+    return text.replace(/\n{3,}/g, '\n\n').trim();
   }
 
   async function onSubmit(e:React.FormEvent){
     e.preventDefault()
     setError(null)
-    if (!command.trim() || !text.trim()) return
+    
+    // Validate form
+    const commandError = validateCommand(command)
+    if (commandError) {
+      setError(commandError)
+      return
+    }
+    
+    if (!text.trim()) {
+      setError('Text content is required')
+      return
+    }
 
     // Smart content type detection
     const hasRichContent = hasRichFormatting(text)
@@ -189,12 +333,21 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
         </label>
         <input
           id="macro-command"
-          className="border rounded p-2 w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500"
+          className={`border rounded p-2 w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:border-transparent ${
+            command && !isCommandValid 
+              ? 'border-red-300 dark:border-red-600 focus:ring-red-500' 
+              : 'border-gray-300 dark:border-gray-700 focus:ring-blue-500'
+          }`}
           value={command}
           onChange={e=>setCommand(e.target.value)}
-          placeholder="/sig"
+          placeholder={`e.g., ${prefixes[0]}sig`}
           maxLength={50}
         />
+        {command && !isCommandValid && (
+          <p className="text-red-500 text-xs mt-1">
+            Command must start with: {prefixes.join(', ')}
+          </p>
+        )}
       </div>
 
       <div>
@@ -232,7 +385,12 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
       <div className="flex gap-2">
         <button 
           type="submit" 
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition-colors duration-200 font-medium"
+          disabled={!isFormValid}
+          className={`px-4 py-2 rounded-md transition-colors duration-200 font-medium ${
+            isFormValid
+              ? 'bg-green-600 hover:bg-green-700 text-white'
+              : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+          }`}
         >
           {editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}
         </button>
