@@ -42,6 +42,9 @@ async function main() {
 
   // Run the initial check to activate or deactivate the detector.
   manageDetectorState()
+  
+  // Set a flag to indicate the content script is loaded (for debugging)
+  ;(window as any).macroExtensionLoaded = true
 }
 
 // Export onExecute function for CRXJS plugin compatibility

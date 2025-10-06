@@ -132,15 +132,349 @@ li.ProseMirror-selectednode:after {
   z-index: 1000;
 }
 
+/* Essential typography styles for medium-editor */
+.medium-editor-element {
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.medium-editor-element p {
+  margin-bottom: 1em;
+}
+
+.medium-editor-element p:last-child {
+  margin-bottom: 0;
+}
+
+.medium-editor-element h1,
+.medium-editor-element h2,
+.medium-editor-element h3,
+.medium-editor-element h4,
+.medium-editor-element h5,
+.medium-editor-element h6 {
+  margin-bottom: 0.5em;
+  margin-top: 1em;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.medium-editor-element h1:first-child,
+.medium-editor-element h2:first-child,
+.medium-editor-element h3:first-child,
+.medium-editor-element h4:first-child,
+.medium-editor-element h5:first-child,
+.medium-editor-element h6:first-child {
+  margin-top: 0;
+}
+
+.medium-editor-element h1 { font-size: 2.25em; }
+.medium-editor-element h2 { font-size: 1.875em; }
+.medium-editor-element h3 { font-size: 1.5em; }
+.medium-editor-element h4 { font-size: 1.25em; }
+.medium-editor-element h5 { font-size: 1.125em; }
+.medium-editor-element h6 { font-size: 1em; }
+
+.medium-editor-element strong,
+.medium-editor-element b {
+  font-weight: bold;
+}
+
+.medium-editor-element em,
+.medium-editor-element i {
+  font-style: italic;
+}
+
+.medium-editor-element u {
+  text-decoration: underline;
+}
+
 /* Ensure lists look good */
 .medium-editor-element ul,
 .medium-editor-element ol {
   padding-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.medium-editor-element ul {
+  list-style-type: disc;
+}
+
+.medium-editor-element ol {
+  list-style-type: decimal;
+}
+
+.medium-editor-element li {
+  margin-bottom: 0.25em;
+  display: list-item;
+}
+
+.medium-editor-element blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: #6b7280;
+}
+
+.dark .medium-editor-element blockquote {
+  border-left-color: #4b5563;
+  color: #9ca3af;
+}
+
+.medium-editor-element a {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+.medium-editor-element a:hover {
+  color: #1d4ed8;
+}
+
+.dark .medium-editor-element a {
+  color: #60a5fa;
+}
+
+.dark .medium-editor-element a:hover {
+  color: #93c5fd;
+}
+
+/* Theme-aware scrollbars for overlays */
+.macro-search-overlay,
+.macro-suggestions,
+.macro-search-results,
+.medium-editor-element {
+  /* Modern scrollbar styling for WebKit browsers */
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.macro-search-overlay::-webkit-scrollbar,
+.macro-suggestions::-webkit-scrollbar,
+.macro-search-results::-webkit-scrollbar,
+.medium-editor-element::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.macro-search-overlay::-webkit-scrollbar-track,
+.macro-suggestions::-webkit-scrollbar-track,
+.macro-search-results::-webkit-scrollbar-track,
+.medium-editor-element::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.macro-search-overlay::-webkit-scrollbar-thumb,
+.macro-suggestions::-webkit-scrollbar-thumb,
+.macro-search-results::-webkit-scrollbar-thumb,
+.medium-editor-element::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+  border: 1px solid #f1f5f9;
+}
+
+.macro-search-overlay::-webkit-scrollbar-thumb:hover,
+.macro-suggestions::-webkit-scrollbar-thumb:hover,
+.macro-search-results::-webkit-scrollbar-thumb:hover,
+.medium-editor-element::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Dark theme scrollbars */
+.dark .macro-search-overlay,
+.dark .macro-suggestions,
+.dark .macro-search-results,
+.dark .medium-editor-element {
+  scrollbar-color: #4b5563 #1f2937;
+}
+
+.dark .macro-search-overlay::-webkit-scrollbar-track,
+.dark .macro-suggestions::-webkit-scrollbar-track,
+.dark .macro-search-results::-webkit-scrollbar-track,
+.dark .medium-editor-element::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+.dark .macro-search-overlay::-webkit-scrollbar-thumb,
+.dark .macro-suggestions::-webkit-scrollbar-thumb,
+.dark .macro-search-results::-webkit-scrollbar-thumb,
+.dark .medium-editor-element::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border: 1px solid #1f2937;
+}
+
+.dark .macro-search-overlay::-webkit-scrollbar-thumb:hover,
+.dark .macro-suggestions::-webkit-scrollbar-thumb:hover,
+.dark .macro-search-results::-webkit-scrollbar-thumb:hover,
+.dark .medium-editor-element::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Dark theme scrollbars via media query - with higher specificity */
+@media (prefers-color-scheme: dark) {
+  #macro-search-overlay .macro-search-results,
+  #macro-suggestions,
+  .macro-search-overlay,
+  .macro-suggestions,
+  .macro-search-results,
+  .medium-editor-element {
+    scrollbar-color: #4b5563 #1f2937 !important;
+  }
+
+  #macro-search-overlay .macro-search-results::-webkit-scrollbar,
+  #macro-suggestions::-webkit-scrollbar,
+  .macro-search-overlay::-webkit-scrollbar,
+  .macro-suggestions::-webkit-scrollbar,
+  .macro-search-results::-webkit-scrollbar,
+  .medium-editor-element::-webkit-scrollbar {
+    width: 8px !important;
+    height: 8px !important;
+  }
+
+  #macro-search-overlay .macro-search-results::-webkit-scrollbar-track,
+  #macro-suggestions::-webkit-scrollbar-track,
+  .macro-search-overlay::-webkit-scrollbar-track,
+  .macro-suggestions::-webkit-scrollbar-track,
+  .macro-search-results::-webkit-scrollbar-track,
+  .medium-editor-element::-webkit-scrollbar-track {
+    background: #1f2937 !important;
+  }
+
+  #macro-search-overlay .macro-search-results::-webkit-scrollbar-thumb,
+  #macro-suggestions::-webkit-scrollbar-thumb,
+  .macro-search-overlay::-webkit-scrollbar-thumb,
+  .macro-suggestions::-webkit-scrollbar-thumb,
+  .macro-search-results::-webkit-scrollbar-thumb,
+  .medium-editor-element::-webkit-scrollbar-thumb {
+    background: #4b5563 !important;
+    border: 1px solid #1f2937 !important;
+  }
+
+  #macro-search-overlay .macro-search-results::-webkit-scrollbar-thumb:hover,
+  #macro-suggestions::-webkit-scrollbar-thumb:hover,
+  .macro-search-overlay::-webkit-scrollbar-thumb:hover,
+  .macro-suggestions::-webkit-scrollbar-thumb:hover,
+  .macro-search-results::-webkit-scrollbar-thumb:hover,
+  .medium-editor-element::-webkit-scrollbar-thumb:hover {
+    background: #6b7280 !important;
+  }
 }
 
 .medium-editor-element li {
   margin: 0.25em 0;
 }
+
+/* Macro Search Overlay Styles */
+.macro-search-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.macro-search-modal {
+  background: white;
+  color: #111827;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 90vw;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow: hidden;
+  margin: 2rem;
+}
+
+.macro-search-input-container {
+  padding: 1.5rem 1.5rem 0;
+}
+
+.macro-search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  background: white;
+  color: #111827;
+}
+
+.macro-search-input:focus {
+  border-color: #3b82f6;
+}
+
+.macro-search-results {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.macro-search-empty {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.macro-search-item {
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s;
+}
+
+.macro-search-item:hover,
+.macro-search-item.selected {
+  background-color: #f8fafc;
+}
+
+.macro-search-item-command {
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  font-weight: 600;
+  color: #3b82f6;
+  margin-bottom: 0.25rem;
+}
+
+.macro-search-item-text {
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.macro-search-footer {
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  font-size: 0.75rem;
+  color: #6b7280;
+  display: flex;
+  justify-content: space-between;
+}
+
+.macro-search-kbd {
+  display: inline-block;
+  padding: 0.125rem 0.375rem;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.75rem;
+  margin: 0 0.25rem;
+}
+
+/* Dark theme styles for macro search overlay - applied via JavaScript inline styles */
+
+/* Explicit light theme styles - applied via JavaScript inline styles */
+
+/* Media query dark theme - replaced by JavaScript inline styles */
 
 /* small helper */
 .popup-container { width: 320px; }

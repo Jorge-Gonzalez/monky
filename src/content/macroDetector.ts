@@ -4,6 +4,7 @@ import { getActiveEditable, getSelection, replaceText } from "./editableUtils"
 import { Macro, CoreState, EditableEl } from "../types"
 import { isPrintableKey, UNSUPPORTED_KEYS } from "./keyUtils"
 import { defaultMacroConfig } from "../config/defaults"
+import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro } from "./systemMacros"
 
 const COMMIT_KEYS = new Set([" ", "Enter", "Tab"])
 const CONFIRM_DELAY_MS = 1850
@@ -83,7 +84,7 @@ function getExact(buffer: string): Macro | null {
 }
 
 /**
- * Performs the text replacement for a matched macro.
+ * Performs the text replacement for a matched macro or handles system macro actions.
  *
  * @param macro The macro to be inserted.
  * @param sel The current selection, used for manual and immediate commits.
@@ -94,6 +95,45 @@ function commitReplace(macro: Macro, sel: { start: number; end: number } | null,
     return
   }
 
+  // Handle system macros specially
+  if (isSystemMacro(macro)) {
+    // For system macros, we need to remove the command text first
+    let commandStart: number
+    let endPos: number
+
+    if (selectionOnSchedule && !isImmediate) {
+      // Delayed auto-commit. The key has been inserted into the DOM.
+      endPos = selectionOnSchedule.end + 1
+      commandStart = endPos - state.buffer.length
+    } else if (sel) {
+      // Manual or Immediate commit. The key has NOT been inserted into the DOM yet.
+      endPos = sel.end
+      const commandLengthInDom = isImmediate ? state.buffer.length - 1 : state.buffer.length
+      commandStart = endPos - commandLengthInDom
+    } else {
+      cancelDetection()
+      return
+    }
+
+    if (commandStart >= 0) {
+      // Remove the command text using the robust replaceText function
+      // Create a dummy macro with empty text to perform deletion
+      const deleteMacro: Macro = {
+        id: 'temp-delete',
+        command: '',
+        text: '', // Empty text means deletion
+        contentType: 'text/plain'
+      }
+      replaceText(activeEl, deleteMacro, commandStart, endPos)
+    }
+
+    // Execute the system macro action
+    handleSystemMacro(macro)
+    cancelDetection()
+    return
+  }
+
+  // Regular macro text replacement
   let commandStart: number
   let endPos: number
 
@@ -237,10 +277,11 @@ export function initMacroDetector(): void {
 
 /**
  * Updates the list of macros the detector works with.
- * @param newMacros The new list of macros.
+ * @param newMacros The new list of user macros.
  */
 export function setDetectorMacros(newMacros: Macro[]): void {
-  macros = newMacros
+  // Combine user macros with system macros
+  macros = [...SYSTEM_MACROS, ...newMacros]
 }
 
 /**

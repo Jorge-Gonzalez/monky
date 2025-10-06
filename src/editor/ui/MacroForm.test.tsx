@@ -108,7 +108,7 @@ describe('MacroForm Component', () => {
     fireEvent.change(commandInput, { target: { value: '/test' } })
     
     // Simulate medium-editor content change
-    const editorDiv = document.querySelector('.prose') as HTMLElement
+    const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
     if (editorDiv) {
       editorDiv.innerHTML = '<p>Test text</p>'
       // Trigger the medium-editor callback that updates the component state
@@ -160,7 +160,7 @@ describe('MacroForm Component', () => {
     fireEvent.change(commandInput, { target: { value: '/new' } })
     
     // Simulate medium-editor content change
-    const editorDiv = document.querySelector('.prose') as HTMLElement
+    const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
     if (editorDiv) {
       editorDiv.innerHTML = '<p>New text</p>'
       // Trigger the medium-editor callback that updates the component state
@@ -203,7 +203,7 @@ describe('MacroForm Component', () => {
     fireEvent.change(commandInput, { target: { value: '/rich' } })
     
     // Simulate rich content with bold text
-    const editorDiv = document.querySelector('.prose') as HTMLElement
+    const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
     if (editorDiv) {
       editorDiv.innerHTML = '<p><strong>Bold text</strong></p>'
       // Trigger the medium-editor callback that updates the component state
@@ -237,7 +237,7 @@ describe('MacroForm Component', () => {
     fireEvent.change(screen.getByLabelText('macroForm.triggerLabel'), { target: { value: '/fail' } })
     
     // Simulate some text content
-    const editorDiv = document.querySelector('.prose') as HTMLElement
+    const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
     if (editorDiv) {
       editorDiv.innerHTML = '<p>This will fail</p>'
       // Trigger the medium-editor callback that updates the component state
@@ -314,7 +314,7 @@ describe('MacroForm Component', () => {
       fireEvent.change(commandInput, { target: { value: 'invalidcommand' } })
       
       // Simulate some text content
-      const editorDiv = document.querySelector('.prose') as HTMLElement
+      const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
       if (editorDiv) {
         editorDiv.innerHTML = '<p>Some text</p>'
         if (editableInputCallback) {
@@ -335,7 +335,7 @@ describe('MacroForm Component', () => {
       fireEvent.change(commandInput, { target: { value: '/test' } })
       
       // Simulate some text content
-      const editorDiv = document.querySelector('.prose') as HTMLElement
+      const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
       if (editorDiv) {
         editorDiv.innerHTML = '<p>Some text</p>'
         if (editableInputCallback) {
@@ -385,7 +385,7 @@ describe('MacroForm Component', () => {
       fireEvent.change(commandInput, { target: { value: 'invalidcommand' } })
       
       // Simulate some text content
-      const editorDiv = document.querySelector('.prose') as HTMLElement
+      const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
       if (editorDiv) {
         editorDiv.innerHTML = '<p>Some text</p>'
         if (editableInputCallback) {
@@ -465,7 +465,7 @@ describe('MacroForm Component', () => {
       fireEvent.change(commandInput, { target: { value: '/complex' } })
       
       // Simulate complex rich content with lists
-      const editorDiv = document.querySelector('.prose') as HTMLElement
+      const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
       if (editorDiv) {
         editorDiv.innerHTML = '<p><b>La lista reloaded 3</b></p><ul><li>uno</li><li>dos</li><li>tres</li></ul><p>Otra mas</p>'
         if (editableInputCallback) {
@@ -497,7 +497,7 @@ describe('MacroForm Component', () => {
       fireEvent.change(commandInput, { target: { value: '/ordered' } })
       
       // Simulate ordered list content
-      const editorDiv = document.querySelector('.prose') as HTMLElement
+      const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
       if (editorDiv) {
         editorDiv.innerHTML = '<ol><li>First item</li><li>Second item</li></ol>'
         if (editableInputCallback) {
@@ -529,7 +529,7 @@ describe('MacroForm Component', () => {
       fireEvent.change(commandInput, { target: { value: '/linebreaks' } })
       
       // Simulate content with line breaks
-      const editorDiv = document.querySelector('.prose') as HTMLElement
+      const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
       if (editorDiv) {
         editorDiv.innerHTML = '<p>Esto es un parrafo<br>dividido en dos lineas.</p><p>Y esto es otro parrafo aparte.</p>'
         if (editableInputCallback) {
@@ -561,7 +561,7 @@ describe('MacroForm Component', () => {
       fireEvent.change(commandInput, { target: { value: '/fallback' } })
       
       // Simulate malformed HTML that might cause parsing issues
-      const editorDiv = document.querySelector('.prose') as HTMLElement
+      const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
       if (editorDiv) {
         editorDiv.innerHTML = 'Just plain text without tags'
         if (editableInputCallback) {
@@ -595,7 +595,7 @@ describe('MacroForm Component', () => {
       // Your exact example HTML
       const complexHTML = '<p><b>La lista reloaded 3</b></p><p>Cuidado <i>pierde</i></p><ul><li>uno</li><li>dos</li><li>tres</li></ul><p>Otra mas</p><ol><li>algo</li><li>mas</li></ol><p>Esto es un parrafo<br>dividido en dos lineas.</p><p>Y esto es otro parrafo aparte.</p>'
       
-      const editorDiv = document.querySelector('.prose') as HTMLElement
+      const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
       if (editorDiv) {
         editorDiv.innerHTML = complexHTML
         if (editableInputCallback) {
@@ -628,7 +628,7 @@ describe('MacroForm Component', () => {
 
       const blockquoteHTML = '<blockquote>This is a quoted text that spans multiple lines.</blockquote><p>Regular paragraph after quote.</p>'
       
-      const editorDiv = document.querySelector('.prose') as HTMLElement
+      const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
       if (editorDiv) {
         editorDiv.innerHTML = blockquoteHTML
         if (editableInputCallback) {
@@ -661,7 +661,7 @@ describe('MacroForm Component', () => {
 
       const nestedBlockquoteHTML = '<blockquote>Outer quote<blockquote>Inner quote</blockquote>Back to outer</blockquote>'
       
-      const editorDiv = document.querySelector('.prose') as HTMLElement
+      const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
       if (editorDiv) {
         editorDiv.innerHTML = nestedBlockquoteHTML
         if (editableInputCallback) {
@@ -694,7 +694,7 @@ describe('MacroForm Component', () => {
 
       const mixedHTML = '<p>Introduction paragraph</p><blockquote>Important quote here</blockquote><ul><li>First item</li><li>Second item</li></ul><blockquote>Another quote</blockquote><p>Final paragraph</p>'
       
-      const editorDiv = document.querySelector('.prose') as HTMLElement
+      const editorDiv = document.querySelector('.medium-editor-element') as HTMLElement
       if (editorDiv) {
         editorDiv.innerHTML = mixedHTML
         if (editableInputCallback) {

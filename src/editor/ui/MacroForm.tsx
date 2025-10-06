@@ -360,7 +360,7 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
           ref={editorRef}
           contentEditable
           suppressContentEditableWarning
-          className="border rounded-md bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 overflow-auto min-h-[150px] p-3 prose prose-sm max-w-none dark:prose-invert medium-editor-element"
+          className="border rounded-md bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 overflow-auto min-h-[150px] p-3 medium-editor-element"
           style={{ outline: 'none', minHeight: '150px' }}
           data-placeholder="Enter your macro content..."
         />

@@ -5,9 +5,25 @@ export function getActiveEditable(target: EventTarget | null): EditableEl {
     if (target.type === "password") return null
     return target
   }
-  if (target instanceof HTMLElement && (target.isContentEditable || target.contentEditable === "true")) {
-    return target
+  
+  // For contenteditable elements, we need to traverse up the DOM tree
+  // because the target might be a child element (text node, <b>, <i>, etc.)
+  let element: HTMLElement | null = null;
+  
+  if (target instanceof HTMLElement) {
+    element = target;
+  } else if (target instanceof Node && target.parentElement) {
+    // Handle text nodes and other non-HTMLElement nodes
+    element = target.parentElement;
   }
+  
+  while (element) {
+    if (element.isContentEditable || element.contentEditable === "true") {
+      return element;
+    }
+    element = element.parentElement;
+  }
+  
   return null
 }
 

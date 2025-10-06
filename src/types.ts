@@ -6,6 +6,8 @@ export type Macro = {
   is_sensitive?: boolean
   html?: string
   contentType?: 'text/plain' | 'text/html'
+  isSystemMacro?: boolean
+  description?: string
 }
 
 export type ThemeMode = 'light' | 'dark' | 'system'

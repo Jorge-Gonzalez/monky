@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macro Extension Test Page - Content Script Enabled</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2em;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1, h2 {
+            color: #333;
+        }
+        
+        .status-indicator {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            border: 2px solid #2196f3;
+            color: #1565c0;
+            font-weight: bold;
+        }
+        
+        .test-section {
+            margin: 2em 0;
+            padding: 1.5em;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        label {
+            display: block;
+            margin-top: 1.5em;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input[type="text"], textarea, div[contenteditable] {
+            width: 90%;
+            max-width: 600px;
+            padding: 12px;
+            margin-top: 0.5em;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            line-height: 1.5;
+            font-family: inherit;
+        }
+        
+        input[type="text"]:focus, textarea:focus, div[contenteditable]:focus {
+            outline: none;
+            border-color: #2196f3;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+        
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        
+        div[contenteditable] {
+            background-color: #fafafa;
+            min-height: 120px;
+            line-height: 1.6;
+        }
+        
+        .instructions {
+            background-color: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 20px 0;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #e65100;
+        }
+        
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d32f2f;
+        }
+        
+        .shortcut-list {
+            background-color: #f1f8e9;
+            border: 1px solid #8bc34a;
+            border-radius: 6px;
+            padding: 16px;
+            margin: 20px 0;
+        }
+        
+        .shortcut-list h3 {
+            margin-top: 0;
+            color: #33691e;
+        }
+        
+        ul {
+            margin: 0;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a;
+                color: #e0e0e0;
+            }
+            
+            h1, h2, h3 {
+                color: #e0e0e0;
+            }
+            
+            .test-section {
+                background-color: #2a2a2a;
+            }
+            
+            input[type="text"], textarea, div[contenteditable] {
+                background-color: #333;
+                color: #e0e0e0;
+                border-color: #555;
+            }
+            
+            div[contenteditable] {
+                background-color: #333;
+            }
+            
+            .instructions {
+                background-color: #2a2a2a;
+                border-color: #ff9800;
+            }
+            
+            .shortcut-list {
+                background-color: #2a2a2a;
+                border-color: #8bc34a;
+            }
+            
+            code {
+                background-color: #404040;
+                color: #ffcdd2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Macro Extension Test Page</h1>
+    
+    <div class="status-indicator">
+        📋 This page will have the macro extension content script injected when opened in your browser.
+    </div>
+
+    <div class="instructions">
+        <h3>🚀 How to Test</h3>
+        <ol>
+            <li><strong>Load the extension:</strong> Go to <code>chrome://extensions/</code> and load the <code>dist</code> folder as an unpacked extension</li>
+            <li><strong>Open this file:</strong> Open this HTML file directly in your browser (file:// URL)</li>
+            <li><strong>Create some macros:</strong> Use the extension popup or editor to create test macros</li>
+            <li><strong>Test the features:</strong> Try the shortcuts and macro expansion in the fields below</li>
+        </ol>
+    </div>
+
+    <div class="shortcut-list">
+        <h3>⌨️ Built-in Keyboard Shortcuts</h3>
+        <ul>
+            <li><code>/? </code> - Open search overlay (works in any input field)</li>
+            <li><code>/help</code> - Show keyboard shortcuts help</li>
+            <li><code>/macros</code> - List all available macros</li>
+            <li><code>Escape</code> - Close overlays</li>
+            <li><code>↑↓</code> - Navigate search results</li>
+            <li><code>Enter</code> - Select macro from search</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>📝 Test Input Fields</h2>
+        <p>Try the macro functionality in each of these different input types:</p>
+
+        <label for="simple-input">Simple Text Input</label>
+        <input type="text" id="simple-input" placeholder="Try typing /? or your custom macros here...">
+
+        <label for="textarea-input">Text Area</label>
+        <textarea id="textarea-input" placeholder="Multi-line text area - try /? or your macros here..."></textarea>
+
+        <label for="contenteditable-plain">Content Editable Div (Plain)</label>
+        <div id="contenteditable-plain" contenteditable="true" data-placeholder="Click here and try /? or your macros..."></div>
+
+        <label for="contenteditable-rich">Content Editable Div (Rich Text)</label>
+        <div id="contenteditable-rich" contenteditable="true">
+            <p>This is some <b>bold text</b>. You can try /? here or after this <i>italic text</i>. Even inside a list:</p>
+            <ul>
+                <li>Item 1 - try /? here</li>
+                <li>Item 2 - or try your macros here: </li>
+            </ul>
+            <p>And some more text to finish. Try /? anywhere in this rich content!</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Test Scenarios</h2>
+        <p>Test these specific scenarios to verify the fixes:</p>
+        
+        <h3>1. Empty ContentEditable</h3>
+        <p>Click in the plain contenteditable div above (when empty) and type <code>/? </code></p>
+        <p><strong>Expected:</strong> Search overlay should appear</p>
+        
+        <h3>2. Rich ContentEditable</h3>
+        <p>Click anywhere in the rich contenteditable div (in bold text, italic text, list items, etc.) and type <code>/? </code></p>
+        <p><strong>Expected:</strong> Search overlay should appear regardless of where you click</p>
+        
+        <h3>3. Macro Insertion</h3>
+        <p>After search overlay opens, select a macro and verify:</p>
+        <ul>
+            <li>Focus returns to the original input field</li>
+            <li>Macro content is inserted at the correct cursor position</li>
+            <li>For rich content, formatting is preserved</li>
+        </ul>
+        
+        <h3>4. Regular Macro Expansion</h3>
+        <p>Type your regular macro commands (e.g., <code>/sig</code>) in any field</p>
+        <p><strong>Expected:</strong> Should work normally in all input types</p>
+    </div>
+
+    <script>
+        // Add placeholder behavior for contenteditable
+        document.addEventListener('DOMContentLoaded', function() {
+            const plainEditable = document.getElementById('contenteditable-plain');
+            
+            function updatePlaceholder() {
+                if (plainEditable.textContent.trim() === '') {
+                    plainEditable.style.color = '#999';
+                    plainEditable.textContent = 'Click here and try /? or your macros...';
+                } else if (plainEditable.textContent === 'Click here and try /? or your macros...') {
+                    plainEditable.style.color = '';
+                    plainEditable.textContent = '';
+                }
+            }
+            
+            plainEditable.addEventListener('focus', function() {
+                if (this.textContent === 'Click here and try /? or your macros...') {
+                    this.style.color = '';
+                    this.textContent = '';
+                }
+            });
+            
+            plainEditable.addEventListener('blur', updatePlaceholder);
+            
+            // Initialize placeholder
+            updatePlaceholder();
+        });
+
+        // Console logging for debugging
+        console.log('🔧 Macro Extension Test Page Loaded');
+        console.log('📍 Current URL:', window.location.href);
+        console.log('🔗 Protocol:', window.location.protocol);
+        
+        // Check if content script is loaded (this will be available after extension injection)
+        setTimeout(() => {
+            if (window.macroExtensionLoaded) {
+                console.log('✅ Macro extension content script detected');
+            } else {
+                console.log('❌ Macro extension content script not detected - make sure extension is loaded');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
