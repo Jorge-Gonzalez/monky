@@ -78,161 +78,142 @@ class KeyboardOverlayManager {
       .macro-search-backdrop {
         position: fixed;
         inset: 0;
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: var(--shadow-color);
         z-index: 10000;
         display: flex;
         align-items: center;
         justify-content: center;
       }
 
-      .macro-search-modal {
-        background-color: white;
+      #macro-search-overlay .macro-search-modal {
+        background-color: var(--bg-primary);
         border-radius: 8px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        border: 1px solid #e5e7eb;
+        box-shadow: 0 25px 50px -12px var(--shadow-color);
+        border: 1px solid var(--border-primary);
         min-width: 400px;
         max-width: 500px;
         max-height: 80vh;
         overflow: hidden;
       }
 
-      .macro-search-input-container {
+      #macro-search-overlay .macro-search-input-container {
         padding: 16px;
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid var(--border-primary);
       }
 
-      .macro-search-input {
+      #macro-search-overlay .macro-search-input {
         width: 100%;
         padding: 8px 12px;
-        border: 1px solid #d1d5db;
+        border: 1px solid var(--border-input);
         border-radius: 6px;
         font-size: 14px;
+        background-color: var(--bg-input);
+        color: var(--text-primary);
         outline: none;
         box-sizing: border-box;
         transition: border-color 0.15s;
       }
 
-      .macro-search-input:focus {
-        border-color: #3b82f6;
-        ring: 2px solid rgba(59, 130, 246, 0.2);
+      #macro-search-overlay .macro-search-input:focus {
+        border-color: var(--text-accent);
+        box-shadow: 0 0 0 2px var(--bg-tertiary);
       }
 
-      .macro-search-results {
+      #macro-search-overlay .macro-search-results {
         max-height: 300px;
         overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
       }
 
-      .macro-search-empty {
+      #macro-search-overlay .macro-search-results::-webkit-scrollbar {
+        width: 8px !important;
+        height: 8px !important;
+      }
+      #macro-search-overlay .macro-search-results::-webkit-scrollbar-track {
+        background: var(--scrollbar-track) !important;
+        border-radius: 4px !important;
+      }
+      #macro-search-overlay .macro-search-results::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb) !important;
+        border-radius: 4px !important;
+        border: 1px solid var(--scrollbar-track) !important;
+      }
+      #macro-search-overlay .macro-search-results::-webkit-scrollbar-thumb:hover {
+        background: var(--scrollbar-thumb-hover) !important;
+      }
+
+      #macro-search-overlay .macro-search-empty {
         padding: 16px;
-        color: #6b7280;
+        color: var(--text-secondary);
         text-align: center;
         font-size: 14px;
       }
 
-      .macro-search-item {
+      #macro-search-overlay .macro-search-item {
         padding: 12px;
-        border-bottom: 1px solid #f3f4f6;
+        border-bottom: 1px solid var(--border-secondary);
+        color: var(--text-primary);
         cursor: pointer;
         transition: background-color 0.15s;
       }
 
       .macro-search-item:hover {
-        background-color: #f9fafb;
+        background-color: var(--bg-secondary);
       }
 
-      .macro-search-item.selected {
-        background-color: #eff6ff;
+      #macro-search-overlay .macro-search-item.selected {
+        background-color: var(--bg-tertiary);
       }
 
-      .macro-search-item-command {
+      #macro-search-overlay .macro-search-item-command {
         font-weight: 500;
-        color: #111827;
+        color: var(--text-accent);
         font-size: 14px;
       }
 
-      .macro-search-item-text {
+      #macro-search-overlay .macro-search-item-text {
         font-size: 12px;
-        color: #6b7280;
+        color: var(--text-secondary);
         margin-top: 4px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
 
-      .macro-search-footer {
+      #macro-search-overlay .macro-search-footer {
         padding: 8px;
-        border-top: 1px solid #e5e7eb;
+        border-top: 1px solid var(--border-primary);
         font-size: 12px;
-        color: #6b7280;
+        color: var(--text-secondary);
         display: flex;
         justify-content: space-between;
+        background-color: var(--bg-primary);
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
       }
 
-      .macro-search-kbd {
+      #macro-search-overlay .macro-search-kbd {
         padding: 2px 4px;
-        background-color: #f3f4f6;
         border-radius: 3px;
         font-family: monospace;
+        background-color: var(--kbd-bg);
+        border: 1px solid var(--kbd-border);
+        color: var(--text-primary);
         margin-left: 4px;
       }
 
-      .macro-search-kbd:first-child {
+      #macro-search-overlay .macro-search-kbd:first-child {
         margin-left: 0;
       }
 
       /* Dark mode support */
       @media (prefers-color-scheme: dark) {
-        .macro-search-modal {
-          background-color: #1f2937;
-          border-color: #374151;
-        }
-
-        .macro-search-input-container {
-          border-bottom-color: #374151;
-        }
-
-        .macro-search-input {
-          background-color: #374151;
-          border-color: #4b5563;
-          color: #f9fafb;
-        }
-
-        .macro-search-input:focus {
-          border-color: #3b82f6;
-        }
-
-        .macro-search-item {
-          border-bottom-color: #374151;
-        }
-
-        .macro-search-item:hover {
-          background-color: #374151;
-        }
-
-        .macro-search-item.selected {
-          background-color: rgba(59, 130, 246, 0.2);
-        }
-
-        .macro-search-item-command {
-          color: #f9fafb;
-        }
-
-        .macro-search-item-text {
-          color: #9ca3af;
-        }
-
-        .macro-search-footer {
-          border-top-color: #374151;
-          color: #9ca3af;
-        }
-
-        .macro-search-kbd {
-          background-color: #374151;
-        }
-
-        .macro-search-empty {
-          color: #9ca3af;
-        }
+        /*
+          Most dark mode styles are now handled by the CSS variables set in MacroSearchOverlay.tsx.
+          The 'dark' class on the modal root element triggers the variable changes.
+          This media query is kept for potential future use or for styles not covered by variables.
+        */
       }
     `;
     document.head.appendChild(style);

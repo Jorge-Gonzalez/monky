@@ -3,12 +3,19 @@ import fuzzysort from 'fuzzysort';
 import { Macro } from '../types';
 import { useMacroStore } from '../store/useMacroStore';
 import { isDarkTheme } from '../lib/themeUtils';
+import { lightThemeColors, darkThemeColors } from './theme';
 
 interface MacroSearchOverlayProps {
   isVisible: boolean;
   onClose: () => void;
   onSelectMacro: (macro: Macro) => void;
   position: { x: number; y: number };
+}
+
+function applyColors(element: HTMLElement, colors: Record<string, string>) {
+  for (const [key, value] of Object.entries(colors)) {
+    element.style.setProperty(key, value);
+  }
 }
 
 export function MacroSearchOverlay({ isVisible, onClose, onSelectMacro, position }: MacroSearchOverlayProps) {
@@ -61,149 +68,25 @@ export function MacroSearchOverlay({ isVisible, onClose, onSelectMacro, position
     if (modalRef.current && resultsRef.current && isVisible) {
       const element = resultsRef.current;
       const modalElement = modalRef.current;
+      const colors = isDarkTheme(theme) ? darkThemeColors : lightThemeColors;
       const isDark = isDarkTheme(theme);
-      
-      // Apply theme to the modal container via inline styles for maximum specificity
-      if (isDark) {
-        modalElement.classList.add('dark');
-        modalElement.classList.remove('light');
-        // Apply dark theme inline styles
-        modalElement.style.backgroundColor = '#1f2937';
-        modalElement.style.color = '#f3f4f6';
-        
-        // Apply dark theme to input
-        const inputElement = modalElement.querySelector('.macro-search-input') as HTMLInputElement;
-        if (inputElement) {
-          inputElement.style.backgroundColor = '#374151';
-          inputElement.style.borderColor = '#4b5563';
-          inputElement.style.color = '#f3f4f6';
-        }
-        
-        // Apply dark theme to items
-        const items = modalElement.querySelectorAll('.macro-search-item');
-        items.forEach(item => {
-          (item as HTMLElement).style.borderBottomColor = '#374151';
-        });
-        
-        // Apply dark theme to commands and text
-        const commands = modalElement.querySelectorAll('.macro-search-item-command');
-        commands.forEach(cmd => {
-          (cmd as HTMLElement).style.color = '#60a5fa';
-        });
-        
-        const texts = modalElement.querySelectorAll('.macro-search-item-text');
-        texts.forEach(text => {
-          (text as HTMLElement).style.color = '#9ca3af';
-        });
-        
-        // Apply dark theme to kbd elements
-        const kbds = modalElement.querySelectorAll('.macro-search-kbd');
-        kbds.forEach(kbd => {
-          (kbd as HTMLElement).style.backgroundColor = '#4b5563';
-          (kbd as HTMLElement).style.borderColor = '#6b7280';
-          (kbd as HTMLElement).style.color = '#f3f4f6';
-        });
-        
-      } else {
-        modalElement.classList.add('light');
-        modalElement.classList.remove('dark');
-        // Apply light theme inline styles
-        modalElement.style.backgroundColor = 'white';
-        modalElement.style.color = '#111827';
-        
-        // Apply light theme to input
-        const inputElement = modalElement.querySelector('.macro-search-input') as HTMLInputElement;
-        if (inputElement) {
-          inputElement.style.backgroundColor = 'white';
-          inputElement.style.borderColor = '#e5e7eb';
-          inputElement.style.color = '#111827';
-        }
-        
-        // Apply light theme to items
-        const items = modalElement.querySelectorAll('.macro-search-item');
-        items.forEach(item => {
-          (item as HTMLElement).style.borderBottomColor = '#f3f4f6';
-        });
-        
-        // Apply light theme to commands and text
-        const commands = modalElement.querySelectorAll('.macro-search-item-command');
-        commands.forEach(cmd => {
-          (cmd as HTMLElement).style.color = '#3b82f6';
-        });
-        
-        const texts = modalElement.querySelectorAll('.macro-search-item-text');
-        texts.forEach(text => {
-          (text as HTMLElement).style.color = '#6b7280';
-        });
-        
-        // Apply light theme to kbd elements
-        const kbds = modalElement.querySelectorAll('.macro-search-kbd');
-        kbds.forEach(kbd => {
-          (kbd as HTMLElement).style.backgroundColor = 'white';
-          (kbd as HTMLElement).style.borderColor = '#d1d5db';
-          (kbd as HTMLElement).style.color = '#111827';
-        });
-      }
-      
-      // Apply scrollbar styles
-      const styleId = 'macro-search-scrollbar-styles';
-      let styleElement = document.getElementById(styleId) as HTMLStyleElement;
-      
-      if (!styleElement) {
-        styleElement = document.createElement('style');
-        styleElement.id = styleId;
-        document.head.appendChild(styleElement);
-      }
-      
-      if (isDark) {
-        // Dark theme scrollbar styles
-        element.style.scrollbarWidth = 'thin';
-        element.style.scrollbarColor = '#4b5563 #1f2937';
-        
-        styleElement.textContent = `
-          .macro-search-results::-webkit-scrollbar {
-            width: 8px !important;
-            height: 8px !important;
-          }
-          .macro-search-results::-webkit-scrollbar-track {
-            background: #1f2937 !important;
-            border-radius: 4px !important;
-          }
-          .macro-search-results::-webkit-scrollbar-thumb {
-            background: #4b5563 !important;
-            border-radius: 4px !important;
-            border: 1px solid #1f2937 !important;
-          }
-          .macro-search-results::-webkit-scrollbar-thumb:hover {
-            background: #6b7280 !important;
-          }
-        `;
-      } else {
-        // Light theme scrollbar styles
-        element.style.scrollbarWidth = 'thin';
-        element.style.scrollbarColor = '#cbd5e1 #f1f5f9';
-        
-        styleElement.textContent = `
-          .macro-search-results::-webkit-scrollbar {
-            width: 8px !important;
-            height: 8px !important;
-          }
-          .macro-search-results::-webkit-scrollbar-track {
-            background: #f1f5f9 !important;
-            border-radius: 4px !important;
-          }
-          .macro-search-results::-webkit-scrollbar-thumb {
-            background: #cbd5e1 !important;
-            border-radius: 4px !important;
-            border: 1px solid #f1f5f9 !important;
-          }
-          .macro-search-results::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8 !important;
-          }
-        `;
-      }
+
+      // Apply CSS variables to the modal root
+      applyColors(modalElement, colors);
+      modalElement.classList.toggle('dark', isDark);
+      modalElement.classList.toggle('light', !isDark);
     }
   }, [isVisible, theme]);
+
+  // Scroll selected item into view
+  useEffect(() => {
+    if (resultsRef.current) {
+      const selectedItem = resultsRef.current.querySelector('.macro-search-item.selected');
+      if (selectedItem) {
+        selectedItem.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+    }
+  }, [selectedIndex]);
 
   // Handle keyboard navigation
   useEffect(() => {
@@ -277,7 +160,7 @@ export function MacroSearchOverlay({ isVisible, onClose, onSelectMacro, position
             filteredMacros.map((macro, index) => (
               <div
                 key={macro.id}
-                className={`macro-search-item ${index === selectedIndex ? 'selected' : ''}`}
+                className={`macro-search-item ${index === selectedIndex ? 'selected' : ''}`} // The 'selected' class is styled in the main injected CSS
                 onClick={() => {
                   onSelectMacro(macro);
                   onClose();
@@ -300,7 +183,7 @@ export function MacroSearchOverlay({ isVisible, onClose, onSelectMacro, position
         <div className="macro-search-footer">
           <div>
             <kbd className="macro-search-kbd">↑↓</kbd> navigate
-            <kbd className="macro-search-kbd">↵</kbd> select
+            <kbd className="macro-search-kbd">&#8239;↵&#8239;</kbd> select
           </div>
           <div>
             <kbd className="macro-search-kbd">Esc</kbd> close
