@@ -84,6 +84,44 @@ export function getSelection(el: EditableEl): { start: number; end: number } | n
 }
 
 /**
+ * Gets the screen coordinates of the current cursor/caret position.
+ * @returns An object with x and y coordinates, or null if not determinable.
+ */
+export function getCursorCoordinates(): { x: number; y: number } | null {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return null;
+
+  const range = sel.getRangeAt(0).cloneRange();
+  // Collapse the range to the start, which is the caret position
+  range.collapse(true);
+
+  try {
+    const rects = range.getClientRects();
+    if (rects.length > 0) {
+      const rect = rects[0];
+      return { x: rect.left, y: rect.bottom }; // Use bottom to position popup below the line
+    }
+  } catch (error) {
+    // In test environments (JSDOM), getClientRects might not be properly implemented
+    // Fall through to the activeElement fallback
+  }
+
+  // Fallback for elements where getClientRects() might fail for a collapsed range
+  const activeElement = document.activeElement as HTMLElement;
+  if (activeElement) {
+    try {
+      const rect = activeElement.getBoundingClientRect();
+      return { x: rect.left, y: rect.bottom };
+    } catch (error) {
+      // In test environments, return a default position
+      return { x: 0, y: 0 };
+    }
+  }
+
+  return null;
+}
+
+/**
  * Replaces text and sets the cursor in an <input> or <textarea> element.
  */
 function replaceTextInInput(

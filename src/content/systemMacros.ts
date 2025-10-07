@@ -1,5 +1,5 @@
 import { Macro } from "../types"
-import { keyboardOverlayManager } from './keyboardOverlayManager';
+import { searchOverlayManager } from "./overlays";
 
 /**
  * System macros for keyboard shortcuts and special functionality.
@@ -70,7 +70,7 @@ function showSearchOverlay() {
   console.log('🔍 Search overlay triggered!')
   
   // Show the actual search overlay
-  keyboardOverlayManager.showSearchOverlay();
+  searchOverlayManager.show();
 }
 
 function showKeyboardHelp() {

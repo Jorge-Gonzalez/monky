@@ -1,10 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { MacroSearchOverlay } from './MacroSearchOverlay';
+import { MacroSearchOverlay } from './MacroSearchOverlay/ui/MacroSearchOverlay';
 import { MacroSuggestions } from './MacroSuggestions';
 import { Macro, EditableEl } from '../types';
 import { getActiveEditable, getSelection, replaceText } from './editableUtils';
 
+/**
+ * Manages the lifecycle and rendering of React-based UI overlays.
+ * This class is a singleton responsible for creating and managing the DOM containers
+ * for React components like the search overlay and suggestions popup.
+ *
+ * It is designed to be controlled by other parts of the content script, such as
+ * `macroDetector.ts` or `systemMacros.ts`, which decide when to show or hide
+ * the UI based on user input.
+ */
 class KeyboardOverlayManager {
   private searchOverlayRoot: ReactDOM.Root | null = null;
   private suggestionsRoot: ReactDOM.Root | null = null;
@@ -227,6 +236,14 @@ class KeyboardOverlayManager {
     this.currentPosition = { x, y };
   }
 
+  /**
+   * Displays the full-screen macro search overlay.
+   * This is typically triggered by a system macro (e.g., '/?').
+   * It saves the currently focused element and its cursor position so that
+   * focus can be restored after the overlay is closed.
+   * @param x The x-coordinate for positioning (optional, currently unused for centering).
+   * @param y The y-coordinate for positioning (optional, currently unused for centering).
+   */
   showSearchOverlay(x?: number, y?: number) {
     // Position is now handled by flexbox centering in the component
     // Keep this for compatibility but it's not used for centering
@@ -266,6 +283,13 @@ class KeyboardOverlayManager {
     this.restoreFocus();
   }
 
+  /**
+   * Displays the small suggestions popup near the cursor.
+   * NOTE: This is intended for a future feature and is not currently called by the macro detector.
+   * @param buffer The current text buffer to filter suggestions.
+   * @param x The x-coordinate for positioning the popup.
+   * @param y The y-coordinate for positioning the popup.
+   */
   showSuggestions(buffer: string, x?: number, y?: number) {
     if (x !== undefined && y !== undefined) {
       this.currentPosition = { x, y };

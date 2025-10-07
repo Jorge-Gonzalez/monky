@@ -15,10 +15,22 @@ vi.mock("./macroStorage", async () => {
   }
 })
 
+vi.mock('./overlays', () => ({
+  suggestionsOverlayManager: {
+    isVisible: vi.fn().mockReturnValue(true), // Simulate overlay is visible when typing
+    selectCurrent: vi.fn(),
+    show: vi.fn(),
+    hide: vi.fn(),
+    navigate: vi.fn(),
+  },
+  searchOverlayManager: {},
+}))
+
+import { suggestionsOverlayManager } from './overlays'
 import { useMacroStore } from "../store/useMacroStore"
 // Import the content script logic after mocks are set up.
 // The `init()` call inside index.ts will use the mocked `loadMacros`.
-await import("./main")
+import { init, cleanupMacroSystem } from './main'
 
 describe("Content Script: Macro Replacement", () => {
   // Helper to simulate typing a character
@@ -57,15 +69,26 @@ describe("Content Script: Macro Replacement", () => {
     }
   }
 
-  beforeEach(() => {
-    vi.useFakeTimers()
+  beforeEach(async () => {
+    vi.useFakeTimers();
+    await init()
     // Set default prefixes for the store
     useMacroStore.setState(s => ({ config: { ...s.config, prefixes: ["/"] } }))
+
+    // Spy on createElement to add a mock for scrollIntoView.
+    // This is needed because JSDOM doesn't implement it.
+    const originalCreateElement = document.createElement.bind(document);
+    vi.spyOn(document, 'createElement').mockImplementation((tag, options) => {
+      const element = originalCreateElement(tag, options);
+      element.scrollIntoView = vi.fn();
+      return element
+    })
   })
 
   afterEach(() => {
     vi.useRealTimers()
     vi.clearAllMocks()
+    cleanupMacroSystem()
   })
 
   describe("Manual Mode (useCommitKeys: true)", () => {
@@ -122,6 +145,9 @@ describe("Content Script: Macro Replacement", () => {
 
         typeIn(div, "g")
         expect(div.textContent).toBe("Hello /sig")
+
+        // When overlay is visible, selectCurrent should return true to commit
+        vi.mocked(suggestionsOverlayManager.selectCurrent).mockReturnValue(true)
         typeIn(div, " ") // commit with space
         expect(div.textContent).toBe("Hello My Signature")
       })

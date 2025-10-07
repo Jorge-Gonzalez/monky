@@ -1,10 +1,12 @@
 import { useMacroStore } from "../store/useMacroStore"
 import { updateStateOnKey, isExact } from "./detector-core"
-import { getActiveEditable, getSelection, replaceText } from "./editableUtils"
+import { getActiveEditable, getSelection, replaceText, getCursorCoordinates } from "./editableUtils"
 import { Macro, CoreState, EditableEl } from "../types"
 import { isPrintableKey, UNSUPPORTED_KEYS } from "./keyUtils"
 import { defaultMacroConfig } from "../config/defaults"
 import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro } from "./systemMacros"
+import { searchOverlayManager, suggestionsOverlayManager } from "./overlays"
+
 
 const COMMIT_KEYS = new Set([" ", "Enter", "Tab"])
 const CONFIRM_DELAY_MS = 1850
@@ -204,6 +206,9 @@ export function onKeyDown(e: KeyboardEvent) {
   const editable = getActiveEditable(e.target)
   if (!editable) {
     if (state.active) cancelDetection()
+    if (suggestionsOverlayManager.isVisible()) {
+      suggestionsOverlayManager.hide()
+    }
     return
   }
   activeEl = editable
@@ -211,6 +216,7 @@ export function onKeyDown(e: KeyboardEvent) {
   const sel = getSelection(editable)
   if (!sel || sel.start !== sel.end) {
     if (state.active) cancelDetection()
+    suggestionsOverlayManager.hide()
     return
   }
 
@@ -218,12 +224,33 @@ export function onKeyDown(e: KeyboardEvent) {
 
   // --- Manual Mode: Check for commit keys ---
   if (config.useCommitKeys && state.buffer && COMMIT_KEYS.has(e.key)) {
-    e.preventDefault()
-    if (isExact(state, macros)) {
-      commitReplace(getExact(state.buffer)!, sel, false)
+    if (suggestionsOverlayManager.isVisible()) {
+      // If overlay is visible, let it handle the commit.
+      // This applies to Enter, Tab, and now Space.
+      e.preventDefault()
+      if (suggestionsOverlayManager.selectCurrent()) {
+        // Macro was selected and committed by the manager.
+        // The manager will hide the overlay.
+      } else {
+        // No suggestion was selected, so just cancel detection.
+        cancelDetection()
+        suggestionsOverlayManager.hide()
+      }
+      return
     } else {
-      cancelDetection()
+      e.preventDefault()
+      if (isExact(state, macros)) {
+        commitReplace(getExact(state.buffer)!, sel, false)
+      } else {
+        cancelDetection()
+      }
     }
+    return
+  }
+
+  if (suggestionsOverlayManager.isVisible() && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+    e.preventDefault()
+    suggestionsOverlayManager.navigate(e.key === 'ArrowUp' ? 'up' : 'down')
     return
   }
 
@@ -232,29 +259,46 @@ export function onKeyDown(e: KeyboardEvent) {
     clearTimer() // "Pause" auto-commit
     state = updateStateOnKey(state, e.key, macros, config.prefixes)
     // Do not schedule a new timer, wait for the next printable key to "resume".
+    if (state.active) {
+      suggestionsOverlayManager.show(state.buffer)
+    } else {
+      suggestionsOverlayManager.hide()
+    }
     return
   }
 
   // --- Printable characters: Update buffer and maybe commit ---
-  if (isPrintableKey(e) && !COMMIT_KEYS.has(e.key)) {
+  if (isPrintableKey(e)) {
     state = updateStateOnKey(state, e.key, macros, config.prefixes)
 
-    if (!config.useCommitKeys) {
-      if (state.active) {
+    if (state.active) {
+      // Show suggestions regardless of mode if detection is active
+      const coords = getCursorCoordinates()
+      if (coords) {
+        suggestionsOverlayManager.show(state.buffer, coords.x, coords.y)
+      }
+      // Handle automatic commit mode
+      if (!config.useCommitKeys) {
         const committedImmediately = scheduleConfirmIfExact(sel)
         if (committedImmediately) {
           e.preventDefault()
         }
-      } else {
-        if (prevStateActive) clearTimer()
       }
+    } else if (prevStateActive) {
+      // Detection just became inactive
+      clearTimer()
+      suggestionsOverlayManager.hide()
     }
     return
   }
 
   // --- Other keys: Cancel detection ---
-  if (UNSUPPORTED_KEYS.includes(e.key)) {
+  if (UNSUPPORTED_KEYS.includes(e.key) || e.key === 'Escape') {
     cancelDetection()
+    if (suggestionsOverlayManager.isVisible()) {
+      e.preventDefault() // Prevent Escape from closing other things
+      suggestionsOverlayManager.hide()
+    }
   }
 }
 

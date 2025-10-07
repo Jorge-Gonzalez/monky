@@ -10,18 +10,8 @@ describe('System Macros', () => {
     consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
     consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
-    // Mock DOM methods
-    vi.spyOn(document, 'createElement').mockImplementation((tag) => {
-      const element: any = {
-        id: '',
-        style: { cssText: '' },
-        textContent: '',
-        appendChild: vi.fn(),
-        remove: vi.fn(),
-      }
-      return element
-    })
-
+    // Mock scrollIntoView as it's not implemented in JSDOM
+    window.Element.prototype.scrollIntoView = vi.fn();
     vi.spyOn(document.body, 'appendChild').mockImplementation(() => ({} as any))
     vi.spyOn(document.head, 'appendChild').mockImplementation(() => ({} as any))
     vi.spyOn(document, 'getElementById').mockImplementation(() => null)
