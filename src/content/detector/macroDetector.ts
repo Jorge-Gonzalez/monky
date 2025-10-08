@@ -191,13 +191,13 @@ export function createMacroDetector(actions: DetectorActions) {
         // If not handled by the overlay (e.g., it's not visible),
         // proceed with the default commit logic.
         if (isExact(state, macros)) {
-        // If it's an exact match, we always handle it and prevent default.
-        e.preventDefault()
-        commitReplace(getExact(state.buffer)!, sel, false)
-      }
-      // If not handled and not an exact match, we do nothing and let the
-      // key (e.g., a space) be typed normally. The detector will cancel
-      // itself on the next non-matching key.
+          // If it's an exact match, we always handle it and prevent default.
+          e.preventDefault()
+          commitReplace(getExact(state.buffer)!, sel, false)
+        }
+        // If not handled and not an exact match, we do nothing and let the
+        // key (e.g., a space) be typed normally. The detector will cancel
+        // itself on the next non-matching key.
       }
       return
     }

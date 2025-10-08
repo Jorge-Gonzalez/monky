@@ -72,6 +72,7 @@ export function MacroSearchOverlay({
       <div
         ref={modalRef}
         className="macro-search-modal"
+        role="dialog"
         onClick={e => e.stopPropagation()}
       >
         <MacroSearchInput
