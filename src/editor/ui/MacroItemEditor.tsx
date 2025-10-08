@@ -1,12 +1,14 @@
 import React from 'react'
-import { deleteMacroLocalFirst } from '../../lib/sync'
-import { useMacroStore } from '../../store/useMacroStore'
+import { EditorManager } from '../managers/createEditorManager'
 import { t } from '../../lib/i18n'
 
 
-export default function MacroItemEditor({ macro, onEdit }:{ macro:any, onEdit:(m:any)=>void }){
-  const removeLocal = useMacroStore(s=>s.deleteMacro)
-  async function onDelete(){ removeLocal(macro.id); await deleteMacroLocalFirst(macro.id) }
+export default function MacroItemEditor({ macro, onEdit, manager }:{ macro:any, onEdit:(m:any)=>void, manager: EditorManager }){
+  async function onDelete(){
+    if (manager) {
+      await manager.deleteMacro(macro.id);
+    }
+  }
 
   return (
     <div className="border rounded p-3 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-sm">

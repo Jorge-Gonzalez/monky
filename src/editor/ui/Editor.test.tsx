@@ -30,20 +30,13 @@ vi.mock('../../lib/i18n', () => ({
   t: (key: string) => key,
 }))
 
-// Mock the new useEditor hook
-const mockHandleEdit = vi.fn()
-const mockHandleDone = vi.fn()
-let mockEditingMacro: any = null
+// Mock the new useEditorManager hook
+let mockManager: any;
 
-vi.mock('../hooks/useEditor', () => ({
-  useEditor: () => ({
-    editingMacro: mockEditingMacro,
-    handleEdit: mockHandleEdit,
-    handleDone: mockHandleDone,
-  }),
+vi.mock('../managers/useEditorManager', () => ({
+  // This mock now returns a stable 'mockManager' instance.
+  useEditorManager: () => mockManager,
 }))
-
-const mockMacros = [{ id: 1, command: '/brb', text: 'Be right back' }]
 
 vi.mock('../../store/useMacroStore', () => {
   const mockMacros = [
@@ -52,22 +45,60 @@ vi.mock('../../store/useMacroStore', () => {
   ]
   const mockState = {
     macros: mockMacros,
-    config: {},
+    config: { language: 'es' }, // Add default config
     addMacro: vi.fn(),
     updateMacro: vi.fn(),
     deleteMacro: vi.fn(),
+    setLanguage: vi.fn(),
   }
+  
+  // Mock store with the methods that zustand provides
+  const mockSubscribe = vi.fn()
+  const mockGetState = vi.fn(() => mockState)
+  
   const useMacroStore = vi.fn().mockImplementation(selector => selector(mockState))
+  useMacroStore.subscribe = mockSubscribe
+  useMacroStore.getState = mockGetState
+  
   return { useMacroStore }
 })
 
 describe('Editor Component', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    let subscribers: any[] = [];
+    vi.clearAllMocks();
+
+    // Create a fresh, stable mock manager for each test.
+    const state = {
+      editingMacro: null,
+      macros: [
+        { id: 1, command: '/brb', text: 'Be right back' },
+        { id: 2, command: ';omw', text: 'On my way' },
+      ],
+      settings: { language: 'es' },
+      error: null,
+    };
+
+    mockManager = {
+      setEditingMacro: vi.fn((macro) => { 
+        state.editingMacro = macro;
+        subscribers.forEach(cb => cb({ ...state })); // Notify subscribers with a new object
+      }),
+      resetForm: vi.fn(() => { 
+        state.editingMacro = null; 
+        subscribers.forEach(cb => cb({ ...state })); // Notify subscribers with a new object
+      }),
+      updateSettings: vi.fn(),
+      getState: vi.fn(() => state),
+      subscribe: vi.fn((callback) => {
+        subscribers.push(callback);
+        // Return an unsubscribe function
+        return () => { subscribers = subscribers.filter(sub => sub !== callback); };
+      }),
+    };
   })
 
   it('renders all main sections', () => {
-    mockEditingMacro = null
     render(<Editor />)
     expect(screen.getByText('editor.title')).toBeInTheDocument()
     expect(screen.getByText('MacroForm')).toBeInTheDocument()
@@ -75,30 +106,36 @@ describe('Editor Component', () => {
     expect(screen.getByText('MacroListEditor')).toBeInTheDocument()
   })
 
-  it('handles the editing state between MacroListEditor and MacroForm', async () => {
-    mockEditingMacro = null
-    const { rerender } = render(<Editor />)
-    // Initially, nothing is being edited
+  it('updates the form when an item is selected for editing and resets it when done', async () => {
+    // 1. Initial Render
+    render(<Editor />)
+
+    // Assert initial state: The mock MacroForm should display 'null' as there is no macro being edited.
     expect(screen.getByTestId('editing-state')).toHaveTextContent('null')
 
-    // Simulate clicking the "Edit" button in the mocked MacroListEditor
+    // 2. User clicks "Edit"
     const editButton = screen.getByRole('button', { name: 'Edit' })
-    act(() => {
+    // Use `act` to ensure all state updates from the click event are processed
+    await act(async () => {
       fireEvent.click(editButton)
     })
 
-    // The component's onEdit prop should call the hook's handleEdit
-    expect(mockHandleEdit).toHaveBeenCalledWith(mockMacros[0])
+    // Assert that the manager was called correctly
+    expect(mockManager.setEditingMacro).toHaveBeenCalledWith(mockManager.getState().macros[0])
 
-    // Check that the editing state is passed to MacroForm
-    // To simulate this, we'll re-render with the new state
-    mockEditingMacro = mockMacros[0]
-    rerender(<Editor />)
-    expect(screen.getByTestId('editing-state')).toHaveTextContent(JSON.stringify(mockMacros[0]))
+    // Assert UI update: The mock MacroForm should now display the JSON of the macro being edited.
+    expect(screen.getByTestId('editing-state')).toHaveTextContent(JSON.stringify(mockManager.getState().editingMacro))
 
-    // Simulate the form being "done"
+    // 3. User clicks "Done"
     const doneButton = screen.getByRole('button', { name: 'Done' })
-    fireEvent.click(doneButton)
-    expect(mockHandleDone).toHaveBeenCalled()
+    await act(async () => {
+      fireEvent.click(doneButton)
+    })
+
+    // Assert that the manager was called to reset the form
+    expect(mockManager.resetForm).toHaveBeenCalled()
+
+    // Assert UI update: The mock MacroForm should have reverted to displaying 'null'.
+    expect(screen.getByTestId('editing-state')).toHaveTextContent('null')
   })
 })

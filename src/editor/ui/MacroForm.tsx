@@ -1,24 +1,22 @@
 import React, { useEffect, useState, useRef } from 'react'
 import * as MediumEditor from 'medium-editor'
 import { useMacroStore } from '../../store/useMacroStore'
-import { createMacroLocalFirst, updateMacroLocalFirst } from '../../lib/sync'
 import { getErrorMessage } from '../../lib/errors'
 import { t } from '../../lib/i18n'
-import 'medium-editor/dist/css/medium-editor.css'
-import 'medium-editor/dist/css/themes/default.css'
+import { EditorManager } from '../managers/createEditorManager'
 import { icons } from './icons'
+import { Macro } from '../../types'
 
-export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone:()=>void }){
-  const addMacro = useMacroStore(s=>s.addMacro)
-  const updateMacro = useMacroStore(s=>s.updateMacro)
+export default function MacroForm({ editing, onDone, manager }:{ editing: Macro | null, onDone:()=>void, manager: EditorManager }){
   const prefixes = useMacroStore(s => s.config?.prefixes || ['/'])
-  const [command, setCommand] = useState('')
-  const [text, setText] = useState('')
-  const [isSensitive, setSensitive] = useState(false)
+  const [command, setCommand] = useState(editing?.command || '')
+  const [text, setText] = useState(editing?.html || editing?.text || '')
+  const [isSensitive, setSensitive] = useState(!!editing?.is_sensitive)
   const [error, setError] = useState<string | null>(null)
   
   const editorRef = useRef<HTMLDivElement>(null)
   const mediumEditor = useRef<any>(null)
+  const effectiveManager = manager
 
   // Initialize Medium Editor
   useEffect(() => {
@@ -301,17 +299,14 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
     }
 
     let result
-    if (editing){
-      result = updateMacro(editing.id, macroData)
+    if (editing && editing.id){
+      result = await effectiveManager.updateMacro(editing.id, macroData)
       if (result.success) {
-        await updateMacroLocalFirst({ id: editing.id, ...macroData })
         onDone()
       }
     } else {
-      const newMacro = { id: Date.now(), ...macroData }
-      result = addMacro(newMacro)
+      result = await effectiveManager.createMacro(macroData)
       if (result.success) {
-        await createMacroLocalFirst(newMacro)
         // Reset form for next entry
         setCommand('')
         setText('')
@@ -321,7 +316,7 @@ export default function MacroForm({ editing, onDone }:{ editing:any|null, onDone
       }
     }
     if (!result.success && result.error) {
-      setError(getErrorMessage(result.error, command))
+      setError(result.error)
     }
   }
 

@@ -165,14 +165,6 @@ type TranslationKeys = FlattenKeys<typeof translations['en']>;
 
 let currentLanguage: Language = useMacroStore.getState()?.config?.language ?? 'es'
 
-// Subscribe to the store to automatically update the language
-useMacroStore.subscribe(state => {
-  const newLang = state.config.language
-  if (newLang && newLang !== currentLanguage) {
-    setLanguage(newLang)
-  }
-})
-
 /**
  * Sets the application's current language.
  * @param lang The language to set.
@@ -181,6 +173,24 @@ function setLanguage(lang: Language) {
   if (translations[lang]) {
     currentLanguage = lang;
   }
+}
+
+let isInitialized = false;
+
+/**
+ * Initializes the i18n service, subscribing to language changes in the store.
+ * This should be called once at the application's entry point.
+ */
+export function initializeI18n() {
+  if (isInitialized) return;
+  isInitialized = true;
+
+  useMacroStore.subscribe(state => {
+    const newLang = state.config.language;
+    if (newLang && newLang !== currentLanguage) {
+      setLanguage(newLang);
+    }
+  });
 }
 
 /**

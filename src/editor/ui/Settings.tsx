@@ -1,15 +1,19 @@
 import React from 'react'
-import { useMacroStore, type MacroConfig } from '../../store/useMacroStore'
+import { EditorManager } from '../managers/createEditorManager'
+import { type MacroConfig } from '../../store/useMacroStore'
 import { t } from '../../lib/i18n'
 
-export default function Settings() {
-  const { language, setLanguage } = useMacroStore(state => ({
-    language: state.config.language ?? 'es',
-    setLanguage: state.setLanguage,
-  }))
+interface SettingsProps {
+  manager: EditorManager;
+  language: MacroConfig['language'];
+}
+
+export default function Settings({ manager }: SettingsProps) {
+  const { language } = manager.getState().settings;
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLanguage(e.target.value as MacroConfig['language'])
+    const newLanguage = e.target.value as MacroConfig['language'];
+    manager.updateSettings({ language: newLanguage });
   }
 
   return (
@@ -19,7 +23,7 @@ export default function Settings() {
         <label htmlFor="language-select" className="text-sm font-medium text-gray-700 dark:text-gray-300">
           {t('settings.language')}
         </label>
-        <select id="language-select" value={language} onChange={handleLanguageChange} className="border rounded p-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500">
+        <select id="language-select" value={language ?? 'es'} onChange={handleLanguageChange} className="border rounded p-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500">
           <option value="en">English</option>
           <option value="es">Español</option>
         </select>

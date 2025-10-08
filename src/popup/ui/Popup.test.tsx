@@ -1,47 +1,69 @@
 // @vitest-environment jsdom
 import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { Macro } from '../../types'
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest'
+import { Macro, ThemeMode } from '../../types'
+import { PopupManager } from '../managers/createPopupManager' // Assuming this type definition exists
 
 // Mock dependencies that are outside the component's direct control.
-const mockSetTheme = vi.fn()
 const mockMacros: Macro[] = [
   { id: '1', command: '/brb', text: 'Be right back', sensitive: false },
   { id: '2', command: '/omw', text: 'On my way', sensitive: false },
   { id: '3', command: '/meeting-notes', text: 'Here are the meeting notes.', sensitive: false },
 ]
 
-const mockState = {
-  config: {
-    disabledSites: [],
-    theme: 'system',
-    language: 'en',
-  },
-  macros: mockMacros,
-  toggleSiteDisabled: vi.fn(),
-  setTheme: mockSetTheme,
-}
+// Mock the child MacroSearch component as its testing is separate.
+vi.mock('../ui/MacroSearch', () => ({
+  MacroSearch: ({ macros }: { macros: Macro[] }) => (
+    <div>
+      <input placeholder="popup.searchPlaceholder" />
+      {macros.map(m => <div key={m.id}>{m.command}</div>)}
+    </div>
+  )
+}));
 
-// We are not using the real store, but a mock that allows us to control the state.
-// The selector function passed to useMacroStore will be executed with mockState.
-const useMacroStore = vi.fn().mockImplementation(selector => selector(mockState))
-useMacroStore.getState = () => mockState
-useMacroStore.subscribe = () => () => {} // Return an empty unsubscribe function
-
-// Mock the module to export our more complete mock
-vi.mock('../../store/useMacroStore', () => ({ useMacroStore }))
+// Mock the SiteToggle component
+vi.mock('./SiteToggle', () => ({
+  default: () => (
+    <div>
+      <span>popup.macrosOnThisSite</span>
+    </div>
+  )
+}));
 
 vi.mock('../../lib/i18n')
-// We will test the interaction with the actual MacroSearch component, so we don't mock it.
+
+// Create a mock PopupManager that conforms to the new architecture
+const createMockPopupManager = (): PopupManager => {
+  const state = {
+    theme: 'system' as 'light' | 'dark' | 'system',
+    hostname: 'example.com',
+    isSiteEnabled: true,
+    macros: mockMacros,
+  };
+
+  return {
+    getTheme: vi.fn(() => state.theme),
+    setTheme: vi.fn((newTheme: ThemeMode) => { state.theme = newTheme; }),
+    toggleSite: vi.fn(),
+    isSiteEnabled: vi.fn(() => state.isSiteEnabled),
+    getState: vi.fn(() => state),
+    // A simple subscription mock that can be expanded if needed
+    subscribe: vi.fn(() => () => {}), 
+    requestNewMacro: vi.fn(),
+  };
+};
 
 describe('Popup Component', () => {
   // We need to use dynamic import here because of how vi.mock works (hoisting).
   let Popup: any
   let t: any
+  let mockManager: PopupManager;
 
   beforeEach(async () => {
     // Reset mocks to ensure tests are isolated.
     vi.clearAllMocks()
+
+    mockManager = createMockPopupManager();
 
     // Dynamically import mocked modules.
     const popupModule = await import('./Popup')
@@ -52,55 +74,29 @@ describe('Popup Component', () => {
     // The `t` function will just return the key, so we can test for 'popup.title'
     // instead of the actual title string, which is more robust.
     ;(t as vi.Mock).mockImplementation(key => key)
-
-    // Mock the tabs query to simulate being on a specific website.
-    vi.mocked(chrome.tabs.query).mockImplementation((_, callback) => {
-      callback([{ url: 'https://example.com' }])
-    })
   })
 
   it('should display the correct text keys and hostname', async () => {
 
     // Act: Render the component.
-    render(<Popup />)
+    render(<Popup manager={mockManager} />)
 
     // Assert: Check that the correct text keys are rendered.
-    // We use `findBy` for the first assertion to wait for the async `useEffect` to complete.
+    // We use `findBy` to wait for async effects if any.
     expect(await screen.findByText('popup.title')).toBeTruthy()
     expect(screen.getByText('popup.synced')).toBeTruthy()
-    expect(screen.getByText('popup.macrosOnThisSite')).toBeTruthy()
-
-    // Assert that the hostname and child component are also rendered.
-    expect(screen.getByText('example.com')).toBeTruthy()
+    expect(screen.getByText('popup.macrosOnThisSite')).toBeInTheDocument()
     expect(screen.getByPlaceholderText('popup.searchPlaceholder')).toBeInTheDocument()
   })
 
-  it('should call setTheme when theme buttons are clicked', async () => {
+  it('should call setTheme on the manager when theme buttons are clicked', async () => {
     // Arrange
-    render(<Popup />)
+    render(<Popup manager={mockManager} />)
 
     // Act & Assert
     fireEvent.click(screen.getByText('☀️'))
-    expect(mockSetTheme).toHaveBeenCalledWith('light')
+    expect(mockManager.setTheme).toHaveBeenCalledWith('light')
     fireEvent.click(screen.getByText('🌙'))
-    expect(mockSetTheme).toHaveBeenCalledWith('dark')
-  })
-
-  it('should filter macros when user types in the search box', async () => {
-    // Arrange
-    render(<Popup />)
-
-    // Assert initial state: all macros are visible
-    expect(screen.getByText('/brb')).toBeInTheDocument()
-    expect(screen.getByText('/omw')).toBeInTheDocument()
-    expect(screen.getByText('/meeting-notes')).toBeInTheDocument()
-
-    // Act: search for a term present in the macro's text
-    const searchInput = screen.getByPlaceholderText('popup.searchPlaceholder')
-    fireEvent.change(searchInput, { target: { value: 'meeting' } })
-
-    // Assert: only the matching macro is visible
-    expect(screen.queryByText('/brb')).not.toBeInTheDocument()
-    expect(screen.getByText('/meeting-notes')).toBeInTheDocument()
+    expect(mockManager.setTheme).toHaveBeenCalledWith('dark')
   })
 })

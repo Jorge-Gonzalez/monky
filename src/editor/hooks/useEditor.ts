@@ -1,12 +1,12 @@
-import { useState } from 'react'
+// This hook is deprecated. Use useEditorManager instead.
+// This file is kept for backward compatibility during migration.
 import { Macro } from '../../types'
 
 export function useEditor() {
-  const [editingMacro, setEditingMacro] = useState<Macro | null>(null)
-
-  const handleEdit = (macro: Macro) => setEditingMacro(macro)
-  const handleDone = () => setEditingMacro(null)
-
-  return { editingMacro, handleEdit, handleDone }
+  return { 
+    editingMacro: null, 
+    handleEdit: (macro: Macro) => {}, 
+    handleDone: () => {} 
+  }
 }
 
