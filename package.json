@@ -11,9 +11,9 @@
     "test:verbose": "vitest run --reporter=verbose",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write .",
-    "serve": "node live-reload-server.js",
+    "serve": "node scripts/live-reload-server.js",
     "dev:full": "concurrently --kill-others-on-fail --names 'VITE,RELOAD' --prefix-colors 'blue,green' 'npm run dev' 'npm run serve'",
-    "dev:stop": "./stop-dev.sh",
+    "dev:stop": "./scripts/stop-dev.sh",
     "dev:restart": "npm run dev:stop && npm run dev:full",
     "dev:status": "lsof -i:5173,3001 || echo 'No development servers running'"
   },

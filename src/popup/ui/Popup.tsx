@@ -1,40 +1,26 @@
-import React from 'react';
-import { PopupManager } from '../managers/createPopupManager';
+import React, { useState, useEffect } from 'react';
 import { t } from '../../lib/i18n';
 import { MacroSearch } from './MacroSearch';
 import SiteToggle from './SiteToggle';
+import { usePopupManager } from '../managers/usePopupManager';
+import ThemeSwitcher from './ThemeSwitcher';
 
-interface PopupProps {
-  manager: PopupManager;
-}
+export default function Popup() {
+  const manager = usePopupManager();
+  const [state, setState] = useState(manager.getState());
 
-export default function Popup({ manager }: PopupProps) { // Note: This component is not fully refactored yet.
-  const [state, setState] = React.useState(manager.getState());
-
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = manager.subscribe(setState);
     return unsubscribe;
   }, [manager]);
 
-  const handleThemeChange = (theme: 'light' | 'dark' | 'system') => {
-    manager.setTheme(theme);
-  };
-
   return (
-    <div className="popup">
-      <div className="popup-header">
-        <h1>{t('popup.title')}</h1>
-        <div className="popup-sync-status">
-          <span>{t('popup.synced')}</span>
-        </div>
-        <div className="popup-theme-buttons">
-          <button onClick={() => handleThemeChange('light')}>☀️</button>
-          <button onClick={() => handleThemeChange('dark')}>🌙</button>
-        </div>
+    <div className="p-2 w-80 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <div className="flex justify-between items-center mb-2">
+        <h1 className="text-lg font-bold">{t('popup.title')}</h1>
+        <ThemeSwitcher />
       </div>
-      
       <SiteToggle />
-      
       <MacroSearch macros={state.macros} />
     </div>
   );

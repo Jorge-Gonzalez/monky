@@ -1,33 +1,30 @@
 // @vitest-environment jsdom
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { useMacroStore } from '../../store/useMacroStore'
-import { PrefixEditor } from './PrefixEditor'
+import PrefixEditor from './PrefixEditor'
+import { OptionsManager } from '../managers/createOptionsManager'
 
 // Mock the i18n function
 vi.mock('../../lib/i18n', () => ({
   t: (key: string) => key,
 }))
 
-// Mock the store
-const mockSetPrefixes = vi.fn()
-
-vi.mock('../../store/useMacroStore', () => ({
-  useMacroStore: vi.fn(),
-}))
+// Helper to create a mock manager
+const createMockManager = (): OptionsManager => ({
+  setPrefixes: vi.fn(),
+  // Add other manager methods as mocks if needed for other tests
+  setUseCommitKeys: vi.fn(),
+  getState: vi.fn(() => ({ prefixes: [], useCommitKeys: false })),
+  subscribe: vi.fn(() => () => {}),
+})
 
 describe('PrefixEditor Component', () => {
+  let mockManager: OptionsManager
+
   beforeEach(() => {
     vi.useFakeTimers()
     vi.clearAllMocks()
-    // Set up the mock for each test to ensure isolation
-    ;(useMacroStore as vi.Mock).mockImplementation(selector => {
-      const state = {
-        config: { prefixes: ['/', '#'] },
-        setPrefixes: mockSetPrefixes,
-      }
-      return selector(state)
-    })
+    mockManager = createMockManager()
   })
 
   afterEach(() => {
@@ -35,13 +32,16 @@ describe('PrefixEditor Component', () => {
   })
 
   it('renders without crashing', () => {
-    render(<PrefixEditor />)
+    const initialPrefixes = ['/', '#']
+    render(<PrefixEditor manager={mockManager} prefixes={initialPrefixes} />)
     expect(screen.getByText('options.prefixEditor.title')).toBeInTheDocument()
     expect(screen.getByText('options.prefixEditor.description')).toBeInTheDocument()
   })
 
   it('renders buttons and sets the correct aria-checked state', () => {
-    render(<PrefixEditor />)
+    const initialPrefixes = ['/', '#']
+    render(<PrefixEditor manager={mockManager} prefixes={initialPrefixes} />)
+
     const slashButton = screen.getByRole('switch', { name: '/' })
     const hashButton = screen.getByRole('switch', { name: '#' })
     const semicolonButton = screen.getByRole('switch', { name: ';' })
@@ -51,58 +51,54 @@ describe('PrefixEditor Component', () => {
     expect(semicolonButton).toHaveAttribute('aria-checked', 'false')
   })
 
-  it('calls setPrefixes with the new array when a prefix is added', () => {
-    render(<PrefixEditor />)
+  it('calls manager.setPrefixes with the new array when a prefix is added', () => {
+    const initialPrefixes = ['/', '#']
+    render(<PrefixEditor manager={mockManager} prefixes={initialPrefixes} />)
+
     const semicolonButton = screen.getByRole('switch', { name: ';' })
     fireEvent.click(semicolonButton)
-    expect(mockSetPrefixes).toHaveBeenCalledWith(['/', '#', ';'])
+    expect(mockManager.setPrefixes).toHaveBeenCalledWith(['/', '#', ';'])
   })
-  it('calls setPrefixes with the new array when a prefix is removed', () => {
-    render(<PrefixEditor />)
+
+  it('calls manager.setPrefixes with the new array when a prefix is removed', () => {
+    const initialPrefixes = ['/', '#']
+    render(<PrefixEditor manager={mockManager} prefixes={initialPrefixes} />)
+
     const slashButton = screen.getByRole('switch', { name: '/' })
     fireEvent.click(slashButton)
-    expect(mockSetPrefixes).toHaveBeenCalledWith(['#'])
+    expect(mockManager.setPrefixes).toHaveBeenCalledWith(['#'])
   })
 
   it('does not allow removing the last prefix', () => {
-    // Arrange: Override the mock to have only one prefix
-    ;(useMacroStore as vi.Mock).mockImplementation(selector => {
-      const state = {
-        config: { prefixes: ['/'] },
-        setPrefixes: mockSetPrefixes,
-      }
-      return selector(state)
-    })
+    // Arrange
+    const initialPrefixes = ['/']
+    render(<PrefixEditor manager={mockManager} prefixes={initialPrefixes} />)
 
-    render(<PrefixEditor />)
     const slashButton = screen.getByRole('switch', { name: '/' })
     expect(slashButton).toHaveAttribute('aria-checked', 'true')
 
     // Act: Try to uncheck the last prefix
     fireEvent.click(slashButton)
-    expect(mockSetPrefixes).not.toHaveBeenCalled()
+
+    // Assert
+    expect(mockManager.setPrefixes).not.toHaveBeenCalled()
   })
 
   it('provides visual feedback when trying to remove the last prefix', () => {
-    // Arrange: Override the mock to have only one prefix
-    ;(useMacroStore as vi.Mock).mockImplementation(selector => {
-      const state = {
-        config: { prefixes: ['/'] },
-        setPrefixes: mockSetPrefixes,
-      }
-      return selector(state)
-    })
-
-    render(<PrefixEditor />)
+    // Arrange
+    const initialPrefixes = ['/']
+    render(<PrefixEditor manager={mockManager} prefixes={initialPrefixes} />)
     const slashButton = screen.getByRole('switch', { name: '/' })
 
     // Act: Try to uncheck the last prefix
     fireEvent.click(slashButton)
 
-    // Assert: The error class is applied
+    // Assert: The shake animation class is applied
     expect(slashButton).toHaveClass('animate-shake')
+
+    // Assert: The class is removed after the animation duration
     act(() => {
-      vi.advanceTimersByTime(500)
+      vi.advanceTimersByTime(400) // Matches timeout in component
     })
     expect(slashButton).not.toHaveClass('animate-shake')
   })

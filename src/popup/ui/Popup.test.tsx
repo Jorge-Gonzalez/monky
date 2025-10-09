@@ -6,9 +6,9 @@ import { PopupManager } from '../managers/createPopupManager' // Assuming this t
 
 // Mock dependencies that are outside the component's direct control.
 const mockMacros: Macro[] = [
-  { id: '1', command: '/brb', text: 'Be right back', sensitive: false },
-  { id: '2', command: '/omw', text: 'On my way', sensitive: false },
-  { id: '3', command: '/meeting-notes', text: 'Here are the meeting notes.', sensitive: false },
+  { id: '1', command: '/brb', text: 'Be right back', is_sensitive: false },
+  { id: '2', command: '/omw', text: 'On my way', is_sensitive: false },
+  { id: '3', command: '/meeting-notes', text: 'Here are the meeting notes.', is_sensitive: false },
 ]
 
 // Mock the child MacroSearch component as its testing is separate.
@@ -30,7 +30,18 @@ vi.mock('./SiteToggle', () => ({
   )
 }));
 
-vi.mock('../../lib/i18n')
+// Mock the ThemeSwitcher component
+vi.mock('./ThemeSwitcher', () => ({
+  default: () => <div data-testid="theme-switcher-mock" />,
+}));
+
+vi.mock('../../lib/i18n');
+
+// Mock the manager hook, which is the new way the component gets its manager.
+vi.mock('../managers/usePopupManager', () => ({
+  // We'll define the implementation inside the test suite
+  usePopupManager: vi.fn(),
+}));
 
 // Create a mock PopupManager that conforms to the new architecture
 const createMockPopupManager = (): PopupManager => {
@@ -58,11 +69,15 @@ describe('Popup Component', () => {
   let Popup: any
   let t: any
   let mockManager: PopupManager;
+  let usePopupManagerMock: Mock;
 
   beforeEach(async () => {
     // Reset mocks to ensure tests are isolated.
     vi.clearAllMocks()
 
+    // Set up the mock for the hook
+    const usePopupManagerModule = await import('../managers/usePopupManager');
+    (usePopupManagerModule.usePopupManager as Mock).mockReturnValue(createMockPopupManager());
     mockManager = createMockPopupManager();
 
     // Dynamically import mocked modules.
@@ -78,25 +93,17 @@ describe('Popup Component', () => {
 
   it('should display the correct text keys and hostname', async () => {
 
-    // Act: Render the component.
-    render(<Popup manager={mockManager} />)
+    // Arrange: Mock the hook to return our manager
+    const { usePopupManager } = await import('../managers/usePopupManager');
+    (usePopupManager as Mock).mockReturnValue(mockManager);
+
+    // Act: Render the component. It will use the mocked hook.
+    render(<Popup />)
 
     // Assert: Check that the correct text keys are rendered.
-    // We use `findBy` to wait for async effects if any.
     expect(await screen.findByText('popup.title')).toBeTruthy()
-    expect(screen.getByText('popup.synced')).toBeTruthy()
     expect(screen.getByText('popup.macrosOnThisSite')).toBeInTheDocument()
+    expect(screen.getByTestId('theme-switcher-mock')).toBeInTheDocument()
     expect(screen.getByPlaceholderText('popup.searchPlaceholder')).toBeInTheDocument()
-  })
-
-  it('should call setTheme on the manager when theme buttons are clicked', async () => {
-    // Arrange
-    render(<Popup manager={mockManager} />)
-
-    // Act & Assert
-    fireEvent.click(screen.getByText('☀️'))
-    expect(mockManager.setTheme).toHaveBeenCalledWith('light')
-    fireEvent.click(screen.getByText('🌙'))
-    expect(mockManager.setTheme).toHaveBeenCalledWith('dark')
   })
 })
