@@ -1,6 +1,6 @@
 import React from 'react';
 import { Macro } from '../../../types';
-import { MacroSuggestions } from '../../MacroSuggestions';
+import { MacroSuggestions } from './ui/MacroSuggestions';
 import { createReactRenderer } from '../services/reactRenderer';
 import { createStyleInjector } from '../services/styleInjector';
 import { SUGGESTIONS_OVERLAY_STYLES } from './suggestionsOverlayStyles';

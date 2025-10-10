@@ -2,8 +2,8 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MacroSearchOverlay } from './MacroSearchOverlay';
-import { useMacroStore } from '../../../store/useMacroStore';
-import { Macro } from '../../../types';
+import { useMacroStore } from '../../../../store/useMacroStore';
+import { Macro } from '../../../../types';
 
 // Mock fuzzysort for predictable search behavior in tests
 vi.mock('fuzzysort', () => ({
@@ -46,7 +46,7 @@ const mockMacros: Macro[] = [
   { id: '3', command: '/feat', text: 'Feature request template', contentType: 'text/plain' },
 ];
 
-vi.mock('../../../store/useMacroStore', () => ({
+vi.mock('../../../../store/useMacroStore', () => ({
   useMacroStore: vi.fn(),
 }));
 

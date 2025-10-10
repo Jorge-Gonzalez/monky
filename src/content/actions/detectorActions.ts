@@ -40,6 +40,7 @@ export interface DetectorActions {
    * @returns true if the action was handled, false otherwise
    */
   onCancelRequested(): boolean
+
 }
 
 /**

@@ -36,10 +36,10 @@ export default function SiteToggle() {
   const displayHostname = hostname || t('popup.localFile');
 
   return (
-    <div className="flex items-center justify-between p-2 my-2 border rounded-md bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+    <div className="flex items-center justify-between p-2 my-2 border rounded-md popup-section">
       <div className="text-sm overflow-hidden">
         <p className="font-medium">{t('popup.macrosOnThisSite')}</p>
-        <p className="text-xs text-gray-500 dark:text-gray-400 truncate" title={displayHostname}>{displayHostname}</p>
+        <p className="text-xs truncate popup-text-secondary" title={displayHostname}>{displayHostname}</p>
       </div>
       <label className="relative inline-flex items-center cursor-pointer ml-2 flex-shrink-0">
         <input
@@ -48,7 +48,7 @@ export default function SiteToggle() {
           checked={isEnabled}
           onChange={() => toggleSiteDisabled(hostname)}
         />
-        <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+        <div className="w-11 h-6 rounded-full peer peer-focus:ring-2 popup-toggle-bg peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:border after:rounded-full after:h-5 after:w-5 after:transition-all popup-toggle-knob peer-checked:popup-toggle-knob-checked"></div>
       </label>
     </div>
   );

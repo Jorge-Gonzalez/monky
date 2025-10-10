@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import * as MediumEditor from 'medium-editor'
+import 'medium-editor/dist/css/medium-editor.css'
+import 'medium-editor/dist/css/themes/default.css'
 import { useMacroStore } from '../../store/useMacroStore'
 import { getErrorMessage } from '../../lib/errors'
 import { t } from '../../lib/i18n'

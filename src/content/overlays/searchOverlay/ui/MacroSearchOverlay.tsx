@@ -1,10 +1,10 @@
-import React, { useState, useRef } from 'react';
-import { Macro } from '../../../types';
-import { useMacroStore } from '../../../store/useMacroStore';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { Macro } from '../../../../types';
+import { useMacroStore } from '../../../../store/useMacroStore';
 import { useMacroSearch } from '../hooks/useMacroSearch';
-import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
 import { useListNavigation } from '../hooks/useListNavigation';
-import { useThemeColors } from '../hooks/useThemeColors';
+import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
+import { useThemeColors } from '../../../../hooks/useThemeColors';
 import { useScrollIntoView } from '../hooks/useScrollIntoView';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { MacroSearchInput } from './MacroSearchInput';
@@ -16,6 +16,10 @@ interface MacroSearchOverlayProps {
   onClose: () => void;
   onSelectMacro: (macro: Macro) => void;
   position: { x: number; y: number };
+  /** Optional initial search query */
+  initialQuery?: string;
+  /** Optional max results limit */
+  maxResults?: number;
 }
 
 export function MacroSearchOverlay({
@@ -28,30 +32,38 @@ export function MacroSearchOverlay({
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
-  
-  const macros = useMacroStore(state => state.macros);
-  const theme = useMacroStore(state => state.config.theme);
-  
+
+  // Optimized store access
+  const { macros, theme } = useMacroStore(state => ({
+    macros: state.macros,
+    theme: state.config.theme,
+  }));
+
   const filteredMacros = useMacroSearch(macros, searchQuery);
   const navigation = useListNavigation(filteredMacros.length);
 
   // Reset state when overlay opens
-  React.useEffect(() => {
+  useEffect(() => {
     if (isVisible) {
       setSearchQuery('');
       navigation.reset();
     }
-  }, [isVisible, navigation.reset]);
+  }, [isVisible]);
 
-  const handleSelect = () => {
+  const handleSelect = useCallback(() => {
     const selectedMacro = filteredMacros[navigation.selectedIndex];
     if (selectedMacro) {
       onSelectMacro(selectedMacro);
       onClose();
     }
-  };
+  }, [filteredMacros, navigation.selectedIndex, onSelectMacro, onClose]);
 
-  // Apply all the hooks
+  const handleMacroSelect = useCallback((macro: Macro) => {
+    onSelectMacro(macro);
+    onClose();
+  }, [onSelectMacro, onClose]);
+
+  // Apply side-effect hooks
   useAutoFocus(inputRef, isVisible);
   useThemeColors(modalRef, theme, isVisible);
   useScrollIntoView(resultsRef, navigation.selectedIndex, '.macro-search-item.selected');
@@ -68,11 +80,17 @@ export function MacroSearchOverlay({
   if (!isVisible) return null;
 
   return (
-    <div className="macro-search-backdrop" onClick={onClose}>
+    <div 
+      className="macro-search-backdrop" 
+      onClick={onClose}
+      role="presentation"
+    >
       <div
         ref={modalRef}
         className="macro-search-modal"
         role="dialog"
+        aria-modal="true"
+        aria-label="Search macros"
         onClick={e => e.stopPropagation()}
       >
         <MacroSearchInput
@@ -85,10 +103,7 @@ export function MacroSearchOverlay({
           macros={filteredMacros}
           selectedIndex={navigation.selectedIndex}
           searchQuery={searchQuery}
-          onSelect={macro => {
-            onSelectMacro(macro);
-            onClose();
-          }}
+          onSelect={handleMacroSelect}
           resultsRef={resultsRef}
         />
         

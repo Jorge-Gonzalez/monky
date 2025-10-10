@@ -13,7 +13,7 @@ export default function ThemeSwitcher() {
     <div className="flex gap-1">
       <button
         onClick={() => handleThemeChange('light')}
-        className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+        className="p-1 rounded popup-button-secondary"
         aria-label="Set light theme"
         title="Light theme"
       >
@@ -21,13 +21,13 @@ export default function ThemeSwitcher() {
       </button>
       <button
         onClick={() => handleThemeChange('dark')}
-        className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+        className="p-1 rounded popup-button-secondary"
         aria-label="Set dark theme"
         title="Dark theme"
       >
         🌙
       </button>
-      <button onClick={() => handleThemeChange('system')} className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700" aria-label="Set system theme" title="System theme">⚙️</button>
+      <button onClick={() => handleThemeChange('system')} className="p-1 rounded popup-button-secondary" aria-label="Set system theme" title="System theme">⚙️</button>
     </div>
   );
 }

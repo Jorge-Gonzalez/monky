@@ -21,7 +21,7 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ port: WS_PORT });
 
 // Serve static files from public directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Inject live reload script into HTML pages
 app.use((req, res, next) => {

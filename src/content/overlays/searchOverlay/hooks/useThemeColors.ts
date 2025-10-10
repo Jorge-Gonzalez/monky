@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { isDarkTheme } from '../../../lib/themeUtils';
-import { lightThemeColors, darkThemeColors } from '../../../content/theme';
-import { ThemeMode } from '../../../types';
+import { isDarkTheme } from '../../../../lib/themeUtils';
+import { lightThemeColors, darkThemeColors } from '../../../../lib/theme';
+import { ThemeMode } from '../../../../types';
 
 function applyColors(element: HTMLElement, colors: Record<string, string>) {
   for (const key of Object.keys(colors)) {

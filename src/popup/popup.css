@@ -1,0 +1,67 @@
+/* Apply base colors and text to the main popup container */
+.popup-container {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Primary button style (e.g., "New Macro") */
+.popup-button-primary {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+}
+.popup-button-primary:hover {
+  background-color: var(--button-bg-hover);
+}
+
+/* Secondary button style (e.g., Theme Switcher) */
+.popup-button-secondary:hover {
+  background-color: var(--bg-secondary);
+}
+
+/* Site Toggle section styles */
+.popup-section {
+  background-color: var(--bg-input);
+  border-color: var(--border-primary);
+}
+
+.popup-text-secondary {
+  color: var(--text-secondary);
+}
+
+/* Toggle switch styles */
+.popup-toggle-bg {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-input);
+}
+.popup-toggle-bg:focus-within {
+  --tw-ring-color: rgba(59, 130, 246, 0.5); /* blue-300 with opacity */
+  box-shadow: 0 0 0 2px var(--tw-ring-color);
+}
+.dark .popup-toggle-bg:focus-within {
+  --tw-ring-color: rgba(37, 99, 235, 0.5); /* blue-800 with opacity */
+}
+
+.popup-toggle-knob {
+  background-color: white;
+  border-color: #d1d5db; /* gray-300 */
+}
+.dark .popup-toggle-knob {
+  border-color: #4b5563; /* gray-600 */
+}
+.popup-toggle-knob-checked {
+  background-color: #2563eb; /* blue-600 */
+}
+.popup-toggle-knob-checked::after {
+  border-color: white;
+}
+
+/* Search input styles */
+.popup-input {
+  background-color: var(--bg-input);
+  border-color: var(--border-input);
+  color: var(--text-primary);
+}
+
+.popup-list-item {
+  border-color: var(--border-secondary);
+}

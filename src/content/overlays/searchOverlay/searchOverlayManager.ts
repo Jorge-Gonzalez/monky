@@ -1,6 +1,6 @@
 import React from 'react';
 import { Macro } from '../../../types';
-import { MacroSearchOverlay } from '../../MacroSearchOverlay/ui/MacroSearchOverlay';
+import { MacroSearchOverlay } from './ui/MacroSearchOverlay';
 import { createReactRenderer } from '../services/reactRenderer';
 import { createFocusManager } from '../services/focusManager';
 import { createMacroInserter } from '../services/macroInserter';

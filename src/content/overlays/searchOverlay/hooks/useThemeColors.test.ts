@@ -2,8 +2,8 @@
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { useThemeColors } from './useThemeColors';
-import { lightThemeColors, darkThemeColors } from '../../../content/theme';
-import * as themeUtils from '../../../lib/themeUtils';
+import { lightThemeColors, darkThemeColors } from '../../../../lib/theme';
+import * as themeUtils from '../../../../lib/themeUtils';
 
 describe('useThemeColors Hook', () => {
   it('should apply light theme colors and class when theme is "light"', () => {

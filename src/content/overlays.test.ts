@@ -24,12 +24,12 @@ vi.mock('react-dom/client', () => ({
 }))
 
 // Mock the overlay components
-import { MacroSearchOverlay } from './MacroSearchOverlay/ui/MacroSearchOverlay'
-vi.mock('./MacroSearchOverlay/ui/MacroSearchOverlay', async () => ({
+import { MacroSearchOverlay } from './overlays/searchOverlay/ui/MacroSearchOverlay'
+vi.mock('./overlays/searchOverlay/ui/MacroSearchOverlay', async () => ({
   MacroSearchOverlay: vi.fn(() => null)
 }))
 
-vi.mock('./overlayManager/ui/MacroSuggestions', () => ({
+vi.mock('./overlays/suggestionsOverlay/ui/MacroSuggestions', () => ({
   MacroSuggestions: vi.fn(() => null)
 }))
 
