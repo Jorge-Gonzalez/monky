@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { searchOverlayManager, suggestionsOverlayManager } from './overlays'
-import { Macro } from '../types'
+import { searchOverlayManager, suggestionsOverlayManager } from '.'
+import { Macro } from '../../types'
 
 // Mock React and ReactDOM with proper structure
 vi.mock('react', () => ({
@@ -24,23 +24,23 @@ vi.mock('react-dom/client', () => ({
 }))
 
 // Mock the overlay components
-import { MacroSearchOverlay } from './overlays/searchOverlay/ui/MacroSearchOverlay'
-vi.mock('./overlays/searchOverlay/ui/MacroSearchOverlay', async () => ({
+import { MacroSearchOverlay } from './searchOverlay/ui/MacroSearchOverlay'
+vi.mock('./searchOverlay/ui/MacroSearchOverlay', async () => ({
   MacroSearchOverlay: vi.fn(() => null)
 }))
 
-vi.mock('./overlays/suggestionsOverlay/ui/MacroSuggestions', () => ({
+vi.mock('./suggestionsOverlay/ui/MacroSuggestions', () => ({
   MacroSuggestions: vi.fn(() => null)
 }))
 
 // Mock editableUtils functions
-vi.mock('./editableUtils', () => ({
+vi.mock('../detector/editableUtils', () => ({
   getActiveEditable: vi.fn(),
   getSelection: vi.fn(),
   replaceText: vi.fn()
 }))
 
-import * as editableUtils from './editableUtils'
+import * as editableUtils from '../detector/editableUtils'
 
 describe('Overlay Managers - Focus and Cursor Management', () => {
   let testMacros: Macro[]

@@ -27,7 +27,7 @@ vi.mock('../hooks/useKeyboardNavigation', () => ({
   useKeyboardNavigation: vi.fn(),
 }));
 
-vi.mock('../hooks/useThemeColors', () => ({
+vi.mock('../../../../theme/hooks/useThemeColors', () => ({
   useThemeColors: vi.fn(),
 }));
 

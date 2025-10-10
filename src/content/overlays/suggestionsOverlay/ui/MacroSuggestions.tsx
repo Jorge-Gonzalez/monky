@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Macro } from '../../../../types';
 import { t } from '../../../../lib/i18n';
 import { useMacroStore } from '../../../../store/useMacroStore';
-import { useThemeColors } from '../../../../hooks/useThemeColors';
+import { useThemeColors } from '../../../../theme/hooks/useThemeColors';
 
 interface MacroSuggestionsProps {
   macros: Macro[];

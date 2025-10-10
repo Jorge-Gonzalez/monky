@@ -5,7 +5,7 @@ import SiteToggle from './SiteToggle';
 import { useMacroStore } from '../../store/useMacroStore';
 import ThemeSwitcher from './ThemeSwitcher';
 import NewMacroButton from './NewMacroButton';
-import { useThemeColors } from '../../hooks/useThemeColors';
+import { useThemeColors } from '../../theme/hooks/useThemeColors';
 
 export default function Popup() {
   // Get all necessary state directly from the store.

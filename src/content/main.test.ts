@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 
-// Mock the storage and its listeners
-vi.mock("./macroStorage", async () => {
-  const original = await vi.importActual<typeof import("./macroStorage")>("./macroStorage")
+// Mock the storage and its listeners at the correct path
+vi.mock("./storage/macroStorage", async () => {
+  const original = await vi.importActual<typeof import("./storage/macroStorage")>("./storage/macroStorage")
   return {
     ...original,
     loadMacros: vi.fn().mockResolvedValue([

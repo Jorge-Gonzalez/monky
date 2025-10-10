@@ -1,7 +1,7 @@
 import { useMacroStore } from "../store/useMacroStore"
 import { createMacroDetector, MacroDetector } from "./detector/macroDetector"
 import { createSuggestionsCoordinator } from "./coordinators/suggestionsCoordinator"
-import { loadMacros, listenMacrosChange } from "./macroStorage"
+import { loadMacros, listenMacrosChange } from "./storage/macroStorage"
 import { Macro } from "../types"
 
 // Module-level state

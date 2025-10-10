@@ -1,5 +1,5 @@
 import Options from './ui/Options';
-import { renderPage } from '../lib/renderPage';
+import { renderPageWithTheme } from '../theme/ui/renderPageWithTheme';
 
 // The renderPage utility handles wrapping the component with common providers.
-renderPage(Options);
+renderPageWithTheme(Options);

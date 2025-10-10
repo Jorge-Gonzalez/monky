@@ -1,5 +1,5 @@
 import React from 'react';
-import { Macro } from '../../../types';
+import { Macro } from '../../../../types';
 
 interface MacroSearchResultsProps {
   macros: Macro[];

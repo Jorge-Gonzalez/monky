@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useMacroStore } from '../store/useMacroStore';
-import { ThemeMode } from '../types';
+import { useMacroStore } from '../../store/useMacroStore';
+import { ThemeMode } from '../../types';
 
 const MQL = window.matchMedia('(prefers-color-scheme: dark)');
 

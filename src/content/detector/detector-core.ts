@@ -1,5 +1,5 @@
-import { defaultMacroConfig } from '../config/defaults';
-import type { Macro, CoreState } from '../types';
+import { defaultMacroConfig } from '../../config/defaults';
+import type { Macro, CoreState } from '../../types';
 
 // Handles one step of the macro string capturing and comparing process to match against a list of macros
 // Returns the next state based on the current state and the new key pressed

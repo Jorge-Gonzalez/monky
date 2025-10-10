@@ -2,96 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ProseMirror CSS - Required for TipTap editor */
-.ProseMirror {
-  white-space: pre-wrap;
-  outline: none;
-  word-wrap: break-word;
-  white-space: pre-wrap;
-  -webkit-font-variant-ligatures: none;
-  font-variant-ligatures: none;
-  font-feature-settings: "liga" 0; /* the above doesn't seem to work in Edge */
-}
-
-.ProseMirror p {
-  margin: 1em 0;
-}
-
-.ProseMirror p:first-child {
-  margin-top: 0;
-}
-
-.ProseMirror p:last-child {
-  margin-bottom: 0;
-}
-
-.ProseMirror li {
-  position: relative;
-}
-
-.ProseMirror-hideselection *::selection { background: transparent; }
-.ProseMirror-hideselection *::-moz-selection { background: transparent; }
-.ProseMirror-hideselection { caret-color: transparent; }
-
-.ProseMirror-selectednode {
-  outline: 2px solid #8cf;
-}
-
-/* Make sure li selections wrap around markers */
-li.ProseMirror-selectednode {
-  outline: none;
-}
-
-li.ProseMirror-selectednode:after {
-  content: "";
-  position: absolute;
-  left: -32px;
-  right: -2px; top: -2px; bottom: -2px;
-  border: 2px solid #8cf;
-  pointer-events: none;
-}
-
-/* Additional TipTap specific styles */
-.ProseMirror ul, .ProseMirror ol {
-  padding-left: 1.5em;
-}
-
-.ProseMirror blockquote {
-  padding-left: 1em;
-  border-left: 3px solid #ddd;
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.ProseMirror code {
-  background: #f4f4f4;
-  border-radius: 3px;
-  padding: 0.1em 0.3em;
-}
-
-.ProseMirror pre {
-  background: #f4f4f4;
-  border-radius: 3px;
-  padding: 0.5em;
-  white-space: pre;
-  overflow-x: auto;
-}
-
-.ProseMirror pre code {
-  background: none;
-  padding: 0;
-}
-
-/* Link styles */
-.ProseMirror a {
-  color: #3b82f6;
-  text-decoration: underline;
-}
-
-.ProseMirror a:hover {
-  color: #1d4ed8;
-}
-
 /* Medium Editor Styles */
 .medium-editor-element {
   outline: none !important;
@@ -239,8 +149,6 @@ li.ProseMirror-selectednode:after {
 }
 
 /* Theme-aware scrollbars for overlays */
-.macro-search-overlay,
-.macro-suggestions,
 .macro-search-results,
 .medium-editor-element {
   /* Modern scrollbar styling for WebKit browsers */
@@ -248,24 +156,18 @@ li.ProseMirror-selectednode:after {
   scrollbar-color: #cbd5e1 #f1f5f9;
 }
 
-.macro-search-overlay::-webkit-scrollbar,
-.macro-suggestions::-webkit-scrollbar,
 .macro-search-results::-webkit-scrollbar,
 .medium-editor-element::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.macro-search-overlay::-webkit-scrollbar-track,
-.macro-suggestions::-webkit-scrollbar-track,
 .macro-search-results::-webkit-scrollbar-track,
 .medium-editor-element::-webkit-scrollbar-track {
   background: #f1f5f9;
   border-radius: 4px;
 }
 
-.macro-search-overlay::-webkit-scrollbar-thumb,
-.macro-suggestions::-webkit-scrollbar-thumb,
 .macro-search-results::-webkit-scrollbar-thumb,
 .medium-editor-element::-webkit-scrollbar-thumb {
   background: #cbd5e1;
@@ -273,91 +175,31 @@ li.ProseMirror-selectednode:after {
   border: 1px solid #f1f5f9;
 }
 
-.macro-search-overlay::-webkit-scrollbar-thumb:hover,
-.macro-suggestions::-webkit-scrollbar-thumb:hover,
 .macro-search-results::-webkit-scrollbar-thumb:hover,
 .medium-editor-element::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
 
 /* Dark theme scrollbars */
-.dark .macro-search-overlay,
-.dark .macro-suggestions,
 .dark .macro-search-results,
 .dark .medium-editor-element {
   scrollbar-color: #4b5563 #1f2937;
 }
 
-.dark .macro-search-overlay::-webkit-scrollbar-track,
-.dark .macro-suggestions::-webkit-scrollbar-track,
 .dark .macro-search-results::-webkit-scrollbar-track,
 .dark .medium-editor-element::-webkit-scrollbar-track {
   background: #1f2937;
 }
 
-.dark .macro-search-overlay::-webkit-scrollbar-thumb,
-.dark .macro-suggestions::-webkit-scrollbar-thumb,
 .dark .macro-search-results::-webkit-scrollbar-thumb,
 .dark .medium-editor-element::-webkit-scrollbar-thumb {
   background: #4b5563;
   border: 1px solid #1f2937;
 }
 
-.dark .macro-search-overlay::-webkit-scrollbar-thumb:hover,
-.dark .macro-suggestions::-webkit-scrollbar-thumb:hover,
 .dark .macro-search-results::-webkit-scrollbar-thumb:hover,
 .dark .medium-editor-element::-webkit-scrollbar-thumb:hover {
   background: #6b7280;
-}
-
-/* Dark theme scrollbars via media query - with higher specificity */
-@media (prefers-color-scheme: dark) {
-  #macro-search-overlay .macro-search-results,
-  #macro-suggestions,
-  .macro-search-overlay,
-  .macro-suggestions,
-  .macro-search-results,
-  .medium-editor-element {
-    scrollbar-color: #4b5563 #1f2937 !important;
-  }
-
-  #macro-search-overlay .macro-search-results::-webkit-scrollbar,
-  #macro-suggestions::-webkit-scrollbar,
-  .macro-search-overlay::-webkit-scrollbar,
-  .macro-suggestions::-webkit-scrollbar,
-  .macro-search-results::-webkit-scrollbar,
-  .medium-editor-element::-webkit-scrollbar {
-    width: 8px !important;
-    height: 8px !important;
-  }
-
-  #macro-search-overlay .macro-search-results::-webkit-scrollbar-track,
-  #macro-suggestions::-webkit-scrollbar-track,
-  .macro-search-overlay::-webkit-scrollbar-track,
-  .macro-suggestions::-webkit-scrollbar-track,
-  .macro-search-results::-webkit-scrollbar-track,
-  .medium-editor-element::-webkit-scrollbar-track {
-    background: #1f2937 !important;
-  }
-
-  #macro-search-overlay .macro-search-results::-webkit-scrollbar-thumb,
-  #macro-suggestions::-webkit-scrollbar-thumb,
-  .macro-search-overlay::-webkit-scrollbar-thumb,
-  .macro-suggestions::-webkit-scrollbar-thumb,
-  .macro-search-results::-webkit-scrollbar-thumb,
-  .medium-editor-element::-webkit-scrollbar-thumb {
-    background: #4b5563 !important;
-    border: 1px solid #1f2937 !important;
-  }
-
-  #macro-search-overlay .macro-search-results::-webkit-scrollbar-thumb:hover,
-  #macro-suggestions::-webkit-scrollbar-thumb:hover,
-  .macro-search-overlay::-webkit-scrollbar-thumb:hover,
-  .macro-suggestions::-webkit-scrollbar-thumb:hover,
-  .macro-search-results::-webkit-scrollbar-thumb:hover,
-  .medium-editor-element::-webkit-scrollbar-thumb:hover {
-    background: #6b7280 !important;
-  }
 }
 
 .medium-editor-element li {
@@ -469,12 +311,6 @@ li.ProseMirror-selectednode:after {
   font-size: 0.75rem;
   margin: 0 0.25rem;
 }
-
-/* Dark theme styles for macro search overlay - applied via JavaScript inline styles */
-
-/* Explicit light theme styles - applied via JavaScript inline styles */
-
-/* Media query dark theme - replaced by JavaScript inline styles */
 
 /* small helper */
 .popup-container { width: 320px; }

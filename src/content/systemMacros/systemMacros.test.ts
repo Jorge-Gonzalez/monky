@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro } from './systemMacros'
-import { Macro } from '../types'
+import { Macro } from '../../types'
 
 describe('System Macros', () => {
   let consoleLogSpy: any

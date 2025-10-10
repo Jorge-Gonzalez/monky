@@ -34,7 +34,7 @@ export function MacroSearch({ macros }: MacroSearchProps) {
         placeholder={t('popup.searchPlaceholder')}
         className="border p-2 rounded w-full mb-2 popup-input"
       />
-      <ul className="max-h-64 overflow-y-auto">
+      <ul className="max-h-64 overflow-y-auto macro-search-results">
         {results.length > 0 ? (
           results.map(result => (
             <li key={result.obj.id} className="p-2 border-b popup-list-item">

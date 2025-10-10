@@ -4,7 +4,7 @@ import { useMacroStore } from '../../../../store/useMacroStore';
 import { useMacroSearch } from '../hooks/useMacroSearch';
 import { useListNavigation } from '../hooks/useListNavigation';
 import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
-import { useThemeColors } from '../../../../hooks/useThemeColors';
+import { useThemeColors } from '../../../../theme/hooks/useThemeColors';
 import { useScrollIntoView } from '../hooks/useScrollIntoView';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { MacroSearchInput } from './MacroSearchInput';

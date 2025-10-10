@@ -1,4 +1,4 @@
-import type { Macro, EditableEl } from '../types'
+import type { Macro, EditableEl } from '../../types'
 
 export function getActiveEditable(target: EventTarget | null): EditableEl {
   if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {

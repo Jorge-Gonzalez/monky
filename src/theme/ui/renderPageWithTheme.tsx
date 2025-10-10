@@ -8,7 +8,7 @@ import { ThemeManager } from './ThemeManager';
  *
  * @param PageComponent The component to render.
  */
-export function renderPage(PageComponent: React.ComponentType) {
+export function renderPageWithTheme(PageComponent: React.ComponentType) {
   const root = createRoot(document.getElementById('root')!);
   root.render(
     <React.StrictMode>

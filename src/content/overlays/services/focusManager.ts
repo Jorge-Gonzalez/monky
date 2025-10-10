@@ -1,4 +1,4 @@
-import { getActiveEditable, getSelection } from '../../editableUtils';
+import { getActiveEditable, getSelection } from '../../detector/editableUtils';
 
 interface SavedFocusState {
   element: HTMLElement;

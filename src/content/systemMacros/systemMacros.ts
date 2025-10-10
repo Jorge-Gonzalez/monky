@@ -1,5 +1,5 @@
-import { Macro } from "../types"
-import { searchOverlayManager } from "./overlays";
+import { Macro } from "../../types"
+import { searchOverlayManager } from "../overlays";
 
 /**
  * System macros for keyboard shortcuts and special functionality.

@@ -1,5 +1,5 @@
 import { Macro } from '../../../types';
-import { getActiveEditable, getSelection, replaceText } from '../../editableUtils';
+import { getActiveEditable, getSelection, replaceText } from '../../detector/editableUtils';
 import { FocusManager } from './focusManager';
 
 export function createMacroInserter(focusManager: FocusManager) {

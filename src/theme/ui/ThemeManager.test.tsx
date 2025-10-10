@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
 import { render, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useMacroStore } from '../store/useMacroStore'
+import { useMacroStore } from '../../store/useMacroStore'
 
 // Mock the zustand store
-vi.mock('../store/useMacroStore')
+vi.mock('../../store/useMacroStore')
 
 const MOCK_MATCH_MEDIA = {
   matches: false,

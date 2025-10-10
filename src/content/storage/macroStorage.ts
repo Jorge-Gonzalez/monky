@@ -1,4 +1,4 @@
-import { Macro } from "../types"
+import { Macro } from "../../types"
 
 export async function loadMacros(): Promise<Macro[]> {
   const result = await chrome.storage.local.get("macro-storage")

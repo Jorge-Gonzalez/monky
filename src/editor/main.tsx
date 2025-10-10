@@ -1,5 +1,5 @@
 import Editor from './ui/Editor'
-import { renderPage } from '../lib/renderPage'
+import { renderPageWithTheme } from '../theme/ui/renderPageWithTheme'
 
 // The renderPage utility handles wrapping the component with common providers.
-renderPage(Editor)
+renderPageWithTheme(Editor)

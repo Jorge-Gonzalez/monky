@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { isDarkTheme } from '../../../../lib/themeUtils';
-import { lightThemeColors, darkThemeColors } from '../../../../lib/theme';
+import { isDarkTheme } from '../../../../theme/themeUtils';
+import { lightThemeColors, darkThemeColors } from '../../../../theme/theme';
 import { ThemeMode } from '../../../../types';
 
 function applyColors(element: HTMLElement, colors: Record<string, string>) {

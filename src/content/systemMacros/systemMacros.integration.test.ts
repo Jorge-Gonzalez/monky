@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { setDetectorMacros } from './macroDetector'
+import { createMacroDetector } from '../detector/macroDetector'
 import { SYSTEM_MACROS } from './systemMacros'
-import { Macro } from '../types'
+import { Macro } from '../../types'
+import { DetectorActions } from '../actions/detectorActions'
 
 // Mock the system macro notifications
 vi.mock('./systemMacros', async () => {
@@ -11,6 +12,13 @@ vi.mock('./systemMacros', async () => {
     handleSystemMacro: vi.fn().mockReturnValue(true)
   }
 })
+
+vi.mock('../store/useMacroStore', () => ({
+  useMacroStore: {
+    getState: vi.fn(() => ({ config: {} })),
+    subscribe: vi.fn(),
+  },
+}));
 
 describe('System Macros Integration', () => {
   let mockHandleSystemMacro: any
@@ -26,14 +34,20 @@ describe('System Macros Integration', () => {
     vi.restoreAllMocks()
   })
 
-  describe('Macro List Integration', () => {
+  describe('Macro List Integration with Detector', () => {
     it('should include system macros when setting user macros', () => {
+      // The new detector's `setMacros` method is responsible for combining
+      // system and user macros. We can't test its internal array directly,
+      // but we can confirm the SYSTEM_MACROS constant it uses is correct.
+      // This test now verifies the source of truth for the detector.
       const userMacros: Macro[] = [
-        { id: 1, command: '/sig', text: 'Jorge L. Gonzalez' },
-        { id: 2, command: '/email', text: 'jorge@example.com' }
+        { id: '1', command: '/sig', text: 'Jorge L. Gonzalez' },
+        { id: '2', command: '/email', text: 'jorge@example.com' }
       ]
 
-      setDetectorMacros(userMacros)
+      // In the new architecture, we'd create a detector and set macros.
+      const detector = createMacroDetector({} as DetectorActions)
+      detector.setMacros(userMacros)
 
       // Since we can't directly access the internal macros array,
       // we'll test this by checking that system macros are defined properly
@@ -55,11 +69,13 @@ describe('System Macros Integration', () => {
 
     it('should not conflict with user macro commands', () => {
       const userMacros: Macro[] = [
-        { id: 1, command: '/signature', text: 'Jorge L. Gonzalez' },
-        { id: 2, command: '/help-user', text: 'This is user help' }
+        { id: '1', command: '/signature', text: 'Jorge L. Gonzalez' },
+        { id: '2', command: '/help-user', text: 'This is user help' }
       ]
 
-      setDetectorMacros(userMacros)
+      // In the new architecture, we'd create a detector and set macros.
+      const detector = createMacroDetector({} as DetectorActions)
+      detector.setMacros(userMacros)
 
       // System macros should have different commands than user macros
       const systemCommands = SYSTEM_MACROS.map(m => m.command)
@@ -117,11 +133,12 @@ describe('System Macros Integration', () => {
     it('should not interfere with regular macro functionality', () => {
       // System macros should not break existing macro replacement
       const userMacros: Macro[] = [
-        { id: 1, command: '/sig', text: 'Jorge L. Gonzalez' }
+        { id: '1', command: '/sig', text: 'Jorge L. Gonzalez' }
       ]
 
       // This should work without throwing errors
-      expect(() => setDetectorMacros(userMacros)).not.toThrow()
+      const detector = createMacroDetector({} as DetectorActions)
+      expect(() => detector.setMacros(userMacros)).not.toThrow()
 
       // Regular macros should still have text content
       expect(userMacros[0].text).toBeTruthy()

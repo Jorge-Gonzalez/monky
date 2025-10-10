@@ -1,37 +1,44 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import * as macroDetector from './macroDetector'
-import { useMacroStore } from '../store/useMacroStore'
+import { createMacroDetector, MacroDetector } from './macroDetector'
+import { useMacroStore } from '../../store/useMacroStore'
 import { updateStateOnKey, isExact } from './detector-core'
-import { getActiveEditable, getSelection, replaceText } from './editableUtils'
+import { getActiveEditable, getSelection, replaceText, getCursorCoordinates } from './editableUtils'
 import { isPrintableKey, UNSUPPORTED_KEYS } from './keyUtils'
-import { defaultMacroConfig } from '../config/defaults'
+import { defaultMacroConfig } from '../../config/defaults'
+import { DetectorActions } from '../actions/detectorActions'
 
 // Mock external dependencies. The mock functions are created inside the factory
 // and will be accessed via the imported module later.
-vi.mock('../store/useMacroStore', () => ({
+vi.mock('../../store/useMacroStore', () => ({
   useMacroStore: {
     getState: vi.fn(),
     subscribe: vi.fn(),
   },
 }));
 
-vi.mock('./detector-core', () => ({
+vi.mock('./detector-core', {
+  // We need to use vi.importActual because detector-core is now in the same directory
+  // and we want to mock only parts of it if needed, or just ensure it's properly handled.
+  // In this case, we are mocking the entire module, so we define the mock implementation.
+  default: () => ({
   updateStateOnKey: vi.fn(),
   isExact: vi.fn()
-}))
+  })
+});
 
-vi.mock('./editableUtils', () => ({
+vi.mock('../editableUtils', () => ({
   getActiveEditable: vi.fn(),
   getSelection: vi.fn(),
-  replaceText: vi.fn()
+  replaceText: vi.fn(),
+  getCursorCoordinates: vi.fn(),
 }))
 
-vi.mock('./keyUtils', () => ({
+vi.mock('../keyUtils', () => ({
   isPrintableKey: vi.fn(),
   UNSUPPORTED_KEYS: ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown', 'Escape', 'Delete']
 }))
 
-vi.mock('../config/defaults', () => ({
+vi.mock('../../config/defaults', () => ({
   defaultMacroConfig: {
     prefixes: ['/', ';'],
     theme: 'light',
@@ -45,7 +52,20 @@ const mockRemoveEventListener = vi.spyOn(window, 'removeEventListener')
 const mockSetTimeout = vi.spyOn(window, 'setTimeout')
 const mockClearTimeout = vi.spyOn(window, 'clearTimeout')
 
-describe('macroDetector', () => {
+describe('createMacroDetector', () => {
+  let detector: MacroDetector
+  let mockActions: DetectorActions
+
+  const createMockActions = (): DetectorActions => ({
+    onDetectionStarted: vi.fn(),
+    onDetectionUpdated: vi.fn(),
+    onDetectionCancelled: vi.fn(),
+    onCommitRequested: vi.fn(),
+    onCancelRequested: vi.fn(),
+    onNavigationRequested: vi.fn(),
+    onMacroCommitted: vi.fn(),
+  })
+
   beforeEach(() => {
     vi.clearAllMocks()
     
@@ -62,62 +82,63 @@ describe('macroDetector', () => {
     mockRemoveEventListener.mockClear()
     mockSetTimeout.mockClear()
     mockClearTimeout.mockClear()
+
+    mockActions = createMockActions()
+    detector = createMacroDetector(mockActions)
   })
 
   afterEach(() => {
-    macroDetector.cleanupMacroDetector()
+    detector.destroy()
   })
 
-  describe('initMacroDetector', () => {
+  describe('initialize and destroy', () => {
     it('attaches event listeners and subscribes to config changes', () => {
-      macroDetector.initMacroDetector()
+      detector.initialize()
       
       expect(mockAddEventListener).toHaveBeenCalledWith('keydown', expect.any(Function), true)
       expect(mockAddEventListener).toHaveBeenCalledWith('blur', expect.any(Function), true)
       expect(useMacroStore.subscribe).toHaveBeenCalled()
     })
 
-    it('does not attach duplicate listeners', () => {
-      macroDetector.initMacroDetector()
-      macroDetector.initMacroDetector()
+    it('does not attach duplicate listeners on multiple initializations', () => {
+      detector.initialize()
+      detector.initialize()
       
       // Should only have been called once despite two calls
       expect(mockAddEventListener).toHaveBeenCalledTimes(2) // keydown and blur
     })
-  })
 
-  describe('cleanupMacroDetector', () => {
-    it('removes event listeners and cleans up state', () => {
+    it('removes event listeners on destroy', () => {
       // First initialize
-      macroDetector.initMacroDetector()
+      detector.initialize()
       mockAddEventListener.mockClear()
       
       // Then cleanup
-      macroDetector.cleanupMacroDetector()
+      detector.destroy()
       
       expect(mockRemoveEventListener).toHaveBeenCalledWith('keydown', expect.any(Function), true)
       expect(mockRemoveEventListener).toHaveBeenCalledWith('blur', expect.any(Function), true)
     })
 
-    it('does not remove listeners if none were attached', () => {
-      macroDetector.cleanupMacroDetector()
+    it('does not try to remove listeners if not initialized', () => {
+      detector.destroy()
       
       expect(mockRemoveEventListener).not.toHaveBeenCalled()
     })
   })
 
-  describe('setDetectorMacros', () => {
+  describe('setMacros', () => {
     it('updates the internal macros array', () => {
       const testMacros = [
-        { id: 1, command: '/test', text: 'test text' },
-        { id: 2, command: ';hello', text: 'hello world' }
+        { id: '1', command: '/test', text: 'test text' },
+        { id: '2', command: ';hello', text: 'hello world' }
       ]
       
-      macroDetector.setDetectorMacros(testMacros)
+      detector.setMacros(testMacros)
       
       // We can't directly test the internal state, but we can verify
       // the function was called without throwing an error
-      expect(() => macroDetector.setDetectorMacros(testMacros)).not.toThrow()
+      expect(() => detector.setMacros(testMacros)).not.toThrow()
     })
   })
 
@@ -133,51 +154,12 @@ describe('macroDetector', () => {
         config: mockConfig
       })
       
-      // initMacroDetector calls updateConfig, which in turn calls getState
-      macroDetector.initMacroDetector()
+      // initialize calls updateConfig, which in turn calls getState
+      detector.initialize()
 
       // This function is internal and called by the subscription
       // We can test indirectly by verifying the mock was called correctly
       expect(useMacroStore.getState).toHaveBeenCalled()
-    })
-  })
-
-  describe('attachListeners', () => {
-    it('sets listenersAttached flag when attaching listeners', () => {
-      // This function is internal, but we can verify it works through init
-      macroDetector.initMacroDetector()
-      
-      // Verify listeners were attached
-      expect(mockAddEventListener).toHaveBeenCalledWith('keydown', expect.any(Function), true)
-      expect(mockAddEventListener).toHaveBeenCalledWith('blur', expect.any(Function), true)
-    })
-  })
-
-  describe('event handlers', () => {
-    it('onKeyDown handles disabled sites correctly', () => {
-      // Mock a disabled site in config
-      ;(useMacroStore.getState as vi.Mock).mockReturnValue({
-        config: {
-          useCommitKeys: false,
-          prefixes: defaultMacroConfig.prefixes,
-          disabledSites: ['test.com']
-        }
-      })
-      
-      // Mock window location
-      Object.defineProperty(window, 'location', {
-        value: { hostname: 'test.com' },
-        writable: true
-      })
-      
-      // This test would require more complex mocking of the actual onKeyDown implementation
-      // For now, we verify the function exists and doesn't throw
-      expect(() => macroDetector.initMacroDetector()).not.toThrow()
-    })
-
-    it('onBlur cancels detection state', () => {
-      // Verify the function exists
-      expect(typeof macroDetector.onBlur).toBe('function')
     })
   })
 })

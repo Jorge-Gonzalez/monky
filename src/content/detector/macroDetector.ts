@@ -1,10 +1,10 @@
 import { useMacroStore } from "../../store/useMacroStore"
-import { updateStateOnKey, isExact } from "../detector-core"
-import { getActiveEditable, getSelection, replaceText, getCursorCoordinates } from "../editableUtils"
+import { updateStateOnKey, isExact } from "./detector-core"
+import { getActiveEditable, getSelection, replaceText, getCursorCoordinates } from "./editableUtils"
 import { Macro, CoreState, EditableEl } from "../../types"
-import { isPrintableKey, UNSUPPORTED_KEYS } from "../keyUtils"
+import { isPrintableKey, UNSUPPORTED_KEYS } from "./keyUtils"
 import { defaultMacroConfig } from "../../config/defaults"
-import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro } from "../systemMacros"
+import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro } from "../systemMacros/systemMacros"
 import { DetectorActions } from "../actions/detectorActions"
 
 const COMMIT_KEYS = new Set([" ", "Enter", "Tab"])
