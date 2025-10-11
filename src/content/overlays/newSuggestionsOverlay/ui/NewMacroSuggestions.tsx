@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, use } from 'react';
 import { usePopupPosition, calculateOptimalPosition } from '../utils/popupPositioning';
 import { Macro } from '../../../../types';
 import { useThemeColors } from '../../../../theme/hooks/useThemeColors';
@@ -31,99 +31,16 @@ export function NewMacroSuggestions({
     cursorPosition,
     containerRef
   );
+
   
-  // Fallback positioning if usePopupPosition fails
-  const x = positionResult?.x ?? cursorPosition?.x ?? 100;
-  const y = positionResult?.y ?? ((cursorPosition?.y ?? 100) + 20);
-  const placement = positionResult?.placement ?? 'bottom';
+  // // Fallback positioning if usePopupPosition fails
+  // const x = positionResult?.x ?? cursorPosition?.x ?? 100;
+  // const y = positionResult?.y ?? ((cursorPosition?.y ?? 100) + 20);
+  // const placement = positionResult?.placement ?? 'bottom';
   
   const theme = useMacroStore(state => state.config.theme);
-  
-  // Theme colors definition
-  const getThemeColors = (isDark: boolean) => {
-    if (isDark) {
-      return {
-        '--bg-primary': '#1f2937',
-        '--bg-secondary': '#374151',
-        '--bg-tertiary': 'rgba(59, 130, 246, 0.2)',
-        '--text-primary': '#f3f4f6',
-        '--text-secondary': '#9ca3af',
-        '--text-accent': '#60a5fa',
-        '--border-primary': '#374151',
-        '--border-secondary': '#374151',
-        '--kbd-bg': '#4b5563',
-        '--kbd-border': '#6b7280',
-        '--shadow-color': 'rgba(0, 0, 0, 0.4)',
-      };
-    } else {
-      return {
-        '--bg-primary': '#ededed',
-        '--bg-secondary': '#e8e9e9', 
-        '--bg-tertiary': '#dee5ed',
-        '--text-primary': '#101624',
-        '--text-secondary': '#636a76',
-        '--text-accent': '#3679e4',
-        '--border-primary': '#d6d8dc',
-        '--border-secondary': '#e1e2e4',
-        '--kbd-bg': '#e1e2e4',
-        '--kbd-border': '#c3c7cb',
-        '--shadow-color': 'rgba(0, 0, 0, 0.25)',
-      };
-    }
-  };
-  
-  // Apply theme when component becomes visible or theme changes
-  useEffect(() => {
-    if (!isVisible) return;
-    
-    // Use a small delay to ensure DOM is ready
-    const applyTheme = () => {
-      if (!containerRef.current) {
-        // Retry after a short delay
-        setTimeout(applyTheme, 10);
-        return;
-      }
-      
-      const element = containerRef.current;
-      const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-      const colors = getThemeColors(isDark);
-      
-      // Apply each CSS custom property
-      for (const property in colors) {
-        if (colors.hasOwnProperty(property)) {
-          const value = colors[property];
-          element.style.setProperty(property, value);
-        }
-      }
-      
-      // Add theme classes
-      element.classList.toggle('dark', isDark);
-      element.classList.toggle('light', !isDark);
-    };
-    
-    // Start the theme application process
-    applyTheme();
-  }, [isVisible, theme]);
-  
-  // Additional effect to apply theme after DOM is definitely ready
-  useEffect(() => {
-    if (isVisible && containerRef.current) {
-      const element = containerRef.current;
-      const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-      const colors = getThemeColors(isDark);
-      
-      // Apply colors
-      for (const property in colors) {
-        if (colors.hasOwnProperty(property)) {
-          const value = colors[property];
-          element.style.setProperty(property, value);
-        }
-      }
-      
-      element.classList.toggle('dark', isDark);
-      element.classList.toggle('light', !isDark);
-    }
-  });
+
+  useThemeColors(containerRef, theme, isVisible);
 
   const [filteredMacros, setFilteredMacros] = useState<Macro[]>([]);
 
@@ -187,8 +104,6 @@ export function NewMacroSuggestions({
       style={{ 
         left: x,
         top: y,
-        position: 'fixed',
-        zIndex: 2147483647
       }}
     >
         <div className={`new-macro-suggestions-arrow ${placement}`} />

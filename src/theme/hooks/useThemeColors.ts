@@ -18,12 +18,14 @@ export function useThemeColors(
   isEnabled: boolean
 ) {
   useEffect(() => {
-    if (!ref.current || !isEnabled) return;
-
-    const isDark = theme === 'dark' || (theme === 'system' && isSystemDark());
+    if (!isEnabled || !ref.current) return;
     
+    const element = ref.current;
+    const isDark = theme === 'dark' || (theme === 'system' && isSystemDark());
     const themeColors = isDark ? darkThemeColors : lightThemeColors;
-    applyThemeStyles(ref.current, themeColors);
-    ref.current.classList.toggle('dark', isDark);
+    
+    applyThemeStyles(element, themeColors);
+    element.classList.toggle('dark', isDark);
+    element.classList.toggle('light', !isDark);
   }, [ref, theme, isEnabled]);
 }
