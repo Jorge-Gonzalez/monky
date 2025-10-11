@@ -24,6 +24,7 @@ vi.mock('./overlays', () => ({
     navigate: vi.fn(),
   },
   searchOverlayManager: {},
+  updateAllMacros: vi.fn(),
 }))
 
 import { suggestionsOverlayManager } from './overlays'
@@ -131,6 +132,24 @@ describe("Content Script: Macro Replacement", () => {
         expect(div.textContent).toBe("Typing... /brb")
         typeIn(div, "Enter")
         expect(div.textContent).toBe("Typing... Be right back")
+      })
+
+      it("should allow committing after correcting a typo with backspace", () => {
+        div.textContent = "Hello "
+        typeIn(div, "/")
+        typeIn(div, "s")
+        typeIn(div, "i")
+        typeIn(div, "x") // typo
+        expect(div.textContent).toBe("Hello /six")
+
+        typeIn(div, "Backspace") // remove the 'x'
+        expect(div.textContent).toBe("Hello /si")
+
+        typeIn(div, "g") // correct the typo
+        expect(div.textContent).toBe("Hello /sig")
+
+        typeIn(div, " ") // commit with space
+        expect(div.textContent).toBe("Hello My Signature")
       })
 
       // TODO: Feature not yet implemented - delayed commit with backspace grace period

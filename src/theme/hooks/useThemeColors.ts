@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ThemeMode } from '../types';
+import { ThemeMode } from '../../types';
 import { lightThemeColors, darkThemeColors } from '../theme';
 
 function applyThemeStyles(element: HTMLElement, colors: Record<string, string>) {

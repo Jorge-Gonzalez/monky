@@ -51,10 +51,11 @@ describe('System Macros Integration', () => {
 
       // Since we can't directly access the internal macros array,
       // we'll test this by checking that system macros are defined properly
-      expect(SYSTEM_MACROS).toHaveLength(3)
+      expect(SYSTEM_MACROS).toHaveLength(4)
       expect(SYSTEM_MACROS.find(m => m.command === '/?')).toBeDefined()
       expect(SYSTEM_MACROS.find(m => m.command === '/help')).toBeDefined()
       expect(SYSTEM_MACROS.find(m => m.command === '/macros')).toBeDefined()
+      expect(SYSTEM_MACROS.find(m => m.command === '/>')).toBeDefined()
     })
 
     it('should maintain system macro properties', () => {
@@ -105,6 +106,12 @@ describe('System Macros Integration', () => {
       expect(listMacro).toBeDefined()
       expect(listMacro?.id).toBe('system-list-macros')
     })
+
+    it('should define toggle new suggestions command', () => {
+      const toggleMacro = SYSTEM_MACROS.find(m => m.command === '/>')
+      expect(toggleMacro).toBeDefined()
+      expect(toggleMacro?.id).toBe('system-toggle-new-suggestions')
+    })
   })
 
   describe('Expected User Experience', () => {
@@ -121,7 +128,7 @@ describe('System Macros Integration', () => {
 
     it('should provide keyboard shortcuts through macro system', () => {
       // Verify that all expected keyboard shortcuts are available as macros
-      const expectedCommands = ['/?', '/help', '/macros']
+      const expectedCommands = ['/?', '/help', '/macros', '/>']
       
       expectedCommands.forEach(command => {
         const macro = SYSTEM_MACROS.find(m => m.command === command)

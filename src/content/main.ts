@@ -2,6 +2,7 @@ import { useMacroStore } from "../store/useMacroStore"
 import { createMacroDetector, MacroDetector } from "./detector/macroDetector"
 import { createSuggestionsCoordinator } from "./coordinators/suggestionsCoordinator"
 import { loadMacros, listenMacrosChange } from "./storage/macroStorage"
+import { updateAllMacros } from "./overlays"
 import { Macro } from "../types"
 
 // Module-level state
@@ -19,12 +20,15 @@ function createAndInitializeDetector(): MacroDetector {
 }
 
 /**
- * Updates the macros in the detector.
+ * Updates the macros in the detector and overlay managers.
  */
 function updateDetectorMacros(macros: Macro[]): void {
   if (detector) {
     detector.setMacros(macros)
   }
+  
+  // Also update overlay managers
+  updateAllMacros(macros)
 }
 
 /**
@@ -84,6 +88,10 @@ async function main() {
   if (detector && initialMacros.length > 0) {
     detector.setMacros(initialMacros)
   }
+
+  // Update overlay managers with the loaded macros
+  const finalMacros = useMacroStore.getState().macros
+  updateAllMacros(finalMacros)
 
   // Set a flag to indicate the content script is loaded (for debugging)
   ;(window as any).macroExtensionLoaded = true

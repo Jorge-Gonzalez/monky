@@ -1,5 +1,5 @@
 import { Macro } from "../../types"
-import { searchOverlayManager } from "../overlays";
+import { searchOverlayManager, newSuggestionsOverlayManager } from "../overlays";
 
 /**
  * System macros for keyboard shortcuts and special functionality.
@@ -26,6 +26,13 @@ export const SYSTEM_MACROS: Macro[] = [
     text: '', // No replacement text - this triggers an action
     isSystemMacro: true,
     description: 'List all available macros'
+  },
+  {
+    id: 'system-toggle-new-suggestions',
+    command: '/>',
+    text: '', // No replacement text - this triggers an action
+    isSystemMacro: true,
+    description: 'Toggle new suggestions overlay visibility'
   }
 ]
 
@@ -60,6 +67,10 @@ export function handleSystemMacro(macro: Macro): boolean {
       showMacroList()
       return true
     
+    case 'system-toggle-new-suggestions':
+      toggleNewSuggestionsOverlay()
+      return true
+    
     default:
       console.warn('Unknown system macro:', macro.id)
       return false
@@ -81,6 +92,7 @@ Keyboard Shortcuts:
 • /? - Open search overlay
 • /help - Show this help
 • /macros - List all macros
+• /> - Toggle new suggestions overlay
 • Escape - Close overlays (when implemented)
   `.trim()
   
@@ -98,7 +110,7 @@ function showMacroList() {
   
   const notification = createNotification(
     '📋 System Macros',
-    'Available system commands:\n/? /help /macros',
+    'Available system commands:\n/? /help /macros />',
     'info'
   )
   
@@ -156,4 +168,27 @@ function createNotification(title: string, message: string, type: 'info' | 'succ
   
   document.body.appendChild(notification)
   return notification
+}
+
+function toggleNewSuggestionsOverlay() {
+  console.log('🔄 Toggle new suggestions overlay triggered!')
+  
+  if (newSuggestionsOverlayManager.isVisible()) {
+    newSuggestionsOverlayManager.hide();
+    createNotification(
+      '🔄 New Suggestions Hidden', 
+      'New suggestions overlay has been hidden',
+      'info'
+    );
+  } else {
+    // Show all macros with a default position (center-left of viewport)
+    const defaultX = Math.max(100, window.innerWidth * 0.2);
+    const defaultY = Math.max(100, window.innerHeight * 0.3);
+    newSuggestionsOverlayManager.showAll(defaultX, defaultY);
+    createNotification(
+      '🔄 New Suggestions Visible', 
+      'New suggestions overlay is now visible',
+      'info'
+    );
+  }
 }
