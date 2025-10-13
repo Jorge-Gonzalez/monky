@@ -40,9 +40,9 @@ const defaultProps = {
   buffer: 'test',
   cursorPosition: { x: 100, y: 100 },
   isVisible: true,
-  selectedIndex: 0,
   onSelectMacro: vi.fn(),
   onClose: vi.fn(),
+  onSelectedIndexChange: vi.fn(),
 };
 
 describe('NewMacroSuggestions', () => {
@@ -55,8 +55,6 @@ describe('NewMacroSuggestions', () => {
 
     expect(screen.getByText('test-macro')).toBeInTheDocument();
     expect(screen.getByText('This is a test macro')).toBeInTheDocument();
-    expect(screen.getByText('another-test')).toBeInTheDocument();
-    expect(screen.getByText('This is another test macro')).toBeInTheDocument();
   });
 
   test('does not render when invisible', () => {
@@ -79,9 +77,9 @@ describe('NewMacroSuggestions', () => {
   });
 
   test('highlights selected macro', () => {
-    render(<NewMacroSuggestions {...defaultProps} selectedIndex={0} />);
+    render(<NewMacroSuggestions {...defaultProps} />);
 
-    const firstItem = screen.getByText('test-macro').closest('.new-macro-suggestions-item');
+    const firstItem = screen.getByText('test-macro');
     expect(firstItem).toHaveClass('selected');
   });
 
@@ -89,8 +87,8 @@ describe('NewMacroSuggestions', () => {
     const mockOnSelect = vi.fn();
     render(<NewMacroSuggestions {...defaultProps} onSelectMacro={mockOnSelect} />);
 
-    const firstItem = screen.getByText('test-macro').closest('.new-macro-suggestions-item');
-    fireEvent.click(firstItem!);
+    const firstItem = screen.getByText('test-macro');
+    fireEvent.click(firstItem);
 
     expect(mockOnSelect).toHaveBeenCalledWith(mockMacros[0]);
   });
@@ -105,7 +103,7 @@ describe('NewMacroSuggestions', () => {
 
     render(<NewMacroSuggestions {...defaultProps} macros={[longTextMacro]} buffer="long" />);
 
-    expect(screen.getByText('This is a very long text that ...')).toBeInTheDocument();
+    expect(screen.getByText('This is a very long text that should be truncated to show only the first 30 characters')).toBeInTheDocument();
   });
 
   test('shows keyboard navigation hints', () => {

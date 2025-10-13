@@ -18,7 +18,12 @@ export function useThemeColors(
   isEnabled: boolean
 ) {
   useEffect(() => {
+    
+    console.log('theme not applied yet')
+
     if (!isEnabled || !ref.current) return;
+
+    console.log('Applying theme colors')
     
     const element = ref.current;
     const isDark = theme === 'dark' || (theme === 'system' && isSystemDark());

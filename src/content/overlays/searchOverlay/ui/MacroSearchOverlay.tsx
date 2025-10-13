@@ -6,7 +6,7 @@ import { useListNavigation } from '../hooks/useListNavigation';
 import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
 import { useThemeColors } from '../../../../theme/hooks/useThemeColors';
 import { useScrollIntoView } from '../hooks/useScrollIntoView';
-import { useAutoFocus } from '../hooks/useAutoFocus';
+import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { MacroSearchInput } from './MacroSearchInput';
 import { MacroSearchResults } from './MacroSearchResults';
 import { MacroSearchFooter } from './MacroSearchFooter';

@@ -1,20 +1,27 @@
 import React from 'react';
-import { Macro } from '../../../types';
+import { Macro, EditableEl } from '../../../types';
 import { NewMacroSuggestions } from './ui/NewMacroSuggestions';
 import { createReactRenderer } from '../services/reactRenderer';
 import { createStyleInjector } from '../services/styleInjector';
 import { NEW_SUGGESTIONS_OVERLAY_STYLES } from './NewSuggestionsOverlayStyles';
+import { getActiveEditable, getSelection, replaceText } from '../../detector/editableUtils';
 
+interface SavedState {
+  element: EditableEl | null;
+  trigger: string;
+}
+  
 export function createNewSuggestionsOverlayManager(macros: Macro[]) {
   const renderer = createReactRenderer('new-macro-suggestions');
   const styleInjector = createStyleInjector('new-macro-suggestions-styles', NEW_SUGGESTIONS_OVERLAY_STYLES);
 
+  let currentSelectedIndex = 0;
   let isVisible = false;
   let cursorPosition = { x: 0, y: 0 };
-  let selectedIndex = 0;
   let currentBuffer = '';
   let showAllMode = false; // Flag to show all macros regardless of buffer
   let currentMacros = macros;
+  let savedState: SavedState | null = null;
 
   const getMatchingMacros = (buffer: string): Macro[] => {
     return currentMacros
@@ -32,20 +39,37 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
         buffer: currentBuffer,
         cursorPosition,
         isVisible,
-        selectedIndex,
         onSelectMacro: (macro: Macro) => {
-          hide();
-          const event = new CustomEvent('new-macro-suggestion-selected', {
-            detail: { macro },
-          });
-          document.dispatchEvent(event);
+          handleSelect(macro);
         },
         onClose: () => {
           hide();
         },
+        onSelectedIndexChange: (index: number) => {
+          currentSelectedIndex = index;
+        },
         showAll: showAllMode
       })
     );
+  };
+
+  const handleSelect = (macro: Macro) => {
+    if (savedState?.element) {
+      if (showAllMode || !savedState.trigger) {
+        // In showAll mode, insert macro at current cursor position
+        const selection = getSelection(savedState.element);
+        if (selection) {
+          replaceText(savedState.element, macro, selection.start, selection.end);
+        }
+      } else {
+        // In regular mode, replace the trigger text with macro
+        const triggerIndex = (savedState.element.value || savedState.element.textContent || '').lastIndexOf(savedState.trigger);
+        if (triggerIndex !== -1) {
+          replaceText(savedState.element, macro, triggerIndex, triggerIndex + savedState.trigger.length);
+        }
+      }
+    }
+    hide();
   };
 
   const initialize = (): void => {
@@ -53,17 +77,14 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
     renderer.initialize();
   };
 
-  // Separate method for toggling visibility (for the system macro)
   const showAll = (x?: number, y?: number): void => {
     if (x !== undefined && y !== undefined) {
       cursorPosition = { x, y };
     }
-
+    saveState('');
     showAllMode = true;
     currentBuffer = ''; // Empty buffer for show-all mode
-    selectedIndex = 0;
     isVisible = true;
-
     renderSuggestions();
   };
 
@@ -71,57 +92,51 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
     if (x !== undefined && y !== undefined) {
       cursorPosition = { x, y };
     }
-
-    // For regular showing, always disable showAllMode and use buffer
+    saveState(buffer);
     currentBuffer = buffer;
     showAllMode = false;
-
-    selectedIndex = 0;
     isVisible = true;
-
     renderSuggestions();
   };
 
   const hide = (): void => {
     if (!isVisible) return;
-
     isVisible = false;
-    selectedIndex = 0;
     currentBuffer = '';
     renderer.clear();
+    restoreFocus();
+    savedState = null;
   };
 
-  const navigate = (direction: 'up' | 'down'): boolean => {
-    if (!isVisible) return false;
+  const saveState = (trigger: string) => {
+    const activeElement = getActiveEditable(document.activeElement);
+    savedState = { element: activeElement, trigger };
+  };
 
-    const matching = getMatchingMacros(currentBuffer);
-    if (matching.length === 0) return false;
-
-    if (direction === 'down') {
-      selectedIndex = (selectedIndex + 1) % matching.length;
-    } else {
-      selectedIndex = selectedIndex === 0 ? matching.length - 1 : selectedIndex - 1;
+  const restoreFocus = (delay = 10) => {
+    if (!savedState?.element || !document.body.contains(savedState.element)) {
+      return;
     }
-
-    renderSuggestions();
-    return true;
+    setTimeout(() => {
+      if (savedState?.element) {
+        savedState.element.focus();
+        // Ensure cursor is positioned at the end of the inserted text
+        if (savedState.element instanceof HTMLInputElement || savedState.element instanceof HTMLTextAreaElement) {
+          const length = savedState.element.value.length;
+          savedState.element.setSelectionRange(length, length);
+        }
+      }
+    }, delay);
   };
 
   const selectCurrent = (): boolean => {
     if (!isVisible) return false;
-
-    const matching = getMatchingMacros(currentBuffer);
-    const selected = matching[selectedIndex];
-
-    if (selected) {
-      hide();
-      const event = new CustomEvent('new-macro-suggestion-selected', {
-        detail: { macro: selected },
-      });
-      document.dispatchEvent(event);
+    const matchingMacros = getMatchingMacros(currentBuffer);
+    const selectedMacro = matchingMacros[currentSelectedIndex];
+    if (selectedMacro) {
+      handleSelect(selectedMacro);
       return true;
     }
-
     return false;
   };
 
@@ -146,7 +161,6 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
     show,
     showAll,
     hide,
-    navigate,
     selectCurrent,
     updateMacros,
     isVisible: getVisibility,
@@ -158,7 +172,6 @@ export interface NewSuggestionsOverlayManager {
   show: (buffer: string, x?: number, y?: number) => void;
   showAll: (x?: number, y?: number) => void;
   hide: () => void;
-  navigate: (direction: 'up' | 'down') => boolean;
   selectCurrent: () => boolean;
   updateMacros: (newMacros: Macro[]) => void;
   isVisible: () => boolean;

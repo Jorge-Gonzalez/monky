@@ -1,18 +1,21 @@
-import React, { useState, useEffect, useRef, use } from 'react';
-import { usePopupPosition, calculateOptimalPosition } from '../utils/popupPositioning';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { usePopupPosition } from '../utils/popupPositioning';
 import { Macro } from '../../../../types';
 import { useThemeColors } from '../../../../theme/hooks/useThemeColors';
 import { useMacroStore } from '../../../../store/useMacroStore';
+import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
+import { useListNavigation } from '../hooks/useListNavigation';
 
+  
 export interface NewMacroSuggestionsProps {
   macros: Macro[];
   buffer: string;
   cursorPosition: { x: number; y: number };
   isVisible: boolean;
-  selectedIndex: number;
   onSelectMacro: (macro: Macro) => void;
   onClose: () => void;
-  showAll?: boolean; // Flag to show all macros regardless of buffer
+  onSelectedIndexChange: (index: number) => void;
+  showAll?: boolean;
 }
 
 export function NewMacroSuggestions({
@@ -20,26 +23,26 @@ export function NewMacroSuggestions({
   buffer,
   cursorPosition,
   isVisible,
-  selectedIndex,
   onSelectMacro,
   onClose,
+  onSelectedIndexChange,
   showAll = false
 }: NewMacroSuggestionsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const positionResult = usePopupPosition(
     isVisible,
     cursorPosition,
     containerRef
   );
 
-  
-  // // Fallback positioning if usePopupPosition fails
-  // const x = positionResult?.x ?? cursorPosition?.x ?? 100;
-  // const y = positionResult?.y ?? ((cursorPosition?.y ?? 100) + 20);
-  // const placement = positionResult?.placement ?? 'bottom';
+  const x = positionResult?.x ?? cursorPosition?.x ?? 100;
+  const y = positionResult?.y ?? ((cursorPosition?.y ?? 100) + 20);
+  const placement = positionResult?.placement ?? 'top';
   
   const theme = useMacroStore(state => state.config.theme);
 
+  // Always enable theme when visible
   useThemeColors(containerRef, theme, isVisible);
 
   const [filteredMacros, setFilteredMacros] = useState<Macro[]>([]);
@@ -50,20 +53,17 @@ export function NewMacroSuggestions({
       return;
     }
 
-    // If showAll flag is true, show all macros regardless of buffer
     if (showAll) {
       const allMacros = macros.slice(0, 5);
       setFilteredMacros(allMacros);
       return;
     }
 
-    // If buffer is empty and not in showAll mode, don't show anything
     if (!buffer || buffer.length === 0) {
       setFilteredMacros([]);
       return;
     }
 
-    // For non-empty buffer, filter as usual but allow 1+ chars instead of 2+
     if (buffer.length < 1) {
       setFilteredMacros([]);
       return;
@@ -79,23 +79,38 @@ export function NewMacroSuggestions({
     setFilteredMacros(matches);
   }, [macros, buffer, isVisible, showAll]);
 
-  // Handle Escape key to close the popup
+  const navigation = useListNavigation(filteredMacros.length);
+
+  const handleSelect = useCallback(() => {
+    const selectedMacro = filteredMacros[navigation.selectedIndex];
+    if (selectedMacro) {
+      onSelectMacro(selectedMacro);
+    }
+  }, [filteredMacros, navigation.selectedIndex, onSelectMacro]);
+
+  // Report selected index changes to the manager
   useEffect(() => {
-    if (!isVisible) return;
+    onSelectedIndexChange(navigation.selectedIndex);
+  }, [navigation.selectedIndex, onSelectedIndexChange]);
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
+  useEffect(() => {
+    if (filteredMacros.length > 0) {
+      // Focus the first or selected button
+      const targetIndex = navigation.selectedIndex ?? 0;
+      buttonRefs.current[targetIndex]?.focus();
+    }
+  }, [filteredMacros, navigation.selectedIndex]);
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isVisible, onClose]);
+  useKeyboardNavigation({
+    isActive: isVisible,
+    onSelect: handleSelect,
+    onClose,
+    onNavigateLeft: navigation.navigateLeft,
+    onNavigateRight: navigation.navigateRight,
+  });
 
-  if (!isVisible || filteredMacros.length === 0) {
-    return null;
-  }
+  const shouldShow = isVisible && filteredMacros.length > 0;
+  const selectedMacro = filteredMacros[navigation.selectedIndex];
 
   return (
     <div
@@ -104,38 +119,37 @@ export function NewMacroSuggestions({
       style={{ 
         left: x,
         top: y,
+        position: 'fixed',
+        display: shouldShow ? 'block' : 'none'
       }}
     >
-        <div className={`new-macro-suggestions-arrow ${placement}`} />
+      <div className={`new-macro-suggestions-arrow ${placement}`} />
+      <div role="listbox" className="new-macro-suggestions-commands-row">
         {filteredMacros.map((macro, index) => (
-          <div
+          <button
             key={macro.id}
-            className={`new-macro-suggestions-item ${index === selectedIndex ? 'selected' : ''}`}
+            ref={(el) => { buttonRefs.current[index] = el }}
+            className={`new-macro-suggestions-command-item ${index === navigation.selectedIndex ? 'selected' : ''}`}
             onClick={() => onSelectMacro(macro)}
+            type="button"
           >
-            <div className="new-macro-suggestions-item-content">
-              <div className="new-macro-suggestions-item-command">
-                {macro.command}
-              </div>
-              <div className="new-macro-suggestions-item-text">
-                {macro.text.length > 30 ? `${macro.text.substring(0, 30)}...` : macro.text}
-              </div>
-            </div>
-            {index === selectedIndex && (
-              <div className="new-macro-suggestions-item-indicator">
-                ⭾
-              </div>
-            )}
-          </div>
+            {macro.command}
+          </button>
         ))}
-        
-        {filteredMacros.length > 0 && (
-          <div className="new-macro-suggestions-footer">
-            <kbd className="new-macro-suggestions-kbd">↑↓</kbd> Navigate
-            <kbd className="new-macro-suggestions-kbd">Enter</kbd> Select
-            <kbd className="new-macro-suggestions-kbd">Esc</kbd> Cancel
-          </div>
-        )}
       </div>
+      {selectedMacro && (
+        <div className="new-macro-suggestions-text-preview">
+          {selectedMacro.text}
+        </div>
+      )}
+      
+      {shouldShow && (
+        <div className="new-macro-suggestions-footer">
+          <span><kbd className="new-macro-suggestions-kbd">←</kbd><kbd className="new-macro-suggestions-kbd">→</kbd>/<kbd className="new-macro-suggestions-kbd">Tab</kbd> Navigate</span>
+          <span><kbd className="new-macro-suggestions-kbd">↵</kbd> Select</span>
+          <span><kbd className="new-macro-suggestions-kbd">Esc</kbd> Cancel</span>
+        </div>
+      )}
+    </div>
   );
 }

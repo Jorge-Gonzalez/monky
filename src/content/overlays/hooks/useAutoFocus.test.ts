@@ -17,12 +17,13 @@ describe('useAutoFocus Hook', () => {
     const focusSpy = vi.spyOn(input, 'focus');
     const inputRef = { current: input };
 
-    renderHook(() => useAutoFocus(inputRef, true, 50));
+    const { rerender } = renderHook(({ isActive }) => useAutoFocus(inputRef, isActive, 50), {
+      initialProps: { isActive: false },
+    });
 
-    // Initially, focus is not called
     expect(focusSpy).not.toHaveBeenCalled();
 
-    // Advance timers to trigger the focus
+    rerender({ isActive: true });
     vi.advanceTimersByTime(50);
 
     expect(focusSpy).toHaveBeenCalledTimes(1);
