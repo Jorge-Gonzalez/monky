@@ -2,13 +2,13 @@ import { create } from 'zustand'
 import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware'
 import { defaultMacroConfig } from '../config/defaults'
 import { dummyMacros } from '../config/defaults'
-import { Macro, ThemeMode, Lang, MacroConfig } from '../types'
+import { Macro, ThemeMode, Lang, Config, verticalPlacement } from '../types'
 
 type StoreOpResult = { success: boolean; error?: string }
 
 type MacroStore = {
   macros: Macro[]
-  config: MacroConfig
+  config: Config
   user: any
   syncStatus: 'idle'|'syncing'|'error'
   setUser: (u:any)=>void
@@ -28,18 +28,15 @@ function commandExists(macros: Macro[], command: string, currentId?: Macro['id']
   return macros.some(m => m.command === command && String(m.id) !== String(currentId))
 }
 
-// Custom storage object for Chrome extension storage.
+// Custom storage object that uses the promise-based chrome.storage.local API.
+// This will be polyfilled in non-extension environments (like test-injected.html).
 const chromeStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
     const result = await chrome.storage.local.get(name)
     return result[name] ?? null
   },
-  setItem: async (name: string, value: string): Promise<void> => {
-    await chrome.storage.local.set({ [name]: value })
-  },
-  removeItem: async (name: string): Promise<void> => {
-    await chrome.storage.local.remove(name)
-  },
+  setItem: (name: string, value: string): Promise<void> => chrome.storage.local.set({ [name]: value }),
+  removeItem: (name: string): Promise<void> => chrome.storage.local.remove(name),
 }
 
 export const useMacroStore = create<MacroStore>()(
@@ -54,6 +51,7 @@ export const useMacroStore = create<MacroStore>()(
         theme: defaultMacroConfig.theme,
         useCommitKeys: defaultMacroConfig.useCommitKeys,
         language: defaultMacroConfig.language,
+        suggestionsPopupPlacement: defaultMacroConfig.suggestionsPopupPlacement,
       },
 
       // --- Actions ---
@@ -84,6 +82,8 @@ export const useMacroStore = create<MacroStore>()(
         set(s => ({ config: { ...s.config, theme } })),
       setLanguage: (language: Lang) =>
         set(s => ({ config: { ...s.config, language } })),
+      setSuggestionsPlacement: (placement: verticalPlacement) =>
+        set(s => ({ config: { ...s.config, suggestionsPopupPlacement: placement } })),
       toggleSiteDisabled: (hostname: string) =>
         set((s) => {
           const disabledSites = s.config.disabledSites || []
@@ -128,12 +128,14 @@ export const useMacroStore = create<MacroStore>()(
  * (e.g., the content script) whenever the data in chrome.storage.local changes
  * due to an action in another context (e.g., the popup).
  */
-chrome.storage.onChanged.addListener((changes, area) => {
-  // Check if the change happened in 'local' storage and if our store's data was the one that changed.
-  if (area === 'local') {
-    const storeName = useMacroStore.persist.getOptions().name;
-    if (storeName && changes[storeName]) {
-      useMacroStore.persist.rehydrate();
+if (typeof chrome !== 'undefined' && chrome.storage?.onChanged) {
+  chrome.storage.onChanged.addListener((changes, area) => {
+    // Check if the change happened in 'local' storage and if our store's data was the one that changed.
+    if (area === 'local') {
+      const storeName = useMacroStore.persist.getOptions().name;
+      if (storeName && changes[storeName]) {
+        useMacroStore.persist.rehydrate();
+      }
     }
-  }
-});
+  });
+}

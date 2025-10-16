@@ -1,4 +1,4 @@
-import { EditableEl } from '../../../types';
+import { EditableEl } from '../../../../types';
 
 export interface CaretCoordinates {
   x: number;
@@ -59,6 +59,7 @@ function getInputCaretCoordinates(
   div.style.wordWrap = 'break-word';
   div.style.top = '0';
   div.style.left = '0';
+  div.style.overflow = 'hidden'; // Prevent scrollbars in mirror
 
   properties.forEach((prop) => {
     div.style[prop as any] = style[prop as any];
@@ -68,21 +69,37 @@ function getInputCaretCoordinates(
 
   // Get text before caret
   const textBeforeCaret = element.value.substring(0, position);
-  div.textContent = textBeforeCaret;
+  
+  // For multiline support, we need to preserve newlines
+  const textNode = document.createTextNode(textBeforeCaret);
+  div.appendChild(textNode);
 
-  // Create a span for the caret position
+  // Create a span for measuring the exact caret position
   const span = document.createElement('span');
-  span.textContent = element.value.substring(position, position + 1) || '.';
+  span.textContent = '|'; // Use a visible character for measurement
   div.appendChild(span);
+
+  // Get the span's position relative to the mirror div
+  const spanRect = span.getBoundingClientRect();
+  const divRect = div.getBoundingClientRect();
+  
+  // Calculate position relative to mirror div
+  const relativeX = spanRect.left - divRect.left;
+  const relativeY = spanRect.top - divRect.top;
 
   // Get element's position on page
   const elementRect = element.getBoundingClientRect();
-  const spanRect = span.getBoundingClientRect();
 
-  // Calculate coordinates
+  // Get the element's border and padding
+  const borderLeft = parseInt(style.borderLeftWidth) || 0;
+  const borderTop = parseInt(style.borderTopWidth) || 0;
+  const paddingLeft = parseInt(style.paddingLeft) || 0;
+  const paddingTop = parseInt(style.paddingTop) || 0;
+
+  // Calculate final coordinates
   const coordinates: CaretCoordinates = {
-    x: elementRect.left + window.scrollX + (spanRect.left - elementRect.left) - element.scrollLeft,
-    y: elementRect.top + window.scrollY + (spanRect.top - elementRect.top) - element.scrollTop + spanRect.height,
+    x: elementRect.left + window.scrollX + borderLeft + paddingLeft + relativeX - element.scrollLeft,
+    y: elementRect.top + window.scrollY + borderTop + paddingTop + relativeY - element.scrollTop + spanRect.height,
   };
 
   // Cleanup
@@ -102,24 +119,32 @@ function getContentEditableCaretCoordinates(): CaretCoordinates | null {
   }
 
   const range = selection.getRangeAt(0);
-  const rect = range.getBoundingClientRect();
-
-  // If rect has no dimensions, try to get them from the container
-  if (rect.width === 0 && rect.height === 0) {
-    const container = range.startContainer;
-    if (container.nodeType === Node.TEXT_NODE && container.parentElement) {
-      const parentRect = container.parentElement.getBoundingClientRect();
-      return {
-        x: parentRect.left + window.scrollX,
-        y: parentRect.bottom + window.scrollY,
-      };
-    }
-  }
-
-  return {
+  
+  // Clone the range to avoid modifying the actual selection
+  const clonedRange = range.cloneRange();
+  clonedRange.collapse(true); // Collapse to start (caret position)
+  
+  // Insert a temporary span at the caret position to get precise coordinates
+  const span = document.createElement('span');
+  span.textContent = '\u200B'; // Zero-width space
+  clonedRange.insertNode(span);
+  
+  const rect = span.getBoundingClientRect();
+  
+  const coordinates: CaretCoordinates = {
     x: rect.left + window.scrollX,
     y: rect.bottom + window.scrollY,
   };
+  
+  // Remove the temporary span
+  span.parentNode?.removeChild(span);
+  
+  // Normalize the container to merge any split text nodes
+  if (range.startContainer.parentElement) {
+    range.startContainer.parentElement.normalize();
+  }
+
+  return coordinates;
 }
 
 /**
@@ -165,6 +190,7 @@ export function getCaretCoordinatesDebug(element: EditableEl): CaretCoordinates 
     console.log('Selection start:', element.selectionStart);
     console.log('Selection end:', element.selectionEnd);
     console.log('Value length:', element.value.length);
+    console.log('Scroll position:', { scrollLeft: element.scrollLeft, scrollTop: element.scrollTop });
   }
 
   const coords = getCaretCoordinates(element);
@@ -175,6 +201,7 @@ export function getCaretCoordinatesDebug(element: EditableEl): CaretCoordinates 
       x: coords.x - window.scrollX,
       y: coords.y - window.scrollY,
     });
+    console.log('Element rect:', element.getBoundingClientRect());
   }
   
   console.groupEnd();

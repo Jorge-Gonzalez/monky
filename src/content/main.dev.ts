@@ -1,6 +1,31 @@
 // Development-only entry point for content script testing
 // This version doesn't include CRXJS HMR client to avoid extension context errors
 
+/**
+ * Polyfill for `chrome.storage.local` in non-extension environments.
+ * This allows the store and other modules to be tested on a standard webpage
+ * without modification. It mimics the promise-based API of `chrome.storage`.
+ */
+if (typeof chrome === 'undefined' || !chrome.storage) {
+  (window as any).chrome = {
+    ...(window as any).chrome,
+    storage: {
+      local: {
+        get: (key: string) => Promise.resolve({ [key]: localStorage.getItem(key) }),
+        set: (items: { [key: string]: any }) => {
+          Object.keys(items).forEach(key => localStorage.setItem(key, items[key]))
+          return Promise.resolve()
+        },
+        remove: (key: string) => {
+          localStorage.removeItem(key)
+          return Promise.resolve()
+        },
+      },
+      onChanged: { addListener: () => {}, removeListener: () => {} },
+    },
+  }
+}
+
 import { useMacroStore } from '../store/useMacroStore'
 import { createMacroDetector, MacroDetector } from './detector/macroDetector'
 import { createSuggestionsCoordinator } from './coordinators/suggestionsCoordinator'

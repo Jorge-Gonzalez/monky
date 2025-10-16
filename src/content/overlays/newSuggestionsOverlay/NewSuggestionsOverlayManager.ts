@@ -5,7 +5,7 @@ import { createReactRenderer } from '../services/reactRenderer';
 import { createStyleInjector } from '../services/styleInjector';
 import { NEW_SUGGESTIONS_OVERLAY_STYLES } from './NewSuggestionsOverlayStyles';
 import { getActiveEditable, getSelection, replaceText } from '../../detector/editableUtils';
-import { getCaretCoordinates } from '../utils/caretPosition';
+import { getCaretCoordinates } from './utils/caretPosition';
 
 interface SavedState {
   element: EditableEl | null;
@@ -42,6 +42,7 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
         isVisible: overlayState.isVisible,
         onSelectMacro: handleSelect,
         onClose: hide,
+        placement: 'bottom',
       })
     );
   };
@@ -103,12 +104,35 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
   };
 
   const showAll = (x?: number, y?: number): void => {
+    const activeElement = getActiveEditable(document.activeElement);
+    if (!activeElement) {
+      console.warn('No active element found');
+      return;
+    }
+
+    // Calculate cursor position if not provided
+    let cursorX = x;
+    let cursorY = y;
+    
+    if (cursorX === undefined || cursorY === undefined) {
+      console.log('Calculating caret position for showAll...');
+      const coords = getCaretCoordinates(activeElement);
+      if (coords) {
+        cursorX = coords.x;
+        cursorY = coords.y;
+        console.log('Caret position calculated:', coords);
+      } else {
+        // Fallback to element position if caret detection fails
+        console.warn('Caret detection failed, using element position');
+        const rect = activeElement.getBoundingClientRect();
+        cursorX = rect.left + window.scrollX;
+        cursorY = rect.bottom + window.scrollY;
+      }
+    }
+
     overlayState = {
       isVisible: true,
-      cursorPosition: { 
-        x: x ?? overlayState.cursorPosition.x, 
-        y: y ?? overlayState.cursorPosition.y 
-      },
+      cursorPosition: { x: cursorX, y: cursorY },
       mode: 'showAll',
       filterBuffer: '',
     };
@@ -118,12 +142,35 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
   };
 
   const show = (buffer: string, x?: number, y?: number): void => {
+    const activeElement = getActiveEditable(document.activeElement);
+    if (!activeElement) {
+      console.warn('No active element found');
+      return;
+    }
+
+    // Calculate cursor position if not provided
+    let cursorX = x;
+    let cursorY = y;
+    
+    if (cursorX === undefined || cursorY === undefined) {
+      console.log('Calculating caret position for show...');
+      const coords = getCaretCoordinates(activeElement);
+      if (coords) {
+        cursorX = coords.x;
+        cursorY = coords.y;
+        console.log('Caret position calculated:', coords);
+      } else {
+        // Fallback to element position if caret detection fails
+        console.warn('Caret detection failed, using element position');
+        const rect = activeElement.getBoundingClientRect();
+        cursorX = rect.left + window.scrollX;
+        cursorY = rect.bottom + window.scrollY;
+      }
+    }
+
     overlayState = {
       isVisible: true,
-      cursorPosition: { 
-        x: x ?? overlayState.cursorPosition.x, 
-        y: y ?? overlayState.cursorPosition.y 
-      },
+      cursorPosition: { x: cursorX, y: cursorY },
       mode: 'filter',
       filterBuffer: buffer,
     };

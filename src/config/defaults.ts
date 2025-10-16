@@ -1,10 +1,12 @@
-import { MacroConfig, Macro } from "../types"
+import { Config, Macro } from "../types"
 
-export const defaultMacroConfig: MacroConfig = {
+export const defaultMacroConfig: Config = {
   disabledSites: [],
   prefixes: ["/", ";"],
   theme: "light",
   useCommitKeys: false, // Default to auto-commit
+  language: "en",
+  suggestionsPopupPlacement: "bottom",
 }
 
 export const dummyMacros: Macro[] = [

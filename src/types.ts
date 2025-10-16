@@ -14,12 +14,16 @@ export type ThemeMode = 'light' | 'dark' | 'system'
 
 export type Lang = 'es' | 'en'
 
-export type MacroConfig = {
+// Used to define the placement of the suggestions poupup
+export type verticalPlacement = 'top' | 'bottom'
+
+export type Config = {
   disabledSites: string[]
   prefixes: string[]
   useCommitKeys?: boolean
   theme: ThemeMode
   language?: Lang
+  suggestionsPopupPlacement?: verticalPlacement
 }
 
 export type CoreState = { active: boolean; buffer: string }

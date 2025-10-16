@@ -16,6 +16,7 @@ export const NEW_SUGGESTIONS_OVERLAY_STYLES = `
   }
 
   .new-macro-suggestions-container {
+    transition: top 0.1s ease-out;
     background-color: var(--bg-primary);
     border-radius: 8px;
     box-shadow: 0 10px 25px -5px var(--shadow-color);

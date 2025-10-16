@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macro Extension Test Page (Injected)</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2em;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 1.5em;
+            font-weight: bold;
+        }
+        input[type="text"], textarea, div[contenteditable] {
+            width: 90%;
+            max-width: 600px;
+            padding: 8px;
+            margin-top: 0.5em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        div[contenteditable] {
+            background-color: white;
+            min-height: 100px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a;
+                color: #e0e0e0;
+            }
+            h1, h2, code {
+                color: #e0e0e0;
+            }
+            input[type="text"], textarea, div[contenteditable] {
+                background-color: #2a2a2a;
+                color: #e0e0e0;
+                border-color: #555;
+            }
+            div[contenteditable] {
+                background-color: #2a2a2a;
+            }
+        }
+    </style>
+
+    <!--
+      This script block is essential for React Fast Refresh (HMR).
+      Vite will automatically inject the necessary preamble code here
+      because this file is now a root-level entry point.
+    -->
+    <script type="module">
+      import RefreshRuntime from "/@react-refresh"
+      RefreshRuntime.injectIntoGlobalHook(window)
+      window.$RefreshReg$ = () => {}
+      window.$RefreshSig$ = () => (type) => type
+      window.__vite_plugin_react_preamble_installed__ = true
+    </script>
+
+    <!-- Inject the Vite HMR client -->
+    <script type="module" src="/@vite/client"></script>
+
+    <!-- Inject the development content script -->
+    <script type="module" src="/src/content/main.dev.ts"></script>
+
+</head>
+<body>
+    <h1>Macro Extension Test Page (Injected)</h1>
+    <p>This page directly includes the content script for live development.</p>
+    <p>Try typing a macro command you have configured (e.g., <code>/sig</code>) in any of the fields below.</p>
+
+    <div>
+        <label for="simple-input">Simple Text Input</label>
+        <input type="text" id="simple-input" placeholder="Try a macro here...">
+    </div>
+
+    <div>
+        <label for="textarea-input">Text Area</label>
+        <textarea id="textarea-input" placeholder="Try a macro here..."></textarea>
+    </div>
+
+    <div>
+        <label for="contenteditable-plain">Content Editable Div (Plain)</label>
+        <div id="contenteditable-plain" contenteditable="true"></div>
+    </div>
+
+    <div>
+        <label for="contenteditable-rich">Content Editable Div (Rich Text)</label>
+        <div id="contenteditable-rich" contenteditable="true">
+            <p>This is some <b>bold text</b>. You can try a macro here. Or after this <i>italic text</i>. Even inside a list:</p>
+            <ul>
+                <li>Item 1</li>
+                <li>Try here: </li>
+            </ul>
+            <p>And some more text to finish.</p>
+        </div>
+    </div>
+
+    <script>
+        // Check if we're being served through the Vite dev server
+        document.addEventListener('DOMContentLoaded', () => {
+            const vitePort = '5173'; // Default Vite port
+            const expectedHost = `localhost:${vitePort}`;
+            const expectedUrl = `http://${expectedHost}/test-injected.html`;
+
+            if (location.host === expectedHost) {
+                 // The presence of the /@vite/client script is the real test,
+                 // but we can give a good initial status.
+                updateConnectionStatus(true, 'Vite HMR ready. Content script is injected.');
+            } else if (location.protocol === 'file:') {
+                updateConnectionStatus(false, `Open this page via the Vite server: ${expectedUrl}`);
+            } else {
+                updateConnectionStatus(false, `Incorrect server. Please use the Vite dev server at ${expectedUrl}`);
+            }
+        });
+    </script>
+</body>
+</html>

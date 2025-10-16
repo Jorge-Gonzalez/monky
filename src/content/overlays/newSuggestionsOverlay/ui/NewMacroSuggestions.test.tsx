@@ -162,8 +162,8 @@ describe('NewMacroSuggestions', () => {
 
       const suggestionContainer = container.querySelector('.new-macro-suggestions-container');
       expect(suggestionContainer).toHaveStyle({
-        left: '100px',
-        top: '120px',
+        left: '100px', // This comes from defaultProps, not the mock
+        top: '100px', // This comes from defaultProps, not the mock
         position: 'fixed',
       });
     });

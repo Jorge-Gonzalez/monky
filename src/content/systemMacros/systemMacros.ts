@@ -182,9 +182,9 @@ function toggleNewSuggestionsOverlay() {
     );
   } else {
     // Show all macros with a default position (center-left of viewport)
-    const defaultX = Math.max(100, window.innerWidth * 0.2);
-    const defaultY = Math.max(100, window.innerHeight * 0.3);
-    newSuggestionsOverlayManager.showAll(defaultX, defaultY);
+    // const defaultX = Math.max(100, window.innerWidth * 0.2);
+    // const defaultY = Math.max(100, window.innerHeight * 0.3);
+    newSuggestionsOverlayManager.showAll();
     createNotification(
       '🔄 New Suggestions Visible', 
       'New suggestions overlay is now visible',

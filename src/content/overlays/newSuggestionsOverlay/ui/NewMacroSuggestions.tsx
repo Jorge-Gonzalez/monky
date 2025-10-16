@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { usePopupPosition } from '../utils/popupPositioning';
 import { Macro } from '../../../../types';
 import { useThemeColors } from '../../../../theme/hooks/useThemeColors';
 import { useMacroStore } from '../../../../store/useMacroStore';
@@ -11,6 +10,7 @@ export interface NewMacroSuggestionsProps {
   filterBuffer: string;
   mode: 'filter' | 'showAll';
   cursorPosition: { x: number; y: number };
+  placement: 'top' | 'bottom';
   isVisible: boolean;
   onSelectMacro: (macro: Macro) => void;
   onClose: () => void;
@@ -21,22 +21,13 @@ export function NewMacroSuggestions({
   filterBuffer,
   mode,
   cursorPosition,
+  placement,
   isVisible,
   onSelectMacro,
   onClose,
 }: NewMacroSuggestionsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  
-  const positionResult = usePopupPosition(
-    isVisible,
-    cursorPosition,
-    containerRef
-  );
-
-  const x = positionResult?.x ?? cursorPosition?.x ?? 100;
-  const y = positionResult?.y ?? ((cursorPosition?.y ?? 100) + 20);
-  const placement = positionResult?.placement ?? 'top';
   
   const theme = useMacroStore(state => state.config.theme);
   useThemeColors(containerRef, theme, isVisible);
@@ -101,8 +92,8 @@ export function NewMacroSuggestions({
       ref={containerRef}
       className="new-macro-suggestions-container"
       style={{ 
-        left: x,
-        top: y,
+        left: `${cursorPosition.x}px`,
+        top: `${cursorPosition.y}px`,
         position: 'fixed',
       }}
     >
