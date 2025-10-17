@@ -6,6 +6,7 @@ import { createStyleInjector } from '../services/styleInjector';
 import { NEW_SUGGESTIONS_OVERLAY_STYLES } from './NewSuggestionsOverlayStyles';
 import { getActiveEditable, getSelection, replaceText } from '../../detector/editableUtils';
 import { getCaretCoordinates } from './utils/caretPosition';
+import { calculateOptimalPosition } from './utils/popupPositioning';
 
 interface SavedState {
   element: EditableEl | null;
@@ -15,9 +16,14 @@ interface SavedState {
 interface OverlayState {
   isVisible: boolean;
   cursorPosition: { x: number; y: number };
+  placement: 'top' | 'bottom';
   mode: 'filter' | 'showAll';
   filterBuffer: string;
 }
+
+// Estimated popup dimensions (used for positioning calculations)
+const POPUP_ESTIMATED_WIDTH = 300;
+const POPUP_ESTIMATED_HEIGHT = 75; // Adjust based on your typical popup height
 
 export function createNewSuggestionsOverlayManager(macros: Macro[]) {
   const renderer = createReactRenderer('new-macro-suggestions');
@@ -28,6 +34,7 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
   let overlayState: OverlayState = {
     isVisible: false,
     cursorPosition: { x: 0, y: 0 },
+    placement: 'bottom',
     mode: 'filter',
     filterBuffer: '',
   };
@@ -38,12 +45,32 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
         macros: currentMacros,
         filterBuffer: overlayState.filterBuffer,
         mode: overlayState.mode,
-        cursorPosition: overlayState.cursorPosition,
+        position: overlayState.cursorPosition,
+        placement: overlayState.placement,
         isVisible: overlayState.isVisible,
         onSelectMacro: handleSelect,
         onClose: hide,
-        placement: 'bottom',
       })
+    );
+  };
+
+  const calculatePosition = (caretCoords: { x: number; y: number }) => {
+    const windowSize = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
+
+    const popupDimensions = {
+      width: POPUP_ESTIMATED_WIDTH,
+      height: POPUP_ESTIMATED_HEIGHT,
+    };
+
+
+    return calculateOptimalPosition(
+      caretCoords,
+      windowSize,
+      popupDimensions,
+      { margin: 10 }
     );
   };
 
@@ -110,29 +137,26 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
       return;
     }
 
-    // Calculate cursor position if not provided
-    let cursorX = x;
-    let cursorY = y;
-    
-    if (cursorX === undefined || cursorY === undefined) {
-      console.log('Calculating caret position for showAll...');
-      const coords = getCaretCoordinates(activeElement);
-      if (coords) {
-        cursorX = coords.x;
-        cursorY = coords.y;
-        console.log('Caret position calculated:', coords);
-      } else {
-        // Fallback to element position if caret detection fails
-        console.warn('Caret detection failed, using element position');
-        const rect = activeElement.getBoundingClientRect();
-        cursorX = rect.left + window.scrollX;
-        cursorY = rect.bottom + window.scrollY;
+    let caretCoords;
+
+    if (x !== undefined && y !== undefined) {
+      // Use provided coordinates
+      caretCoords = { x, y };
+    } else {
+      // Calculate caret position automatically
+      caretCoords = getCaretCoordinates(activeElement);
+      if (!caretCoords) {
+        console.error('Failed to get caret coordinates');
+        return;
       }
     }
 
+    const optimalPosition = calculatePosition(caretCoords);
+
     overlayState = {
       isVisible: true,
-      cursorPosition: { x: cursorX, y: cursorY },
+      cursorPosition: { x: optimalPosition.x, y: optimalPosition.y },
+      placement: optimalPosition.placement,
       mode: 'showAll',
       filterBuffer: '',
     };
@@ -148,29 +172,26 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
       return;
     }
 
-    // Calculate cursor position if not provided
-    let cursorX = x;
-    let cursorY = y;
-    
-    if (cursorX === undefined || cursorY === undefined) {
-      console.log('Calculating caret position for show...');
-      const coords = getCaretCoordinates(activeElement);
-      if (coords) {
-        cursorX = coords.x;
-        cursorY = coords.y;
-        console.log('Caret position calculated:', coords);
-      } else {
-        // Fallback to element position if caret detection fails
-        console.warn('Caret detection failed, using element position');
-        const rect = activeElement.getBoundingClientRect();
-        cursorX = rect.left + window.scrollX;
-        cursorY = rect.bottom + window.scrollY;
+    let caretCoords;
+
+    if (x !== undefined && y !== undefined) {
+      // Use provided coordinates
+      caretCoords = { x, y };
+    } else {
+      // Calculate caret position automatically
+      caretCoords = getCaretCoordinates(activeElement);
+      if (!caretCoords) {
+        console.error('Failed to get caret coordinates');
+        return;
       }
     }
 
+    const optimalPosition = calculatePosition(caretCoords);
+
     overlayState = {
       isVisible: true,
-      cursorPosition: { x: cursorX, y: cursorY },
+      cursorPosition: { x: optimalPosition.x, y: optimalPosition.y },
+      placement: optimalPosition.placement,
       mode: 'filter',
       filterBuffer: buffer,
     };

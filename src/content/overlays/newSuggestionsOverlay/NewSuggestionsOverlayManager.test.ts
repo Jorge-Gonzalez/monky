@@ -38,8 +38,14 @@ vi.mock('../utils/caretPosition', () => ({
   getCaretCoordinates: vi.fn(),
 }));
 
+// Mock the popup positioning utility
+vi.mock('../utils/popupPositioning', () => ({
+  calculateOptimalPosition: vi.fn(),
+}));
+
 import { getActiveEditable, getSelection, replaceText } from '../../detector/editableUtils';
-import { getCaretCoordinates } from '../utils/caretPosition';
+import { getCaretCoordinates } from './utils/caretPosition';
+import { calculateOptimalPosition } from './utils/popupPositioning';
 
 describe('NewSuggestionsOverlayManager', () => {
   const mockMacros: Macro[] = [
@@ -76,6 +82,7 @@ describe('NewSuggestionsOverlayManager', () => {
     // Setup default mock implementations
     vi.mocked(getActiveEditable).mockReturnValue(mockElement);
     vi.mocked(getSelection).mockReturnValue({ start: 0, end: 0 });
+    vi.mocked(getCaretCoordinates).mockReturnValue({ x: 100, y: 200 });
   });
 
   afterEach(() => {
@@ -137,13 +144,65 @@ describe('NewSuggestionsOverlayManager', () => {
       expect(renderCall.props.isVisible).toBe(true);
     });
 
-    test('uses default cursor position if not provided', () => {
+    test('calculates cursor position automatically if not provided', () => {
       const manager = createNewSuggestionsOverlayManager(mockMacros);
+      
+      // Mock getCaretCoordinates to return specific coords
+      vi.mocked(getCaretCoordinates).mockReturnValue({ x: 300, y: 400 });
       
       manager.show('test');
 
       const renderCall = mockRenderer.render.mock.calls[0][0];
-      expect(renderCall.props.cursorPosition).toEqual({ x: 0, y: 0 });
+      expect(renderCall.props.cursorPosition).toEqual({ x: 300, y: 400 });
+      expect(getCaretCoordinates).toHaveBeenCalledWith(mockElement);
+    });
+
+    test('calculates cursor position for showAll if not provided', () => {
+      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      
+      vi.mocked(getCaretCoordinates).mockReturnValue({ x: 350, y: 450 });
+      
+      manager.showAll();
+
+      const renderCall = mockRenderer.render.mock.calls[0][0];
+      expect(renderCall.props.cursorPosition).toEqual({ x: 350, y: 450 });
+      expect(getCaretCoordinates).toHaveBeenCalledWith(mockElement);
+    });
+
+    test('uses fallback position when getCaretCoordinates returns null', () => {
+      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      
+      // Mock getCaretCoordinates to return null
+      vi.mocked(getCaretCoordinates).mockReturnValue(null);
+      
+      // Mock getBoundingClientRect
+      const mockRect = {
+        left: 50,
+        top: 60,
+        bottom: 80,
+        right: 200,
+        width: 150,
+        height: 20,
+      } as DOMRect;
+      vi.spyOn(mockElement, 'getBoundingClientRect').mockReturnValue(mockRect);
+      
+      manager.show('test');
+
+      const renderCall = mockRenderer.render.mock.calls[0][0];
+      // Should use element's bottom position
+      expect(renderCall.props.cursorPosition.x).toBe(50);
+      expect(renderCall.props.cursorPosition.y).toBe(80);
+    });
+
+    test('does not show when no active element found', () => {
+      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      
+      vi.mocked(getActiveEditable).mockReturnValue(null);
+      
+      manager.show('test', 100, 200);
+
+      expect(manager.isVisible()).toBe(false);
+      expect(mockRenderer.render).not.toHaveBeenCalled();
     });
 
     test('hides the suggestions overlay', () => {

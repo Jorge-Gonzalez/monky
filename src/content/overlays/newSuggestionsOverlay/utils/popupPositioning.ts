@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 
 interface PopupPosition {
   x: number;
@@ -48,9 +47,10 @@ export function calculateOptimalPosition(
   // Check if popup would go off the bottom of the screen
   if (y + popupDimensions.height > windowSize.height - margin) {
     // Try positioning above the cursor
-    const aboveY = cursorPosition.y - popupDimensions.height - 8; // 8px offset above cursor
+    const aboveY = cursorPosition.y - popupDimensions.height - 78; // 8px offset above cursor
     if (aboveY >= margin) {
       // Position above cursor
+      console.log('Position above cursor');
       y = aboveY;
       placement = 'top';
     } else {
@@ -70,57 +70,8 @@ export function calculateOptimalPosition(
     x = windowSize.width - popupDimensions.width - margin;
   }
 
+  console.log('Calculated position:', { x, y, placement });
+
   return { x, y, placement };
 }
 
-/**
- * Hook to handle positioning of a popup element
- * @param isVisible Whether the popup is visible
- * @param cursorPosition Current cursor position
- * @param popupRef Reference to the popup element
- * @returns Position and placement information
- */
-export function usePopupPosition(
-  isVisible: boolean,
-  cursorPosition: PopupPosition | null,
-  popupRef: React.RefObject<HTMLElement>,
-  boundarySettings?: BoundarySettings
-) {
-  const [position, setPosition] = useState<PopupPositionResult | null>(null);
-
-  useEffect(() => {
-    console.log('Position effect:', { isVisible, hasCursor: !!cursorPosition, hasRef: !!popupRef.current });
-    
-    if (!isVisible || !cursorPosition || !popupRef.current) {
-      setPosition(null);
-      return;
-    }
-
-    // Get popup dimensions
-    const popupEl = popupRef.current;
-    const rect = popupEl.getBoundingClientRect();
-    const dimensions: PopupDimensions = {
-      width: rect.width,
-      height: rect.height
-    };
-
-    // Get window dimensions
-    const windowSize: WindowSize = {
-      width: window.innerWidth,
-      height: window.innerHeight
-    };
-
-    // Calculate optimal position
-    const newPosition = calculateOptimalPosition(
-      cursorPosition,
-      windowSize,
-      dimensions,
-      boundarySettings
-    );
-
-    console.log('Setting position:', newPosition);
-    setPosition(newPosition);
-  }, [isVisible, cursorPosition, popupRef, boundarySettings]); // Added popupRef here!
-
-  return position;
-}

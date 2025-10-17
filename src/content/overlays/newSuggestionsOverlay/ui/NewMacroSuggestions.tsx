@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useRef, useCallback, useMemo, useEffect } from 'react';
 import { Macro } from '../../../../types';
 import { useThemeColors } from '../../../../theme/hooks/useThemeColors';
 import { useMacroStore } from '../../../../store/useMacroStore';
@@ -9,7 +9,7 @@ export interface NewMacroSuggestionsProps {
   macros: Macro[];
   filterBuffer: string;
   mode: 'filter' | 'showAll';
-  cursorPosition: { x: number; y: number };
+  position: { x: number; y: number };
   placement: 'top' | 'bottom';
   isVisible: boolean;
   onSelectMacro: (macro: Macro) => void;
@@ -20,7 +20,7 @@ export function NewMacroSuggestions({
   macros,
   filterBuffer,
   mode,
-  cursorPosition,
+  position,
   placement,
   isVisible,
   onSelectMacro,
@@ -92,8 +92,8 @@ export function NewMacroSuggestions({
       ref={containerRef}
       className="new-macro-suggestions-container"
       style={{ 
-        left: `${cursorPosition.x}px`,
-        top: `${cursorPosition.y}px`,
+        left: position.x,
+        top: position.y,
         position: 'fixed',
       }}
     >
