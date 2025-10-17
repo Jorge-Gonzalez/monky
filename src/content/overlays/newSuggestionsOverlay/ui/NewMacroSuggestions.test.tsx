@@ -60,7 +60,8 @@ const defaultProps = {
   macros: mockMacros,
   filterBuffer: 'test',
   mode: 'filter' as const,
-  cursorPosition: { x: 100, y: 100 },
+  position: { x: 100, y: 100 },
+  placement: 'bottom' as const,
   isVisible: true,
   onSelectMacro: vi.fn(),
   onClose: vi.fn(),
@@ -162,8 +163,8 @@ describe('NewMacroSuggestions', () => {
 
       const suggestionContainer = container.querySelector('.new-macro-suggestions-container');
       expect(suggestionContainer).toHaveStyle({
-        left: '100px', // This comes from defaultProps, not the mock
-        top: '100px', // This comes from defaultProps, not the mock
+        left: '100px',
+        top: '100px',
         position: 'fixed',
       });
     });
@@ -288,7 +289,7 @@ describe('NewMacroSuggestions', () => {
       const { container } = render(
         <NewMacroSuggestions 
           {...defaultProps} 
-          cursorPosition={{ x: 0, y: 0 }} 
+          position={{ x: 0, y: 0 }} 
         />
       );
 

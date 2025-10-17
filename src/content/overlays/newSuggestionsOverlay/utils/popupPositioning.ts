@@ -1,4 +1,3 @@
-
 interface PopupPosition {
   x: number;
   y: number;
@@ -26,11 +25,15 @@ export interface PopupPositionResult {
 
 /**
  * Calculates optimal position for a popup to stay within window boundaries
- * @param cursorPosition Current cursor position
- * @param windowSize Current window dimensions
+ * 
+ * IMPORTANT: Expects cursorPosition in PAGE coordinates (includes scroll: window.scrollX/Y)
+ * Returns position in PAGE coordinates for use with position: fixed
+ * 
+ * @param cursorPosition Current cursor position in page coordinates (pageX, pageY)
+ * @param windowSize Current window dimensions (viewport)
  * @param popupDimensions Dimensions of the popup element
  * @param boundarySettings Margin settings
- * @returns Optimal position and placement direction
+ * @returns Optimal position and placement direction in page coordinates
  */
 export function calculateOptimalPosition(
   cursorPosition: PopupPosition,
@@ -40,38 +43,46 @@ export function calculateOptimalPosition(
 ): PopupPositionResult {
   const { margin } = boundarySettings;
 
+  // Convert page coordinates to viewport coordinates
+  const viewportX = cursorPosition.x - window.scrollX;
+  const viewportY = cursorPosition.y - window.scrollY;
+
   // Try positioning below the cursor first
-  let y = cursorPosition.y + 8; // 8px offset below cursor
+  let finalViewportY = viewportY + 8; // 8px offset below cursor
   let placement: 'top' | 'bottom' = 'bottom';
 
-  // Check if popup would go off the bottom of the screen
-  if (y + popupDimensions.height > windowSize.height - margin) {
+  // Check if popup would go off the bottom of the viewport
+  if (finalViewportY + popupDimensions.height > windowSize.height - margin) {
     // Try positioning above the cursor
-    const aboveY = cursorPosition.y - popupDimensions.height - 78; // 8px offset above cursor
+    const aboveY = viewportY - popupDimensions.height - 8; // 8px offset above cursor
     if (aboveY >= margin) {
       // Position above cursor
-      console.log('Position above cursor');
-      y = aboveY;
+      finalViewportY = aboveY;
       placement = 'top';
     } else {
       // Neither position works perfectly, prefer positioning below
-      // but constrain to window boundaries
-      y = Math.max(margin, Math.min(cursorPosition.y + 8, windowSize.height - popupDimensions.height - margin));
+      // but constrain to viewport boundaries
+      finalViewportY = Math.max(
+        margin, 
+        Math.min(viewportY + 8, windowSize.height - popupDimensions.height - margin)
+      );
     }
   }
 
-  // Calculate x position, centering on cursor if possible
-  let x = cursorPosition.x - (popupDimensions.width / 2);
+  // Calculate x position in viewport, centering on cursor if possible
+  let finalViewportX = Math.max(margin, viewportX - popupDimensions.width / 2);
 
   // Ensure popup stays within left/right boundaries
-  if (x < margin) {
-    x = margin;
-  } else if (x + popupDimensions.width > windowSize.width - margin) {
-    x = windowSize.width - popupDimensions.width - margin;
+  if (finalViewportX + popupDimensions.width > windowSize.width - margin) {
+    finalViewportX = windowSize.width - popupDimensions.width - margin;
   }
+  console.log(`Viewport position: (${viewportX}, ${viewportY})`);
+  console.log(`Page position: (${cursorPosition.x}, ${cursorPosition.y})`);
+  console.log(`Popup dimensions: (${popupDimensions.width}, ${popupDimensions.height})`);
+  console.log(`Window scroll: (${window.scrollX}, ${window.scrollY})`);
+  console.log(`Popup positioned at (${finalViewportX}, ${finalViewportY}) with placement: ${placement}`);
 
-  console.log('Calculated position:', { x, y, placement });
-
-  return { x, y, placement };
+  // For `position: fixed`, coordinates are relative to the viewport.
+  // We've already calculated these as finalViewportX and finalViewportY.
+  return { x: finalViewportX, y: finalViewportY, placement };
 }
-

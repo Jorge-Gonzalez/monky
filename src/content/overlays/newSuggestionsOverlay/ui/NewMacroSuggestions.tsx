@@ -98,7 +98,7 @@ export function NewMacroSuggestions({
       }}
     >
       <div className={`new-macro-suggestions-arrow ${placement}`} />
-      <div role="listbox" className="new-macro-suggestions-commands-row">
+      <div role="listbox" className="new-macro-suggestions-commands-list">
         {filteredMacros.map((macro, index) => (
           <button
             key={macro.id}

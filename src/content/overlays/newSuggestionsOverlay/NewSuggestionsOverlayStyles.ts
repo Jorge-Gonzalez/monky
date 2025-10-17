@@ -50,7 +50,7 @@ export const NEW_SUGGESTIONS_OVERLAY_STYLES = `
   }
 
   .new-macro-suggestions-item {
-    padding: 8px 12px;
+    padding: 6px 10px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -77,6 +77,42 @@ export const NEW_SUGGESTIONS_OVERLAY_STYLES = `
     min-width: 0;
   }
 
+    .new-macro-suggestions-commands-list {
+    display: flex;
+    padding: 4px;
+    gap: 4px;
+    border-bottom: 1px solid var(--border-secondary);
+  }
+
+  .new-macro-suggestions-command-item {
+    flex-grow: 1;
+    padding: 6px 10px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: monospace;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .new-macro-suggestions-command-item:hover {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-primary);
+  }
+
+  .new-macro-suggestions-command-item.selected {
+    background-color: var(--bg-tertiary);
+    color: var(--text-accent);
+    border-color: var(--text-accent);
+    box-shadow: 0 0 0 1px var(--text-accent);
+  }
+
   .new-macro-suggestions-item-command {
     font-family: monospace;
     font-size: 13px;
@@ -98,6 +134,14 @@ export const NEW_SUGGESTIONS_OVERLAY_STYLES = `
     font-size: 11px;
     color: var(--text-accent);
   }
+
+  .new-macro-suggestions-text-preview {
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    min-height: 2.5em;
+  }
+
 
   .new-macro-suggestions-footer {
     padding: 6px 12px;

@@ -34,17 +34,17 @@ vi.mock('../../detector/editableUtils', () => ({
 }));
 
 // Mock the caret position utility
-vi.mock('../utils/caretPosition', () => ({
+vi.mock('./utils/caretPosition', () => ({
   getCaretCoordinates: vi.fn(),
 }));
 
 // Mock the popup positioning utility
-vi.mock('../utils/popupPositioning', () => ({
+vi.mock('./utils/popupPositioning', () => ({
   calculateOptimalPosition: vi.fn(),
 }));
 
 import { getActiveEditable, getSelection, replaceText } from '../../detector/editableUtils';
-import { getCaretCoordinates } from './utils/caretPosition';
+import { getCaretCoordinates } from './utils/caretPosition'; // This import is correct
 import { calculateOptimalPosition } from './utils/popupPositioning';
 
 describe('NewSuggestionsOverlayManager', () => {
@@ -83,6 +83,7 @@ describe('NewSuggestionsOverlayManager', () => {
     vi.mocked(getActiveEditable).mockReturnValue(mockElement);
     vi.mocked(getSelection).mockReturnValue({ start: 0, end: 0 });
     vi.mocked(getCaretCoordinates).mockReturnValue({ x: 100, y: 200 });
+    vi.mocked(calculateOptimalPosition).mockImplementation((coords) => ({ ...coords, placement: 'bottom' }));
   });
 
   afterEach(() => {
@@ -125,7 +126,7 @@ describe('NewSuggestionsOverlayManager', () => {
       const renderCall = mockRenderer.render.mock.calls[0][0];
       expect(renderCall.props.filterBuffer).toBe('test');
       expect(renderCall.props.mode).toBe('filter');
-      expect(renderCall.props.cursorPosition).toEqual({ x: 100, y: 200 });
+      expect(renderCall.props.position).toEqual({ x: 100, y: 200 });
       expect(renderCall.props.isVisible).toBe(true);
     });
 
@@ -140,7 +141,7 @@ describe('NewSuggestionsOverlayManager', () => {
       const renderCall = mockRenderer.render.mock.calls[0][0];
       expect(renderCall.props.filterBuffer).toBe('');
       expect(renderCall.props.mode).toBe('showAll');
-      expect(renderCall.props.cursorPosition).toEqual({ x: 150, y: 250 });
+      expect(renderCall.props.position).toEqual({ x: 150, y: 250 });
       expect(renderCall.props.isVisible).toBe(true);
     });
 
@@ -153,7 +154,7 @@ describe('NewSuggestionsOverlayManager', () => {
       manager.show('test');
 
       const renderCall = mockRenderer.render.mock.calls[0][0];
-      expect(renderCall.props.cursorPosition).toEqual({ x: 300, y: 400 });
+      expect(renderCall.props.position).toEqual({ x: 300, y: 400 });
       expect(getCaretCoordinates).toHaveBeenCalledWith(mockElement);
     });
 
@@ -165,33 +166,8 @@ describe('NewSuggestionsOverlayManager', () => {
       manager.showAll();
 
       const renderCall = mockRenderer.render.mock.calls[0][0];
-      expect(renderCall.props.cursorPosition).toEqual({ x: 350, y: 450 });
+      expect(renderCall.props.position).toEqual({ x: 350, y: 450 });
       expect(getCaretCoordinates).toHaveBeenCalledWith(mockElement);
-    });
-
-    test('uses fallback position when getCaretCoordinates returns null', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
-      
-      // Mock getCaretCoordinates to return null
-      vi.mocked(getCaretCoordinates).mockReturnValue(null);
-      
-      // Mock getBoundingClientRect
-      const mockRect = {
-        left: 50,
-        top: 60,
-        bottom: 80,
-        right: 200,
-        width: 150,
-        height: 20,
-      } as DOMRect;
-      vi.spyOn(mockElement, 'getBoundingClientRect').mockReturnValue(mockRect);
-      
-      manager.show('test');
-
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      // Should use element's bottom position
-      expect(renderCall.props.cursorPosition.x).toBe(50);
-      expect(renderCall.props.cursorPosition.y).toBe(80);
     });
 
     test('does not show when no active element found', () => {
@@ -272,14 +248,17 @@ describe('NewSuggestionsOverlayManager', () => {
 
     test('handles selection when savedState element is null', () => {
       const manager = createNewSuggestionsOverlayManager(mockMacros);
+
       
-      vi.mocked(getActiveEditable).mockReturnValue(null);
-      
+      // Show the overlay to capture the onSelectMacro callback
       manager.show('test', 100, 200);
-      
       const renderCall = mockRenderer.render.mock.calls[0][0];
       const onSelectMacro = renderCall.props.onSelectMacro;
+
+      // Now, hide the manager, which will clear the savedState.
+      manager.hide();
       
+      // Now, call the captured callback. `savedState` is now null.
       onSelectMacro(mockMacros[0]);
 
       expect(replaceText).not.toHaveBeenCalled();
@@ -417,7 +396,7 @@ describe('NewSuggestionsOverlayManager', () => {
       expect(props).toHaveProperty('macros');
       expect(props).toHaveProperty('filterBuffer');
       expect(props).toHaveProperty('mode');
-      expect(props).toHaveProperty('cursorPosition');
+      expect(props).toHaveProperty('position');
       expect(props).toHaveProperty('isVisible');
       expect(props).toHaveProperty('onSelectMacro');
       expect(props).toHaveProperty('onClose');

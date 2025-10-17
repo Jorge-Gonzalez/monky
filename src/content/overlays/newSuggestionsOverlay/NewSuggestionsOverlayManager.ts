@@ -241,6 +241,13 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
   };
 }
 
+// This is a helper for testing purposes only and should not be used in production.
+declare module './NewSuggestionsOverlayManager' {
+  function createNewSuggestionsOverlayManager(macros: Macro[]): NewSuggestionsOverlayManager & {
+    _test_setSavedState: (state: any) => void;
+  };
+}
+
 export interface NewSuggestionsOverlayManager {
   show: (buffer: string, x?: number, y?: number) => void;
   showAll: (x?: number, y?: number) => void;

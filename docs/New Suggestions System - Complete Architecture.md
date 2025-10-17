@@ -18,36 +18,36 @@ src/content/overlays/newSuggestionsOverlay/
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    USER INTERACTION                          │
+│                    USER INTERACTION                         │
 │  (Types "/" in input, presses Ctrl+Space, clicks outside)   │
 └─────────────────────┬───────────────────────────────────────┘
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              NewSuggestionsCoordinator                       │
+│              NewSuggestionsCoordinator                      │
 │  • Listens to input/keydown/click/blur events               │
-│  • Detects trigger patterns ("/test")                        │
-│  • Handles keyboard shortcuts (Ctrl+Space)                   │
-│  • Can be enabled/disabled                                   │
+│  • Detects trigger patterns ("/test")                       │
+│  • Handles keyboard shortcuts (Ctrl+Space)                  │
+│  • Can be enabled/disabled                                  │
 └─────────────────────┬───────────────────────────────────────┘
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────────┐
-│           NewSuggestionsOverlayManager                       │
-│  • Gets active editable element                              │
-│  • Calculates caret position (getCaretCoordinates)           │
-│  • Calculates optimal popup position                         │
-│  • Manages overlay state (visible, mode, buffer)             │
-│  • Handles macro selection & text replacement                │
+│           NewSuggestionsOverlayManager                      │
+│  • Gets active editable element                             │
+│  • Calculates caret position (getCaretCoordinates)          │
+│  • Calculates optimal popup position                        │
+│  • Manages overlay state (visible, mode, buffer)            │
+│  • Handles macro selection & text replacement               │
 └─────────────────────┬───────────────────────────────────────┘
                       │
                       ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              NewMacroSuggestions Component                   │
-│  • Filters macros based on buffer                            │
-│  • Renders UI at calculated position                         │
-│  • Handles keyboard navigation (arrows, tab)                 │
-│  • Reports selection back to manager                         │
+│              NewMacroSuggestions Component                  │
+│  • Filters macros based on buffer                           │
+│  • Renders UI at calculated position                        │
+│  • Handles keyboard navigation (arrows, tab)                │
+│  • Reports selection back to manager                        │
 └─────────────────────────────────────────────────────────────┘
 ```
 

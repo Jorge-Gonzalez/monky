@@ -2,7 +2,7 @@
   "servers": {
     "browsermcp": {
       "command": "/home/jorge/.nvm/versions/node/v22.20.0/bin/npx",
-      "args": ["/home/jorge/.nvm/versions/node/v22.20.0/lib/node_modules/@browsermcp/mcp@latest/dist/index.js"]
+      "args": ["-y", "@browsermcp/mcp"]
     }
   }
 }
