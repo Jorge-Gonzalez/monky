@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { crx } from '@crxjs/vite-plugin'
 import manifest from './manifest.config'
 import type { TerserOptions } from 'terser'
+import devtoolsJson from 'vite-plugin-devtools-json';
 
 function isProdBuild(mode: string) {
   return mode === 'production' || mode === 'production-terser'
@@ -14,7 +15,11 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const isTerser = mode === 'production-terser'
   
   return {
-    plugins: [react(), crx({ manifest })],
+    plugins: [
+      react(),
+      crx({ manifest }), 
+      ...(process.env.NODE_ENV !== 'production' ? [devtoolsJson()] : []),
+    ],
     build: {
       outDir: 'dist',
       minify: isTerser ? 'terser' : 'esbuild',

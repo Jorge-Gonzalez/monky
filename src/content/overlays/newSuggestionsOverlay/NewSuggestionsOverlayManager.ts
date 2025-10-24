@@ -75,29 +75,60 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
   };
 
   const handleSelect = (macro: Macro) => {
+    console.log('handleSelect called with macro:', macro);
+    console.log('savedState:', savedState);
+    console.log('overlayState.mode:', overlayState.mode);
+    
     if (!savedState?.element) {
+      console.warn('No savedState.element, hiding');
       hide();
       return;
     }
 
     const element = savedState.element;
     const trigger = savedState.trigger;
+    console.log('element:', element);
+    console.log('trigger:', trigger);
 
-    if (overlayState.mode === 'showAll' || !trigger) {
-      // In showAll mode, insert macro at current cursor position
+    if (overlayState.mode === 'showAll' && trigger) {
+      console.log('showAll mode - replacing trigger text');
+      // In showAll mode, replace the trigger text (buffer) with macro
+      const content = (element as any).value || element.textContent || '';
+      const triggerIndex = content.lastIndexOf(trigger);
+      console.log('searching for trigger in content:', { trigger, content, triggerIndex });
+      if (triggerIndex !== -1) {
+        console.log('calling replaceText with:', { macro, start: triggerIndex, end: triggerIndex + trigger.length });
+        replaceText(element, macro, triggerIndex, triggerIndex + trigger.length);
+      } else {
+        console.warn('Trigger not found in content, falling back to cursor position');
+        // Fallback: insert at current cursor position
+        const selection = getSelection(element);
+        if (selection) {
+          replaceText(element, macro, selection.start, selection.end);
+        }
+      }
+    } else if (!trigger) {
+      console.log('no trigger - inserting at cursor position');
+      // No trigger, insert at current cursor position
       const selection = getSelection(element);
+      console.log('selection:', selection);
       if (selection) {
+        console.log('calling replaceText with:', { macro, start: selection.start, end: selection.end });
         replaceText(element, macro, selection.start, selection.end);
+      } else {
+        console.warn('No selection found');
       }
     } else {
+      console.log('filter mode - replacing trigger text');
       // In filter mode, replace the trigger text with macro
-      const content = element.value || element.textContent || '';
+      const content = (element as any).value || element.textContent || '';
       const triggerIndex = content.lastIndexOf(trigger);
       if (triggerIndex !== -1) {
         replaceText(element, macro, triggerIndex, triggerIndex + trigger.length);
       }
     }
 
+    console.log('calling hide()');
     hide();
   };
 
@@ -106,23 +137,40 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
     savedState = { element: activeElement, trigger };
   };
 
-  const restoreFocus = (delay = 10) => {
-    if (!savedState?.element || !document.body.contains(savedState.element)) {
+  const restoreTimers = new Set<number>();
+  const clearRestoreTimers = () => {
+    restoreTimers.forEach(t => clearTimeout(t));
+    restoreTimers.clear();
+  };
+
+  const restoreFocus = (element: EditableEl | null, delay = 10) => {
+    if (!element || !document.body.contains(element)) {
       return;
     }
-    
-    setTimeout(() => {
-      if (savedState?.element) {
-        savedState.element.focus();
-        
+
+    const timer = window.setTimeout(() => {
+      if (element && (element as any).isConnected) {
+        element.focus();
+
         // Ensure cursor is positioned at the end of the content
-        if (savedState.element instanceof HTMLInputElement || 
-            savedState.element instanceof HTMLTextAreaElement) {
-          const length = savedState.element.value.length;
-          savedState.element.setSelectionRange(length, length);
+        if (element instanceof HTMLInputElement ||
+            element instanceof HTMLTextAreaElement) {
+          const length = element.value.length;
+          element.setSelectionRange(length, length);
+        } else if (element instanceof HTMLElement && element.isContentEditable) {
+          const range = document.createRange();
+          range.selectNodeContents(element);
+          range.collapse(false);
+          const sel = window.getSelection();
+          if (sel) {
+            sel.removeAllRanges();
+            sel.addRange(range);
+          }
         }
       }
+      restoreTimers.delete(timer);
     }, delay);
+    restoreTimers.add(timer);
   };
 
   const initialize = (): void => {
@@ -130,7 +178,7 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
     renderer.initialize();
   };
 
-  const showAll = (x?: number, y?: number): void => {
+  const showAll = (x?: number, y?: number, buffer?: string): void => {
     const activeElement = getActiveEditable(document.activeElement);
     if (!activeElement) {
       console.warn('No active element found');
@@ -158,10 +206,12 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
       cursorPosition: { x: optimalPosition.x, y: optimalPosition.y },
       placement: optimalPosition.placement,
       mode: 'showAll',
-      filterBuffer: '',
+      filterBuffer: buffer || '', // Use the provided buffer for fuzzy filtering
     };
     
-    saveState('');
+    // In showAll mode, save the buffer as the trigger so we know what to replace
+    // The buffer (e.g., "/si") is what should be replaced when a macro is selected
+    savedState = { element: activeElement, trigger: buffer || '' };
     renderSuggestions();
   };
 
@@ -202,15 +252,21 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
 
   const hide = (): void => {
     if (!overlayState.isVisible) return;
+    const elementToFocus = savedState?.element;
+    const wasShowAllMode = overlayState.mode === 'showAll';
     
     overlayState = {
       ...overlayState,
       isVisible: false,
       filterBuffer: '',
     };
-    
     renderer.clear();
-    restoreFocus();
+    
+    // Only restore focus if we're not in showAll mode to avoid interfering
+    // with ongoing macro detection
+    if (!wasShowAllMode) {
+      restoreFocus(elementToFocus);
+    }
     savedState = null;
   };
 
@@ -241,16 +297,9 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
   };
 }
 
-// This is a helper for testing purposes only and should not be used in production.
-declare module './NewSuggestionsOverlayManager' {
-  function createNewSuggestionsOverlayManager(macros: Macro[]): NewSuggestionsOverlayManager & {
-    _test_setSavedState: (state: any) => void;
-  };
-}
-
 export interface NewSuggestionsOverlayManager {
   show: (buffer: string, x?: number, y?: number) => void;
-  showAll: (x?: number, y?: number) => void;
+  showAll: (x?: number, y?: number, buffer?: string) => void;
   hide: () => void;
   updateMacros: (newMacros: Macro[]) => void;
   isVisible: () => boolean;

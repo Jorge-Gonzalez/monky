@@ -385,6 +385,8 @@ function replaceTextInContentEditable(el: HTMLElement, macro: Macro, startPos: n
 export function replaceText(el: EditableEl, macro: Macro, startPos: number, selEnd: number) {
   if (!el) return
 
+  console.debug(`[EDITABLE] replaceText | range=${startPos}-${selEnd} macro.id=${macro.id} macro.command="${macro.command}" macro.text.len=${macro.text?.length ?? 0}`)
+
   if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
     replaceTextInInput(el, macro, startPos, selEnd)
   } else if (el instanceof HTMLElement && (el.isContentEditable || el.contentEditable === "true")) {

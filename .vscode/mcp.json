@@ -1,8 +1,12 @@
 {
   "servers": {
     "browsermcp": {
-      "command": "/home/jorge/.nvm/versions/node/v22.20.0/bin/npx",
-      "args": ["-y", "@browsermcp/mcp"]
+      "command": "npx",
+      "args": ["-y", "@browsermcp/mcp"],
+      "env": {
+        "BROWSERMCP_SOURCE": "${workspaceFolder}/src"
+      },
+      "source": "${workspaceFolder}/src"
     }
   }
 }

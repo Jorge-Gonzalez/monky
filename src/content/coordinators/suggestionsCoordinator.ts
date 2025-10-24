@@ -56,6 +56,16 @@ export function createSuggestionsCoordinator(): DetectorActions {
       }
       return false
     },
+
+    onShowAllRequested(buffer: string, position?: { x: number; y: number }): void {
+      // The old suggestions coordinator doesn't support showAll functionality
+      // so it just ignores this request, falling back to default behavior
+      if (position) {
+        suggestionsOverlayManager.show(buffer, position.x, position.y)
+      } else {
+        suggestionsOverlayManager.show(buffer)
+      }
+    },
   }
 }
 

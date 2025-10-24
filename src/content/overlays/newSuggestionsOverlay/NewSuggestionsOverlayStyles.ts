@@ -22,7 +22,7 @@ export const NEW_SUGGESTIONS_OVERLAY_STYLES = `
     box-shadow: 0 10px 25px -5px var(--shadow-color);
     border: 1px solid var(--border-primary);
     min-width: 200px;
-    max-width: 300px;
+    max-width: 360px;
     font-size: 14px;
     overflow: hidden;
     transition: opacity 0.15s ease, transform 0.15s ease;
@@ -69,7 +69,7 @@ export const NEW_SUGGESTIONS_OVERLAY_STYLES = `
 
   .new-macro-suggestions-item.selected {
     background-color: var(--bg-tertiary);
-    border-left: 2px solid var(--text-accent);
+    border-left: 1px solid var(--text-accent);
   }
 
   .new-macro-suggestions-item-content {
@@ -86,7 +86,7 @@ export const NEW_SUGGESTIONS_OVERLAY_STYLES = `
 
   .new-macro-suggestions-command-item {
     flex-grow: 1;
-    padding: 6px 10px;
+    padding: 3px 6px 3px 6px;
     border: 1px solid transparent;
     border-radius: 6px;
     background-color: var(--bg-secondary);
@@ -110,15 +110,8 @@ export const NEW_SUGGESTIONS_OVERLAY_STYLES = `
     background-color: var(--bg-tertiary);
     color: var(--text-accent);
     border-color: var(--text-accent);
-    box-shadow: 0 0 0 1px var(--text-accent);
-  }
-
-  .new-macro-suggestions-item-command {
-    font-family: monospace;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-accent);
-    margin-bottom: 2px;
+    outline: 2px solid var(--text-accent);
+    outline-offset: 1px;
   }
 
   .new-macro-suggestions-item-text {

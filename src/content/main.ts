@@ -1,39 +1,44 @@
 import { useMacroStore } from "../store/useMacroStore"
 import { createMacroDetector, MacroDetector } from "./detector/macroDetector"
-import { createSuggestionsCoordinator } from "./coordinators/suggestionsCoordinator"
+import { createNewSuggestionsCoordinator, NewSuggestionsCoordinator } from "./coordinators/NewSuggestionsCoordinator"
 import { loadMacros, listenMacrosChange } from "./storage/macroStorage"
 import { updateAllMacros } from "./overlays"
+import { createNewSuggestionsOverlayManager } from "./overlays/newSuggestionsOverlay/NewSuggestionsOverlayManager"
 import { Macro } from "../types"
 
 // Module-level state
 let detector: MacroDetector | null = null
 let isDetectorActive = false
+let newSuggestionsCoordinator: NewSuggestionsCoordinator | null = null
+let overlayManager = createNewSuggestionsOverlayManager([])
 
 /**
  * Creates and initializes the macro detector with its action handlers.
  */
-function createAndInitializeDetector(): MacroDetector {
-  const suggestionsCoordinator = createSuggestionsCoordinator()
-  const newDetector = createMacroDetector(suggestionsCoordinator)
+function createAndInitializeDetector(actions: NewSuggestionsCoordinator): MacroDetector {
+  const newDetector = createMacroDetector(actions)
   newDetector.initialize()
   return newDetector
 }
 
 /**
- * Updates the macros in the detector and overlay managers.
+ * Updates the macros in the detector, coordinator and overlay managers.
  */
 function updateDetectorMacros(macros: Macro[]): void {
   if (detector) {
     detector.setMacros(macros)
   }
-  
-  // Also update overlay managers
+  // Keep overlay managers in sync (if they subscribe separately)
   updateAllMacros(macros)
+  // Ensure the single coordinator instance has the latest macros
+  if (newSuggestionsCoordinator) {
+    newSuggestionsCoordinator.setMacros(macros)
+  }
 }
 
 /**
  * Checks the current configuration and hostname to decide whether to
- * activate or deactivate the macro detector.
+ * activate or deactivate the macro detector and coordinator.
  */
 function manageDetectorState() {
   const { config } = useMacroStore.getState()
@@ -45,11 +50,28 @@ function manageDetectorState() {
       detector = null
       isDetectorActive = false
     }
+
+    if (newSuggestionsCoordinator) {
+      newSuggestionsCoordinator.detach()
+      newSuggestionsCoordinator = null
+    }
   } else {
+    // Ensure a single coordinator instance is created and attached
+    if (!newSuggestionsCoordinator) {
+      newSuggestionsCoordinator = createNewSuggestionsCoordinator(overlayManager)
+      newSuggestionsCoordinator.attach()
+
+      // Provide current macros to the coordinator immediately
+      const macros = useMacroStore.getState().macros
+      if (macros.length > 0) {
+        newSuggestionsCoordinator.setMacros(macros)
+      }
+    }
+
     if (!isDetectorActive) {
-      detector = createAndInitializeDetector()
+      detector = createAndInitializeDetector(newSuggestionsCoordinator)
       isDetectorActive = true
-      
+
       // Set macros if we have them
       const macros = useMacroStore.getState().macros
       if (macros.length > 0) {
@@ -66,9 +88,9 @@ async function main() {
   // Wait for the store to be hydrated from storage before doing anything.
   await useMacroStore.persist.rehydrate()
 
-  // Load initial macros and pass them to the detector.
+  // Load initial macros
   const initialMacros = await loadMacros()
-  
+
   // Set up listeners for any subsequent changes to macros or config.
   listenMacrosChange(updateDetectorMacros)
   useMacroStore.subscribe(manageDetectorState)
@@ -81,7 +103,7 @@ async function main() {
     }
   }
 
-  // Run the initial check to activate or deactivate the detector.
+  // Run the initial check to activate or deactivate the detector and coordinator.
   manageDetectorState()
 
   // If detector is active, set initial macros
@@ -89,7 +111,7 @@ async function main() {
     detector.setMacros(initialMacros)
   }
 
-  // Update overlay managers with the loaded macros
+  // Keep overlay managers updated as well
   const finalMacros = useMacroStore.getState().macros
   updateAllMacros(finalMacros)
 
@@ -105,6 +127,11 @@ function cleanup() {
     detector.destroy()
     detector = null
     isDetectorActive = false
+  }
+
+  if (newSuggestionsCoordinator) {
+    newSuggestionsCoordinator.detach()
+    newSuggestionsCoordinator = null
   }
 }
 

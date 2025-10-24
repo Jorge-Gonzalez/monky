@@ -1,147 +1,133 @@
-import { EditableEl } from '../../types';
+import { EditableEl, Macro } from '../../types';
 import { NewSuggestionsOverlayManager } from '../overlays/newSuggestionsOverlay/NewSuggestionsOverlayManager';
-import { getActiveEditable } from '../detector/editableUtils';
-
-interface CoordinatorConfig {
-  triggerChar: string;
-  minBufferLength: number;
-  showAllShortcut?: {
-    key: string;
-    ctrl?: boolean;
-    alt?: boolean;
-    shift?: boolean;
-  };
-}
-
-const DEFAULT_CONFIG: CoordinatorConfig = {
-  triggerChar: '/',
-  minBufferLength: 1,
-  showAllShortcut: {
-    key: ' ', // Space
-    ctrl: true,
-  },
-};
+import { getActiveEditable, getCursorCoordinates } from '../detector/editableUtils';
+import { DetectorActions } from '../actions/detectorActions';
 
 export function createNewSuggestionsCoordinator(
-  manager: NewSuggestionsOverlayManager,
-  config: Partial<CoordinatorConfig> = {}
-) {
-  const settings = { ...DEFAULT_CONFIG, ...config };
+  manager: NewSuggestionsOverlayManager
+): NewSuggestionsCoordinator {
   let isEnabled = true;
   let lastBuffer = '';
+  let currentMacros: Macro[] = [];
 
   /**
-   * Extract the buffer text after the trigger character
+   * Set macros for the coordinator
    */
-  const getBufferText = (element: EditableEl): string | null => {
-    let text = '';
-    let cursorPos = 0;
-
-    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
-      text = element.value;
-      cursorPos = element.selectionStart || 0;
-    } else if (element.textContent) {
-      text = element.textContent;
-      const selection = window.getSelection();
-      if (selection && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        cursorPos = range.startOffset;
-      }
-    }
-
-    // Find the last trigger character before cursor
-    const textBeforeCursor = text.substring(0, cursorPos);
-    const triggerIndex = textBeforeCursor.lastIndexOf(settings.triggerChar);
-
-    if (triggerIndex === -1) {
-      return null;
-    }
-
-    // Get text between trigger and cursor
-    const buffer = textBeforeCursor.substring(triggerIndex + 1);
-
-    // Don't show if buffer contains spaces (optional - adjust to your needs)
-    if (buffer.includes(' ') || buffer.includes('\n')) {
-      return null;
-    }
-
-    // Check minimum buffer length
-    if (buffer.length < settings.minBufferLength) {
-      return null;
-    }
-
-    return buffer;
+  const setMacros = (macros: Macro[]): void => {
+    currentMacros = [...macros];
+    manager.updateMacros(macros);
   };
 
-  /**
-   * Handle input events
-   */
-  const handleInput = (e: Event): void => {
-    if (!isEnabled) return;
-
-    const target = e.target;
-    if (!target) return;
-
-    const element = getActiveEditable(target);
-    if (!element) return;
-
-    const buffer = getBufferText(element);
-
-    if (buffer !== null && buffer !== lastBuffer) {
-      // Buffer changed, show/update suggestions
+  // Create the detector actions object
+  const detectorActions: DetectorActions = {
+    onDetectionStarted(buffer: string, position?: { x: number; y: number }) {
+      // Use the current buffer instead of extracting from element
       lastBuffer = buffer;
-      manager.show(buffer);
-    } else if (buffer === null && manager.isVisible()) {
-      // No valid buffer, hide if visible
+
+      // DISABLED: fuzzy filter overlay on typing start
+      // const coords = position || getCursorCoordinates() || { x: 0, y: 0 };
+      // manager.show(buffer, coords.x, coords.y);
+    },
+
+    onDetectionUpdated(buffer: string, position?: { x: number; y: number }) {
+      lastBuffer = buffer;
+
+      // DISABLED: fuzzy filter overlay updates while typing
+      // if (manager.isVisible()) {
+      //   const coords = position || getCursorCoordinates() || { x: 0, y: 0 };
+      //   manager.show(buffer, coords.x, coords.y);
+      // }
+    },
+
+    onDetectionCancelled() {
       lastBuffer = '';
       manager.hide();
-    }
-  };
+    },
 
-  /**
-   * Handle keyboard shortcuts
-   */
-  const handleKeyDown = (e: KeyboardEvent): void => {
-    if (!isEnabled) return;
-
-    // Check for showAll shortcut (e.g., Ctrl+Space)
-    if (settings.showAllShortcut) {
-      const { key, ctrl, alt, shift } = settings.showAllShortcut;
-      
-      const ctrlMatch = ctrl ? e.ctrlKey || e.metaKey : !e.ctrlKey && !e.metaKey;
-      const altMatch = alt ? e.altKey : !e.altKey;
-      const shiftMatch = shift ? e.shiftKey : !e.shiftKey;
-      const keyMatch = e.key === key || e.code === key;
-
-      if (ctrlMatch && altMatch && shiftMatch && keyMatch) {
-        e.preventDefault();
-        
-        const element = getActiveEditable(document.activeElement);
-        if (element) {
-          manager.showAll();
-        }
-        return;
-      }
-    }
-
-    // Handle Escape to close
-    if (e.key === 'Escape' && manager.isVisible()) {
-      e.preventDefault();
+    onMacroCommitted(macroId: string) {
+      lastBuffer = '';
       manager.hide();
-      return;
-    }
+    },
 
-    // Handle backspace - update buffer
-    if (e.key === 'Backspace') {
-      // Let the input event handler deal with it
-      return;
-    }
+    onCommitRequested(buffer: string): boolean {
+      // If the overlay is visible and user pressed Enter, try to select the current suggestion
+      if (manager.isVisible()) {
+        // For now, we'll return false as the selection logic needs to be implemented properly
+        // The new suggestions component handles selection internally
+        return false;
+      }
+      return false;
+    },
+
+    onNavigationRequested(direction: 'up' | 'down' | 'left' | 'right'): boolean {
+      // If the overlay is visible, it should handle navigation
+      if (manager.isVisible()) {
+        // Let the popup handle its own navigation, but prevent the detector from processing
+        return true;
+      }
+      // If overlay is not visible, let other handlers process
+      return false;
+    },
+
+    onCancelRequested(): boolean {
+      if (manager.isVisible()) {
+        manager.hide();
+        return true;
+      }
+      return false;
+    },
+
+    onShowAllRequested(buffer: string, position?: { x: number; y: number }): void {
+      const x = position?.x || 0;
+      const y = position?.y || 0;
+      manager.showAll(x, y, buffer);
+    },
   };
 
+  // Return the combined interface
+  const coordinator: NewSuggestionsCoordinator = {
+    ...detectorActions,
+    attach: (): void => {
+      // Add any additional document-level event listeners here if needed
+      // Currently, the macro detector handles the main event flow
+      document.addEventListener('click', handleClickOutside, true);
+    },
+
+    detach: (): void => {
+      // Remove any document-level event listeners that were added
+      document.removeEventListener('click', handleClickOutside, true);
+      // Hide any visible overlays
+      manager.hide();
+    },
+
+    enable: (): void => {
+      isEnabled = true;
+    },
+
+    disable: (): void => {
+      isEnabled = false;
+      if (manager.isVisible()) {
+        manager.hide();
+      }
+      lastBuffer = '';
+    },
+
+    isEnabled: (): boolean => isEnabled,
+
+    updateConfig: (): void => {
+      // Configuration updates not supported in this version
+      // All configuration comes from detector events
+    },
+
+    setMacros,
+  };
+
+  return coordinator;
+  
   /**
    * Handle click outside to close
    */
-  const handleClickOutside = (e: MouseEvent): void => {
+  function handleClickOutside(e: MouseEvent): void {
     if (!manager.isVisible()) return;
 
     // Check if click was inside an editable element
@@ -151,91 +137,15 @@ export function createNewSuggestionsCoordinator(
     if (!editableElement) {
       manager.hide();
     }
-  };
-
-  /**
-   * Handle blur events
-   */
-  const handleBlur = (e: FocusEvent): void => {
-    if (!manager.isVisible()) return;
-
-    // Small delay to allow clicking on suggestions
-    setTimeout(() => {
-      // Check if focus moved to another editable element
-      const newElement = getActiveEditable(document.activeElement);
-      if (!newElement) {
-        manager.hide();
-        lastBuffer = '';
-      }
-    }, 200);
-  };
-
-  /**
-   * Start listening to events
-   */
-  const attach = (): void => {
-    // Use capture phase to ensure we catch events before other handlers
-    document.addEventListener('input', handleInput, true);
-    document.addEventListener('keydown', handleKeyDown, true);
-    document.addEventListener('click', handleClickOutside, true);
-    document.addEventListener('blur', handleBlur, true);
-  };
-
-  /**
-   * Stop listening to events
-   */
-  const detach = (): void => {
-    document.removeEventListener('input', handleInput, true);
-    document.removeEventListener('keydown', handleKeyDown, true);
-    document.removeEventListener('click', handleClickOutside, true);
-    document.removeEventListener('blur', handleBlur, true);
-  };
-
-  /**
-   * Enable the coordinator
-   */
-  const enable = (): void => {
-    isEnabled = true;
-  };
-
-  /**
-   * Disable the coordinator
-   */
-  const disable = (): void => {
-    isEnabled = false;
-    if (manager.isVisible()) {
-      manager.hide();
-    }
-    lastBuffer = '';
-  };
-
-  /**
-   * Check if coordinator is enabled
-   */
-  const getEnabled = (): boolean => isEnabled;
-
-  /**
-   * Update configuration
-   */
-  const updateConfig = (newConfig: Partial<CoordinatorConfig>): void => {
-    Object.assign(settings, newConfig);
-  };
-
-  return {
-    attach,
-    detach,
-    enable,
-    disable,
-    isEnabled: getEnabled,
-    updateConfig,
-  };
+  }
 }
 
-export interface NewSuggestionsCoordinator {
+export interface NewSuggestionsCoordinator extends DetectorActions {
   attach: () => void;
   detach: () => void;
   enable: () => void;
   disable: () => void;
   isEnabled: () => boolean;
-  updateConfig: (config: Partial<CoordinatorConfig>) => void;
+  updateConfig: () => void;
+  setMacros: (macros: Macro[]) => void;
 }

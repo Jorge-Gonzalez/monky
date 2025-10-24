@@ -7,7 +7,7 @@ import { defaultMacroConfig } from "../../config/defaults"
 import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro } from "../systemMacros/systemMacros"
 import { DetectorActions } from "../actions/detectorActions"
 
-const COMMIT_KEYS = new Set([" ", "Enter", "Tab"])
+const COMMIT_KEYS = new Set([" ", "Enter"])
 const CONFIRM_DELAY_MS = 1850
 
 export function createMacroDetector(actions: DetectorActions) {
@@ -34,6 +34,7 @@ export function createMacroDetector(actions: DetectorActions) {
   function cancelDetection() {
     // console.log(`[MACRO-DETECTOR] 🚫 cancelDetection called | Was active: ${state.active}, buffer: "${state.buffer}"`)
     clearTimer()
+    clearBlurTimer()
     const wasActive = state.active
     const wasBuffer = state.buffer
     state = { active: false, buffer: "" }
@@ -114,6 +115,10 @@ export function createMacroDetector(actions: DetectorActions) {
 
   function scheduleConfirmIfExact(sel: { start: number; end: number } | null): boolean {
     clearTimer()
+
+    // Do not attempt commit logic when the buffer is exactly a configured prefix (e.g., "/")
+    if (config.prefixes.includes(state.buffer)) return false
+
     if (!isExact(state, macros)) return false
 
     const isPrefix = macros.some(m => m.command.startsWith(state.buffer) && m.command !== state.buffer)
@@ -166,14 +171,51 @@ export function createMacroDetector(actions: DetectorActions) {
     const prevStateActive = state.active
 
     // Handle navigation keys
-    if (state.active && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+    if (state.active && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
       // console.log(`[MACRO-DETECTOR] 🔼🔽 Navigation key: ${e.key}`)
-      const handled = actions.onNavigationRequested(e.key === 'ArrowUp' ? 'up' : 'down')
+      let direction: 'up' | 'down' | 'left' | 'right';
+      if (e.key === 'ArrowUp') direction = 'up';
+      else if (e.key === 'ArrowDown') direction = 'down';
+      else if (e.key === 'ArrowLeft') direction = 'left';
+      else direction = 'right';
+      
+      const handled = actions.onNavigationRequested(direction as any)
       if (handled) {
         // console.log(`[MACRO-DETECTOR] ✅ Navigation handled, preventing default`)
         e.preventDefault()
       }
       return
+    }
+
+    // Handle Tab key - show all suggestions for fuzzy search
+    if (state.active && e.key === 'Tab') {
+      // console.log(`[MACRO-DETECTOR] 📋 Tab pressed, showing all suggestions for fuzzy search`)
+      
+      // Check if navigation is currently being handled by overlay
+      if (actions.onNavigationRequested && actions.onNavigationRequested('right' as any)) {
+        // If the overlay is handling navigation, let it handle Tab as well
+        e.preventDefault();
+        return;
+      }
+      
+      e.preventDefault(); // Prevent default tab behavior (losing focus)
+      e.stopPropagation(); // Stop the event from propagating to other listeners
+      
+      // Clear any pending blur timer since we're intentionally triggering an overlay
+      clearBlurTimer()
+      
+      // For Tab key during detection, we want to trigger showAll mode in the suggestions
+      // We'll implement a new interface method for this purpose
+      if (actions.onShowAllRequested) {
+        const coords = getCursorCoordinates();
+        actions.onShowAllRequested(state.buffer, coords || undefined);
+      } else {
+        // Fallback for coordinators that don't support onShowAllRequested
+        // Just continue with normal detection update
+        const coords = getCursorCoordinates();
+        actions.onDetectionUpdated(state.buffer, coords || undefined);
+      }
+      return;
     }
 
     // Handle Escape
@@ -336,8 +378,22 @@ export function createMacroDetector(actions: DetectorActions) {
     }
   }
 
+  let blurTimer: number = 0
+
+  function clearBlurTimer() {
+    if (blurTimer > 0) {
+      clearTimeout(blurTimer)
+      blurTimer = 0
+    }
+  }
+
   function onBlur() {
-    cancelDetection()
+    // Add a small delay to prevent interference with Tab-triggered overlays
+    // This allows the overlay to show without being immediately cancelled
+    clearBlurTimer()
+    blurTimer = window.setTimeout(() => {
+      cancelDetection()
+    }, 100) // 100ms delay should be enough for the overlay to establish itself
   }
 
   function updateConfig() {
@@ -361,6 +417,7 @@ export function createMacroDetector(actions: DetectorActions) {
     window.removeEventListener("keydown", onKeyDown, true)
     window.removeEventListener("blur", onBlur, true)
     listenersAttached = false
+    clearBlurTimer()
     cancelDetection()
   }
 
@@ -372,6 +429,11 @@ export function createMacroDetector(actions: DetectorActions) {
 
   function setMacros(newMacros: Macro[]): void {
     macros = [...SYSTEM_MACROS, ...newMacros]
+    
+    // If the actions object has setMacros method (like NewSuggestionsCoordinator), call it
+    if ('setMacros' in actions && typeof actions.setMacros === 'function') {
+      (actions as any).setMacros([...SYSTEM_MACROS, ...newMacros]);
+    }
   }
 
   function getState(): CoreState {

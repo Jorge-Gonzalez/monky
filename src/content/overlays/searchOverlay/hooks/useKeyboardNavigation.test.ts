@@ -1,6 +1,5 @@
 // @vitest-environment jsdom
-import { renderHook } from '@testing-library/react';
-import { fireEvent } from '@testing-library/dom';
+import { renderHook, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useKeyboardNavigation } from './useKeyboardNavigation';
 

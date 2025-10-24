@@ -28,7 +28,8 @@ if (typeof chrome === 'undefined' || !chrome.storage) {
 
 import { useMacroStore } from '../store/useMacroStore'
 import { createMacroDetector, MacroDetector } from './detector/macroDetector'
-import { createSuggestionsCoordinator } from './coordinators/suggestionsCoordinator'
+import { createNewSuggestionsCoordinator } from './coordinators/NewSuggestionsCoordinator'
+import { createNewSuggestionsOverlayManager } from './overlays/newSuggestionsOverlay/NewSuggestionsOverlayManager'
 import { loadMacros, listenMacrosChange } from './storage/macroStorage'
 import { Macro } from '../types'
 
@@ -40,7 +41,8 @@ let isDetectorActive = false
  * Creates and initializes the macro detector for development.
  */
 function createAndInitializeDetector(): MacroDetector {
-  const suggestionsCoordinator = createSuggestionsCoordinator()
+  const overlayManager = createNewSuggestionsOverlayManager([])
+  const suggestionsCoordinator = createNewSuggestionsCoordinator(overlayManager)
   const newDetector = createMacroDetector(suggestionsCoordinator)
   newDetector.initialize()
   return newDetector

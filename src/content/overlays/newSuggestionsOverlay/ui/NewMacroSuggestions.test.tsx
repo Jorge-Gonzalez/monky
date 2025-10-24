@@ -89,6 +89,16 @@ describe('NewMacroSuggestions', () => {
       expect(screen.getByText('different')).toBeInTheDocument();
     });
 
+    test('uses fuzzy search in showAll mode with buffer', () => {
+      render(<NewMacroSuggestions {...defaultProps} mode="showAll" filterBuffer="test" />);
+
+      // Should show macros that fuzzy match "test"
+      expect(screen.getByText('test-macro')).toBeInTheDocument();
+      expect(screen.getByText('another-test')).toBeInTheDocument();
+      // Should not show macro that doesn't match
+      expect(screen.queryByText('different')).not.toBeInTheDocument();
+    });
+
     test('returns null when invisible', () => {
       const { container } = render(<NewMacroSuggestions {...defaultProps} isVisible={false} />);
 

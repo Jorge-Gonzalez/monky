@@ -71,7 +71,7 @@ export function handleSystemMacro(macro: Macro): boolean {
       return true
     
     case 'system-toggle-new-suggestions':
-      toggleNewSuggestionsOverlay()
+      // toggleNewSuggestionsOverlay()
       return true
     
     default:
@@ -110,9 +110,6 @@ function toggleNewSuggestionsOverlay() {
   if (newSuggestionsOverlayManager.isVisible()) {
     newSuggestionsOverlayManager.hide();
   } else {
-    // Show all macros with a default position (center-left of viewport)
-    // const defaultX = Math.max(100, window.innerWidth * 0.2);
-    // const defaultY = Math.max(100, window.innerHeight * 0.3);
     newSuggestionsOverlayManager.showAll();
   }
 }

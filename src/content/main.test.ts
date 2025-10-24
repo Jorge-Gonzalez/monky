@@ -15,19 +15,21 @@ vi.mock("./storage/macroStorage", async () => {
   }
 })
 
-vi.mock('./overlays', () => ({
-  suggestionsOverlayManager: {
-    isVisible: vi.fn().mockReturnValue(false), // Default to not visible
-    selectCurrent: vi.fn().mockReturnValue(false),
+const mockOverlays = vi.hoisted(() => ({
+  newSuggestionsOverlayManager: {
+    isVisible: vi.fn().mockReturnValue(false),
     show: vi.fn(),
+    showAll: vi.fn(),
     hide: vi.fn(),
-    navigate: vi.fn(),
+    updateMacros: vi.fn(),
+    destroy: vi.fn(),
   },
   searchOverlayManager: {},
   updateAllMacros: vi.fn(),
 }))
 
-import { suggestionsOverlayManager } from './overlays'
+vi.mock('./overlays', () => mockOverlays)
+
 import { useMacroStore } from "../store/useMacroStore"
 // Import the content script logic after mocks are set up.
 // The `init()` call inside index.ts will use the mocked `loadMacros`.
@@ -150,6 +152,27 @@ describe("Content Script: Macro Replacement", () => {
 
         typeIn(div, " ") // commit with space
         expect(div.textContent).toBe("Hello My Signature")
+      })
+
+      it("should trigger fuzzy search with Tab key instead of committing", () => {
+        div.textContent = "Hello "
+        typeIn(div, "/")
+        typeIn(div, "s")
+        typeIn(div, "i")
+        typeIn(div, "g")
+        expect(div.textContent).toBe("Hello /sig")
+        
+        // Reset mock calls before the Tab key press
+        vi.clearAllMocks()
+        
+        // Tab should trigger fuzzy search instead of committing
+        typeIn(div, "Tab")
+        
+        // Text should remain unchanged (Tab doesn't commit)
+        expect(div.textContent).toBe("Hello /sig")
+        
+        // The fuzzy search overlay should be triggered (verify showAll was called)
+        expect(mockOverlays.newSuggestionsOverlayManager.showAll).toHaveBeenCalled()
       })
 
       // TODO: Feature not yet implemented - delayed commit with backspace grace period

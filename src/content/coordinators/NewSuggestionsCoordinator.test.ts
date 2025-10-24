@@ -2,21 +2,9 @@ import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createNewSuggestionsCoordinator } from './NewSuggestionsCoordinator';
 import { NewSuggestionsOverlayManager } from '../overlays/newSuggestionsOverlay/NewSuggestionsOverlayManager';
 
-// Mock getActiveEditable
-vi.mock('../../detector/editableUtils', () => ({
-  getActiveEditable: vi.fn((element) => {
-    if (element instanceof HTMLInputElement || 
-        element instanceof HTMLTextAreaElement ||
-        element?.hasAttribute?.('contenteditable')) {
-      return element;
-    }
-    return null;
-  }),
-}));
-
 describe('NewSuggestionsCoordinator', () => {
   let mockManager: NewSuggestionsOverlayManager;
-  let input: HTMLInputElement;
+  let mockActions: any;
 
   beforeEach(() => {
     // Create mock manager
@@ -29,303 +17,216 @@ describe('NewSuggestionsCoordinator', () => {
       destroy: vi.fn(),
     };
 
-    // Create input element
-    input = document.createElement('input');
-    input.type = 'text';
-    document.body.appendChild(input);
-    input.focus();
-  });
-
-  afterEach(() => {
-    if (input.parentNode) {
-      document.body.removeChild(input);
-    }
+    // Create the coordinator
+    mockActions = createNewSuggestionsCoordinator(mockManager);
   });
 
   describe('Initialization', () => {
-    test('creates coordinator with default config', () => {
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
-
-      expect(coordinator).toBeDefined();
-      expect(coordinator.isEnabled()).toBe(true);
+    test('creates coordinator that implements DetectorActions', () => {
+      expect(mockActions).toBeDefined();
+      expect(typeof mockActions.onDetectionStarted).toBe('function');
+      expect(typeof mockActions.onDetectionUpdated).toBe('function');
+      expect(typeof mockActions.onDetectionCancelled).toBe('function');
+      expect(typeof mockActions.onShowAllRequested).toBe('function');
     });
 
-    test('creates coordinator with custom config', () => {
-      const coordinator = createNewSuggestionsCoordinator(mockManager, {
-        triggerChar: '@',
-        minBufferLength: 2,
-      });
-
-      expect(coordinator).toBeDefined();
+    test('coordinator is enabled by default', () => {
+      expect(mockActions.isEnabled()).toBe(true);
     });
   });
 
-  describe('Event Listening', () => {
-    test('attaches event listeners', () => {
-      const addEventListenerSpy = vi.spyOn(document, 'addEventListener');
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
+  describe('Detector Actions Interface', () => {
+    describe('onDetectionStarted', () => {
+      test('shows suggestions with buffer and provided coordinates', () => {
+        mockActions.onDetectionStarted('test', { x: 200, y: 300 });
 
-      coordinator.attach();
+        expect(mockManager.show).toHaveBeenCalledWith('test', 200, 300);
+      });
 
-      expect(addEventListenerSpy).toHaveBeenCalledWith('input', expect.any(Function), true);
-      expect(addEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function), true);
-      expect(addEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function), true);
-      expect(addEventListenerSpy).toHaveBeenCalledWith('blur', expect.any(Function), true);
+      test('shows suggestions with default coordinates (0,0) when position is not provided', () => {
+        mockActions.onDetectionStarted('test');
 
-      addEventListenerSpy.mockRestore();
+        expect(mockManager.show).toHaveBeenCalledWith('test', 0, 0); // default coordinates
+      });
     });
 
-    test('detaches event listeners', () => {
-      const removeEventListenerSpy = vi.spyOn(document, 'removeEventListener');
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
+    describe('onDetectionUpdated', () => {
+      test('does not update when manager is not visible', () => {
+        vi.mocked(mockManager.isVisible).mockReturnValue(false);
+        
+        mockActions.onDetectionUpdated('updated', { x: 250, y: 350 });
 
-      coordinator.attach();
-      coordinator.detach();
+        expect(mockManager.show).not.toHaveBeenCalled();
+      });
 
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('input', expect.any(Function), true);
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function), true);
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function), true);
-      expect(removeEventListenerSpy).toHaveBeenCalledWith('blur', expect.any(Function), true);
+      test('updates suggestions when manager is visible with provided coordinates', () => {
+        vi.mocked(mockManager.isVisible).mockReturnValue(true);
+        
+        mockActions.onDetectionUpdated('updated', { x: 250, y: 350 });
 
-      removeEventListenerSpy.mockRestore();
+        expect(mockManager.show).toHaveBeenCalledWith('updated', 250, 350);
+      });
+
+      test('updates suggestions when manager is visible with default coordinates (0,0) when position is not provided', () => {
+        vi.mocked(mockManager.isVisible).mockReturnValue(true);
+        
+        mockActions.onDetectionUpdated('updated');
+
+        expect(mockManager.show).toHaveBeenCalledWith('updated', 0, 0); // default coordinates
+      });
+    });
+
+    describe('onDetectionCancelled', () => {
+      test('hides suggestions when detection is cancelled', () => {
+        mockActions.onDetectionCancelled();
+
+        expect(mockManager.hide).toHaveBeenCalled();
+      });
+    });
+
+    describe('onShowAllRequested', () => {
+      test('shows all suggestions with provided coordinates', () => {
+        mockActions.onShowAllRequested('context', { x: 400, y: 500 });
+
+        expect(mockManager.showAll).toHaveBeenCalledWith(400, 500, 'context');
+      });
+
+      test('shows all suggestions with default coordinates (0,0) when position is not provided', () => {
+        mockActions.onShowAllRequested('context');
+
+        expect(mockManager.showAll).toHaveBeenCalledWith(0, 0, 'context'); // default coordinates and buffer
+      });
+    });
+
+    describe('onMacroCommitted', () => {
+      test('hides suggestions when macro is committed', () => {
+        mockActions.onMacroCommitted('macro-id');
+
+        expect(mockManager.hide).toHaveBeenCalled();
+      });
+    });
+
+    describe('onCommitRequested', () => {
+      test('returns false when manager is not visible', () => {
+        vi.mocked(mockManager.isVisible).mockReturnValue(false);
+        
+        const result = mockActions.onCommitRequested('buffer');
+
+        expect(result).toBe(false);
+      });
+
+      test('returns false when manager is visible', () => {
+        vi.mocked(mockManager.isVisible).mockReturnValue(true);
+        
+        const result = mockActions.onCommitRequested('buffer');
+
+        expect(result).toBe(false);
+      });
+    });
+
+    describe('onNavigationRequested', () => {
+      test('returns false to allow other handlers to process', () => {
+        const result = mockActions.onNavigationRequested('up');
+        expect(result).toBe(false);
+
+        const result2 = mockActions.onNavigationRequested('down');
+        expect(result2).toBe(false);
+      });
+    });
+
+    describe('onCancelRequested', () => {
+      test('returns false when manager is not visible', () => {
+        vi.mocked(mockManager.isVisible).mockReturnValue(false);
+        
+        const result = mockActions.onCancelRequested();
+
+        expect(result).toBe(false);
+        expect(mockManager.hide).not.toHaveBeenCalled();
+      });
+
+      test('hides suggestions and returns true when manager is visible', () => {
+        vi.mocked(mockManager.isVisible).mockReturnValue(true);
+        
+        const result = mockActions.onCancelRequested();
+
+        expect(mockManager.hide).toHaveBeenCalled();
+        expect(result).toBe(true);
+      });
     });
   });
 
-  describe('Trigger Detection', () => {
-    test('shows suggestions when trigger character is typed', () => {
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
-      coordinator.attach();
-
-      input.value = '/test';
-      input.setSelectionRange(5, 5);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-
-      expect(mockManager.show).toHaveBeenCalledWith('test');
-    });
-
-    test('does not show suggestions without trigger character', () => {
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
-      coordinator.attach();
-
-      input.value = 'test';
-      input.setSelectionRange(4, 4);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-
-      expect(mockManager.show).not.toHaveBeenCalled();
-    });
-
-    test('respects minimum buffer length', () => {
-      const coordinator = createNewSuggestionsCoordinator(mockManager, {
-        minBufferLength: 2,
+  describe('Coordinator Management', () => {
+    describe('attach/detach', () => {
+      test('attaches click outside listener', () => {
+        const addEventListenerSpy = vi.spyOn(document, 'addEventListener');
+        
+        mockActions.attach();
+        
+        expect(addEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function), true);
+        
+        addEventListenerSpy.mockRestore();
       });
-      coordinator.attach();
 
-      // Buffer length 1 - should not show
-      input.value = '/t';
-      input.setSelectionRange(2, 2);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-
-      expect(mockManager.show).not.toHaveBeenCalled();
-
-      // Buffer length 2 - should show
-      input.value = '/te';
-      input.setSelectionRange(3, 3);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-
-      expect(mockManager.show).toHaveBeenCalledWith('te');
-    });
-
-    test('ignores buffer with spaces', () => {
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
-      coordinator.attach();
-
-      input.value = '/test text';
-      input.setSelectionRange(10, 10);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-
-      expect(mockManager.show).not.toHaveBeenCalled();
-    });
-
-    test('uses custom trigger character', () => {
-      const coordinator = createNewSuggestionsCoordinator(mockManager, {
-        triggerChar: '@',
+      test('detaches click outside listener', () => {
+        const removeEventListenerSpy = vi.spyOn(document, 'removeEventListener');
+        
+        mockActions.attach();
+        mockActions.detach();
+        
+        expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function), true);
+        
+        removeEventListenerSpy.mockRestore();
       });
-      coordinator.attach();
 
-      input.value = '@test';
-      input.setSelectionRange(5, 5);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-
-      expect(mockManager.show).toHaveBeenCalledWith('test');
+      test('hides suggestions when detaching', () => {
+        mockActions.detach();
+        
+        expect(mockManager.hide).toHaveBeenCalled();
+      });
     });
 
-    test('hides suggestions when buffer becomes invalid', () => {
-      vi.mocked(mockManager.isVisible).mockReturnValue(true);
-      
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
-      coordinator.attach();
+    describe('enable/disable', () => {
+      test('enables coordinator', () => {
+        mockActions.disable();
+        expect(mockActions.isEnabled()).toBe(false);
+        
+        mockActions.enable();
+        expect(mockActions.isEnabled()).toBe(true);
+      });
 
-      input.value = '/test ';
-      input.setSelectionRange(6, 6);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
+      test('disables coordinator', () => {
+        mockActions.enable();
+        expect(mockActions.isEnabled()).toBe(true);
+        
+        mockActions.disable();
+        expect(mockActions.isEnabled()).toBe(false);
+      });
 
-      expect(mockManager.hide).toHaveBeenCalled();
+      test('hides suggestions when disabling', () => {
+        vi.mocked(mockManager.isVisible).mockReturnValue(true);
+        
+        mockActions.disable();
+        
+        expect(mockManager.hide).toHaveBeenCalled();
+      });
+
+      test('updateConfig is a no-op function', () => {
+        expect(() => mockActions.updateConfig()).not.toThrow();
+        // Should not affect the manager or throw an error
+      });
     });
   });
 
-  describe('Keyboard Shortcuts', () => {
-    test('shows all suggestions with Ctrl+Space', () => {
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
-      coordinator.attach();
-
-      const event = new KeyboardEvent('keydown', {
-        key: ' ',
-        ctrlKey: true,
-        bubbles: true,
-      });
+  describe('Macro Management', () => {
+    test('setMacros updates both internal state and manager', () => {
+      const macros = [
+        { id: '1', command: '/test', text: 'Test macro' },
+        { id: '2', command: '/hello', text: 'Hello world' }
+      ];
       
-      input.dispatchEvent(event);
-
-      expect(mockManager.showAll).toHaveBeenCalled();
-    });
-
-    test('hides suggestions with Escape', () => {
-      vi.mocked(mockManager.isVisible).mockReturnValue(true);
+      mockActions.setMacros(macros);
       
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
-      coordinator.attach();
-
-      const event = new KeyboardEvent('keydown', {
-        key: 'Escape',
-        bubbles: true,
-      });
-      
-      input.dispatchEvent(event);
-
-      expect(mockManager.hide).toHaveBeenCalled();
-    });
-
-    test('uses custom keyboard shortcut', () => {
-      const coordinator = createNewSuggestionsCoordinator(mockManager, {
-        showAllShortcut: {
-          key: 'k',
-          ctrl: true,
-          shift: true,
-        },
-      });
-      coordinator.attach();
-
-      const event = new KeyboardEvent('keydown', {
-        key: 'k',
-        ctrlKey: true,
-        shiftKey: true,
-        bubbles: true,
-      });
-      
-      input.dispatchEvent(event);
-
-      expect(mockManager.showAll).toHaveBeenCalled();
-    });
-  });
-
-  describe('Enable/Disable', () => {
-    test('enables coordinator by default', () => {
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
-
-      expect(coordinator.isEnabled()).toBe(true);
-    });
-
-    test('disables coordinator', () => {
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
-      coordinator.attach();
-
-      coordinator.disable();
-
-      expect(coordinator.isEnabled()).toBe(false);
-
-      // Should not respond to events when disabled
-      input.value = '/test';
-      input.setSelectionRange(5, 5);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-
-      expect(mockManager.show).not.toHaveBeenCalled();
-    });
-
-    test('enables coordinator', () => {
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
-      coordinator.attach();
-
-      coordinator.disable();
-      coordinator.enable();
-
-      expect(coordinator.isEnabled()).toBe(true);
-
-      // Should respond to events when re-enabled
-      input.value = '/test';
-      input.setSelectionRange(5, 5);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-
-      expect(mockManager.show).toHaveBeenCalled();
-    });
-
-    test('hides suggestions when disabling', () => {
-      vi.mocked(mockManager.isVisible).mockReturnValue(true);
-      
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
-      coordinator.disable();
-
-      expect(mockManager.hide).toHaveBeenCalled();
-    });
-  });
-
-  describe('Configuration Updates', () => {
-    test('updates configuration', () => {
-      const coordinator = createNewSuggestionsCoordinator(mockManager, {
-        triggerChar: '/',
-      });
-      coordinator.attach();
-
-      coordinator.updateConfig({
-        triggerChar: '@',
-      });
-
-      // Should use new trigger character
-      input.value = '@test';
-      input.setSelectionRange(5, 5);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-
-      expect(mockManager.show).toHaveBeenCalledWith('test');
-    });
-  });
-
-  describe('Click Outside Behavior', () => {
-    test('hides suggestions when clicking outside editable', () => {
-      vi.mocked(mockManager.isVisible).mockReturnValue(true);
-      
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
-      coordinator.attach();
-
-      const div = document.createElement('div');
-      document.body.appendChild(div);
-
-      const event = new MouseEvent('click', { bubbles: true });
-      div.dispatchEvent(event);
-
-      expect(mockManager.hide).toHaveBeenCalled();
-
-      document.body.removeChild(div);
-    });
-
-    test('does not hide when clicking inside editable', () => {
-      vi.mocked(mockManager.isVisible).mockReturnValue(true);
-      
-      const coordinator = createNewSuggestionsCoordinator(mockManager);
-      coordinator.attach();
-
-      const event = new MouseEvent('click', { bubbles: true });
-      input.dispatchEvent(event);
-
-      expect(mockManager.hide).not.toHaveBeenCalled();
+      expect(mockManager.updateMacros).toHaveBeenCalledWith(macros);
     });
   });
 });

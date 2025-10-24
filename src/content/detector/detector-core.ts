@@ -40,5 +40,13 @@ export function updateStateOnKey(
 
 // Checks if the current buffer exactly matches any macro command
 export function isExact(state: CoreState, macros: Macro[]) {
-  return !!macros.find(macro => macro.command === state.buffer);
+  const hit = macros.find(macro => macro.command === state.buffer)
+  const result = !!hit
+  if (result) {
+    // Debug exact match
+    console.debug(`[DETECTOR-CORE] isExact true | buffer="${state.buffer}" id=${hit?.id}`)
+  } else {
+    console.debug(`[DETECTOR-CORE] isExact false | buffer="${state.buffer}"`)
+  }
+  return result;
 }

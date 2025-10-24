@@ -24,7 +24,7 @@ export interface DetectorActions {
   onMacroCommitted(macroId: string): void
 
   /**
-   * Called when user presses a commit key (space, enter, tab).
+   * Called when user presses a commit key (space, enter).
    * @returns true if the action was handled, false otherwise
    */
   onCommitRequested(buffer: string): boolean
@@ -33,13 +33,20 @@ export interface DetectorActions {
    * Called when user presses arrow keys during detection.
    * @returns true if the action was handled, false otherwise
    */
-  onNavigationRequested(direction: 'up' | 'down'): boolean
+  onNavigationRequested(direction: 'up' | 'down' | 'left' | 'right'): boolean
 
   /**
    * Called when user presses Escape during detection.
    * @returns true if the action was handled, false otherwise
    */
   onCancelRequested(): boolean
+
+  /**
+   * Called when user presses Tab to request showing all suggestions for fuzzy search.
+   * @param buffer - The current buffer content for context
+   * @param position - Optional position for overlay placement
+   */
+  onShowAllRequested(buffer: string, position?: { x: number; y: number }): void
 
 }
 
@@ -54,4 +61,5 @@ export const noOpActions: DetectorActions = {
   onCommitRequested: () => false,
   onNavigationRequested: () => false,
   onCancelRequested: () => false,
+  onShowAllRequested: () => {},
 }

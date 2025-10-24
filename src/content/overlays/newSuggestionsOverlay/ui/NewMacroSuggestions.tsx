@@ -1,4 +1,5 @@
 import React, { useRef, useCallback, useMemo, useEffect } from 'react';
+import fuzzysort from 'fuzzysort';
 import { Macro } from '../../../../types';
 import { useThemeColors } from '../../../../theme/hooks/useThemeColors';
 import { useMacroStore } from '../../../../store/useMacroStore';
@@ -34,14 +35,64 @@ export function NewMacroSuggestions({
 
   // Filter macros based on mode and buffer
   const filteredMacros = useMemo(() => {
-    if (!isVisible) {
+    if (!macros || macros.length === 0) {
       return [];
     }
 
     if (mode === 'showAll') {
-      return macros.slice(0, 5);
+      // If we have a buffer in showAll mode, use fuzzy search
+      if (filterBuffer && filterBuffer.length > 0) {
+        try {
+          const results = fuzzysort.go(filterBuffer, macros, {
+            keys: ['command', 'text'],
+            threshold: -10000, // Allow more fuzzy matches
+          });
+          const fuzzyMatches = results.slice(0, 5).map(r => r.obj);
+          
+          // If fuzzy search found matches, return them
+          if (fuzzyMatches.length > 0) {
+            return fuzzyMatches;
+          }
+          
+          // If no fuzzy matches, try simple string matching as fallback
+          const lowerBuffer = filterBuffer.toLowerCase();
+          const simpleMatches = macros
+            .filter(macro => {
+              const lowerCommand = macro.command.toLowerCase();
+              const lowerText = macro.text.toLowerCase();
+              return lowerCommand.includes(lowerBuffer) || lowerText.includes(lowerBuffer);
+            })
+            .slice(0, 5);
+          
+          // If simple matches found, return them
+          if (simpleMatches.length > 0) {
+            return simpleMatches;
+          }
+          
+          // If no matches at all, show first 5 macros as fallback in showAll mode
+          return macros.slice(0, 5);
+        } catch (error) {
+          console.warn('Fuzzy search failed, falling back to simple filter:', error);
+          // Fallback to simple string matching
+          const lowerBuffer = filterBuffer.toLowerCase();
+          const fallbackMatches = macros
+            .filter(macro => {
+              const lowerCommand = macro.command.toLowerCase();
+              const lowerText = macro.text.toLowerCase();
+              return lowerCommand.includes(lowerBuffer) || lowerText.includes(lowerBuffer);
+            })
+            .slice(0, 5);
+          
+          // If even simple matching fails, show all macros in showAll mode
+          return fallbackMatches.length > 0 ? fallbackMatches : macros.slice(0, 5);
+        }
+      } else {
+        // No buffer, show first 5 macros
+        return macros.slice(0, 5);
+      }
     }
 
+    // Filter mode (original behavior)
     if (!filterBuffer || filterBuffer.length === 0) {
       return [];
     }
@@ -67,10 +118,14 @@ export function NewMacroSuggestions({
   // Focus management for keyboard navigation
   useEffect(() => {
     if (filteredMacros.length > 0 && isVisible) {
-      const targetIndex = navigation.selectedIndex ?? 0;
-      buttonRefs.current[targetIndex]?.focus();
+      // Don't auto-focus in showAll mode to prevent interfering with macro detection
+      // The user can navigate manually with keyboard if needed
+      if (mode !== 'showAll') {
+        const targetIndex = navigation.selectedIndex ?? 0;
+        buttonRefs.current[targetIndex]?.focus();
+      }
     }
-  }, [filteredMacros.length, navigation.selectedIndex, isVisible]);
+  }, [filteredMacros.length, navigation.selectedIndex, isVisible, mode]);
 
   useKeyboardNavigation({
     isActive: isVisible,
@@ -78,6 +133,7 @@ export function NewMacroSuggestions({
     onClose,
     onNavigateLeft: navigation.navigateLeft,
     onNavigateRight: navigation.navigateRight,
+    preventTabHandling: false, // Allow Tab navigation within the popup
   });
 
   const shouldShow = isVisible && filteredMacros.length > 0;
