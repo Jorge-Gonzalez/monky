@@ -6,7 +6,7 @@ import { useMacroStore } from '../../../../store/useMacroStore';
 import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
 import { useListNavigation } from '../hooks/useListNavigation';
 
-export interface NewMacroSuggestionsProps {
+export interface MacroSuggestionsProps {
   macros: Macro[];
   filterBuffer: string;
   mode: 'filter' | 'showAll';
@@ -17,7 +17,7 @@ export interface NewMacroSuggestionsProps {
   onClose: () => void;
 }
 
-export function NewMacroSuggestions({
+export function MacroSuggestions({
   macros,
   filterBuffer,
   mode,
@@ -26,7 +26,7 @@ export function NewMacroSuggestions({
   isVisible,
   onSelectMacro,
   onClose,
-}: NewMacroSuggestionsProps) {
+}: MacroSuggestionsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   
@@ -146,20 +146,20 @@ export function NewMacroSuggestions({
   return (
     <div
       ref={containerRef}
-      className="new-macro-suggestions-container"
+      className="macro-suggestions-container"
       style={{ 
         left: position.x,
         top: position.y,
         position: 'fixed',
       }}
     >
-      <div className={`new-macro-suggestions-arrow ${placement}`} />
-      <div role="listbox" className="new-macro-suggestions-commands-list">
+      <div className={`macro-suggestions-arrow ${placement}`} />
+      <div role="listbox" className="macro-suggestions-commands-list">
         {filteredMacros.map((macro, index) => (
           <button
             key={macro.id}
             ref={(el) => { buttonRefs.current[index] = el; }}
-            className={`new-macro-suggestions-command-item ${index === navigation.selectedIndex ? 'selected' : ''}`}
+            className={`macro-suggestions-command-item ${index === navigation.selectedIndex ? 'selected' : ''}`}
             onClick={() => onSelectMacro(macro)}
             type="button"
             role="option"
@@ -170,22 +170,22 @@ export function NewMacroSuggestions({
         ))}
       </div>
       {selectedMacro && (
-        <div className="new-macro-suggestions-text-preview">
+        <div className="macro-suggestions-text-preview">
           {selectedMacro.text}
         </div>
       )}
       
-      <div className="new-macro-suggestions-footer">
+      <div className="macro-suggestions-footer">
         <span>
-          <kbd className="new-macro-suggestions-kbd">←</kbd>
-          <kbd className="new-macro-suggestions-kbd">→</kbd>/
-          <kbd className="new-macro-suggestions-kbd">Tab</kbd> Navigate
+          <kbd className="macro-suggestions-kbd">←</kbd>
+          <kbd className="macro-suggestions-kbd">→</kbd>/
+          <kbd className="macro-suggestions-kbd">Tab</kbd> Navigate
         </span>
         <span>
-          <kbd className="new-macro-suggestions-kbd">↵</kbd> Select
+          <kbd className="macro-suggestions-kbd">↵</kbd> Select
         </span>
         <span>
-          <kbd className="new-macro-suggestions-kbd">Esc</kbd> Cancel
+          <kbd className="macro-suggestions-kbd">Esc</kbd> Cancel
         </span>
       </div>
     </div>

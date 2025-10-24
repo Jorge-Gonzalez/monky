@@ -1,9 +1,9 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createNewSuggestionsCoordinator } from './NewSuggestionsCoordinator';
-import { NewSuggestionsOverlayManager } from '../overlays/newSuggestionsOverlay/NewSuggestionsOverlayManager';
+import { createSuggestionsCoordinator } from './SuggestionsCoordinator';
+import { SuggestionsOverlayManager } from '../overlays/suggestionsOverlay/SuggestionsOverlayManager';
 
-describe('NewSuggestionsCoordinator', () => {
-  let mockManager: NewSuggestionsOverlayManager;
+describe('SuggestionsCoordinator', () => {
+  let mockManager: SuggestionsOverlayManager;
   let mockActions: any;
 
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe('NewSuggestionsCoordinator', () => {
     };
 
     // Create the coordinator
-    mockActions = createNewSuggestionsCoordinator(mockManager);
+    mockActions = createSuggestionsCoordinator(mockManager);
   });
 
   describe('Initialization', () => {

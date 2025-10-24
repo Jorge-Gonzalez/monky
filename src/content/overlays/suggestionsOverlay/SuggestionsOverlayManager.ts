@@ -1,9 +1,9 @@
 import React from 'react';
 import { Macro, EditableEl } from '../../../types';
-import { NewMacroSuggestions } from './ui/NewMacroSuggestions';
+import { MacroSuggestions } from './ui/MacroSuggestions';
 import { createReactRenderer } from '../services/reactRenderer';
 import { createStyleInjector } from '../services/styleInjector';
-import { NEW_SUGGESTIONS_OVERLAY_STYLES } from './NewSuggestionsOverlayStyles';
+import { SUGGESTIONS_OVERLAY_STYLES } from './SuggestionsOverlayStyles';
 import { getActiveEditable, getSelection, replaceText } from '../../detector/editableUtils';
 import { getCaretCoordinates } from './utils/caretPosition';
 import { calculateOptimalPosition } from './utils/popupPositioning';
@@ -25,9 +25,9 @@ interface OverlayState {
 const POPUP_ESTIMATED_WIDTH = 300;
 const POPUP_ESTIMATED_HEIGHT = 75; // Adjust based on your typical popup height
 
-export function createNewSuggestionsOverlayManager(macros: Macro[]) {
-  const renderer = createReactRenderer('new-macro-suggestions');
-  const styleInjector = createStyleInjector('new-macro-suggestions-styles', NEW_SUGGESTIONS_OVERLAY_STYLES);
+export function createSuggestionsOverlayManager(macros: Macro[]) {
+  const renderer = createReactRenderer('macro-suggestions');
+  const styleInjector = createStyleInjector('macro-suggestions-styles', SUGGESTIONS_OVERLAY_STYLES);
 
   let currentMacros = macros;
   let savedState: SavedState | null = null;
@@ -41,7 +41,7 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
 
   const renderSuggestions = (): void => {
     renderer.render(
-      React.createElement(NewMacroSuggestions, {
+      React.createElement(MacroSuggestions, {
         macros: currentMacros,
         filterBuffer: overlayState.filterBuffer,
         mode: overlayState.mode,
@@ -297,7 +297,7 @@ export function createNewSuggestionsOverlayManager(macros: Macro[]) {
   };
 }
 
-export interface NewSuggestionsOverlayManager {
+export interface SuggestionsOverlayManager {
   show: (buffer: string, x?: number, y?: number) => void;
   showAll: (x?: number, y?: number, buffer?: string) => void;
   hide: () => void;

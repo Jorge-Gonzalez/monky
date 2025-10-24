@@ -16,7 +16,7 @@ vi.mock("./storage/macroStorage", async () => {
 })
 
 const mockOverlays = vi.hoisted(() => ({
-  newSuggestionsOverlayManager: {
+  suggestionsOverlayManager: {
     isVisible: vi.fn().mockReturnValue(false),
     show: vi.fn(),
     showAll: vi.fn(),

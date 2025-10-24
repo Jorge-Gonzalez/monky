@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { createMacroDetector } from './macroDetector'
-import { createNewSuggestionsCoordinator } from '../coordinators/NewSuggestionsCoordinator'
-import { createNewSuggestionsOverlayManager } from '../overlays/newSuggestionsOverlay/NewSuggestionsOverlayManager'
+import { createSuggestionsCoordinator } from '../coordinators/SuggestionsCoordinator'
+import { createSuggestionsOverlayManager } from '../overlays/suggestionsOverlay/SuggestionsOverlayManager'
 import type { Macro } from '../../types'
 
 // Mock external dependencies
@@ -44,11 +44,11 @@ vi.mock('./editableUtils', () => ({
   getCursorCoordinates: vi.fn(),
 }))
 
-vi.mock('../overlays/newSuggestionsOverlay/utils/caretPosition', () => ({
+vi.mock('../overlays/suggestionsOverlay/utils/caretPosition', () => ({
   getCaretCoordinates: vi.fn(() => ({ x: 100, y: 200 })),
 }))
 
-vi.mock('../overlays/newSuggestionsOverlay/utils/popupPositioning', () => ({
+vi.mock('../overlays/suggestionsOverlay/utils/popupPositioning', () => ({
   calculateOptimalPosition: vi.fn(() => ({ x: 100, y: 200, placement: 'bottom' })),
 }))
 
@@ -86,8 +86,8 @@ describe('Tab Key Integration Tests', () => {
     vi.mocked(getCursorCoordinates).mockReturnValue({ x: 100, y: 200 })
 
     // Create the components
-    overlayManager = createNewSuggestionsOverlayManager(mockMacros)
-    coordinator = createNewSuggestionsCoordinator(overlayManager)
+    overlayManager = createSuggestionsOverlayManager(mockMacros)
+    coordinator = createSuggestionsCoordinator(overlayManager)
     
     // Attach coordinator
     coordinator.attach()

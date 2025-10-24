@@ -430,7 +430,7 @@ export function createMacroDetector(actions: DetectorActions) {
   function setMacros(newMacros: Macro[]): void {
     macros = [...SYSTEM_MACROS, ...newMacros]
     
-    // If the actions object has setMacros method (like NewSuggestionsCoordinator), call it
+    // If the actions object has setMacros method (like SuggestionsCoordinator), call it
     if ('setMacros' in actions && typeof actions.setMacros === 'function') {
       (actions as any).setMacros([...SYSTEM_MACROS, ...newMacros]);
     }

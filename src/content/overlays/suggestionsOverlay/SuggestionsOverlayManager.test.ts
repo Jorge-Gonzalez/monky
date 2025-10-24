@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createNewSuggestionsOverlayManager } from './NewSuggestionsOverlayManager';
+import { createSuggestionsOverlayManager } from './SuggestionsOverlayManager';
 import { Macro, EditableEl } from '../../../types';
 
 // Create mock instances for the services
@@ -47,7 +47,7 @@ import { getActiveEditable, getSelection, replaceText } from '../../detector/edi
 import { getCaretCoordinates } from './utils/caretPosition'; // This import is correct
 import { calculateOptimalPosition } from './utils/popupPositioning';
 
-describe('NewSuggestionsOverlayManager', () => {
+describe('SuggestionsOverlayManager', () => {
   const mockMacros: Macro[] = [
     {
       id: '1',
@@ -94,7 +94,7 @@ describe('NewSuggestionsOverlayManager', () => {
 
   describe('Initialization', () => {
     test('initializes properly with provided macros', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
 
       expect(manager).toBeDefined();
       expect(manager.isVisible()).toBe(false);
@@ -103,7 +103,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('exposes correct public API', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
 
       expect(manager).toHaveProperty('show');
       expect(manager).toHaveProperty('showAll');
@@ -116,7 +116,7 @@ describe('NewSuggestionsOverlayManager', () => {
 
   describe('Show/Hide Functionality', () => {
     test('shows the suggestions overlay in filter mode', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       manager.show('test', 100, 200);
 
@@ -131,7 +131,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('shows the suggestions overlay in showAll mode', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       manager.showAll(150, 250);
 
@@ -146,7 +146,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('shows the suggestions overlay in showAll mode with buffer context', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       manager.showAll(150, 250, '/s');
 
@@ -161,7 +161,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('calculates cursor position automatically if not provided', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       // Mock getCaretCoordinates to return specific coords
       vi.mocked(getCaretCoordinates).mockReturnValue({ x: 300, y: 400 });
@@ -174,7 +174,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('calculates cursor position for showAll if not provided', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       vi.mocked(getCaretCoordinates).mockReturnValue({ x: 350, y: 450 });
       
@@ -186,7 +186,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('does not show when no active element found', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       vi.mocked(getActiveEditable).mockReturnValue(null);
       
@@ -197,7 +197,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('hides the suggestions overlay', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       manager.show('test', 100, 200);
       expect(manager.isVisible()).toBe(true);
@@ -209,7 +209,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('does nothing when hiding already hidden overlay', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       manager.hide();
       
@@ -219,7 +219,7 @@ describe('NewSuggestionsOverlayManager', () => {
 
   describe('Macro Selection', () => {
     test('handles macro selection in filter mode', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       (mockElement as HTMLInputElement).value = 'test';
       
       manager.show('test', 100, 200);
@@ -241,7 +241,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('handles macro selection in showAll mode', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       vi.mocked(getSelection).mockReturnValue({ start: 5, end: 5 });
       
@@ -262,7 +262,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('handles macro selection in showAll mode with buffer context - saves trigger properly', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       (mockElement as HTMLInputElement).value = '/s something';
       
       vi.mocked(getSelection).mockReturnValue({ start: 2, end: 2 });
@@ -286,7 +286,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('handles selection when savedState element is null', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
 
       
       // Show the overlay to capture the onSelectMacro callback
@@ -305,7 +305,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('handles selection when trigger not found in content', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       (mockElement as HTMLInputElement).value = 'different text';
       
       manager.show('test', 100, 200);
@@ -323,7 +323,7 @@ describe('NewSuggestionsOverlayManager', () => {
 
   describe('Close Handler', () => {
     test('calls hide when onClose is triggered', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       manager.show('test', 100, 200);
       
@@ -339,7 +339,7 @@ describe('NewSuggestionsOverlayManager', () => {
 
   describe('Update Macros', () => {
     test('updates macros and re-renders when visible', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       manager.show('new', 100, 200);
       
@@ -363,7 +363,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('updates macros but does not re-render when hidden', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       const newMacros: Macro[] = [
         {
@@ -383,7 +383,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('uses updated macros in next show call', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       const newMacros: Macro[] = [
         {
@@ -404,7 +404,7 @@ describe('NewSuggestionsOverlayManager', () => {
 
   describe('Destroy', () => {
     test('cleans up resources properly', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       manager.show('test', 100, 200);
       manager.destroy();
@@ -415,7 +415,7 @@ describe('NewSuggestionsOverlayManager', () => {
     });
 
     test('can destroy without showing first', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       expect(() => manager.destroy()).not.toThrow();
       expect(mockRenderer.destroy).toHaveBeenCalledTimes(1);
@@ -425,7 +425,7 @@ describe('NewSuggestionsOverlayManager', () => {
 
   describe('Props Passed to Component', () => {
     test('passes all required props to component', () => {
-      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros);
       
       manager.show('test', 100, 200);
       

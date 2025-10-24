@@ -1,5 +1,5 @@
 import { Macro } from "../../types"
-import { searchOverlayManager, newSuggestionsOverlayManager } from "../overlays";
+import { searchOverlayManager, suggestionsOverlayManager } from "../overlays";
 
 /**
  * System macros for keyboard shortcuts and special functionality.
@@ -32,7 +32,7 @@ export const SYSTEM_MACROS: Macro[] = [
     command: '/>',
     text: '', // No replacement text - this triggers an action
     isSystemMacro: true,
-    description: 'Toggle new suggestions overlay visibility'
+    description: 'Toggle suggestions overlay visibility'
   }
 ]
 
@@ -71,7 +71,7 @@ export function handleSystemMacro(macro: Macro): boolean {
       return true
     
     case 'system-toggle-new-suggestions':
-      // toggleNewSuggestionsOverlay()
+      // toggleSuggestionsOverlay()
       return true
     
     default:
@@ -95,7 +95,7 @@ Keyboard Shortcuts:
 • /? - Open search overlay
 • /help - Show this help
 • /macros - List all macros
-• /> - Toggle new suggestions overlay
+• /> - Toggle suggestions overlay
 • Escape - Close overlays (when implemented)
   `.trim()
 }
@@ -104,12 +104,12 @@ function showMacroList() {
   console.log('📋 Macro list triggered!')
 }
 
-function toggleNewSuggestionsOverlay() {
-  console.log('🔄 Toggle new suggestions overlay triggered!')
+function toggleSuggestionsOverlay() {
+  console.log('🔄 Toggle suggestions overlay triggered!')
   
-  if (newSuggestionsOverlayManager.isVisible()) {
-    newSuggestionsOverlayManager.hide();
+  if (suggestionsOverlayManager.isVisible()) {
+    suggestionsOverlayManager.hide();
   } else {
-    newSuggestionsOverlayManager.showAll();
+    suggestionsOverlayManager.showAll();
   }
 }

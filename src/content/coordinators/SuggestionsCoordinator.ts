@@ -1,11 +1,11 @@
 import { EditableEl, Macro } from '../../types';
-import { NewSuggestionsOverlayManager } from '../overlays/newSuggestionsOverlay/NewSuggestionsOverlayManager';
+import { SuggestionsOverlayManager } from '../overlays/suggestionsOverlay/SuggestionsOverlayManager';
 import { getActiveEditable, getCursorCoordinates } from '../detector/editableUtils';
 import { DetectorActions } from '../actions/detectorActions';
 
-export function createNewSuggestionsCoordinator(
-  manager: NewSuggestionsOverlayManager
-): NewSuggestionsCoordinator {
+export function createSuggestionsCoordinator(
+  manager: SuggestionsOverlayManager
+): SuggestionsCoordinator {
   let isEnabled = true;
   let lastBuffer = '';
   let currentMacros: Macro[] = [];
@@ -85,7 +85,7 @@ export function createNewSuggestionsCoordinator(
   };
 
   // Return the combined interface
-  const coordinator: NewSuggestionsCoordinator = {
+  const coordinator: SuggestionsCoordinator = {
     ...detectorActions,
     attach: (): void => {
       // Add any additional document-level event listeners here if needed
@@ -140,7 +140,7 @@ export function createNewSuggestionsCoordinator(
   }
 }
 
-export interface NewSuggestionsCoordinator extends DetectorActions {
+export interface SuggestionsCoordinator extends DetectorActions {
   attach: () => void;
   detach: () => void;
   enable: () => void;
