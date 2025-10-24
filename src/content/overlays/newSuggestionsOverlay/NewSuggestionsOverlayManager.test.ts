@@ -76,7 +76,7 @@ describe('NewSuggestionsOverlayManager', () => {
     
     // Create a mock input element
     mockElement = document.createElement('input') as EditableEl;
-    mockElement.value = 'test text';
+    (mockElement as HTMLInputElement).value = 'test text';
     document.body.appendChild(mockElement);
     
     // Setup default mock implementations
@@ -145,6 +145,21 @@ describe('NewSuggestionsOverlayManager', () => {
       expect(renderCall.props.isVisible).toBe(true);
     });
 
+    test('shows the suggestions overlay in showAll mode with buffer context', () => {
+      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      
+      manager.showAll(150, 250, '/s');
+
+      expect(manager.isVisible()).toBe(true);
+      expect(mockRenderer.render).toHaveBeenCalled();
+      
+      const renderCall = mockRenderer.render.mock.calls[0][0];
+      expect(renderCall.props.filterBuffer).toBe('/s');
+      expect(renderCall.props.mode).toBe('showAll');
+      expect(renderCall.props.position).toEqual({ x: 150, y: 250 });
+      expect(renderCall.props.isVisible).toBe(true);
+    });
+
     test('calculates cursor position automatically if not provided', () => {
       const manager = createNewSuggestionsOverlayManager(mockMacros);
       
@@ -205,7 +220,7 @@ describe('NewSuggestionsOverlayManager', () => {
   describe('Macro Selection', () => {
     test('handles macro selection in filter mode', () => {
       const manager = createNewSuggestionsOverlayManager(mockMacros);
-      mockElement.value = 'test';
+      (mockElement as HTMLInputElement).value = 'test';
       
       manager.show('test', 100, 200);
       
@@ -246,6 +261,30 @@ describe('NewSuggestionsOverlayManager', () => {
       expect(manager.isVisible()).toBe(false);
     });
 
+    test('handles macro selection in showAll mode with buffer context - saves trigger properly', () => {
+      const manager = createNewSuggestionsOverlayManager(mockMacros);
+      (mockElement as HTMLInputElement).value = '/s something';
+      
+      vi.mocked(getSelection).mockReturnValue({ start: 2, end: 2 });
+      
+      // Show all with buffer context (simulating Tab key pressed after typing /s)
+      manager.showAll(100, 200, '/s');
+      
+      const renderCall = mockRenderer.render.mock.calls[0][0];
+      const onSelectMacro = renderCall.props.onSelectMacro;
+      
+      onSelectMacro(mockMacros[0]);
+
+      // Should replace from start of trigger (/s) to current position
+      expect(replaceText).toHaveBeenCalledWith(
+        mockElement,
+        mockMacros[0],
+        0, // Start of '/s'
+        2  // Current position
+      );
+      expect(manager.isVisible()).toBe(false);
+    });
+
     test('handles selection when savedState element is null', () => {
       const manager = createNewSuggestionsOverlayManager(mockMacros);
 
@@ -267,7 +306,7 @@ describe('NewSuggestionsOverlayManager', () => {
 
     test('handles selection when trigger not found in content', () => {
       const manager = createNewSuggestionsOverlayManager(mockMacros);
-      mockElement.value = 'different text';
+      (mockElement as HTMLInputElement).value = 'different text';
       
       manager.show('test', 100, 200);
       

@@ -37,21 +37,23 @@ describe('NewSuggestionsCoordinator', () => {
 
   describe('Detector Actions Interface', () => {
     describe('onDetectionStarted', () => {
-      test('shows suggestions with buffer and provided coordinates', () => {
+      test('saves buffer but does not show suggestions automatically', () => {
         mockActions.onDetectionStarted('test', { x: 200, y: 300 });
 
-        expect(mockManager.show).toHaveBeenCalledWith('test', 200, 300);
+        // Should not auto-show on detection start (only on Tab key)
+        expect(mockManager.show).not.toHaveBeenCalled();
       });
 
-      test('shows suggestions with default coordinates (0,0) when position is not provided', () => {
+      test('saves buffer without position', () => {
         mockActions.onDetectionStarted('test');
 
-        expect(mockManager.show).toHaveBeenCalledWith('test', 0, 0); // default coordinates
+        // Should not auto-show on detection start
+        expect(mockManager.show).not.toHaveBeenCalled();
       });
     });
 
     describe('onDetectionUpdated', () => {
-      test('does not update when manager is not visible', () => {
+      test('saves updated buffer but does not auto-show suggestions', () => {
         vi.mocked(mockManager.isVisible).mockReturnValue(false);
         
         mockActions.onDetectionUpdated('updated', { x: 250, y: 350 });
@@ -59,20 +61,22 @@ describe('NewSuggestionsCoordinator', () => {
         expect(mockManager.show).not.toHaveBeenCalled();
       });
 
-      test('updates suggestions when manager is visible with provided coordinates', () => {
+      test('saves buffer and does not auto-update when manager is visible', () => {
         vi.mocked(mockManager.isVisible).mockReturnValue(true);
         
         mockActions.onDetectionUpdated('updated', { x: 250, y: 350 });
 
-        expect(mockManager.show).toHaveBeenCalledWith('updated', 250, 350);
+        // Should not auto-update (disabled feature - only Tab key shows suggestions)
+        expect(mockManager.show).not.toHaveBeenCalled();
       });
 
-      test('updates suggestions when manager is visible with default coordinates (0,0) when position is not provided', () => {
+      test('saves buffer without triggering overlay when no position provided', () => {
         vi.mocked(mockManager.isVisible).mockReturnValue(true);
         
         mockActions.onDetectionUpdated('updated');
 
-        expect(mockManager.show).toHaveBeenCalledWith('updated', 0, 0); // default coordinates
+        // Should not auto-show (only Tab key triggers overlay)
+        expect(mockManager.show).not.toHaveBeenCalled();
       });
     });
 
@@ -125,12 +129,24 @@ describe('NewSuggestionsCoordinator', () => {
     });
 
     describe('onNavigationRequested', () => {
-      test('returns false to allow other handlers to process', () => {
+      test('returns false when manager is not visible', () => {
+        vi.mocked(mockManager.isVisible).mockReturnValue(false);
+        
         const result = mockActions.onNavigationRequested('up');
         expect(result).toBe(false);
 
         const result2 = mockActions.onNavigationRequested('down');
         expect(result2).toBe(false);
+      });
+
+      test('returns true when manager is visible to handle navigation', () => {
+        vi.mocked(mockManager.isVisible).mockReturnValue(true);
+        
+        const result = mockActions.onNavigationRequested('left');
+        expect(result).toBe(true);
+
+        const result2 = mockActions.onNavigationRequested('right');
+        expect(result2).toBe(true);
       });
     });
 

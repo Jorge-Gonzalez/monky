@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { searchOverlayManager, suggestionsOverlayManager } from '.'
+import { searchOverlayManager } from '.'
 import { Macro } from '../../types'
 
 // Mock React and ReactDOM with proper structure
@@ -27,10 +27,6 @@ vi.mock('react-dom/client', () => ({
 import { MacroSearchOverlay } from './searchOverlay/ui/MacroSearchOverlay'
 vi.mock('./searchOverlay/ui/MacroSearchOverlay', async () => ({
   MacroSearchOverlay: vi.fn(() => null)
-}))
-
-vi.mock('./suggestionsOverlay/ui/MacroSuggestions', () => ({
-  MacroSuggestions: vi.fn(() => null)
 }))
 
 // Mock editableUtils functions
@@ -82,16 +78,12 @@ describe('Overlay Managers - Focus and Cursor Management', () => {
 
     // Reset all mocks
     vi.clearAllMocks()
-    
-    // Update macros
-    suggestionsOverlayManager.updateMacros(testMacros)
   })
 
   afterEach(() => {
     // Cleanup - suppress any errors since we're testing
     try {
       searchOverlayManager.hide()
-      suggestionsOverlayManager.hide()
     } catch (e) {
       // Ignore cleanup errors in tests
     }
@@ -179,65 +171,6 @@ describe('Overlay Managers - Focus and Cursor Management', () => {
     })
   })
 
-  // Helper to simulate a macro selection from the overlay
-  const simulateMacroSelection = (macro: Macro) => {
-    // The event is dispatched from selectCurrent in the suggestions manager
-    // We simulate that behavior directly here.
-    vi.spyOn(suggestionsOverlayManager, 'selectCurrent').mockImplementation(() => {
-      const event = new CustomEvent('macro-suggestion-selected', { detail: { macro } });
-      document.dispatchEvent(event);
-      return true;
-    });
-    suggestionsOverlayManager.selectCurrent();
-  };
-
-  describe('Suggestions Management Tests', () => {
-    it('should show suggestions without throwing errors', () => {
-      mockInput.focus()
-      searchOverlayManager.show()
-
-      // Show suggestions - should not throw
-      expect(() => {
-        suggestionsOverlayManager.show('test')
-      }).not.toThrow()
-    })
-
-    it('should hide suggestions without throwing errors', () => {
-      mockInput.focus()
-      searchOverlayManager.show()
-      suggestionsOverlayManager.show('test')
-      
-      // Hide suggestions - should not throw
-      expect(() => {
-        suggestionsOverlayManager.hide()
-      }).not.toThrow()
-    })
-  })
-
-  describe('Event Dispatching Tests', () => {
-    it('should dispatch macro-selected event with correct details', () => {
-      const eventSpy = vi.fn();
-      document.addEventListener('macro-suggestion-selected', eventSpy);
-
-      mockInput.focus()
-      vi.mocked(editableUtils.getActiveEditable).mockReturnValue(mockInput)
-      vi.mocked(editableUtils.getSelection).mockReturnValue({ start: 5, end: 5 })
-      
-      searchOverlayManager.show()
-      simulateMacroSelection(testMacros[0])
-
-      expect(eventSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          detail: expect.objectContaining({
-            macro: testMacros[0]
-          })
-        })
-      )
-
-      document.removeEventListener('macro-suggestion-selected', eventSpy);
-    })
-  })
-
   describe('Integration Tests', () => {
     it('should handle complete overlay workflow without errors', () => {
       mockInput.focus()
@@ -247,12 +180,8 @@ describe('Overlay Managers - Focus and Cursor Management', () => {
       // Should not throw during complete workflow
       expect(() => {
         searchOverlayManager.show()
-        simulateMacroSelection(testMacros[0])
         searchOverlayManager.hide()
       }).not.toThrow()
     })
-
-    // Macro selection and insertion is now handled by the detector,
-    // so we no longer test it in the overlay manager's test file.
   })
 })

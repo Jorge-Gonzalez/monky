@@ -1,12 +1,12 @@
 {
   "servers": {
     "browsermcp": {
-      "command": "npx",
-      "args": ["-y", "@browsermcp/mcp"],
+      "command": "~/.local/share/pnpm/pnpm",
+      "args": ["dlx", "@browsermcp/mcp"],
       "env": {
-        "BROWSERMCP_SOURCE": "${workspaceFolder}/src"
+        "BROWSERMCP_SOURCE": "~/Documents/code/monky/src"
       },
-      "source": "${workspaceFolder}/src"
+      "source": "~/Documents/code/monky/src"
     }
   }
 }
