@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createMacroDetector } from './macroDetector'
 import { DetectorActions } from '../actions/detectorActions'
 import { Macro } from '../../types'
+import { typeIn } from '../../utils/testUtils'
 
 describe('MacroDetector - Undo Integration Tests', () => {
   let detector: ReturnType<typeof createMacroDetector>
@@ -22,7 +23,16 @@ describe('MacroDetector - Undo Integration Tests', () => {
       onMacroCommitted: vi.fn(),
       onNavigationRequested: vi.fn(),
       onCancelRequested: vi.fn(),
-      onCommitRequested: vi.fn().mockReturnValue(true),
+      onCommitRequested: vi.fn((macroId) => {
+        // Find the macro and check if it's an exact match
+        console.log('[TEST] onCommitRequested called with macroId:', macroId, typeof macroId)
+        const macro = testMacros.find(m => {
+          console.log('[TEST] checking macro:', m.id, typeof m.id, 'against', macroId, 'equals:', m.id === macroId)
+          return m.id === macroId
+        })
+        console.log('[TEST] found macro:', macro, 'returning:', !!macro)
+        return !!macro  // Return true if macro exists
+      }),
       onShowAllRequested: vi.fn()
     }
 
@@ -44,14 +54,13 @@ describe('MacroDetector - Undo Integration Tests', () => {
     it('should handle complete typing → replacement → undo workflow', async () => {
       inputElement.focus()
 
-      // Simulate typing "/hello" character by character
-      const chars = ['/','h','e','l','l','o']
-      for (const char of chars) {
-        const event = new KeyboardEvent('keydown', { key: char, bubbles: true })
-        inputElement.value += char
-        inputElement.setSelectionRange(inputElement.value.length, inputElement.value.length)
-        inputElement.dispatchEvent(event)
-      }
+      typeIn(inputElement, '/')
+      typeIn(inputElement, 'h')
+      typeIn(inputElement, 'e')
+      typeIn(inputElement, 'l')
+      typeIn(inputElement, 'l')
+      typeIn(inputElement, 'o')
+      
 
       expect(detector.getState().active).toBe(true)
       expect(detector.getState().buffer).toBe('/hello')
@@ -77,20 +86,18 @@ describe('MacroDetector - Undo Integration Tests', () => {
     it('should handle rapid typing with multiple macros', () => {
       inputElement.focus()
 
-      // Type first macro
-      inputElement.value = '/h'
-      inputElement.setSelectionRange(2, 2)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      // Type first macro using enhanced typeIn
+      typeIn(inputElement, '/h ')
 
-      expect(inputElement.value).toBe('Hi! ')
+      expect(inputElement.value).toBe('Hi!')
 
-      // Type second macro
-      const currentLength = inputElement.value.length
-      inputElement.value += '/hello'
+      // Type second macro - add it to existing content
+      const currentValue = inputElement.value
+      inputElement.value = currentValue + ' '
       inputElement.setSelectionRange(inputElement.value.length, inputElement.value.length)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/hello ')
 
-      expect(inputElement.value).toBe('Hi! Hello, World! ')
+      expect(inputElement.value).toBe('Hi! Hello, World!')
 
       // Undo second
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
@@ -127,12 +134,12 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
     it('should handle undo in middle of document', () => {
       inputElement.focus()
-      inputElement.value = 'Start text /hello end text'
-      inputElement.setSelectionRange(17, 17) // After /hello
+      inputElement.value = 'Start text  end text'
+      inputElement.setSelectionRange(11, 11) // in the middle
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/hello ')
 
-      expect(inputElement.value).toBe('Start text Hello, World!  end text')
+      expect(inputElement.value).toBe('Start text Hello, World! end text')
 
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
         key: 'z', ctrlKey: true, bubbles: true 

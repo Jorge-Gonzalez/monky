@@ -143,19 +143,40 @@ export function createMacroDetector(actions: DetectorActions) {
     startPos: number,
     endPos: number,
     replacementText: string,
-    macro: Macro
+    macro: Macro,
+    undoStartPos?: number,
+    undoEndPos?: number
   ): void {
     if (!element) return
 
     const textContent = getTextContent(element)
     const originalText = textContent.substring(startPos, endPos)
 
-    // Store in undo history
+    // For undo, use the original range (before space adjustment) if provided
+    const undoRange = {
+      startPos: undoStartPos ?? startPos,
+      endPos: undoEndPos ?? endPos,
+      originalText: undoStartPos !== undefined && undoEndPos !== undefined 
+        ? textContent.substring(undoStartPos, undoEndPos) 
+        : originalText
+    }
+
+    // Debug: Uncomment for undo history debugging
+    // console.log('[UNDO] Storing history entry:', {
+    //   startPos: undoRange.startPos,
+    //   endPos: undoRange.endPos,
+    //   originalText: JSON.stringify(undoRange.originalText),
+    //   replacementText: JSON.stringify(replacementText),
+    //   actualReplacementRange: { startPos, endPos },
+    //   actualReplacementText: JSON.stringify(originalText)
+    // })
+
+    // Store in undo history using the original range
     const historyEntry: ReplacementHistoryEntry = {
       element,
-      startPos,
-      endPos,
-      originalText,
+      startPos: undoRange.startPos,
+      endPos: undoRange.endPos,
+      originalText: undoRange.originalText,
       replacementText,
       macro,
       timestamp: Date.now()
@@ -304,18 +325,29 @@ export function createMacroDetector(actions: DetectorActions) {
     // Verify the replacement text is still there
     const actualText = currentContent.substring(expectedReplacementPos, expectedEndPos)
     
+    // Debug: Uncomment for undo restoration debugging  
+    // console.log('[UNDO] Restoration debug:', {
+    //   currentContent: JSON.stringify(currentContent),
+    //   startPos, expectedReplacementPos, expectedEndPos,
+    //   replacementText: JSON.stringify(replacementText),
+    //   actualText: JSON.stringify(actualText),
+    //   originalText: JSON.stringify(originalText),
+    //   matches: actualText === replacementText
+    // })
+    
     if (actualText === replacementText) {
       // Simple case: replacement is still in original position
       if ('value' in element) {
-        const newValue = currentContent.substring(0, expectedReplacementPos) + 
-                        originalText + 
-                        currentContent.substring(expectedEndPos)
+        const before = currentContent.substring(0, expectedReplacementPos)
+        const after = currentContent.substring(expectedEndPos)
+        const newValue = before + originalText + after
+        
         element.value = newValue
         
         // Set cursor at end of restored text
         element.setSelectionRange(startPos + originalText.length, startPos + originalText.length)
         element.dispatchEvent(new Event('input', { bubbles: true }))
-      } else if (element.isContentEditable) {
+      } else if (element.isContentEditable || (element as any).contentEditable === 'true') {
         // Use Selection API to preserve formatting
         undoInContentEditablePreservingFormat(element, expectedReplacementPos, expectedEndPos, originalText)
         element.dispatchEvent(new Event('input', { bubbles: true }))
@@ -413,6 +445,10 @@ export function createMacroDetector(actions: DetectorActions) {
       commandStart = Math.max(0, endPos - state.buffer.length)
     }
 
+    // Store original range for undo tracking (before space adjustment)
+    const originalCommandStart = commandStart
+    const originalEndPos = endPos
+
     // Find the actual start of the macro (the '/' character) to avoid including preceding spaces
     const text = activeEl.textContent || ''
     const macroText = text.substring(commandStart, endPos)
@@ -462,7 +498,8 @@ export function createMacroDetector(actions: DetectorActions) {
     }
 
     // Regular macro replacement with undo tracking
-    performReplacement(activeEl, commandStart, endPos, macro.text, macro)
+    // Use adjusted range for replacement, but original range for undo tracking
+    performReplacement(activeEl, commandStart, endPos, macro.text, macro, originalCommandStart, originalEndPos)
     actions.onMacroCommitted(String(macro.id))
     cancelDetection()
   }

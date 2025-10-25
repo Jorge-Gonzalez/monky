@@ -3,11 +3,29 @@ import { EditableEl } from "../types"
 /**
  * Helper function to simulate typing in an element
  * Updates content BEFORE dispatching keydown event so detector can see it
+ * 
+ * Special handling for trigger characters (space, enter):
+ * - If str ends with ' ' (space), it types the content then triggers with space
+ * - If str ends with 'Enter', it types the content then triggers with enter
+ * - This better reflects real user behavior where triggers don't become part of content
  */
 export function typeIn(element: EditableEl, str: string) {
   element.focus()
   
-  for (const key of str) {
+  // Check if string ends with trigger characters
+  let content = str
+  let triggerKey: string | null = null
+  
+  if (str.endsWith(' ')) {
+    content = str.slice(0, -1)  // Remove trailing space
+    triggerKey = ' '
+  } else if (str.endsWith('Enter')) {
+    content = str.slice(0, -5)  // Remove 'Enter'
+    triggerKey = 'Enter'
+  }
+  
+  // First, type the content characters
+  for (const key of content) {
     // IMPORTANT: Update content BEFORE dispatching keydown
     // The macro detector reads content during keydown, so it must be updated first
     
@@ -60,6 +78,12 @@ export function typeIn(element: EditableEl, str: string) {
     
     // NOW dispatch keydown event (content is already updated)
     element.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }))
+  }
+  
+  // If there's a trigger character, dispatch it separately
+  // This simulates the user pressing space/enter AFTER typing the macro
+  if (triggerKey) {
+    element.dispatchEvent(new KeyboardEvent('keydown', { key: triggerKey, bubbles: true }))
   }
   
   // Dispatch input event at the end

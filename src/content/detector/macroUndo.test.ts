@@ -74,7 +74,7 @@ describe('MacroDetector - Undo System', () => {
 
   describe('Cursor Position After Undo', () => {
     it('should restore cursor position after undo in input', () => {
-      inputElement.focus()
+      // inputElement.focus()
       typeIn(inputElement, '/hello ')
 
       const undoEvent = new KeyboardEvent('keydown', { 
@@ -194,8 +194,8 @@ describe('MacroDetector - Undo System', () => {
       // Type macro using helper
       typeIn(inputElement, '/hello ')
 
-      // Verify replacement happened
-      expect(inputElement.value).toBe('Hello, World! ')
+      // Verify replacement happened (no trailing space - trigger was consumed)
+      expect(inputElement.value).toBe('Hello, World!')
       expect(detector.getUndoHistoryLength()).toBe(1)
 
       // Undo the replacement
@@ -216,7 +216,7 @@ describe('MacroDetector - Undo System', () => {
       
       typeIn(textareaElement, '/email ')
 
-      expect(textareaElement.value).toBe('test@example.com ')
+      expect(textareaElement.value).toBe('test@example.com')
       expect(detector.getUndoHistoryLength()).toBe(1)
 
       // Undo
@@ -244,7 +244,7 @@ describe('MacroDetector - Undo System', () => {
 
       typeIn(contentEditableDiv, '/hello ')
 
-      expect(contentEditableDiv.textContent).toBe('Hello, World! ')
+      expect(contentEditableDiv.textContent).toBe('Hello, World!')
       expect(detector.getUndoHistoryLength()).toBe(1)
 
       // Undo
@@ -475,6 +475,11 @@ describe('MacroDetector - Undo System', () => {
       expect(() => {
         window.dispatchEvent(undoEvent)
       }).not.toThrow()
+      
+      // Prevent afterEach from trying to remove it again
+      inputElement = document.createElement('input')
+      inputElement.type = 'text'
+      document.body.appendChild(inputElement)
     })
 
     it('should not undo if Shift is pressed (Ctrl+Shift+Z is redo)', () => {
@@ -491,14 +496,14 @@ describe('MacroDetector - Undo System', () => {
       inputElement.dispatchEvent(redoEvent)
 
       // Should not undo
-      expect(inputElement.value).toBe('Hello, World! ')
+      expect(inputElement.value).toBe('Hello, World!')
     })
 
     it('should handle multiline macro replacements', () => {
       textareaElement.focus()
       typeIn(textareaElement, '/sig ')
 
-      expect(textareaElement.value).toBe('Best regards,\nJohn Doe ')
+      expect(textareaElement.value).toBe('Best regards,\nJohn Doe')
 
       const undoEvent = new KeyboardEvent('keydown', { 
         key: 'z', 
@@ -523,7 +528,7 @@ describe('MacroDetector - Undo System', () => {
       inputElement.focus()
       typeIn(inputElement, '/empty ')
 
-      expect(inputElement.value).toBe(' ')
+      expect(inputElement.value).toBe('')
 
       const undoEvent = new KeyboardEvent('keydown', { 
         key: 'z', 
