@@ -157,7 +157,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
             element instanceof HTMLTextAreaElement) {
           const length = element.value.length;
           element.setSelectionRange(length, length);
-        } else if (element instanceof HTMLElement && element.isContentEditable) {
+        } else if (element instanceof HTMLElement && (element.isContentEditable || element.contentEditable === 'true')) {
           const range = document.createRange();
           range.selectNodeContents(element);
           range.collapse(false);

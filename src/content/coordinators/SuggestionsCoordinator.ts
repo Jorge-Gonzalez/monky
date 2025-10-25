@@ -56,7 +56,10 @@ export function createSuggestionsCoordinator(
         // The new suggestions component handles selection internally
         return false;
       }
-      return false;
+      
+      // Check if we have an exact match for manual commits
+      const exactMatch = currentMacros.find(m => m.command === buffer);
+      return !!exactMatch;
     },
 
     onNavigationRequested(direction: 'up' | 'down' | 'left' | 'right'): boolean {

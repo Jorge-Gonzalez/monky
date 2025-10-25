@@ -1,0 +1,722 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { createMacroDetector } from './macroDetector'
+import { DetectorActions } from '../actions/detectorActions'
+import { Macro } from '../../types'
+
+describe('MacroDetector - Undo Integration Tests', () => {
+  let detector: ReturnType<typeof createMacroDetector>
+  let mockActions: DetectorActions
+  let inputElement: HTMLInputElement
+
+  const testMacros: Macro[] = [
+    { id: '1', command: '/hello', text: 'Hello, World!', contentType: 'text/plain' },
+    { id: '2', command: '/h', text: 'Hi!', contentType: 'text/plain' },
+    { id: '3', command: '/help', text: 'How can I help?', contentType: 'text/plain' },
+  ]
+
+  beforeEach(() => {
+    mockActions = {
+      onDetectionStarted: vi.fn(),
+      onDetectionUpdated: vi.fn(),
+      onDetectionCancelled: vi.fn(),
+      onMacroCommitted: vi.fn(),
+      onNavigationRequested: vi.fn(),
+      onCancelRequested: vi.fn(),
+      onCommitRequested: vi.fn().mockReturnValue(true),
+      onShowAllRequested: vi.fn()
+    }
+
+    inputElement = document.createElement('input')
+    inputElement.type = 'text'
+    document.body.appendChild(inputElement)
+
+    detector = createMacroDetector(mockActions)
+    detector.setMacros(testMacros)
+    detector.initialize()
+  })
+
+  afterEach(() => {
+    detector.destroy()
+    document.body.removeChild(inputElement)
+  })
+
+  describe('Real-World Usage Scenarios', () => {
+    it('should handle complete typing → replacement → undo workflow', async () => {
+      inputElement.focus()
+
+      // Simulate typing "/hello" character by character
+      const chars = ['/','h','e','l','l','o']
+      for (const char of chars) {
+        const event = new KeyboardEvent('keydown', { key: char, bubbles: true })
+        inputElement.value += char
+        inputElement.setSelectionRange(inputElement.value.length, inputElement.value.length)
+        inputElement.dispatchEvent(event)
+      }
+
+      expect(detector.getState().active).toBe(true)
+      expect(detector.getState().buffer).toBe('/hello')
+
+      // Trigger replacement with space
+      const spaceEvent = new KeyboardEvent('keydown', { key: ' ', bubbles: true })
+      inputElement.dispatchEvent(spaceEvent)
+
+      expect(inputElement.value).toBe('Hello, World! ')
+      expect(mockActions.onMacroCommitted).toHaveBeenCalledWith('1')
+
+      // User realizes mistake and hits undo
+      const undoEvent = new KeyboardEvent('keydown', { 
+        key: 'z', 
+        ctrlKey: true, 
+        bubbles: true 
+      })
+      inputElement.dispatchEvent(undoEvent)
+
+      expect(inputElement.value).toBe('/hello')
+    })
+
+    it('should handle rapid typing with multiple macros', () => {
+      inputElement.focus()
+
+      // Type first macro
+      inputElement.value = '/h'
+      inputElement.setSelectionRange(2, 2)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      expect(inputElement.value).toBe('Hi! ')
+
+      // Type second macro
+      const currentLength = inputElement.value.length
+      inputElement.value += '/hello'
+      inputElement.setSelectionRange(inputElement.value.length, inputElement.value.length)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      expect(inputElement.value).toBe('Hi! Hello, World! ')
+
+      // Undo second
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+      expect(inputElement.value).toContain('Hi!')
+      expect(inputElement.value).toContain('/hello')
+
+      // Undo first
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+      expect(inputElement.value).toContain('/h')
+    })
+
+    it('should handle undo after user continues typing', () => {
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      // User continues typing after replacement
+      const continuedText = inputElement.value + 'How are you?'
+      inputElement.value = continuedText
+      inputElement.setSelectionRange(continuedText.length, continuedText.length)
+
+      // User wants to undo the macro
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(inputElement.value).toBe('/helloHow are you?')
+    })
+
+    it('should handle undo in middle of document', () => {
+      inputElement.focus()
+      inputElement.value = 'Start text /hello end text'
+      inputElement.setSelectionRange(17, 17) // After /hello
+
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      expect(inputElement.value).toBe('Start text Hello, World!  end text')
+
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(inputElement.value).toBe('Start text /hello end text')
+    })
+  })
+
+  describe('Prefix Collision Scenarios', () => {
+    it('should handle undo with overlapping macro prefixes', () => {
+      inputElement.focus()
+
+      // Type /h (which could be /h or /hello or /help)
+      inputElement.value = '/h'
+      inputElement.setSelectionRange(2, 2)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      expect(inputElement.value).toBe('Hi! ') // Shortest match
+
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(inputElement.value).toBe('/h')
+    })
+
+    it('should handle undo with exact vs prefix match', () => {
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+
+      // Wait a moment for potential prefix timeout
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      expect(inputElement.value).toBe('Hello, World! ')
+
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(inputElement.value).toBe('/hello')
+    })
+  })
+
+  describe('ContentEditable Complex Scenarios', () => {
+    let contentEditableDiv: HTMLDivElement
+
+    beforeEach(() => {
+      contentEditableDiv = document.createElement('div')
+      contentEditableDiv.contentEditable = 'true'
+      document.body.appendChild(contentEditableDiv)
+    })
+
+    afterEach(() => {
+      document.body.removeChild(contentEditableDiv)
+    })
+
+    it('should handle undo in contentEditable with nested elements', () => {
+      contentEditableDiv.focus()
+      contentEditableDiv.innerHTML = '<p>/hello</p>'
+      
+      const textNode = contentEditableDiv.querySelector('p')!.firstChild as Text
+      const range = document.createRange()
+      const sel = window.getSelection()!
+      range.setStart(textNode, 6)
+      range.collapse(true)
+      sel.removeAllRanges()
+      sel.addRange(range)
+
+      contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      expect(contentEditableDiv.textContent).toContain('Hello, World!')
+
+      contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(contentEditableDiv.textContent).toContain('/hello')
+    })
+
+    it('should handle undo when contentEditable has multiple text nodes', () => {
+      contentEditableDiv.focus()
+      contentEditableDiv.innerHTML = 'Before<br>/hello<br>After'
+      
+      // This is complex - contentEditable with BR tags
+      // Just verify it doesn't crash
+      expect(() => {
+        contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', { 
+          key: 'z', ctrlKey: true, bubbles: true 
+        }))
+      }).not.toThrow()
+    })
+  })
+
+  describe('Performance & Memory Tests', () => {
+    it('should handle rapid successive macros without memory leak', () => {
+      inputElement.focus()
+
+      for (let i = 0; i < 100; i++) {
+        inputElement.value = '/h'
+        inputElement.setSelectionRange(2, 2)
+        inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+        inputElement.value = ''
+      }
+
+      // Should cap at MAX_UNDO_HISTORY (50)
+      expect(detector.getUndoHistoryLength()).toBeLessThanOrEqual(50)
+    })
+
+    it('should efficiently handle large text documents', () => {
+      inputElement.focus()
+      
+      // Create large text with macro in middle
+      const largeText = 'x'.repeat(10000) + '/hello' + 'y'.repeat(10000)
+      inputElement.value = largeText
+      inputElement.setSelectionRange(10006, 10006)
+
+      const startTime = performance.now()
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      const replaceTime = performance.now() - startTime
+
+      // Should complete reasonably fast (< 100ms)
+      expect(replaceTime).toBeLessThan(100)
+
+      const undoStartTime = performance.now()
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+      const undoTime = performance.now() - undoStartTime
+
+      expect(undoTime).toBeLessThan(100)
+    })
+  })
+
+  describe('Cross-Element Behavior', () => {
+    let textarea: HTMLTextAreaElement
+    let contentEditable: HTMLDivElement
+
+    beforeEach(() => {
+      textarea = document.createElement('textarea')
+      contentEditable = document.createElement('div')
+      contentEditable.contentEditable = 'true'
+      document.body.appendChild(textarea)
+      document.body.appendChild(contentEditable)
+    })
+
+    afterEach(() => {
+      document.body.removeChild(textarea)
+      document.body.removeChild(contentEditable)
+    })
+
+    it('should maintain separate history for different elements', () => {
+      // Input element
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      // Textarea
+      textarea.focus()
+      textarea.value = '/h'
+      textarea.setSelectionRange(2, 2)
+      textarea.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      expect(detector.getUndoHistoryLength()).toBe(2)
+
+      // Undo in textarea
+      textarea.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(textarea.value).toBe('/h')
+      expect(inputElement.value).toBe('Hello, World! ') // Unchanged
+      expect(detector.getUndoHistoryLength()).toBe(1)
+    })
+
+    it('should handle switching between elements', () => {
+      // Type in input
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      // Switch to textarea and type
+      textarea.focus()
+      textarea.value = '/help'
+      textarea.setSelectionRange(5, 5)
+      textarea.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      // Switch back and undo
+      inputElement.focus()
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(inputElement.value).toBe('/hello')
+      expect(textarea.value).toBe('How can I help? ') // Unchanged
+    })
+
+    it('should only undo in focused element', () => {
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      // Switch focus but try undo on wrong element
+      textarea.focus()
+      
+      // Dispatch undo on textarea (which has no history)
+      textarea.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      // Input should be unchanged, no undo happened
+      expect(inputElement.value).toBe('Hello, World! ')
+    })
+  })
+
+  describe('Error Recovery', () => {
+    it('should handle corrupted history gracefully', () => {
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      // Manually corrupt the element value
+      inputElement.value = 'completely different text'
+
+      // Undo should not crash
+      expect(() => {
+        inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+          key: 'z', ctrlKey: true, bubbles: true 
+        }))
+      }).not.toThrow()
+    })
+
+    it('should handle element becoming readonly', () => {
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      // Make readonly
+      inputElement.readOnly = true
+
+      // Should not crash when trying to undo
+      expect(() => {
+        inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+          key: 'z', ctrlKey: true, bubbles: true 
+        }))
+      }).not.toThrow()
+    })
+
+    it('should handle element becoming disabled', () => {
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      inputElement.disabled = true
+
+      expect(() => {
+        inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+          key: 'z', ctrlKey: true, bubbles: true 
+        }))
+      }).not.toThrow()
+    })
+  })
+
+  describe('User Experience Edge Cases', () => {
+    it('should preserve selection after undo', () => {
+      inputElement.focus()
+      inputElement.value = 'prefix /hello suffix'
+      inputElement.setSelectionRange(13, 13) // After /hello
+
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      // Cursor should be at end of "/hello"
+      expect(inputElement.selectionStart).toBe(13)
+      expect(inputElement.selectionEnd).toBe(13)
+    })
+
+    it('should handle undo at document boundaries', () => {
+      // Macro at start
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(inputElement.value).toBe('/hello')
+      expect(inputElement.selectionStart).toBe(6)
+    })
+
+    it('should handle multiple undos without errors', () => {
+      inputElement.focus()
+      inputElement.value = '/h'
+      inputElement.setSelectionRange(2, 2)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      // Try undoing multiple times (more than history has)
+      for (let i = 0; i < 5; i++) {
+        inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+          key: 'z', ctrlKey: true, bubbles: true 
+        }))
+      }
+
+      // Should only undo once and then stop
+      expect(inputElement.value).toBe('/h')
+    })
+  })
+
+  describe('Framework Integration Scenarios', () => {
+    it('should dispatch input events for framework reactivity', () => {
+      const inputListener = vi.fn()
+      inputElement.addEventListener('input', inputListener)
+
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      
+      inputListener.mockClear()
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      // Should dispatch input event on replacement
+      expect(inputListener).toHaveBeenCalled()
+
+      inputListener.mockClear()
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      // Should dispatch input event on undo
+      expect(inputListener).toHaveBeenCalled()
+    })
+
+    it('should work with input event handlers that modify value', () => {
+      inputElement.addEventListener('input', () => {
+        // Simulate a framework that uppercases everything
+        inputElement.value = inputElement.value.toUpperCase()
+      })
+
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      // Value will be uppercased by the listener
+      expect(inputElement.value).toBe('HELLO, WORLD! ')
+
+      // Undo should still work (though the result will be uppercased)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(inputElement.value).toBe('/HELLO')
+    })
+  })
+
+  describe('Timing and Race Conditions', () => {
+    it('should handle rapid undo requests', () => {
+      inputElement.focus()
+      
+      // Create multiple replacements
+      for (let i = 0; i < 3; i++) {
+        inputElement.value = '/h'
+        inputElement.setSelectionRange(2, 2)
+        inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+        inputElement.value = ''
+      }
+
+      // Rapidly fire undo events
+      for (let i = 0; i < 3; i++) {
+        inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+          key: 'z', ctrlKey: true, bubbles: true 
+        }))
+      }
+
+      expect(detector.getUndoHistoryLength()).toBe(0)
+    })
+
+    it('should handle undo during active detection', () => {
+      inputElement.focus()
+      inputElement.value = '/hel'
+      inputElement.setSelectionRange(4, 4)
+
+      // Simulate typing that starts detection
+      const event = new KeyboardEvent('keydown', { key: 'l', bubbles: true })
+      inputElement.dispatchEvent(event)
+
+      expect(detector.getState().active).toBe(true)
+
+      // Try undo while detection is active (shouldn't affect detection)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      // Detection should still be active
+      expect(detector.getState().active).toBe(true)
+    })
+  })
+
+  describe('Accessibility Considerations', () => {
+    it('should maintain ARIA attributes during undo', () => {
+      inputElement.setAttribute('aria-label', 'Test input')
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(inputElement.getAttribute('aria-label')).toBe('Test input')
+    })
+
+    it('should work with screen reader accessible text', () => {
+      const label = document.createElement('label')
+      label.textContent = 'Message'
+      label.htmlFor = 'test-input'
+      inputElement.id = 'test-input'
+      document.body.appendChild(label)
+
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(inputElement.value).toBe('/hello')
+      expect(label.textContent).toBe('Message')
+
+      document.body.removeChild(label)
+    })
+  })
+
+  describe('Special Character Handling', () => {
+    it('should handle macros with special characters', () => {
+      const specialMacro: Macro = {
+        id: '99',
+        command: '/special',
+        text: 'Special: @#$%^&*()',
+        contentType: 'text/plain'
+      }
+      detector.setMacros([...testMacros, specialMacro])
+
+      inputElement.focus()
+      inputElement.value = '/special'
+      inputElement.setSelectionRange(8, 8)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      expect(inputElement.value).toContain('Special: @#$%^&*()')
+
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(inputElement.value).toBe('/special')
+    })
+
+    it('should handle unicode emoji in macros', () => {
+      const emojiMacro: Macro = {
+        id: '100',
+        command: '/wave',
+        text: '👋 Hello!',
+        contentType: 'text/plain'
+      }
+      detector.setMacros([...testMacros, emojiMacro])
+
+      inputElement.focus()
+      inputElement.value = '/wave'
+      inputElement.setSelectionRange(5, 5)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      expect(inputElement.value).toBe('👋 Hello! ')
+
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(inputElement.value).toBe('/wave')
+    })
+
+    it('should handle newlines in macro text', () => {
+      const multilineMacro: Macro = {
+        id: '101',
+        command: '/multi',
+        text: 'Line 1\nLine 2\nLine 3',
+        contentType: 'text/plain'
+      }
+      detector.setMacros([...testMacros, multilineMacro])
+
+      const textarea = document.createElement('textarea')
+      document.body.appendChild(textarea)
+
+      textarea.focus()
+      textarea.value = '/multi'
+      textarea.setSelectionRange(6, 6)
+      textarea.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      expect(textarea.value).toBe('Line 1\nLine 2\nLine 3 ')
+
+      textarea.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(textarea.value).toBe('/multi')
+
+      document.body.removeChild(textarea)
+    })
+  })
+
+  describe('Clipboard Integration', () => {
+    it('should maintain undo after paste operations', async () => {
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      // Simulate paste
+      inputElement.value += ' pasted text'
+
+      // Undo should still work
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
+        key: 'z', ctrlKey: true, bubbles: true 
+      }))
+
+      expect(inputElement.value).toBe('/hello pasted text')
+    })
+  })
+
+  describe('API Usage Tests', () => {
+    it('should expose getUndoHistoryLength correctly', () => {
+      expect(detector.getUndoHistoryLength()).toBe(0)
+
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      expect(detector.getUndoHistoryLength()).toBe(1)
+    })
+
+    it('should expose undoLastReplacement for programmatic undo', () => {
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      expect(inputElement.value).toBe('Hello, World! ')
+
+      // Programmatic undo
+      const result = detector.undoLastReplacement()
+      expect(result).toBe(true)
+      expect(inputElement.value).toBe('/hello')
+    })
+
+    it('should return false when undoLastReplacement has no history', () => {
+      const result = detector.undoLastReplacement()
+      expect(result).toBe(false)
+    })
+
+    it('should expose clearUndoHistory API', () => {
+      inputElement.focus()
+      inputElement.value = '/hello'
+      inputElement.setSelectionRange(6, 6)
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      expect(detector.getUndoHistoryLength()).toBe(1)
+
+      detector.clearUndoHistory()
+      expect(detector.getUndoHistoryLength()).toBe(0)
+    })
+  })
+})

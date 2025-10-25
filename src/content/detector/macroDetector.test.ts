@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { createMacroDetector, MacroDetector } from './macroDetector'
 import { useMacroStore } from '../../store/useMacroStore'
-import { updateStateOnKey, isExact } from './detector-core'
-import { getActiveEditable, getSelection, replaceText, getCursorCoordinates } from './editableUtils'
-import { isPrintableKey, UNSUPPORTED_KEYS } from './keyUtils'
+// import { updateStateOnKey, isExact } from './detector-core'
+// import { getActiveEditable, getSelection, replaceText, getCursorCoordinates } from './editableUtils'
+// import { isPrintableKey, UNSUPPORTED_KEYS } from './keyUtils'
 import { defaultMacroConfig } from '../../config/defaults'
 import { DetectorActions } from '../actions/detectorActions'
 
@@ -55,7 +55,7 @@ describe('createMacroDetector', () => {
     onDetectionStarted: vi.fn(),
     onDetectionUpdated: vi.fn(),
     onDetectionCancelled: vi.fn(),
-    onCommitRequested: vi.fn(),
+    onCommitRequested: vi.fn().mockReturnValue(true),
     onCancelRequested: vi.fn(),
     onNavigationRequested: vi.fn(),
     onMacroCommitted: vi.fn(),

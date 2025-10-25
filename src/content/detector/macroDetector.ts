@@ -10,6 +10,17 @@ import { DetectorActions } from "../actions/detectorActions"
 const COMMIT_KEYS = new Set([" ", "Enter"])
 const CONFIRM_DELAY_MS = 1850
 
+// Types for undo history
+interface ReplacementHistoryEntry {
+  element: EditableEl
+  startPos: number
+  endPos: number
+  originalText: string
+  replacementText: string
+  macro: Macro
+  timestamp: number
+}
+
 export function createMacroDetector(actions: DetectorActions) {
   let macros: Macro[] = []
   let activeEl: EditableEl = null
@@ -23,6 +34,10 @@ export function createMacroDetector(actions: DetectorActions) {
     disabledSites: [] as string[],
   }
 
+  // Undo history stack
+  const undoHistory: ReplacementHistoryEntry[] = []
+  const MAX_UNDO_HISTORY = 50 // Keep last 50 replacements
+
   function clearTimer() {
     if (timer > 0) {
       clearTimeout(timer)
@@ -32,15 +47,12 @@ export function createMacroDetector(actions: DetectorActions) {
   }
 
   function cancelDetection() {
-    // console.log(`[MACRO-DETECTOR] 🚫 cancelDetection called | Was active: ${state.active}, buffer: "${state.buffer}"`)
     clearTimer()
     clearBlurTimer()
     const wasActive = state.active
-    const wasBuffer = state.buffer
     state = { active: false, buffer: "" }
     
     if (wasActive) {
-      // console.log(`[MACRO-DETECTOR] 🚫 Calling onDetectionCancelled (was buffer: "${wasBuffer}")`)
       actions.onDetectionCancelled()
     }
   }
@@ -49,56 +61,382 @@ export function createMacroDetector(actions: DetectorActions) {
     return macros.find(m => m.command === buffer) || null
   }
 
+  /**
+   * Extract text content from an editable element
+   */
+  function getTextContent(element: EditableEl): string {
+    if (!element) return ''
+    
+    if ('value' in element) {
+      return element.value
+    } else if ('textContent' in element) {
+      return element.textContent || ''
+    }
+    return ''
+  }
+
+  /**
+   * Get current cursor position in the element
+   */
+  function getCursorPosition(element: EditableEl): number | null {
+    if (!element) return null
+
+    if ('selectionStart' in element) {
+      return element.selectionStart
+    } else if (element.isContentEditable) {
+      const selection = window.getSelection()
+      if (!selection || selection.rangeCount === 0) return null
+      
+      const range = selection.getRangeAt(0)
+      const preCaretRange = range.cloneRange()
+      preCaretRange.selectNodeContents(element as Node)
+      preCaretRange.setEnd(range.endContainer, range.endOffset)
+      return preCaretRange.toString().length
+    }
+    
+    return null
+  }
+
+  /**
+   * Set cursor position in the element
+   */
+  function setCursorPosition(element: EditableEl, position: number): void {
+    if (!element) return
+
+    if ('setSelectionRange' in element) {
+      element.focus()
+      element.setSelectionRange(position, position)
+    } else if (element.isContentEditable) {
+      const selection = window.getSelection()
+      if (!selection) return
+
+      let currentPos = 0
+      const walker = document.createTreeWalker(
+        element as Node,
+        NodeFilter.SHOW_TEXT,
+        null
+      )
+
+      let node: Text | null = null
+      while ((node = walker.nextNode() as Text)) {
+        const nodeLength = node.textContent?.length || 0
+        
+        if (currentPos + nodeLength >= position) {
+          const range = document.createRange()
+          range.setStart(node, position - currentPos)
+          range.collapse(true)
+          selection.removeAllRanges()
+          selection.addRange(range)
+          return
+        }
+        
+        currentPos += nodeLength
+      }
+    }
+  }
+
+  /**
+   * Perform text replacement and track in history
+   */
+  function performReplacement(
+    element: EditableEl,
+    startPos: number,
+    endPos: number,
+    replacementText: string,
+    macro: Macro
+  ): void {
+    if (!element) return
+
+    const textContent = getTextContent(element)
+    const originalText = textContent.substring(startPos, endPos)
+
+    // Store in undo history
+    const historyEntry: ReplacementHistoryEntry = {
+      element,
+      startPos,
+      endPos,
+      originalText,
+      replacementText,
+      macro,
+      timestamp: Date.now()
+    }
+
+    undoHistory.push(historyEntry)
+    
+    // Keep history size manageable
+    if (undoHistory.length > MAX_UNDO_HISTORY) {
+      undoHistory.shift()
+    }
+
+    // Perform the actual replacement
+    if ('value' in element) {
+      // Input/textarea
+      const newValue = textContent.substring(0, startPos) + replacementText + textContent.substring(endPos)
+      element.value = newValue
+      
+      // Set cursor after replacement
+      const newCursorPos = startPos + replacementText.length
+      element.setSelectionRange(newCursorPos, newCursorPos)
+      
+      // Dispatch input event for framework reactivity
+      element.dispatchEvent(new Event('input', { bubbles: true }))
+    } else if (element.isContentEditable || element.contentEditable === 'true') {
+      // ContentEditable - use Selection API to preserve formatting
+      replaceInContentEditablePreservingFormat(element, startPos, endPos, replacementText)
+      
+      // Dispatch input event
+      element.dispatchEvent(new Event('input', { bubbles: true }))
+    }
+  }
+
+  /**
+   * Replace text in contentEditable while preserving HTML formatting
+   */
+  function replaceInContentEditablePreservingFormat(
+    element: EditableEl,
+    startPos: number,
+    endPos: number,
+    replacementText: string
+  ): void {
+    const selection = window.getSelection()
+    if (!selection) return
+
+    // Find the text node(s) that contain our target range
+    const range = createRangeFromTextPositions(element, startPos, endPos)
+    if (!range) return
+
+    // Select the range
+    selection.removeAllRanges()
+    selection.addRange(range)
+
+    // Delete the selected content
+    range.deleteContents()
+
+    // Insert the replacement text as a text node
+    const textNode = document.createTextNode(replacementText)
+    range.insertNode(textNode)
+
+    // Move cursor after the inserted text
+    range.setStartAfter(textNode)
+    range.collapse(true)
+    selection.removeAllRanges()
+    selection.addRange(range)
+  }
+
+  /**
+   * Create a Range object from text positions in a contentEditable element
+   */
+  function createRangeFromTextPositions(
+    element: EditableEl,
+    startPos: number,
+    endPos: number
+  ): Range | null {
+    if (!element) return null
+
+    const range = document.createRange()
+    let currentPos = 0
+    let startNode: Node | null = null
+    let startOffset = 0
+    let endNode: Node | null = null
+    let endOffset = 0
+
+    const walker = document.createTreeWalker(
+      element as Node,
+      NodeFilter.SHOW_TEXT,
+      null
+    )
+
+    let node: Text | null = null
+    while ((node = walker.nextNode() as Text)) {
+      const nodeLength = node.textContent?.length || 0
+
+      // Find start position
+      if (!startNode && currentPos + nodeLength >= startPos) {
+        startNode = node
+        startOffset = startPos - currentPos
+      }
+
+      // Find end position
+      if (!endNode && currentPos + nodeLength >= endPos) {
+        endNode = node
+        endOffset = endPos - currentPos
+        break
+      }
+
+      currentPos += nodeLength
+    }
+
+    if (!startNode || !endNode) return null
+
+    try {
+      range.setStart(startNode, startOffset)
+      range.setEnd(endNode, endOffset)
+      return range
+    } catch (error) {
+      console.error('Error creating range:', error)
+      return null
+    }
+  }
+
+  /**
+   * Undo the last macro replacement
+   */
+  function undoLastReplacement(): boolean {
+    if (undoHistory.length === 0) return false
+
+    const lastEntry = undoHistory.pop()
+    if (!lastEntry) return false
+
+    const { element, startPos, originalText, replacementText } = lastEntry
+
+    // Check if element still exists and is valid
+    if (!element || !document.contains(element as Node)) {
+      return false
+    }
+
+    const currentContent = getTextContent(element)
+    const currentCursorPos = getCursorPosition(element)
+
+    // Calculate where the replacement should be in current content
+    const expectedReplacementPos = startPos
+    const expectedEndPos = startPos + replacementText.length
+
+    // Verify the replacement text is still there
+    const actualText = currentContent.substring(expectedReplacementPos, expectedEndPos)
+    
+    if (actualText === replacementText) {
+      // Simple case: replacement is still in original position
+      if ('value' in element) {
+        const newValue = currentContent.substring(0, expectedReplacementPos) + 
+                        originalText + 
+                        currentContent.substring(expectedEndPos)
+        element.value = newValue
+        
+        // Set cursor at end of restored text
+        element.setSelectionRange(startPos + originalText.length, startPos + originalText.length)
+        element.dispatchEvent(new Event('input', { bubbles: true }))
+      } else if (element.isContentEditable) {
+        // Use Selection API to preserve formatting
+        undoInContentEditablePreservingFormat(element, expectedReplacementPos, expectedEndPos, originalText)
+        element.dispatchEvent(new Event('input', { bubbles: true }))
+      }
+      return true
+    } else {
+      // Complex case: try to find the replacement text elsewhere
+      const replacementIndex = currentContent.indexOf(replacementText, Math.max(0, startPos - 10))
+      
+      if (replacementIndex !== -1) {
+        const endIndex = replacementIndex + replacementText.length
+        
+        if ('value' in element) {
+          const newValue = currentContent.substring(0, replacementIndex) + 
+                          originalText + 
+                          currentContent.substring(endIndex)
+          element.value = newValue
+          element.setSelectionRange(replacementIndex + originalText.length, replacementIndex + originalText.length)
+          element.dispatchEvent(new Event('input', { bubbles: true }))
+        } else if (element.isContentEditable) {
+          undoInContentEditablePreservingFormat(element, replacementIndex, endIndex, originalText)
+          element.dispatchEvent(new Event('input', { bubbles: true }))
+        }
+        return true
+      }
+    }
+
+    return false
+  }
+
+  /**
+   * Undo replacement in contentEditable while preserving HTML formatting
+   */
+  function undoInContentEditablePreservingFormat(
+    element: EditableEl,
+    startPos: number,
+    endPos: number,
+    originalText: string
+  ): void {
+    const selection = window.getSelection()
+    if (!selection) return
+
+    // Find and select the replacement text
+    const range = createRangeFromTextPositions(element, startPos, endPos)
+    if (!range) return
+
+    selection.removeAllRanges()
+    selection.addRange(range)
+
+    // Delete the replacement
+    range.deleteContents()
+
+    // Insert the original text
+    const textNode = document.createTextNode(originalText)
+    range.insertNode(textNode)
+
+    // Move cursor after the restored text
+    range.setStartAfter(textNode)
+    range.collapse(true)
+    selection.removeAllRanges()
+    selection.addRange(range)
+  }
+
+  /**
+   * Clear undo history for a specific element or all
+   */
+  function clearUndoHistory(element?: EditableEl): void {
+    if (element) {
+      // Remove entries for specific element
+      for (let i = undoHistory.length - 1; i >= 0; i--) {
+        if (undoHistory[i].element === element) {
+          undoHistory.splice(i, 1)
+        }
+      }
+    } else {
+      // Clear all history
+      undoHistory.length = 0
+    }
+  }
+
   function commitReplace(macro: Macro, sel: { start: number; end: number } | null, isImmediate: boolean) {
     if (!activeEl) {
       return
     }
 
-    // Handle system macros
-    if (isSystemMacro(macro)) {
-      let commandStart: number
-      let endPos: number
-
-      if (selectionOnSchedule && !isImmediate) {
-        endPos = selectionOnSchedule.end + 1
-        commandStart = endPos - state.buffer.length
-      } else if (sel) {
-        endPos = sel.end
-        const commandLengthInDom = isImmediate ? state.buffer.length - 1 : state.buffer.length
-        commandStart = endPos - commandLengthInDom
-      } else {
-        cancelDetection()
-        return
-      }
-
-      if (commandStart >= 0) {
-        const deleteMacro: Macro = {
-          id: 'temp-delete',
-          command: '',
-          text: '',
-          contentType: 'text/plain'
-        }
-        replaceText(activeEl, deleteMacro, commandStart, endPos)
-      }
-
-      handleSystemMacro(macro)
-      actions.onMacroCommitted(String(macro.id))
-      cancelDetection()
-      return
-    }
-
-    // Regular macro replacement
+    // Calculate positions
     let commandStart: number
     let endPos: number
 
     if (selectionOnSchedule && !isImmediate) {
       endPos = selectionOnSchedule.end + 1
-      commandStart = endPos - state.buffer.length
+      commandStart = Math.max(0, endPos - state.buffer.length)
     } else if (sel) {
       endPos = sel.end
-      const commandLengthInDom = isImmediate ? state.buffer.length - 1 : state.buffer.length
-      commandStart = endPos - commandLengthInDom
-    } else {
+      commandStart = Math.max(0, endPos - state.buffer.length)
+    }
+
+    // Find the actual start of the macro (the '/' character) to avoid including preceding spaces
+    const text = activeEl.textContent || ''
+    const macroText = text.substring(commandStart, endPos)
+    const slashIndex = macroText.lastIndexOf('/')
+    
+    if (slashIndex !== -1) {
+      // Adjust commandStart to point to the '/' character, not any preceding space
+      commandStart = commandStart + slashIndex
+    }
+
+    // Debug: Uncomment for range calculation debugging
+    // console.log('[COMMIT-REPLACE] Final range:', {
+    //   mode: isImmediate ? 'immediate' : 'scheduled',
+    //   buffer: state.buffer,
+    //   bufferLength: state.buffer.length,
+    //   originalCommandStart: Math.max(0, endPos - state.buffer.length),
+    //   adjustedCommandStart: commandStart,
+    //   endPos,
+    //   textContent: text,
+    //   textToReplace: text.substring(commandStart, endPos),
+    //   macroText: macro.text
+    // })
+
+    if (!sel && !selectionOnSchedule) {
       cancelDetection()
       return
     }
@@ -107,8 +445,24 @@ export function createMacroDetector(actions: DetectorActions) {
       cancelDetection()
       return
     }
-    
-    replaceText(activeEl, macro, commandStart, endPos)
+
+    // Handle system macros (without undo tracking)
+    if (isSystemMacro(macro)) {
+      const deleteMacro: Macro = {
+        id: 'temp-delete',
+        command: '',
+        text: '',
+        contentType: 'text/plain'
+      }
+      replaceText(activeEl, deleteMacro, commandStart, endPos)
+      handleSystemMacro(macro)
+      actions.onMacroCommitted(String(macro.id))
+      cancelDetection()
+      return
+    }
+
+    // Regular macro replacement with undo tracking
+    performReplacement(activeEl, commandStart, endPos, macro.text, macro)
     actions.onMacroCommitted(String(macro.id))
     cancelDetection()
   }
@@ -116,9 +470,7 @@ export function createMacroDetector(actions: DetectorActions) {
   function scheduleConfirmIfExact(sel: { start: number; end: number } | null): boolean {
     clearTimer()
 
-    // Do not attempt commit logic when the buffer is exactly a configured prefix (e.g., "/")
     if (config.prefixes.includes(state.buffer)) return false
-
     if (!isExact(state, macros)) return false
 
     const isPrefix = macros.some(m => m.command.startsWith(state.buffer) && m.command !== state.buffer)
@@ -142,17 +494,29 @@ export function createMacroDetector(actions: DetectorActions) {
   }
 
   function onKeyDown(e: KeyboardEvent) {
-    // console.log(`[MACRO-DETECTOR] 🔧 KeyDown: "${e.key}" | Active: ${state.active} | Buffer: "${state.buffer}" | UseCommitKeys: ${config.useCommitKeys}`)
-    
+    // Handle Ctrl+Z / Cmd+Z for undo
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+      const editable = getActiveEditable(e.target)
+      
+      // Only handle undo if we have history for this element
+      if (editable && undoHistory.some(entry => entry.element === editable)) {
+        const undone = undoLastReplacement()
+        
+        if (undone) {
+          e.preventDefault()
+          e.stopPropagation()
+          return
+        }
+      }
+    }
+
     if (config.disabledSites.includes(window.location.hostname)) {
-      // console.log(`[MACRO-DETECTOR] 🚫 Site disabled: ${window.location.hostname}`)
       return
     }
 
     const editable = getActiveEditable(e.target)
     if (!editable) {
       if (state.active) {
-        // console.log(`[MACRO-DETECTOR] 🔍 No editable element, cancelling detection`)
         cancelDetection()
       }
       return
@@ -162,7 +526,6 @@ export function createMacroDetector(actions: DetectorActions) {
     const sel = getSelection(editable)
     if (!sel || sel.start !== sel.end) {
       if (state.active) {
-        // console.log(`[MACRO-DETECTOR] 🔍 Selection invalid (start: ${sel?.start}, end: ${sel?.end}), cancelling detection`)
         cancelDetection()
       }
       return
@@ -172,7 +535,6 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Handle navigation keys
     if (state.active && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-      // console.log(`[MACRO-DETECTOR] 🔼🔽 Navigation key: ${e.key}`)
       let direction: 'up' | 'down' | 'left' | 'right';
       if (e.key === 'ArrowUp') direction = 'up';
       else if (e.key === 'ArrowDown') direction = 'down';
@@ -181,37 +543,26 @@ export function createMacroDetector(actions: DetectorActions) {
       
       const handled = actions.onNavigationRequested(direction as any)
       if (handled) {
-        // console.log(`[MACRO-DETECTOR] ✅ Navigation handled, preventing default`)
         e.preventDefault()
       }
       return
     }
 
-    // Handle Tab key - show all suggestions for fuzzy search
+    // Handle Tab key
     if (state.active && e.key === 'Tab') {
-      // console.log(`[MACRO-DETECTOR] 📋 Tab pressed, showing all suggestions for fuzzy search`)
-      
-      // Check if navigation is currently being handled by overlay
       if (actions.onNavigationRequested && actions.onNavigationRequested('right' as any)) {
-        // If the overlay is handling navigation, let it handle Tab as well
         e.preventDefault();
         return;
       }
       
-      e.preventDefault(); // Prevent default tab behavior (losing focus)
-      e.stopPropagation(); // Stop the event from propagating to other listeners
-      
-      // Clear any pending blur timer since we're intentionally triggering an overlay
+      e.preventDefault();
+      e.stopPropagation();
       clearBlurTimer()
       
-      // For Tab key during detection, we want to trigger showAll mode in the suggestions
-      // We'll implement a new interface method for this purpose
       if (actions.onShowAllRequested) {
         const coords = getCursorCoordinates();
         actions.onShowAllRequested(state.buffer, coords || undefined);
       } else {
-        // Fallback for coordinators that don't support onShowAllRequested
-        // Just continue with normal detection update
         const coords = getCursorCoordinates();
         actions.onDetectionUpdated(state.buffer, coords || undefined);
       }
@@ -220,10 +571,8 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Handle Escape
     if (state.active && e.key === 'Escape') {
-      // console.log(`[MACRO-DETECTOR] 🚪 Escape pressed, cancelling detection`)
       const handled = actions.onCancelRequested()
       if (handled) {
-        // console.log(`[MACRO-DETECTOR] ✅ Escape handled, preventing default`)
         e.preventDefault()
       }
       cancelDetection()
@@ -232,72 +581,44 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Handle commit keys in manual mode
     if (config.useCommitKeys && state.buffer && COMMIT_KEYS.has(e.key)) {
-      // console.log(`[MACRO-DETECTOR] 🎯 COMMIT KEY DETECTED: "${e.key}" | Buffer: "${state.buffer}" | UseCommitKeys: ${config.useCommitKeys}`)
-      
-      // Ask action handler if they want to handle this
       const handled = actions.onCommitRequested(state.buffer)
-      // console.log(`[MACRO-DETECTOR] 🎯 Commit request handled: ${handled}`)
       
       if (handled) {
-        // console.log(`[MACRO-DETECTOR] ✅ Preventing default for commit key: ${e.key}`)
         e.preventDefault()
-        // If the coordinator handled it, it means a selection was made from the overlay.
-        // We need to commit the replacement here. The coordinator's job is just to
-        // confirm the selection, not to trigger the replacement logic itself.
         const macroToCommit = getExact(state.buffer);
         if (macroToCommit) {
-          // console.log(`[MACRO-DETECTOR] 🎯 Committing exact macro from overlay selection: ${macroToCommit.command}`)
           commitReplace(macroToCommit, sel, false)
-        } else {
-          // console.log(`[MACRO-DETECTOR] ⚠️  No exact macro found for buffer: "${state.buffer}"`)
         }
-        // If no exact macro, do nothing (the coordinator might have done something else)
       } else {
-        // console.log(`[MACRO-DETECTOR] 🎯 Overlay didn't handle commit, checking for exact match`)
-        // If not handled by the overlay (e.g., it's not visible),
-        // proceed with the default commit logic.
         if (isExact(state, macros)) {
-          // console.log(`[MACRO-DETECTOR] ✅ Exact match found, committing and preventing default`)
-          // If it's an exact match, we always handle it and prevent default.
           e.preventDefault()
           commitReplace(getExact(state.buffer)!, sel, false)
         } else {
-          // If not an exact match, cancel detection and allow the key to be typed.
           cancelDetection()
         }
-        // If not handled and not an exact match, we do nothing and let the
-        // key (e.g., a space) be typed normally. The detector will now be cancelled.
-        // itself on the next non-matching key.
       }
       return
     }
 
     // Handle Backspace
     if (e.key === "Backspace") {
-      // console.log(`[MACRO-DETECTOR] ⌫ Backspace pressed | Before: active=${state.active}, buffer="${state.buffer}"`)
       clearTimer()
       const prevState = { ...state }
       
-      // If detection was previously cancelled, we need to reconstruct the buffer
-      // from the actual text content to properly handle backspace recovery
       let currentState = state
       if (!state.active && !state.buffer) {
-        // Try to reconstruct the current typing context from the element
         const textContent = activeEl && 'value' in activeEl 
           ? activeEl.value 
           : activeEl?.textContent || ''
         const cursorPos = sel.start
         
-        // Look backwards from cursor to find a potential macro prefix
         let reconstructedBuffer = ''
         for (let i = cursorPos - 1; i >= 0; i--) {
           const char = textContent[i]
           if (char === ' ' || char === '\n' || char === '\t') break
           reconstructedBuffer = char + reconstructedBuffer
           
-          // Check if this looks like a macro buffer
           if (config.prefixes.some(prefix => reconstructedBuffer.startsWith(prefix))) {
-            // console.log(`[MACRO-DETECTOR] ⌫ Reconstructed buffer from text: "${reconstructedBuffer}"`)
             currentState = { active: true, buffer: reconstructedBuffer }
             break
           }
@@ -305,13 +626,10 @@ export function createMacroDetector(actions: DetectorActions) {
       }
       
       state = updateStateOnKey(currentState, e.key, macros, config.prefixes)
-      // console.log(`[MACRO-DETECTOR] ⌫ After backspace: active=${state.active}, buffer="${state.buffer}" | Previous: active=${prevState.active}, buffer="${prevState.buffer}"`)
       
       if (state.active) {
-        // console.log(`[MACRO-DETECTOR] ⌫ Detection still active, updating with buffer: "${state.buffer}"`)
         actions.onDetectionUpdated(state.buffer)
       } else {
-        // console.log(`[MACRO-DETECTOR] ⌫ Detection became inactive, cancelling`)
         cancelDetection()
       }
       return
@@ -319,17 +637,12 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Handle printable characters
     if (isPrintableKey(e)) {
-      // console.log(`[MACRO-DETECTOR] 📝 Printable key: "${e.key}" | Before: active=${state.active}, buffer="${state.buffer}"`)
       const prevBuffer = state.buffer
       state = updateStateOnKey(state, e.key, macros, config.prefixes)
-      // console.log(`[MACRO-DETECTOR] 📝 After update: active=${state.active}, buffer="${state.buffer}" | Mode: ${config.useCommitKeys ? 'MANUAL' : 'AUTO'}`)
 
       if (!config.useCommitKeys) {
-        // console.log(`[MACRO-DETECTOR] 🤖 AUTOMATIC MODE`)
-        // Automatic mode
         if (state.active) {
           const committedImmediately = scheduleConfirmIfExact(sel)
-          // console.log(`[MACRO-DETECTOR] 🤖 Committed immediately: ${committedImmediately}`)
           if (committedImmediately) {
             e.preventDefault()
           }
@@ -350,22 +663,15 @@ export function createMacroDetector(actions: DetectorActions) {
           }
         }
       } else {
-        // console.log(`[MACRO-DETECTOR] 👤 MANUAL MODE`)
-        // Manual mode
         if (state.active) {
           if (prevStateActive) {
-            // console.log(`[MACRO-DETECTOR] 👤 Detection continuing, updating buffer: "${state.buffer}"`)
-            // Only get coordinates when updating, not on every key press
             const coords = getCursorCoordinates()
             actions.onDetectionUpdated(state.buffer, coords ?? undefined)
           } else {
-            // console.log(`[MACRO-DETECTOR] 👤 Detection started, buffer: "${state.buffer}"`)
-            // Only get coordinates when starting, not on every key press
             const coords = getCursorCoordinates()
             actions.onDetectionStarted(state.buffer, coords ?? undefined)
           }
         } else if (prevStateActive) {
-          // console.log(`[MACRO-DETECTOR] 👤 Detection became inactive, cancelling`)
           cancelDetection()
         }
       }
@@ -388,12 +694,10 @@ export function createMacroDetector(actions: DetectorActions) {
   }
 
   function onBlur() {
-    // Add a small delay to prevent interference with Tab-triggered overlays
-    // This allows the overlay to show without being immediately cancelled
     clearBlurTimer()
     blurTimer = window.setTimeout(() => {
       cancelDetection()
-    }, 100) // 100ms delay should be enough for the overlay to establish itself
+    }, 100)
   }
 
   function updateConfig() {
@@ -419,6 +723,7 @@ export function createMacroDetector(actions: DetectorActions) {
     listenersAttached = false
     clearBlurTimer()
     cancelDetection()
+    clearUndoHistory()
   }
 
   function initialize(): void {
@@ -430,7 +735,6 @@ export function createMacroDetector(actions: DetectorActions) {
   function setMacros(newMacros: Macro[]): void {
     macros = [...SYSTEM_MACROS, ...newMacros]
     
-    // If the actions object has setMacros method (like SuggestionsCoordinator), call it
     if ('setMacros' in actions && typeof actions.setMacros === 'function') {
       (actions as any).setMacros([...SYSTEM_MACROS, ...newMacros]);
     }
@@ -445,6 +749,10 @@ export function createMacroDetector(actions: DetectorActions) {
     setMacros,
     getState,
     destroy: detachListeners,
+    // Expose undo utilities for external use
+    undoLastReplacement,
+    clearUndoHistory,
+    getUndoHistoryLength: () => undoHistory.length,
   }
 }
 

@@ -79,6 +79,8 @@ describe("Content Script: Macro Replacement", () => {
     // Set default prefixes for the store
     useMacroStore.setState(s => ({ config: { ...s.config, prefixes: ["/"] } }))
 
+
+
     // Spy on createElement to add a mock for scrollIntoView.
     // This is needed because JSDOM doesn't implement it.
     const originalCreateElement = document.createElement.bind(document);
