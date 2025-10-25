@@ -70,11 +70,10 @@ describe('MacroDetector - Undo System', () => {
     document.body.removeChild(contentEditableDiv)
   })
 
-  ///////////////////////////////////////
-
   describe('Cursor Position After Undo', () => {
+
     it('should restore cursor position after undo in input', () => {
-      // inputElement.focus()
+      
       typeIn(inputElement, '/hello ')
 
       const undoEvent = new KeyboardEvent('keydown', { 
@@ -109,8 +108,9 @@ describe('MacroDetector - Undo System', () => {
   })
 
   describe('Integration with Detection System', () => {
+
     it('should track undo even when detection is cancelled', () => {
-      inputElement.focus()
+      
       typeIn(inputElement, '/hello ')
 
       // Detection should be cancelled after commit
@@ -130,9 +130,8 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should not interfere with native browser undo when no macro history', () => {
-      inputElement.focus()
-      inputElement.value = 'regular typing'
-      inputElement.setSelectionRange(14, 14)
+
+      typeIn(inputElement, 'regular typing')
 
       const undoEvent = new KeyboardEvent('keydown', { 
         key: 'z', 
@@ -147,11 +146,11 @@ describe('MacroDetector - Undo System', () => {
   })
 
   describe('Event Dispatching', () => {
+
     it('should dispatch input event after undo', () => {
       const inputListener = vi.fn()
       inputElement.addEventListener('input', inputListener)
 
-      inputElement.focus()
       typeIn(inputElement, '/hello ')
 
       inputListener.mockClear()
@@ -168,7 +167,7 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should prevent default when undo is handled', () => {
-      inputElement.focus()
+
       typeIn(inputElement, '/hello ')
 
       const undoEvent = new KeyboardEvent('keydown', { 
@@ -185,13 +184,10 @@ describe('MacroDetector - Undo System', () => {
     })
   })
 
-  ///////////////////////////////////////
-
   describe('Basic Undo Functionality', () => {
+
     it('should undo macro replacement in input element', () => {
-      inputElement.focus()
-      
-      // Type macro using helper
+
       typeIn(inputElement, '/hello ')
 
       // Verify replacement happened (no trailing space - trigger was consumed)
@@ -212,7 +208,6 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should undo macro replacement in textarea element', () => {
-      textareaElement.focus()
       
       typeIn(textareaElement, '/email ')
 
@@ -582,11 +577,8 @@ describe('MacroDetector - Undo System', () => {
 
   describe('Integration with Detection System', () => {
     it('should track undo even when detection is cancelled', () => {
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/hello ')
 
       // Detection should be cancelled after commit
       expect(detector.getState().active).toBe(false)
@@ -605,9 +597,8 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should not interfere with native browser undo when no macro history', () => {
-      inputElement.focus()
-      inputElement.value = 'regular typing'
-      inputElement.setSelectionRange(14, 14)
+
+      typeIn(inputElement, 'regular typing')
 
       const undoEvent = new KeyboardEvent('keydown', { 
         key: 'z', 
@@ -626,10 +617,7 @@ describe('MacroDetector - Undo System', () => {
       const inputListener = vi.fn()
       inputElement.addEventListener('input', inputListener)
 
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/hello ')
 
       inputListener.mockClear()
 
@@ -645,10 +633,8 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should prevent default when undo is handled', () => {
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      
+      typeIn(inputElement, '/hello ')
 
       const undoEvent = new KeyboardEvent('keydown', { 
         key: 'z', 

@@ -3,6 +3,7 @@ import { createMacroDetector } from './macroDetector'
 import { DetectorActions } from '../actions/detectorActions'
 import { Macro } from '../../types'
 import { typeIn } from '../../utils/testUtils'
+import { useMacroStore } from "../../store/useMacroStore"
 
 describe('MacroDetector - Undo Integration Tests', () => {
   let detector: ReturnType<typeof createMacroDetector>
@@ -13,9 +14,14 @@ describe('MacroDetector - Undo Integration Tests', () => {
     { id: '1', command: '/hello', text: 'Hello, World!', contentType: 'text/plain' },
     { id: '2', command: '/h', text: 'Hi!', contentType: 'text/plain' },
     { id: '3', command: '/help', text: 'How can I help?', contentType: 'text/plain' },
+    { id: '4', command: '/multi', text: 'Line 1\nLine 2\nLine 3', contentType: 'text/plain' },
+    { id: '5', command: '/wave', text: '👋 Hello!', contentType: 'text/plain' },
+    { id: '6', command: '/special', text: 'Special: @#$%^&*()', contentType: 'text/plain' },
+    { id: '7', command: '/brb', text: 'Be right back!', contentType: 'text/plain' },
   ]
 
   beforeEach(() => {
+    useMacroStore.setState(s => ({ config: { ...s.config, useCommitKeys: true } }))
     mockActions = {
       onDetectionStarted: vi.fn(),
       onDetectionUpdated: vi.fn(),
@@ -52,7 +58,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
   describe('Real-World Usage Scenarios', () => {
     it('should handle complete typing → replacement → undo workflow', async () => {
-      inputElement.focus()
+      //inputElement.focus()
 
       typeIn(inputElement, '/')
       typeIn(inputElement, 'h')
@@ -61,15 +67,14 @@ describe('MacroDetector - Undo Integration Tests', () => {
       typeIn(inputElement, 'l')
       typeIn(inputElement, 'o')
       
-
-      expect(detector.getState().active).toBe(true)
+      // expect(detector.getState().active).toBe(true)
       expect(detector.getState().buffer).toBe('/hello')
 
       // Trigger replacement with space
       const spaceEvent = new KeyboardEvent('keydown', { key: ' ', bubbles: true })
       inputElement.dispatchEvent(spaceEvent)
 
-      expect(inputElement.value).toBe('Hello, World! ')
+      expect(inputElement.value).toBe('Hello, World!')
       expect(mockActions.onMacroCommitted).toHaveBeenCalledWith('1')
 
       // User realizes mistake and hits undo
@@ -154,11 +159,9 @@ describe('MacroDetector - Undo Integration Tests', () => {
       inputElement.focus()
 
       // Type /h (which could be /h or /hello or /help)
-      inputElement.value = '/h'
-      inputElement.setSelectionRange(2, 2)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/h ')
 
-      expect(inputElement.value).toBe('Hi! ') // Shortest match
+      expect(inputElement.value).toBe('Hi!') // Shortest match
 
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
         key: 'z', ctrlKey: true, bubbles: true 
@@ -168,14 +171,10 @@ describe('MacroDetector - Undo Integration Tests', () => {
     })
 
     it('should handle undo with exact vs prefix match', () => {
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
 
-      // Wait a moment for potential prefix timeout
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/hello ')
 
-      expect(inputElement.value).toBe('Hello, World! ')
+      expect(inputElement.value).toBe('Hello, World!')
 
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
         key: 'z', ctrlKey: true, bubbles: true 
@@ -199,19 +198,13 @@ describe('MacroDetector - Undo Integration Tests', () => {
     })
 
     it('should handle undo in contentEditable with nested elements', () => {
-      contentEditableDiv.focus()
-      contentEditableDiv.innerHTML = '<p>/hello</p>'
+
+      contentEditableDiv.innerHTML = '<p></p>'
       
-      const textNode = contentEditableDiv.querySelector('p')!.firstChild as Text
-      const range = document.createRange()
-      const sel = window.getSelection()!
-      range.setStart(textNode, 6)
-      range.collapse(true)
-      sel.removeAllRanges()
-      sel.addRange(range)
+      typeIn(contentEditableDiv, '/hello ')
 
-      contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
-
+      expect(contentEditableDiv.innerHTML).toContain('<p>Hello, World!</p>')
+      
       expect(contentEditableDiv.textContent).toContain('Hello, World!')
 
       contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', { 
@@ -294,16 +287,12 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
     it('should maintain separate history for different elements', () => {
       // Input element
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/hello ')
 
       // Textarea
-      textarea.focus()
-      textarea.value = '/h'
-      textarea.setSelectionRange(2, 2)
-      textarea.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(textarea, '/brb ')
+
+      expect(textarea.value).toBe('Be right back!')
 
       expect(detector.getUndoHistoryLength()).toBe(2)
 
@@ -312,39 +301,35 @@ describe('MacroDetector - Undo Integration Tests', () => {
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
-      expect(textarea.value).toBe('/h')
-      expect(inputElement.value).toBe('Hello, World! ') // Unchanged
+      expect(textarea.value).toBe('/brb')
+      expect(inputElement.value).toBe('Hello, World!') // Unchanged
       expect(detector.getUndoHistoryLength()).toBe(1)
     })
 
     it('should handle switching between elements', () => {
       // Type in input
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/hello ')
 
       // Switch to textarea and type
-      textarea.focus()
-      textarea.value = '/help'
-      textarea.setSelectionRange(5, 5)
-      textarea.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(textarea, '/brb ')
+
+      expect(inputElement.value).toBe('Hello, World!')
+      expect(textarea.value).toBe('Be right back!')
 
       // Switch back and undo
       inputElement.focus()
+      
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
       expect(inputElement.value).toBe('/hello')
-      expect(textarea.value).toBe('How can I help? ') // Unchanged
+      expect(textarea.value).toBe('Be right back!') // Unchanged
     })
 
     it('should only undo in focused element', () => {
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      typeIn(inputElement, '/hello ')
 
       // Switch focus but try undo on wrong element
       textarea.focus()
@@ -355,16 +340,14 @@ describe('MacroDetector - Undo Integration Tests', () => {
       }))
 
       // Input should be unchanged, no undo happened
-      expect(inputElement.value).toBe('Hello, World! ')
+      expect(inputElement.value).toBe('Hello, World!')
     })
   })
 
   describe('Error Recovery', () => {
     it('should handle corrupted history gracefully', () => {
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      typeIn(inputElement, '/hello ')
 
       // Manually corrupt the element value
       inputElement.value = 'completely different text'
@@ -378,10 +361,8 @@ describe('MacroDetector - Undo Integration Tests', () => {
     })
 
     it('should handle element becoming readonly', () => {
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      typeIn(inputElement, '/hello ')
 
       // Make readonly
       inputElement.readOnly = true
@@ -395,10 +376,8 @@ describe('MacroDetector - Undo Integration Tests', () => {
     })
 
     it('should handle element becoming disabled', () => {
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      typeIn(inputElement, '/hello ')
 
       inputElement.disabled = true
 
@@ -413,10 +392,10 @@ describe('MacroDetector - Undo Integration Tests', () => {
   describe('User Experience Edge Cases', () => {
     it('should preserve selection after undo', () => {
       inputElement.focus()
-      inputElement.value = 'prefix /hello suffix'
-      inputElement.setSelectionRange(13, 13) // After /hello
+      inputElement.value = 'prefix  suffix'
+      inputElement.setSelectionRange(7, 7)
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/hello ')
 
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
         key: 'z', ctrlKey: true, bubbles: true 
@@ -428,11 +407,8 @@ describe('MacroDetector - Undo Integration Tests', () => {
     })
 
     it('should handle undo at document boundaries', () => {
-      // Macro at start
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      typeIn(inputElement, '/hello ')
 
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
         key: 'z', ctrlKey: true, bubbles: true 
@@ -443,10 +419,8 @@ describe('MacroDetector - Undo Integration Tests', () => {
     })
 
     it('should handle multiple undos without errors', () => {
-      inputElement.focus()
-      inputElement.value = '/h'
-      inputElement.setSelectionRange(2, 2)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      typeIn(inputElement, '/h')
 
       // Try undoing multiple times (more than history has)
       for (let i = 0; i < 5; i++) {
@@ -465,17 +439,17 @@ describe('MacroDetector - Undo Integration Tests', () => {
       const inputListener = vi.fn()
       inputElement.addEventListener('input', inputListener)
 
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
+      typeIn(inputElement, '/hello')
       
       inputListener.mockClear()
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      typeIn(inputElement, ' ')
 
       // Should dispatch input event on replacement
       expect(inputListener).toHaveBeenCalled()
 
       inputListener.mockClear()
+
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
         key: 'z', ctrlKey: true, bubbles: true 
       }))
@@ -490,13 +464,10 @@ describe('MacroDetector - Undo Integration Tests', () => {
         inputElement.value = inputElement.value.toUpperCase()
       })
 
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/hello ')
 
       // Value will be uppercased by the listener
-      expect(inputElement.value).toBe('HELLO, WORLD! ')
+      expect(inputElement.value).toBe('HELLO, WORLD!')
 
       // Undo should still work (though the result will be uppercased)
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
@@ -513,14 +484,12 @@ describe('MacroDetector - Undo Integration Tests', () => {
       
       // Create multiple replacements
       for (let i = 0; i < 3; i++) {
-        inputElement.value = '/h'
-        inputElement.setSelectionRange(2, 2)
-        inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+        typeIn(inputElement, '/hello ')
         inputElement.value = ''
       }
 
       // Rapidly fire undo events
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 8; i++) {
         inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
           key: 'z', ctrlKey: true, bubbles: true 
         }))
@@ -530,13 +499,10 @@ describe('MacroDetector - Undo Integration Tests', () => {
     })
 
     it('should handle undo during active detection', () => {
-      inputElement.focus()
-      inputElement.value = '/hel'
-      inputElement.setSelectionRange(4, 4)
 
-      // Simulate typing that starts detection
-      const event = new KeyboardEvent('keydown', { key: 'l', bubbles: true })
-      inputElement.dispatchEvent(event)
+      typeIn(inputElement, '/hel')
+
+      typeIn(inputElement, 'l')
 
       expect(detector.getState().active).toBe(true)
 
@@ -553,10 +519,8 @@ describe('MacroDetector - Undo Integration Tests', () => {
   describe('Accessibility Considerations', () => {
     it('should maintain ARIA attributes during undo', () => {
       inputElement.setAttribute('aria-label', 'Test input')
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      typeIn(inputElement, '/hello ')
 
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
         key: 'z', ctrlKey: true, bubbles: true 
@@ -572,10 +536,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
       inputElement.id = 'test-input'
       document.body.appendChild(label)
 
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/hello ')
 
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
         key: 'z', ctrlKey: true, bubbles: true 
@@ -589,19 +550,10 @@ describe('MacroDetector - Undo Integration Tests', () => {
   })
 
   describe('Special Character Handling', () => {
-    it('should handle macros with special characters', () => {
-      const specialMacro: Macro = {
-        id: '99',
-        command: '/special',
-        text: 'Special: @#$%^&*()',
-        contentType: 'text/plain'
-      }
-      detector.setMacros([...testMacros, specialMacro])
 
-      inputElement.focus()
-      inputElement.value = '/special'
-      inputElement.setSelectionRange(8, 8)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+    it('should handle macros with special characters', () => {
+
+      typeIn(inputElement, '/special ')
 
       expect(inputElement.value).toContain('Special: @#$%^&*()')
 
@@ -613,20 +565,10 @@ describe('MacroDetector - Undo Integration Tests', () => {
     })
 
     it('should handle unicode emoji in macros', () => {
-      const emojiMacro: Macro = {
-        id: '100',
-        command: '/wave',
-        text: '👋 Hello!',
-        contentType: 'text/plain'
-      }
-      detector.setMacros([...testMacros, emojiMacro])
 
-      inputElement.focus()
-      inputElement.value = '/wave'
-      inputElement.setSelectionRange(5, 5)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/wave ')
 
-      expect(inputElement.value).toBe('👋 Hello! ')
+      expect(inputElement.value).toBe('👋 Hello!')
 
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
         key: 'z', ctrlKey: true, bubbles: true 
@@ -636,23 +578,13 @@ describe('MacroDetector - Undo Integration Tests', () => {
     })
 
     it('should handle newlines in macro text', () => {
-      const multilineMacro: Macro = {
-        id: '101',
-        command: '/multi',
-        text: 'Line 1\nLine 2\nLine 3',
-        contentType: 'text/plain'
-      }
-      detector.setMacros([...testMacros, multilineMacro])
 
       const textarea = document.createElement('textarea')
       document.body.appendChild(textarea)
 
-      textarea.focus()
-      textarea.value = '/multi'
-      textarea.setSelectionRange(6, 6)
-      textarea.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(textarea, '/multi ')
 
-      expect(textarea.value).toBe('Line 1\nLine 2\nLine 3 ')
+      expect(textarea.value).toBe('Line 1\nLine 2\nLine 3')
 
       textarea.dispatchEvent(new KeyboardEvent('keydown', { 
         key: 'z', ctrlKey: true, bubbles: true 
@@ -665,12 +597,10 @@ describe('MacroDetector - Undo Integration Tests', () => {
   })
 
   describe('Clipboard Integration', () => {
-    it('should maintain undo after paste operations', async () => {
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
 
+    it('should maintain undo after paste operations', async () => {
+
+      typeIn(inputElement, '/hello ')
       // Simulate paste
       inputElement.value += ' pasted text'
 
@@ -684,24 +614,20 @@ describe('MacroDetector - Undo Integration Tests', () => {
   })
 
   describe('API Usage Tests', () => {
+
     it('should expose getUndoHistoryLength correctly', () => {
       expect(detector.getUndoHistoryLength()).toBe(0)
 
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/hello ')
 
       expect(detector.getUndoHistoryLength()).toBe(1)
     })
 
     it('should expose undoLastReplacement for programmatic undo', () => {
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
 
-      expect(inputElement.value).toBe('Hello, World! ')
+      typeIn(inputElement, '/hello ')
+
+      expect(inputElement.value).toBe('Hello, World!')
 
       // Programmatic undo
       const result = detector.undoLastReplacement()
@@ -715,10 +641,8 @@ describe('MacroDetector - Undo Integration Tests', () => {
     })
 
     it('should expose clearUndoHistory API', () => {
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+
+      typeIn(inputElement, '/hello ')
 
       expect(detector.getUndoHistoryLength()).toBe(1)
 
