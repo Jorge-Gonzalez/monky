@@ -3,6 +3,7 @@ import { createMacroDetector } from './macroDetector'
 import { DetectorActions } from '../actions/detectorActions'
 import { Macro, EditableEl } from '../../types'
 import { typeIn } from '../../utils/testUtils'
+import { useMacroStore } from "../../store/useMacroStore"
 
 describe('MacroDetector - Undo System', () => {
   let detector: ReturnType<typeof createMacroDetector>
@@ -10,6 +11,32 @@ describe('MacroDetector - Undo System', () => {
   let inputElement: HTMLInputElement
   let textareaElement: HTMLTextAreaElement
   let contentEditableDiv: HTMLDivElement
+
+  const getUndoEvent = () => new KeyboardEvent('keydown', { 
+    key: 'z', 
+    ctrlKey: true, 
+    bubbles: true 
+  })
+
+  const getMacUndoEvent = () => new KeyboardEvent('keydown', { 
+    key: 'z', 
+    metaKey: true, 
+    bubbles: true 
+  })
+
+  const getCancelableUndoEvent = () => new KeyboardEvent('keydown', { 
+    key: 'z', 
+    ctrlKey: true, 
+    bubbles: true,
+    cancelable: true
+  })
+
+  const getRedoEvent = () => new KeyboardEvent('keydown', { 
+    key: 'z', 
+    ctrlKey: true, 
+    shiftKey: true,
+    bubbles: true 
+  })
 
   const testMacros: Macro[] = [
     {
@@ -29,10 +56,17 @@ describe('MacroDetector - Undo System', () => {
       command: '/sig',
       text: 'Best regards,\nJohn Doe',
       contentType: 'text/plain'
-    }
+    },
+    {
+      id: '4',
+      command: '/empty',
+      text: '',
+      contentType: 'text/plain'
+    },
   ]
 
   beforeEach(() => {
+    useMacroStore.setState(s => ({ config: { ...s.config, useCommitKeys: true } }))
     // Create mock actions
     mockActions = {
       onDetectionStarted: vi.fn(),
@@ -76,12 +110,7 @@ describe('MacroDetector - Undo System', () => {
       
       typeIn(inputElement, '/hello ')
 
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      inputElement.dispatchEvent(undoEvent)
+      inputElement.dispatchEvent(getUndoEvent())
 
       // Cursor should be at end of restored text
       expect(inputElement.selectionStart).toBe(6)
@@ -95,12 +124,7 @@ describe('MacroDetector - Undo System', () => {
       
       typeIn(textareaElement, '/email ')
 
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      textareaElement.dispatchEvent(undoEvent)
+      textareaElement.dispatchEvent(getUndoEvent())
 
       expect(textareaElement.value).toBe('prefix /email')
       expect(textareaElement.selectionStart).toBe(13)
@@ -119,12 +143,7 @@ describe('MacroDetector - Undo System', () => {
       // But undo history should still exist
       expect(detector.getUndoHistoryLength()).toBe(1)
 
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      inputElement.dispatchEvent(undoEvent)
+      inputElement.dispatchEvent(getUndoEvent())
 
       expect(inputElement.value).toBe('/hello')
     })
@@ -132,15 +151,9 @@ describe('MacroDetector - Undo System', () => {
     it('should not interfere with native browser undo when no macro history', () => {
 
       typeIn(inputElement, 'regular typing')
-
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
       
       // Should allow default browser behavior
-      const result = inputElement.dispatchEvent(undoEvent)
+      const result = inputElement.dispatchEvent(getUndoEvent())
       expect(result).toBe(true) // Not prevented
     })
   })
@@ -155,12 +168,7 @@ describe('MacroDetector - Undo System', () => {
 
       inputListener.mockClear()
 
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      inputElement.dispatchEvent(undoEvent)
+      inputElement.dispatchEvent(getUndoEvent())
 
       // Should have dispatched input event
       expect(inputListener).toHaveBeenCalledTimes(1)
@@ -169,15 +177,8 @@ describe('MacroDetector - Undo System', () => {
     it('should prevent default when undo is handled', () => {
 
       typeIn(inputElement, '/hello ')
-
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true,
-        cancelable: true
-      })
       
-      const result = inputElement.dispatchEvent(undoEvent)
+      const result = inputElement.dispatchEvent(getCancelableUndoEvent())
       
       // Should be prevented when undo was handled
       expect(result).toBe(false)
@@ -195,12 +196,7 @@ describe('MacroDetector - Undo System', () => {
       expect(detector.getUndoHistoryLength()).toBe(1)
 
       // Undo the replacement
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      inputElement.dispatchEvent(undoEvent)
+      inputElement.dispatchEvent(getUndoEvent())
 
       // Verify undo worked
       expect(inputElement.value).toBe('/hello')
@@ -215,12 +211,7 @@ describe('MacroDetector - Undo System', () => {
       expect(detector.getUndoHistoryLength()).toBe(1)
 
       // Undo
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      textareaElement.dispatchEvent(undoEvent)
+      textareaElement.dispatchEvent(getUndoEvent())
 
       expect(textareaElement.value).toBe('/email')
       expect(detector.getUndoHistoryLength()).toBe(0)
@@ -243,12 +234,7 @@ describe('MacroDetector - Undo System', () => {
       expect(detector.getUndoHistoryLength()).toBe(1)
 
       // Undo
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      contentEditableDiv.dispatchEvent(undoEvent)
+      contentEditableDiv.dispatchEvent(getUndoEvent())
 
       expect(contentEditableDiv.textContent).toBe('/hello')
       expect(detector.getUndoHistoryLength()).toBe(0)
@@ -260,12 +246,7 @@ describe('MacroDetector - Undo System', () => {
       typeIn(inputElement, '/hello ')
 
       // Use metaKey instead of ctrlKey (Mac style)
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        metaKey: true, 
-        bubbles: true 
-      })
-      inputElement.dispatchEvent(undoEvent)
+      inputElement.dispatchEvent(getMacUndoEvent())
 
       expect(inputElement.value).toBe('/hello')
     })
@@ -286,43 +267,26 @@ describe('MacroDetector - Undo System', () => {
       expect(detector.getUndoHistoryLength()).toBe(2)
 
       // Undo second macro
-      const undoEvent1 = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      inputElement.dispatchEvent(undoEvent1)
+      inputElement.dispatchEvent(getUndoEvent())
 
       expect(inputElement.value).toContain('Hello, World!')
       expect(inputElement.value).toContain('/email')
       expect(detector.getUndoHistoryLength()).toBe(1)
 
       // Undo first macro
-      const undoEvent2 = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      inputElement.dispatchEvent(undoEvent2)
+      inputElement.dispatchEvent(getUndoEvent())
 
       expect(inputElement.value).toContain('/hello')
       expect(detector.getUndoHistoryLength()).toBe(0)
     })
 
     it('should not undo when history is empty', () => {
-      inputElement.focus()
-      inputElement.value = 'some text'
-      inputElement.setSelectionRange(9, 9)
 
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      
+      typeIn(inputElement, 'some text')
+
       // Should not prevent default when no history
-      const defaultPrevented = !inputElement.dispatchEvent(undoEvent)
-      expect(defaultPrevented).toBe(false)
+      const isDefaultPrevented = !inputElement.dispatchEvent(getUndoEvent())
+      expect(isDefaultPrevented).toBe(false)
       expect(inputElement.value).toBe('some text')
     })
   })
@@ -339,31 +303,19 @@ describe('MacroDetector - Undo System', () => {
       inputElement.setSelectionRange(inputElement.value.length, inputElement.value.length)
 
       // Undo should still work
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      inputElement.dispatchEvent(undoEvent)
+      inputElement.dispatchEvent(getUndoEvent())
 
       expect(inputElement.value).toBe('/hello extra text')
     })
 
     it('should undo when user typed before replacement', () => {
-      inputElement.focus()
-      
-      typeIn(inputElement, '/hello ')
-      
+            
       // User types at the beginning
-      inputElement.value = 'prefix ' + inputElement.value
-      inputElement.setSelectionRange(0, 0)
+      typeIn(inputElement, 'prefix ')
 
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      inputElement.dispatchEvent(undoEvent)
+      typeIn(inputElement, '/hello ')
+
+      inputElement.dispatchEvent(getUndoEvent())
 
       // Should still find and undo the replacement
       expect(inputElement.value).toContain('/hello')
@@ -378,14 +330,8 @@ describe('MacroDetector - Undo System', () => {
       inputElement.value = 'Hello,  !'
       
       // Undo might not work perfectly here, but shouldn't crash
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      
       expect(() => {
-        inputElement.dispatchEvent(undoEvent)
+        inputElement.dispatchEvent(getUndoEvent())
       }).not.toThrow()
     })
   })
@@ -435,7 +381,7 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should clear history on detector destroy', () => {
-      inputElement.focus()
+
       typeIn(inputElement, '/hello ')
 
       expect(detector.getUndoHistoryLength()).toBe(1)
@@ -454,21 +400,15 @@ describe('MacroDetector - Undo System', () => {
 
   describe('Edge Cases', () => {
     it('should not crash when element is removed from DOM', () => {
-      inputElement.focus()
+
       typeIn(inputElement, '/hello ')
 
       // Remove element from DOM
       document.body.removeChild(inputElement)
 
       // Try to undo - should not crash
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      
       expect(() => {
-        window.dispatchEvent(undoEvent)
+        window.dispatchEvent(getUndoEvent())
       }).not.toThrow()
       
       // Prevent afterEach from trying to remove it again
@@ -478,59 +418,33 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should not undo if Shift is pressed (Ctrl+Shift+Z is redo)', () => {
-      inputElement.focus()
-      typeIn(inputElement, '/hello ')
 
-      const redoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        shiftKey: true,
-        bubbles: true 
-      })
+      typeIn(inputElement, '/hello ')
       
-      inputElement.dispatchEvent(redoEvent)
+      inputElement.dispatchEvent(getRedoEvent())
 
       // Should not undo
       expect(inputElement.value).toBe('Hello, World!')
     })
 
     it('should handle multiline macro replacements', () => {
-      textareaElement.focus()
+
       typeIn(textareaElement, '/sig ')
 
       expect(textareaElement.value).toBe('Best regards,\nJohn Doe')
 
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      textareaElement.dispatchEvent(undoEvent)
+      textareaElement.dispatchEvent(getUndoEvent())
 
       expect(textareaElement.value).toBe('/sig')
     })
 
     it('should handle empty replacement text', () => {
-      const emptyMacro: Macro = {
-        id: '99',
-        command: '/empty',
-        text: '',
-        contentType: 'text/plain'
-      }
-      
-      detector.setMacros([...testMacros, emptyMacro])
 
-      inputElement.focus()
       typeIn(inputElement, '/empty ')
 
       expect(inputElement.value).toBe('')
 
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      inputElement.dispatchEvent(undoEvent)
+      inputElement.dispatchEvent(getUndoEvent())
 
       expect(inputElement.value).toBe('/empty')
     })
@@ -538,18 +452,10 @@ describe('MacroDetector - Undo System', () => {
 
   describe('Cursor Position After Undo', () => {
     it('should restore cursor position after undo in input', () => {
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(inputElement, '/hello ')
 
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      inputElement.dispatchEvent(undoEvent)
+      inputElement.dispatchEvent(getUndoEvent())
 
       // Cursor should be at end of restored text
       expect(inputElement.selectionStart).toBe(6)
@@ -557,18 +463,10 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should restore cursor position after undo in textarea', () => {
-      textareaElement.focus()
-      textareaElement.value = 'prefix /email'
-      textareaElement.setSelectionRange(13, 13)
 
-      textareaElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      typeIn(textareaElement, 'prefix /email ')
 
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      textareaElement.dispatchEvent(undoEvent)
+      textareaElement.dispatchEvent(getUndoEvent())
 
       expect(textareaElement.value).toBe('prefix /email')
       expect(textareaElement.selectionStart).toBe(13)
@@ -586,12 +484,7 @@ describe('MacroDetector - Undo System', () => {
       // But undo history should still exist
       expect(detector.getUndoHistoryLength()).toBe(1)
 
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      inputElement.dispatchEvent(undoEvent)
+      inputElement.dispatchEvent(getUndoEvent())
 
       expect(inputElement.value).toBe('/hello')
     })
@@ -600,14 +493,8 @@ describe('MacroDetector - Undo System', () => {
 
       typeIn(inputElement, 'regular typing')
 
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      
       // Should allow default browser behavior
-      const result = inputElement.dispatchEvent(undoEvent)
+      const result = inputElement.dispatchEvent(getUndoEvent())
       expect(result).toBe(true) // Not prevented
     })
   })
@@ -621,12 +508,7 @@ describe('MacroDetector - Undo System', () => {
 
       inputListener.mockClear()
 
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
-      })
-      inputElement.dispatchEvent(undoEvent)
+      inputElement.dispatchEvent(getUndoEvent())
 
       // Should have dispatched input event
       expect(inputListener).toHaveBeenCalledTimes(1)
@@ -635,15 +517,8 @@ describe('MacroDetector - Undo System', () => {
     it('should prevent default when undo is handled', () => {
       
       typeIn(inputElement, '/hello ')
-
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true,
-        cancelable: true
-      })
       
-      const result = inputElement.dispatchEvent(undoEvent)
+      const result = inputElement.dispatchEvent(getCancelableUndoEvent())
       
       // Should be prevented when undo was handled
       expect(result).toBe(false)
