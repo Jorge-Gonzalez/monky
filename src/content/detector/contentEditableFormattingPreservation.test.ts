@@ -1,8 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createMacroDetector } from './macroDetector'
 import { DetectorActions } from '../actions/detectorActions'
-import { Macro, EditableEl } from '../../types'
+import { Macro } from '../../types'
 import { typeIn } from '../../utils/testUtils'
+import { useMacroStore } from "../../store/useMacroStore"
 
 describe('ContentEditable Formatting Preservation', () => {
   let detector: ReturnType<typeof createMacroDetector>
@@ -25,6 +26,7 @@ describe('ContentEditable Formatting Preservation', () => {
   ]
 
   beforeEach(() => {
+    useMacroStore.setState(s => ({ config: { ...s.config, useCommitKeys: true } }))
     mockActions = {
       onDetectionStarted: vi.fn(),
       onDetectionUpdated: vi.fn(),

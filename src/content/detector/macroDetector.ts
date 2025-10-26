@@ -303,9 +303,20 @@ export function createMacroDetector(actions: DetectorActions) {
    * Undo the last macro replacement
    */
   function undoLastReplacement(): boolean {
-    if (undoHistory.length === 0) return false
+    if (undoHistory.length === 0 || !activeEl) return false
 
-    const lastEntry = undoHistory.pop()
+    // Find the index of the last entry for the active element
+    let lastEntryIndex = -1
+    for (let i = undoHistory.length - 1; i >= 0; i--) {
+      if (undoHistory[i].element === activeEl) {
+        lastEntryIndex = i
+        break
+      }
+    }
+
+    if (lastEntryIndex === -1) return false
+
+    const lastEntry = undoHistory.splice(lastEntryIndex, 1)[0]
     if (!lastEntry) return false
 
     const { element, startPos, originalText, replacementText } = lastEntry
@@ -534,11 +545,12 @@ export function createMacroDetector(actions: DetectorActions) {
     // Handle Ctrl+Z / Cmd+Z for undo
     if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
       const editable = getActiveEditable(e.target)
-      
+      activeEl = editable // Set active element for undo context
+
       // Only handle undo if we have history for this element
       if (editable && undoHistory.some(entry => entry.element === editable)) {
         const undone = undoLastReplacement()
-        
+
         if (undone) {
           e.preventDefault()
           e.stopPropagation()

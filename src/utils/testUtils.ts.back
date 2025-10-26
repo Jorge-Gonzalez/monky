@@ -4,21 +4,11 @@ import { EditableEl } from "../types"
  * Helper function to simulate typing in an element
  * Dispatches keydown events and updates content ONLY if preventDefault wasn't called
  * This properly simulates browser behavior where content updates are the "default action"
- * 
- * Special character handling:
- * - '\n' in string is converted to 'Enter' key press
- * - 'Enter' in contentEditable creates <br> tags (real browser behavior)
- * - 'Enter' in textarea creates '\n' characters
  */
 export function typeIn(element: EditableEl, str: string) {
   element.focus()
   
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i]
-    
-    // Convert \n to Enter key for natural syntax
-    const key = char === '\n' ? 'Enter' : char
-    
+  for (const key of str) {
     // Dispatch keydown event FIRST
     const keydownEvent = new KeyboardEvent('keydown', { 
       key, 
@@ -76,23 +66,12 @@ function updateElementContent(element: EditableEl, key: string) {
     
     // Insert the new character (or handle special keys)
     if (key === 'Enter') {
-      // Real browser behavior: Insert <br> in contentEditable
-      // (Some browsers use <div>, but <br> is more universal and what most rich text editors use)
+      // Insert line break
       const br = document.createElement('br')
       range.insertNode(br)
       range.setStartAfter(br)
-      
-      // Add a second <br> if we're at the end of content
-      // This ensures the cursor moves to a new visible line
-      const isAtEnd = !range.startContainer.nextSibling && 
-                     range.startOffset === (range.startContainer.textContent?.length || 0)
-      if (isAtEnd) {
-        const br2 = document.createElement('br')
-        range.insertNode(br2)
-        range.setStartAfter(br2)
-      }
     } else if (key === ' ') {
-      // Insert space as text node
+      // Insert space
       const textNode = document.createTextNode(' ')
       range.insertNode(textNode)
       range.setStartAfter(textNode)
@@ -102,7 +81,7 @@ function updateElementContent(element: EditableEl, key: string) {
       range.insertNode(textNode)
       range.setStartAfter(textNode)
     }
-    // Ignore special keys like 'Escape', 'Tab', 'ArrowUp', etc.
+    // Ignore special keys like 'Escape', 'Tab', etc.
     
     // Update cursor position
     range.collapse(true)
@@ -115,12 +94,8 @@ function updateElementContent(element: EditableEl, key: string) {
     const end = element.selectionEnd || 0
     
     if (key === 'Enter' && element instanceof HTMLTextAreaElement) {
-      // Textarea: Enter creates actual newline character
       element.value = element.value.substring(0, start) + '\n' + element.value.substring(end)
       element.selectionStart = element.selectionEnd = start + 1
-    } else if (key === 'Enter' && element instanceof HTMLInputElement) {
-      // Input: Enter is typically ignored or submits form (we'll ignore it)
-      // Do nothing - browsers don't add newlines to single-line inputs
     } else if (key === ' ') {
       element.value = element.value.substring(0, start) + ' ' + element.value.substring(end)
       element.selectionStart = element.selectionEnd = start + 1
@@ -128,22 +103,19 @@ function updateElementContent(element: EditableEl, key: string) {
       element.value = element.value.substring(0, start) + key + element.value.substring(end)
       element.selectionStart = element.selectionEnd = start + 1
     }
-    // Ignore other special keys
+    // Ignore special keys for input/textarea (Enter in input is ignored by browser)
   }
 }
 
 /**
  * Alternative helper for tests that need to verify preventDefault behavior
- * Returns whether the default was prevented for each character
+ * Returns whether the default was prevented
  */
 export function typeInWithResult(element: EditableEl, str: string): boolean[] {
   element.focus()
   const results: boolean[] = []
   
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i]
-    const key = char === '\n' ? 'Enter' : char
-    
+  for (const key of str) {
     const keydownEvent = new KeyboardEvent('keydown', { 
       key, 
       bubbles: true,
