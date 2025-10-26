@@ -10,15 +10,22 @@ import { DetectorActions } from "../actions/detectorActions"
 const COMMIT_KEYS = new Set([" ", "Enter"])
 const CONFIRM_DELAY_MS = 1850
 
+interface ElementRef {
+  id?: string;
+  selector?: string;
+  element: EditableEl;
+}
+
 // Types for undo history
 interface ReplacementHistoryEntry {
-  element: EditableEl
+  elementRef: ElementRef;
   startPos: number
   endPos: number
   originalText: string
   replacementText: string
   macro: Macro
   timestamp: number
+  elementId: string
 }
 
 export function createMacroDetector(actions: DetectorActions) {
@@ -37,6 +44,21 @@ export function createMacroDetector(actions: DetectorActions) {
   // Undo history stack
   const undoHistory: ReplacementHistoryEntry[] = []
   const MAX_UNDO_HISTORY = 50 // Keep last 50 replacements
+  
+  // Map to track element IDs for efficient lookup
+  const elementIdMap = new WeakMap<EditableEl, string>()
+  let elementCounter = 0
+
+  /** 
+   * Generate or get unique ID for element
+   */
+  function getElementId(element: EditableEl): string {
+    if (!elementIdMap.has(element)) {
+      const id = `element_${elementCounter++}`
+      elementIdMap.set(element, id)
+    }
+    return elementIdMap.get(element)!
+  }
 
   function clearTimer() {
     if (timer > 0) {
@@ -172,14 +194,16 @@ export function createMacroDetector(actions: DetectorActions) {
     // })
 
     // Store in undo history using the original range
+    const elementId = getElementId(element);
     const historyEntry: ReplacementHistoryEntry = {
-      element,
+      elementRef: { element, id: elementId },
       startPos: undoRange.startPos,
       endPos: undoRange.endPos,
       originalText: undoRange.originalText,
       replacementText,
       macro,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      elementId
     }
 
     undoHistory.push(historyEntry)
@@ -305,10 +329,12 @@ export function createMacroDetector(actions: DetectorActions) {
   function undoLastReplacement(): boolean {
     if (undoHistory.length === 0 || !activeEl) return false
 
+    const activeElementId = getElementId(activeEl);
+
     // Find the index of the last entry for the active element
     let lastEntryIndex = -1
     for (let i = undoHistory.length - 1; i >= 0; i--) {
-      if (undoHistory[i].element === activeEl) {
+      if (undoHistory[i].elementId === activeElementId) {
         lastEntryIndex = i
         break
       }
@@ -319,7 +345,8 @@ export function createMacroDetector(actions: DetectorActions) {
     const lastEntry = undoHistory.splice(lastEntryIndex, 1)[0]
     if (!lastEntry) return false
 
-    const { element, startPos, originalText, replacementText } = lastEntry
+    const { elementRef, startPos, originalText, replacementText } = lastEntry;
+    const element = elementRef.element;
 
     // Check if element still exists and is valid
     if (!element || !document.contains(element as Node)) {
@@ -427,9 +454,10 @@ export function createMacroDetector(actions: DetectorActions) {
    */
   function clearUndoHistory(element?: EditableEl): void {
     if (element) {
+      const elementId = getElementId(element);
       // Remove entries for specific element
       for (let i = undoHistory.length - 1; i >= 0; i--) {
-        if (undoHistory[i].element === element) {
+        if (undoHistory[i].elementId === elementId) {
           undoHistory.splice(i, 1)
         }
       }
@@ -548,7 +576,8 @@ export function createMacroDetector(actions: DetectorActions) {
       activeEl = editable // Set active element for undo context
 
       // Only handle undo if we have history for this element
-      if (editable && undoHistory.some(entry => entry.element === editable)) {
+      const elementId = editable ? getElementId(editable) : undefined;
+      if (editable && undoHistory.some(entry => entry.elementId === elementId)) {
         const undone = undoLastReplacement()
 
         if (undone) {
