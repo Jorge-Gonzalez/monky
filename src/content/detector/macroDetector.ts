@@ -167,7 +167,8 @@ export function createMacroDetector(actions: DetectorActions) {
     replacementText: string,
     macro: Macro,
     undoStartPos?: number,
-    undoEndPos?: number
+    undoEndPos?: number,
+    originalMacroCommand?: string  // The original macro command for immediate mode
   ): void {
     if (!element) return
 
@@ -175,12 +176,14 @@ export function createMacroDetector(actions: DetectorActions) {
     const originalText = textContent.substring(startPos, endPos)
 
     // For undo, use the original range (before space adjustment) if provided
+    // In immediate mode, we may have a specific original command to restore
     const undoRange = {
       startPos: undoStartPos ?? startPos,
       endPos: undoEndPos ?? endPos,
-      originalText: undoStartPos !== undefined && undoEndPos !== undefined 
-        ? textContent.substring(undoStartPos, undoEndPos) 
-        : originalText
+      originalText: originalMacroCommand || 
+                   (undoStartPos !== undefined && undoEndPos !== undefined 
+                     ? textContent.substring(undoStartPos, undoEndPos) 
+                     : originalText)
     }
 
     // Debug: Uncomment for undo history debugging
@@ -538,7 +541,9 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Regular macro replacement with undo tracking
     // Use adjusted range for replacement, but original range for undo tracking
-    performReplacement(activeEl, commandStart, endPos, macro.text, macro, originalCommandStart, originalEndPos)
+    // In immediate mode, also pass the original macro command for correct undo
+    const originalCommandForUndo = isImmediate ? state.buffer : undefined;
+    performReplacement(activeEl, commandStart, endPos, macro.text, macro, originalCommandStart, originalEndPos, originalCommandForUndo)
     actions.onMacroCommitted(String(macro.id))
     cancelDetection()
   }
@@ -722,6 +727,8 @@ export function createMacroDetector(actions: DetectorActions) {
         if (state.active) {
           const committedImmediately = scheduleConfirmIfExact(sel)
           if (committedImmediately) {
+            // In immediate mode, prevent the character from being added to avoid duplication
+            // The macro replacement will handle the full command that includes the triggering character
             e.preventDefault()
           }
           
