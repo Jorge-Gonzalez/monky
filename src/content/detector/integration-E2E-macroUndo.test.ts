@@ -612,13 +612,13 @@ describe('MacroDetector - Undo Integration Tests', () => {
       expect(inputElement.value).toBe('Hello, World!')
 
       // Programmatic undo
-      const result = detector.undoLastReplacement()
+      const result = detector.undoLastReplacement(inputElement)
       expect(result).toBe(true)
       expect(inputElement.value).toBe('/hello')
     })
 
     it('should return false when undoLastReplacement has no history', () => {
-      const result = detector.undoLastReplacement()
+      const result = detector.undoLastReplacement(inputElement)
       expect(result).toBe(false)
     })
 

@@ -27,55 +27,55 @@ if (typeof chrome === 'undefined' || !chrome.storage) {
 }
 
 import { useMacroStore } from '../store/useMacroStore'
-import { createMacroDetector, MacroDetector } from './detector/macroDetector'
+import { createMacroCore, MacroCore } from './detector/macroCore'
 import { createSuggestionsCoordinator } from './coordinators/SuggestionsCoordinator'
 import { createSuggestionsOverlayManager } from './overlays/suggestionsOverlay/SuggestionsOverlayManager'
 import { loadMacros, listenMacrosChange } from './storage/macroStorage'
 import { Macro } from '../types'
 
 // Module-level state for development
-let detector: MacroDetector | null = null
+let macroCore: MacroCore | null = null
 let isDetectorActive = false
 
 /**
- * Creates and initializes the macro detector for development.
+ * Creates and initializes the macro core for development.
  */
-function createAndInitializeDetector(): MacroDetector {
+function createAndInitializeMacroCore(): MacroCore {
   const overlayManager = createSuggestionsOverlayManager([])
   const suggestionsCoordinator = createSuggestionsCoordinator(overlayManager)
-  const newDetector = createMacroDetector(suggestionsCoordinator)
-  newDetector.initialize()
-  return newDetector
+  const core = createMacroCore(suggestionsCoordinator)
+  core.initialize()
+  return core
 }
 
 /**
  * Checks the current configuration and hostname to decide whether to
- * activate or deactivate the macro detector.
+ * activate or deactivate the macro system.
  */
-function manageDetectorState() {
+function manageMacroState() {
   const { config } = useMacroStore.getState()
   const isDisabled = config.disabledSites.includes(window.location.hostname)
 
   if (isDisabled) {
     if (isDetectorActive) {
-      detector?.destroy()
-      detector = null
+      macroCore?.destroy()
+      macroCore = null
       isDetectorActive = false
-      console.log('[DEV] Macro detector deactivated for', window.location.hostname)
+      console.log('[DEV] Macro system deactivated for', window.location.hostname)
     }
   } else {
     if (!isDetectorActive) {
-      detector = createAndInitializeDetector()
+      macroCore = createAndInitializeMacroCore()
       isDetectorActive = true
 
       // Set macros if we have them from the store already
       const macros = useMacroStore.getState().macros
       if (macros.length > 0) {
-        detector.setMacros(macros)
-        console.log('[DEV] Set', macros.length, 'initial macros on new detector')
+        macroCore.setMacros(macros)
+        console.log('[DEV] Set', macros.length, 'initial macros on new macro core')
       }
 
-      console.log('[DEV] Macro detector activated for', window.location.hostname)
+      console.log('[DEV] Macro system activated for', window.location.hostname)
     }
   }
 }
@@ -94,22 +94,22 @@ async function main() {
     const initialMacros = await loadMacros()
     console.log('[DEV] Loaded', initialMacros.length, 'initial macros from storage')
 
-    const updateDetectorMacros = (macros: Macro[]) => {
-      detector?.setMacros(macros)
+    const updateMacros = (macros: Macro[]) => {
+      macroCore?.setMacros(macros)
     }
 
     // Set up listeners for any subsequent changes to macros or config.
-    listenMacrosChange(updateDetectorMacros)
-    useMacroStore.subscribe(manageDetectorState)
+    listenMacrosChange(updateMacros)
+    useMacroStore.subscribe(manageMacroState)
 
-    // Run the initial check to activate or deactivate the detector.
-    manageDetectorState()
+    // Run the initial check to activate or deactivate the macro system.
+    manageMacroState()
 
-    // If the detector was activated, ensure it has the initial macros.
-    if (detector && initialMacros.length > 0) {
+    // If the macro core was activated, ensure it has the initial macros.
+    if (macroCore && initialMacros.length > 0) {
       // This might be redundant if the store was empty and got populated,
       // but it's a good safeguard.
-      detector.setMacros(initialMacros)
+      macroCore.setMacros(initialMacros)
     }
 
     console.log('[DEV] ✅ Macro detection system ready!')
