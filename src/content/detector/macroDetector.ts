@@ -665,13 +665,17 @@ export function createMacroDetector(actions: DetectorActions) {
     // Handle commit keys in manual mode
     if (config.useCommitKeys && state.buffer && COMMIT_KEYS.has(e.key)) {
       const handled = actions.onCommitRequested(state.buffer)
-      
+
       if (handled) {
-        e.preventDefault()
+        // Only prevent event and commit if we have an exact match
+        // If handled=true but no exact match, it means the overlay is visible
+        // and will handle the selection, so don't prevent the event
         const macroToCommit = getExact(state.buffer);
         if (macroToCommit) {
+          e.preventDefault()
           commitReplace(macroToCommit, sel, false)
         }
+        // If no exact match, let the event bubble to the overlay
       } else {
         if (isExact(state, macros)) {
           e.preventDefault()
@@ -829,6 +833,43 @@ export function createMacroDetector(actions: DetectorActions) {
     return { ...state }
   }
 
+  /**
+   * Handle macro selection from overlay (e.g., manual commit mode)
+   */
+  function handleMacroSelectedFromOverlay(macro: Macro, buffer: string, element?: EditableEl): void {
+    // Use provided element or try to get the current active element
+    const targetEl = element || activeEl || getActiveEditable(document.activeElement)
+
+    if (!targetEl) {
+      return
+    }
+
+    const textContent = getTextContent(targetEl)
+    const cursorPos = getCursorPosition(targetEl)
+
+    if (cursorPos === null) {
+      return
+    }
+
+    // Find the buffer text before the cursor
+    const triggerIndex = textContent.lastIndexOf(buffer, cursorPos)
+
+    if (triggerIndex === -1) {
+      return
+    }
+
+    const endPos = triggerIndex + buffer.length
+
+    // Use performReplacement to ensure proper undo tracking
+    performReplacement(targetEl, triggerIndex, endPos, macro.text, macro)
+
+    // Notify that macro was committed
+    actions.onMacroCommitted(String(macro.id))
+
+    // Clean up detection state
+    cancelDetection()
+  }
+
   return {
     initialize,
     setMacros,
@@ -838,6 +879,8 @@ export function createMacroDetector(actions: DetectorActions) {
     undoLastReplacement,
     clearUndoHistory,
     getUndoHistoryLength: () => undoHistory.length,
+    // Expose for overlay integration
+    handleMacroSelectedFromOverlay,
   }
 }
 

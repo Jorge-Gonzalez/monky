@@ -50,13 +50,12 @@ export function createSuggestionsCoordinator(
     },
 
     onCommitRequested(buffer: string): boolean {
-      // If the overlay is visible and user pressed Enter, try to select the current suggestion
+      // If the overlay is visible, return true to let the overlay handle the Enter key
+      // The overlay's keyboard navigation will handle the selection
       if (manager.isVisible()) {
-        // For now, we'll return false as the selection logic needs to be implemented properly
-        // The new suggestions component handles selection internally
-        return false;
+        return true;
       }
-      
+
       // Check if we have an exact match for manual commits
       const exactMatch = currentMacros.find(m => m.command === buffer);
       return !!exactMatch;

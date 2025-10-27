@@ -71,6 +71,13 @@ function manageDetectorState() {
       detector = createAndInitializeDetector(suggestionsCoordinator)
       isDetectorActive = true
 
+      // Wire the overlay manager to use detector's replacement function for proper undo tracking
+      overlayManager.setOnMacroSelected((macro, buffer, element) => {
+        if (detector) {
+          detector.handleMacroSelectedFromOverlay(macro, buffer, element)
+        }
+      })
+
       // Set macros if we have them
       const macros = useMacroStore.getState().macros
       if (macros.length > 0) {

@@ -1,3 +1,5 @@
+import type { Macro } from '../../types'
+
 /**
  * Interface defining actions that the macro detector can trigger.
  * This creates a clear contract between the detector and its handlers.
@@ -48,6 +50,14 @@ export interface DetectorActions {
    */
   onShowAllRequested(buffer: string, position?: { x: number; y: number }): void
 
+  /**
+   * Called when user selects a macro from the suggestions overlay.
+   * This ensures proper replacement with undo tracking.
+   * @param macro - The macro to commit
+   * @param buffer - The buffer text that should be replaced
+   */
+  onMacroSelectedFromOverlay?(macro: Macro, buffer: string): void
+
 }
 
 /**
@@ -62,4 +72,5 @@ export const noOpActions: DetectorActions = {
   onNavigationRequested: () => false,
   onCancelRequested: () => false,
   onShowAllRequested: () => {},
+  onMacroSelectedFromOverlay: () => {},
 }

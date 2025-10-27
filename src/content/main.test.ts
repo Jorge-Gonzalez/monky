@@ -23,6 +23,7 @@ const mockOverlays = vi.hoisted(() => ({
     hide: vi.fn(),
     updateMacros: vi.fn(),
     destroy: vi.fn(),
+    setOnMacroSelected: vi.fn(),
   },
   searchOverlayManager: {},
   updateAllMacros: vi.fn(),

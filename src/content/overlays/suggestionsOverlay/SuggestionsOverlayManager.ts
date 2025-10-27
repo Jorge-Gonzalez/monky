@@ -39,6 +39,9 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
     filterBuffer: '',
   };
 
+  // Callback for when a macro is selected - should be set by coordinator
+  let onMacroSelectedCallback: ((macro: Macro, buffer: string, element: EditableEl) => void) | null = null;
+
   const renderSuggestions = (): void => {
     renderer.render(
       React.createElement(MacroSuggestions, {
@@ -75,52 +78,44 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
   };
 
   const handleSelect = (macro: Macro) => {
-    console.log('handleSelect called with macro:', macro);
-    console.log('savedState:', savedState);
-    console.log('overlayState.mode:', overlayState.mode);
-    
     if (!savedState?.element) {
-      console.warn('No savedState.element, hiding');
       hide();
       return;
     }
 
-    const element = savedState.element;
     const trigger = savedState.trigger;
-    console.log('element:', element);
-    console.log('trigger:', trigger);
+    const element = savedState.element;
+
+    // If we have a callback registered (from the detector), use it for proper undo tracking
+    if (onMacroSelectedCallback && trigger && element) {
+      onMacroSelectedCallback(macro, trigger, element);
+      hide();
+      return;
+    }
+
+    // Fallback to direct replacement (shouldn't happen in normal flow, but keeps backwards compatibility)
+    if (!element) {
+      hide();
+      return;
+    }
 
     if (overlayState.mode === 'showAll' && trigger) {
-      console.log('showAll mode - replacing trigger text');
-      // In showAll mode, replace the trigger text (buffer) with macro
       const content = (element as any).value || element.textContent || '';
       const triggerIndex = content.lastIndexOf(trigger);
-      console.log('searching for trigger in content:', { trigger, content, triggerIndex });
       if (triggerIndex !== -1) {
-        console.log('calling replaceText with:', { macro, start: triggerIndex, end: triggerIndex + trigger.length });
         replaceText(element, macro, triggerIndex, triggerIndex + trigger.length);
       } else {
-        console.warn('Trigger not found in content, falling back to cursor position');
-        // Fallback: insert at current cursor position
         const selection = getSelection(element);
         if (selection) {
           replaceText(element, macro, selection.start, selection.end);
         }
       }
     } else if (!trigger) {
-      console.log('no trigger - inserting at cursor position');
-      // No trigger, insert at current cursor position
       const selection = getSelection(element);
-      console.log('selection:', selection);
       if (selection) {
-        console.log('calling replaceText with:', { macro, start: selection.start, end: selection.end });
         replaceText(element, macro, selection.start, selection.end);
-      } else {
-        console.warn('No selection found');
       }
     } else {
-      console.log('filter mode - replacing trigger text');
-      // In filter mode, replace the trigger text with macro
       const content = (element as any).value || element.textContent || '';
       const triggerIndex = content.lastIndexOf(trigger);
       if (triggerIndex !== -1) {
@@ -128,7 +123,6 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
       }
     }
 
-    console.log('calling hide()');
     hide();
   };
 
@@ -285,6 +279,10 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
     styleInjector.remove();
   };
 
+  const setOnMacroSelected = (callback: (macro: Macro, buffer: string, element: EditableEl) => void) => {
+    onMacroSelectedCallback = callback;
+  };
+
   initialize();
 
   return {
@@ -294,6 +292,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
     updateMacros,
     isVisible: getVisibility,
     destroy,
+    setOnMacroSelected,
   };
 }
 
@@ -304,4 +303,5 @@ export interface SuggestionsOverlayManager {
   updateMacros: (newMacros: Macro[]) => void;
   isVisible: () => boolean;
   destroy: () => void;
+  setOnMacroSelected: (callback: (macro: Macro, buffer: string, element: EditableEl) => void) => void;
 }

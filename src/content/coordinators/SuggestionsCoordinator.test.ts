@@ -119,12 +119,12 @@ describe('SuggestionsCoordinator', () => {
         expect(result).toBe(false);
       });
 
-      test('returns false when manager is visible', () => {
+      test('returns true when manager is visible (to let overlay handle selection)', () => {
         vi.mocked(mockManager.isVisible).mockReturnValue(true);
-        
+
         const result = mockActions.onCommitRequested('buffer');
 
-        expect(result).toBe(false);
+        expect(result).toBe(true);
       });
     });
 
