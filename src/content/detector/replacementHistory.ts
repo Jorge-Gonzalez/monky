@@ -1,5 +1,6 @@
 import { EditableEl } from "../../types"
 import { getTextContent, findTextNodeForOffset, setCursorAtOffset } from "./editableUtils"
+import { undoMostRecentInsertion, hasMarkers } from "./richTextReplacement"
 
 // History entry tracking a specific text replacement
 export interface ReplacementHistoryEntry {
@@ -144,6 +145,18 @@ export function createReplacementHistory() {
    */
   function undo(activeElement: EditableEl): boolean {
     if (!activeElement) return false
+
+    // Check if element has markers (HTML insertions)
+    // If so, try marker-based undo first
+    if (hasMarkers(activeElement)) {
+      const success = undoMostRecentInsertion(activeElement)
+      if (success) {
+        // Marker undo succeeded, dispatch input event
+        activeElement.dispatchEvent(new Event('input', { bubbles: true }))
+        return true
+      }
+      // If marker undo failed, fall through to position-based undo
+    }
 
     const elementId = getElementId(activeElement)
 

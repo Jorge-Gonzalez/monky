@@ -1,4 +1,5 @@
 import type { Macro, EditableEl } from '../../types'
+import { replaceWithMarker, type MacroMarkerData } from './richTextReplacement'
 
 export function getActiveEditable(target: EventTarget | null): EditableEl {
   if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
@@ -202,6 +203,23 @@ export function setCursorAtOffset(root: Node, offset: number) {
  */
 function replaceTextInContentEditable(el: HTMLElement, macro: Macro, startPos: number, selEnd: number) {
   const isInsertingHTML = macro.contentType === 'text/html' && macro.html
+
+  // Use marker-based system for HTML content
+  if (isInsertingHTML) {
+    const markerData: MacroMarkerData = {
+      macroId: String(macro.id),
+      originalCommand: macro.command,
+      insertedAt: Date.now(),
+      isHtml: true
+    }
+
+    const result = replaceWithMarker(el, startPos, selEnd, macro.html, markerData)
+    if (result) {
+      // Successfully replaced with marker
+      return
+    }
+    // Fall through to legacy implementation if marker system fails
+  }
   
   // Strategy 1: Fast path for elements with a single text node.
   const firstChild = el.firstChild

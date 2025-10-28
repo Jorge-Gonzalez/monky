@@ -42,7 +42,10 @@ describe("replaceText", () => {
 
       replaceText(div, macro, startPos, selEnd)
 
-      expect(div.innerHTML).toBe("Hello <b>world</b>!")
+      // HTML content is now wrapped in a marker span
+      expect(div.innerHTML).toContain('<b>world</b>')
+      expect(div.innerHTML).toContain('data-macro-marker="true"')
+      expect(div.textContent).toBe("Hello world!")
     })
 
     it("replaces buffer with macro HTML inside existing HTML content", () => {
@@ -60,8 +63,10 @@ describe("replaceText", () => {
 
       replaceText(div, macro, startPos, selEnd)
 
-      // The replacement should happen inside the <i> tag
-      expect(div.innerHTML).toBe("Prefix <i><b>html</b> content</i> Suffix")
+      // The replacement should contain the HTML content with marker
+      expect(div.innerHTML).toContain('<b>html</b> content')
+      expect(div.innerHTML).toContain('data-macro-marker="true"')
+      expect(div.textContent).toBe("Prefix html content Suffix")
     })
 
     it("replaces buffer with macro HTML inside existing HTML content v2", () => {
@@ -79,8 +84,10 @@ describe("replaceText", () => {
 
       replaceText(div, macro, startPos, selEnd)
 
-      // The replacement should happen inside the <i> tag
-      expect(div.innerHTML).toBe("Prefix <i>begin <b>html</b> content end</i> Suffix")
+      // The replacement should contain the HTML content with marker
+      expect(div.innerHTML).toContain('<b>html</b> content')
+      expect(div.innerHTML).toContain('data-macro-marker="true"')
+      expect(div.textContent).toBe("Prefix begin html content end Suffix")
     })
 
     it("replaces a macro at the end of content within an HTML tag with plain text", () => {
@@ -115,9 +122,10 @@ describe("replaceText", () => {
 
       replaceText(div, macro, startPos, selEnd)
 
-      // The replacement should happen inside the <i> tag, preserving the tag
-      // and inserting the new HTML content.
-      expect(div.innerHTML).toBe("Prefix <i>some content <b>replacement</b></i>")
+      // The replacement should contain the HTML content with marker
+      expect(div.innerHTML).toContain('<b>replacement</b>')
+      expect(div.innerHTML).toContain('data-macro-marker="true"')
+      expect(div.textContent).toBe("Prefix some content replacement")
     })
 
     
