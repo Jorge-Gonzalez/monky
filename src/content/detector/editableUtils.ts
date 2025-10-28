@@ -45,7 +45,7 @@ export function getTextContent(element: EditableEl): string {
  * Given a root node and a character offset, finds the text node and offset within
  * that text node that corresponds to the character offset.
  */
-function findTextNodeForOffset(root: Node, offset: number): { node: Text; offsetInNode: number } | null {
+export function findTextNodeForOffset(root: Node, offset: number): { node: Text; offsetInNode: number } | null {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null)
   let currentNode: Node | null = walker.nextNode()
   let accumulatedOffset = 0
@@ -183,7 +183,7 @@ function setCursorAfterNode(node: Node) {
 /**
  * Sets the cursor position in a contenteditable element at a given absolute character offset.
  */
-function setCursorAtOffset(root: Node, offset: number) {
+export function setCursorAtOffset(root: Node, offset: number) {
   const selection = window.getSelection()
   if (!selection) return
 

@@ -1,5 +1,5 @@
 import { EditableEl } from "../../types"
-import { getTextContent } from "./editableUtils"
+import { getTextContent, findTextNodeForOffset, setCursorAtOffset } from "./editableUtils"
 
 // History entry tracking a specific text replacement
 export interface ReplacementHistoryEntry {
@@ -45,44 +45,15 @@ export function createReplacementHistory() {
   ): Range | null {
     if (!element) return null
 
-    const range = document.createRange()
-    let currentPos = 0
-    let startNode: Node | null = null
-    let startOffset = 0
-    let endNode: Node | null = null
-    let endOffset = 0
+    const start = findTextNodeForOffset(element as Node, startPos)
+    const end = findTextNodeForOffset(element as Node, endPos)
 
-    const walker = document.createTreeWalker(
-      element as Node,
-      NodeFilter.SHOW_TEXT,
-      null
-    )
-
-    let node: Text | null = null
-    while ((node = walker.nextNode() as Text)) {
-      const nodeLength = node.textContent?.length || 0
-
-      // Find start position
-      if (!startNode && currentPos + nodeLength >= startPos) {
-        startNode = node
-        startOffset = startPos - currentPos
-      }
-
-      // Find end position
-      if (!endNode && currentPos + nodeLength >= endPos) {
-        endNode = node
-        endOffset = endPos - currentPos
-        break
-      }
-
-      currentPos += nodeLength
-    }
-
-    if (!startNode || !endNode) return null
+    if (!start || !end) return null
 
     try {
-      range.setStart(startNode, startOffset)
-      range.setEnd(endNode, endOffset)
+      const range = document.createRange()
+      range.setStart(start.node, start.offsetInNode)
+      range.setEnd(end.node, end.offsetInNode)
       return range
     } catch (error) {
       console.error('Error creating range:', error)
@@ -134,31 +105,7 @@ export function createReplacementHistory() {
       element.focus()
       element.setSelectionRange(position, position)
     } else if (element.isContentEditable) {
-      const selection = window.getSelection()
-      if (!selection) return
-
-      let currentPos = 0
-      const walker = document.createTreeWalker(
-        element as Node,
-        NodeFilter.SHOW_TEXT,
-        null
-      )
-
-      let node: Text | null = null
-      while ((node = walker.nextNode() as Text)) {
-        const nodeLength = node.textContent?.length || 0
-
-        if (currentPos + nodeLength >= position) {
-          const range = document.createRange()
-          range.setStart(node, position - currentPos)
-          range.collapse(true)
-          selection.removeAllRanges()
-          selection.addRange(range)
-          return
-        }
-
-        currentPos += nodeLength
-      }
+      setCursorAtOffset(element as Node, position)
     }
   }
 

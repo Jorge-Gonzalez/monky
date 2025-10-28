@@ -63,6 +63,20 @@ describe('MacroDetector - Undo System', () => {
       text: '',
       contentType: 'text/plain'
     },
+    {
+      id: '5',
+      command: '/fir',
+      text: 'John Doe - Software Developer',
+      html: '<p><strong>John Doe</strong><br><em>Software Developer</em></p>',
+      contentType: 'text/html',
+    },
+    {
+      id: '6',
+      command: '/tasks',
+      text: 'Review code, Update docs, Test features',
+      html: '<ul><li>Review code</li><li>Update docs</li><li>Test features</li></ul>',
+      contentType: 'text/html',
+    },
   ]
 
   beforeEach(() => {
@@ -515,13 +529,99 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should prevent default when undo is handled', () => {
-      
+
       typeIn(inputElement, '/hello ')
-      
+
       const result = inputElement.dispatchEvent(getCancelableUndoEvent())
-      
+
       // Should be prevented when undo was handled
       expect(result).toBe(false)
+    })
+  })
+
+  describe('HTML Content Undo', () => {
+
+    it('should undo HTML macro replacement in contentEditable element', () => {
+      contentEditableDiv.focus()
+
+      // Setup initial content and cursor position
+      contentEditableDiv.textContent = ''
+      const selection = window.getSelection()!
+      const range = document.createRange()
+      range.selectNodeContents(contentEditableDiv)
+      range.collapse(false)
+      selection.removeAllRanges()
+      selection.addRange(range)
+
+      // Type the HTML macro command and trigger it
+      typeIn(contentEditableDiv, '/fir ')
+
+      // Verify replacement happened with HTML content
+      expect(contentEditableDiv.innerHTML).toContain('<strong>John Doe</strong>')
+      expect(contentEditableDiv.innerHTML).toContain('<em>Software Developer</em>')
+      expect(detector.getUndoHistoryLength()).toBe(1)
+
+      // Try to undo
+      const undoEvent = getUndoEvent()
+      contentEditableDiv.dispatchEvent(undoEvent)
+
+      // This should restore the original command
+      expect(contentEditableDiv.textContent).toBe('/fir')
+    })
+
+    it('should undo HTML list macro replacement in contentEditable element', () => {
+      contentEditableDiv.focus()
+
+      // Setup initial content and cursor position
+      contentEditableDiv.textContent = ''
+      const selection = window.getSelection()!
+      const range = document.createRange()
+      range.selectNodeContents(contentEditableDiv)
+      range.collapse(false)
+      selection.removeAllRanges()
+      selection.addRange(range)
+
+      // Type the HTML list macro command and trigger it
+      typeIn(contentEditableDiv, '/tasks ')
+
+      // Verify replacement happened with HTML list content
+      expect(contentEditableDiv.innerHTML).toContain('<ul>')
+      expect(contentEditableDiv.innerHTML).toContain('<li>Review code</li>')
+      expect(detector.getUndoHistoryLength()).toBe(1)
+
+      // Try to undo
+      const undoEvent = getUndoEvent()
+      contentEditableDiv.dispatchEvent(undoEvent)
+
+      // This should restore the original command
+      expect(contentEditableDiv.textContent).toBe('/tasks')
+    })
+
+    it('should handle plain text macros in contentEditable as before', () => {
+      contentEditableDiv.focus()
+
+      // Setup initial content and cursor position
+      contentEditableDiv.textContent = ''
+      const selection = window.getSelection()!
+      const range = document.createRange()
+      range.selectNodeContents(contentEditableDiv)
+      range.collapse(false)
+      selection.removeAllRanges()
+      selection.addRange(range)
+
+      // Type the plain text macro command and trigger it
+      typeIn(contentEditableDiv, '/hello ')
+
+      // Verify replacement happened with plain text content
+      expect(contentEditableDiv.textContent).toBe('Hello, World!')
+      expect(detector.getUndoHistoryLength()).toBe(1)
+
+      // Try to undo
+      const undoEvent = getUndoEvent()
+      contentEditableDiv.dispatchEvent(undoEvent)
+
+      // This should restore the original command
+      expect(contentEditableDiv.textContent).toBe('/hello')
     })
   })
 })
