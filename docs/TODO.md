@@ -18,8 +18,10 @@
 [ ] Unify all the interface popup and editor into the overlay modal currently used only to search. So they are going to be new views accessible by two buttons: create/edit macros and options.
 [ ] In the search modal it should be little label indicating the current number of macros in the results.
 [ ] The undo should be able to delete an immediately replaced macro. That should be the undo behavior after a macro commit.
-[ ] FIX: I found an issue in while working with the tests: the space is not triggering a macro if there is another macro that starts with the same prefix.
-[ ] FIX: The undo test are currently made to be used with commit keys but currently the detector is working in auto mode.
+[ ] Fix: I found an issue in while working with the tests: the space is not triggering a macro if there is another macro that starts with the same prefix.
+[x] Fix: The undo test are currently made to be used with commit keys but currently the detector is working in auto mode.
+[ ] Fix: in auto mode the undo does not get cleared and repeats the command after the previous undo.
+[ ] Search overlay is not restoring focus not managing undo.
 
 
 
@@ -32,4 +34,11 @@
 [ ] The navigation help at the bottom should be showing only when the ? key is pressed or by adding a ? button at the end of the macro suggestions, and therefore showing the content of the navigation instructions in the same place that the suggestions text appears for the other suggestions buttons.
 [ ] Fix: The window bottom space is not being calculated properly, or is not moving the popup accordingly.
 [ ] Fix: The suggestions buttons are not triggering the replacement when clicked.
+[ ] Fix: After the suggestions replacement the undo is not working.
+[ ] Fix: Replacement is not happening when manual mode is on.
+
+
+### Search
+
+[ ] Fix: The search is no bringing the focus back.
 

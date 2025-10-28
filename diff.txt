@@ -1,0 +1,811 @@
+diff --git a/docs/TODO.md b/docs/TODO.md
+index b5bf5c5..c046c49 100644
+--- a/docs/TODO.md
++++ b/docs/TODO.md
+@@ -18,8 +18,10 @@
+ [ ] Unify all the interface popup and editor into the overlay modal currently used only to search. So they are going to be new views accessible by two buttons: create/edit macros and options.
+ [ ] In the search modal it should be little label indicating the current number of macros in the results.
+ [ ] The undo should be able to delete an immediately replaced macro. That should be the undo behavior after a macro commit.
+-[ ] FIX: I found an issue in while working with the tests: the space is not triggering a macro if there is another macro that starts with the same prefix.
+-[ ] FIX: The undo test are currently made to be used with commit keys but currently the detector is working in auto mode.
++[ ] Fix: I found an issue in while working with the tests: the space is not triggering a macro if there is another macro that starts with the same prefix.
++[x] Fix: The undo test are currently made to be used with commit keys but currently the detector is working in auto mode.
++[ ] Fix: in auto mode the undo does not get cleared and repeats the command after the previous undo.
++[ ] Search overlay is not restoring focus not managing undo.
+ 
+ 
+ 
+@@ -32,4 +34,11 @@
+ [ ] The navigation help at the bottom should be showing only when the ? key is pressed or by adding a ? button at the end of the macro suggestions, and therefore showing the content of the navigation instructions in the same place that the suggestions text appears for the other suggestions buttons.
+ [ ] Fix: The window bottom space is not being calculated properly, or is not moving the popup accordingly.
+ [ ] Fix: The suggestions buttons are not triggering the replacement when clicked.
++[ ] Fix: After the suggestions replacement the undo is not working.
++[ ] Fix: Replacement is not happening when manual mode is on.
++
++
++### Search
++
++[ ] Fix: The search is no bringing the focus back.
+ 
+diff --git a/src/content/detector/editableUtils.ts b/src/content/detector/editableUtils.ts
+index 51b0085..23967e0 100644
+--- a/src/content/detector/editableUtils.ts
++++ b/src/content/detector/editableUtils.ts
+@@ -5,28 +5,42 @@ export function getActiveEditable(target: EventTarget | null): EditableEl {
+     if (target.type === "password") return null
+     return target
+   }
+-  
++
+   // For contenteditable elements, we need to traverse up the DOM tree
+   // because the target might be a child element (text node, <b>, <i>, etc.)
+   let element: HTMLElement | null = null;
+-  
++
+   if (target instanceof HTMLElement) {
+     element = target;
+   } else if (target instanceof Node && target.parentElement) {
+     // Handle text nodes and other non-HTMLElement nodes
+     element = target.parentElement;
+   }
+-  
++
+   while (element) {
+     if (element.isContentEditable || element.contentEditable === "true") {
+       return element;
+     }
+     element = element.parentElement;
+   }
+-  
++
+   return null
+ }
+ 
++/**
++ * Extract text content from an editable element
++ */
++export function getTextContent(element: EditableEl): string {
++  if (!element) return ''
++
++  if ('value' in element) {
++    return element.value
++  } else if ('textContent' in element) {
++    return element.textContent || ''
++  }
++  return ''
++}
++
+ /**
+  * Given a root node and a character offset, finds the text node and offset within
+  * that text node that corresponds to the character offset.
+diff --git a/src/content/detector/macroCore.ts b/src/content/detector/macroCore.ts
+index 249686d..e787ad5 100644
+--- a/src/content/detector/macroCore.ts
++++ b/src/content/detector/macroCore.ts
+@@ -59,6 +59,13 @@ export function createMacroCore(actions: DetectorActions) {
+     detector.handleMacroSelectedFromOverlay(macro, buffer, element)
+   }
+ 
++  /**
++   * Handle macro selection from search overlay
++   */
++  function handleMacroSelectedFromSearchOverlay(macro: Macro, element: EditableEl): void {
++    detector.handleMacroSelectedFromSearchOverlay(macro, element)
++  }
++
+   /**
+    * Destroy the macro system and clean up
+    */
+@@ -74,6 +81,7 @@ export function createMacroCore(actions: DetectorActions) {
+     clearUndoHistory,
+     getUndoHistoryLength,
+     handleMacroSelectedFromOverlay,
++    handleMacroSelectedFromSearchOverlay,
+     destroy,
+   }
+ }
+diff --git a/src/content/detector/macroDetector.test.ts b/src/content/detector/macroDetector.test.ts
+index 8d293ed..d930470 100644
+--- a/src/content/detector/macroDetector.test.ts
++++ b/src/content/detector/macroDetector.test.ts
+@@ -26,6 +26,7 @@ vi.mock('./editableUtils', () => ({
+   getSelection: vi.fn(),
+   replaceText: vi.fn(),
+   getCursorCoordinates: vi.fn(),
++  getTextContent: vi.fn(),
+ }))
+ 
+ vi.mock('../keyUtils', () => ({
+diff --git a/src/content/detector/macroDetector.ts b/src/content/detector/macroDetector.ts
+index 4647333..9c06d82 100644
+--- a/src/content/detector/macroDetector.ts
++++ b/src/content/detector/macroDetector.ts
+@@ -448,6 +448,30 @@ export function createMacroDetector(actions: DetectorActions) {
+     cancelDetection()
+   }
+ 
++  /**
++   * Handle macro selection from search overlay (inserts at cursor position)
++   */
++  function handleMacroSelectedFromSearchOverlay(macro: Macro, element: EditableEl): void {
++    if (!element) {
++      return
++    }
++
++    // Restore focus to the element first
++    element.focus()
++
++    const cursorPos = replacement.getCursorPosition(element)
++
++    if (cursorPos === null) {
++      return
++    }
++
++    // Insert at current cursor position (no text to replace)
++    // Use performReplacement to ensure proper undo tracking
++    replacement.performReplacement(element, cursorPos, cursorPos, macro.text, macro)
++
++    actions.onMacroCommitted(String(macro.id))
++  }
++
+   return {
+     initialize,
+     setMacros,
+@@ -459,6 +483,7 @@ export function createMacroDetector(actions: DetectorActions) {
+     getUndoHistoryLength: () => replacement.getUndoHistoryLength(),
+     // Expose for overlay integration
+     handleMacroSelectedFromOverlay,
++    handleMacroSelectedFromSearchOverlay,
+   }
+ }
+ 
+diff --git a/src/content/detector/macroReplacement.ts b/src/content/detector/macroReplacement.ts
+index cd70715..423306a 100644
+--- a/src/content/detector/macroReplacement.ts
++++ b/src/content/detector/macroReplacement.ts
+@@ -1,212 +1,17 @@
+ import { Macro, EditableEl } from "../../types"
+-
+-// Types for element references and history
+-export interface ElementRef {
+-  id?: string;
+-  selector?: string;
+-  element: EditableEl;
+-}
+-
+-export interface ReplacementHistoryEntry {
+-  elementRef: ElementRef;
+-  startPos: number
+-  endPos: number
+-  originalText: string
+-  replacementText: string
+-  macro: Macro
+-  timestamp: number
+-  elementId: string
+-}
+-
+-const MAX_UNDO_HISTORY = 50 // Keep last 50 replacements
++import { getTextContent, getSelection, replaceText } from "./editableUtils"
++import { createReplacementHistory } from "./replacementHistory"
+ 
+ /**
+- * Creates a macro replacement manager that handles text replacements and undo operations
++ * Creates a macro replacement manager that handles text replacements and undo operations.
++ * Uses a position-based undo system that captures text positions and snippets.
+  */
+ export function createMacroReplacement() {
+-  // Undo history stack
+-  const undoHistory: ReplacementHistoryEntry[] = []
+-
+-  // Map to track element IDs for efficient lookup
+-  const elementIdMap = new WeakMap<EditableEl, string>()
+-  let elementCounter = 0
+-
+-  /**
+-   * Generate or get unique ID for element
+-   */
+-  function getElementId(element: EditableEl): string {
+-    if (!elementIdMap.has(element)) {
+-      const id = `element_${elementCounter++}`
+-      elementIdMap.set(element, id)
+-    }
+-    return elementIdMap.get(element)!
+-  }
+-
+-  /**
+-   * Extract text content from an editable element
+-   */
+-  function getTextContent(element: EditableEl): string {
+-    if (!element) return ''
+-
+-    if ('value' in element) {
+-      return element.value
+-    } else if ('textContent' in element) {
+-      return element.textContent || ''
+-    }
+-    return ''
+-  }
+-
+-  /**
+-   * Get current cursor position in the element
+-   */
+-  function getCursorPosition(element: EditableEl): number | null {
+-    if (!element) return null
+-
+-    if ('selectionStart' in element) {
+-      return element.selectionStart
+-    } else if (element.isContentEditable) {
+-      const selection = window.getSelection()
+-      if (!selection || selection.rangeCount === 0) return null
+-
+-      const range = selection.getRangeAt(0)
+-      const preCaretRange = range.cloneRange()
+-      preCaretRange.selectNodeContents(element as Node)
+-      preCaretRange.setEnd(range.endContainer, range.endOffset)
+-      return preCaretRange.toString().length
+-    }
+-
+-    return null
+-  }
+-
+-  /**
+-   * Set cursor position in the element
+-   */
+-  function setCursorPosition(element: EditableEl, position: number): void {
+-    if (!element) return
+-
+-    if ('setSelectionRange' in element) {
+-      element.focus()
+-      element.setSelectionRange(position, position)
+-    } else if (element.isContentEditable) {
+-      const selection = window.getSelection()
+-      if (!selection) return
+-
+-      let currentPos = 0
+-      const walker = document.createTreeWalker(
+-        element as Node,
+-        NodeFilter.SHOW_TEXT,
+-        null
+-      )
+-
+-      let node: Text | null = null
+-      while ((node = walker.nextNode() as Text)) {
+-        const nodeLength = node.textContent?.length || 0
+-
+-        if (currentPos + nodeLength >= position) {
+-          const range = document.createRange()
+-          range.setStart(node, position - currentPos)
+-          range.collapse(true)
+-          selection.removeAllRanges()
+-          selection.addRange(range)
+-          return
+-        }
+-
+-        currentPos += nodeLength
+-      }
+-    }
+-  }
+-
+-  /**
+-   * Create a Range object from text positions in a contentEditable element
+-   */
+-  function createRangeFromTextPositions(
+-    element: EditableEl,
+-    startPos: number,
+-    endPos: number
+-  ): Range | null {
+-    if (!element) return null
+-
+-    const range = document.createRange()
+-    let currentPos = 0
+-    let startNode: Node | null = null
+-    let startOffset = 0
+-    let endNode: Node | null = null
+-    let endOffset = 0
+-
+-    const walker = document.createTreeWalker(
+-      element as Node,
+-      NodeFilter.SHOW_TEXT,
+-      null
+-    )
+-
+-    let node: Text | null = null
+-    while ((node = walker.nextNode() as Text)) {
+-      const nodeLength = node.textContent?.length || 0
+-
+-      // Find start position
+-      if (!startNode && currentPos + nodeLength >= startPos) {
+-        startNode = node
+-        startOffset = startPos - currentPos
+-      }
+-
+-      // Find end position
+-      if (!endNode && currentPos + nodeLength >= endPos) {
+-        endNode = node
+-        endOffset = endPos - currentPos
+-        break
+-      }
+-
+-      currentPos += nodeLength
+-    }
+-
+-    if (!startNode || !endNode) return null
+-
+-    try {
+-      range.setStart(startNode, startOffset)
+-      range.setEnd(endNode, endOffset)
+-      return range
+-    } catch (error) {
+-      console.error('Error creating range:', error)
+-      return null
+-    }
+-  }
+-
+-  /**
+-   * Replace text in contentEditable while preserving HTML formatting
+-   */
+-  function replaceInContentEditablePreservingFormat(
+-    element: EditableEl,
+-    startPos: number,
+-    endPos: number,
+-    replacementText: string
+-  ): void {
+-    const selection = window.getSelection()
+-    if (!selection) return
+-
+-    // Find the text node(s) that contain our target range
+-    const range = createRangeFromTextPositions(element, startPos, endPos)
+-    if (!range) return
+-
+-    // Select the range
+-    selection.removeAllRanges()
+-    selection.addRange(range)
+-
+-    // Delete the selected content
+-    range.deleteContents()
+-
+-    // Insert the replacement text as a text node
+-    const textNode = document.createTextNode(replacementText)
+-    range.insertNode(textNode)
+-
+-    // Move cursor after the inserted text
+-    range.setStartAfter(textNode)
+-    range.collapse(true)
+-    selection.removeAllRanges()
+-    selection.addRange(range)
+-  }
++  // Create history manager
++  const history = createReplacementHistory()
+ 
+   /**
+-   * Perform text replacement and track in history
++   * Perform text replacement and track in history for undo
+    */
+   function performReplacement(
+     element: EditableEl,
+@@ -216,12 +21,11 @@ export function createMacroReplacement() {
+     macro: Macro,
+     undoStartPos?: number,
+     undoEndPos?: number,
+-    originalMacroCommand?: string  // The original macro command for immediate mode
++    originalMacroCommand?: string
+   ): void {
+     if (!element) return
+ 
+     const textContent = getTextContent(element)
+-    const originalText = textContent.substring(startPos, endPos)
+ 
+     // For undo, use the original range (before space adjustment) if provided
+     // In immediate mode, we may have a specific original command to restore
+@@ -231,7 +35,7 @@ export function createMacroReplacement() {
+       originalText: originalMacroCommand ||
+                    (undoStartPos !== undefined && undoEndPos !== undefined
+                      ? textContent.substring(undoStartPos, undoEndPos)
+-                     : originalText)
++                     : textContent.substring(startPos, endPos))
+     }
+ 
+     // Debug: Uncomment for undo history debugging
+@@ -241,210 +45,81 @@ export function createMacroReplacement() {
+     //   originalText: JSON.stringify(undoRange.originalText),
+     //   replacementText: JSON.stringify(replacementText),
+     //   actualReplacementRange: { startPos, endPos },
+-    //   actualReplacementText: JSON.stringify(originalText)
++    //   actualReplacementText: JSON.stringify(textContent.substring(startPos, endPos))
+     // })
+ 
+     // Store in undo history using the original range
+-    const elementId = getElementId(element);
+-    const historyEntry: ReplacementHistoryEntry = {
+-      elementRef: { element, id: elementId },
+-      startPos: undoRange.startPos,
+-      endPos: undoRange.endPos,
+-      originalText: undoRange.originalText,
+-      replacementText,
+-      macro,
+-      timestamp: Date.now(),
+-      elementId
+-    }
+-
+-    undoHistory.push(historyEntry)
+-
+-    // Keep history size manageable
+-    if (undoHistory.length > MAX_UNDO_HISTORY) {
+-      undoHistory.shift()
+-    }
+-
+-    // Perform the actual replacement
+-    if ('value' in element) {
+-      // Input/textarea
+-      const newValue = textContent.substring(0, startPos) + replacementText + textContent.substring(endPos)
+-      element.value = newValue
+-
+-      // Set cursor after replacement
+-      const newCursorPos = startPos + replacementText.length
+-      element.setSelectionRange(newCursorPos, newCursorPos)
+-
+-      // Dispatch input event for framework reactivity
+-      element.dispatchEvent(new Event('input', { bubbles: true }))
+-    } else if (element.isContentEditable || element.contentEditable === 'true') {
+-      // ContentEditable - use Selection API to preserve formatting
+-      replaceInContentEditablePreservingFormat(element, startPos, endPos, replacementText)
++    history.createEntry(
++      element,
++      undoRange.startPos,
++      undoRange.endPos,
++      undoRange.originalText,
++      replacementText
++    )
+ 
+-      // Dispatch input event
+-      element.dispatchEvent(new Event('input', { bubbles: true }))
++    // Perform the actual replacement using tested editableUtils
++    const macroForReplacement: Macro = {
++      ...macro,
++      text: replacementText
+     }
+-  }
+-
+-  /**
+-   * Undo replacement in contentEditable while preserving HTML formatting
+-   */
+-  function undoInContentEditablePreservingFormat(
+-    element: EditableEl,
+-    startPos: number,
+-    endPos: number,
+-    originalText: string
+-  ): void {
+-    const selection = window.getSelection()
+-    if (!selection) return
+-
+-    // Find and select the replacement text
+-    const range = createRangeFromTextPositions(element, startPos, endPos)
+-    if (!range) return
+-
+-    selection.removeAllRanges()
+-    selection.addRange(range)
+-
+-    // Delete the replacement
+-    range.deleteContents()
+-
+-    // Insert the original text
+-    const textNode = document.createTextNode(originalText)
+-    range.insertNode(textNode)
+-
+-    // Move cursor after the restored text
+-    range.setStartAfter(textNode)
+-    range.collapse(true)
+-    selection.removeAllRanges()
+-    selection.addRange(range)
++    replaceText(element, macroForReplacement, startPos, endPos)
+   }
+ 
+   /**
+    * Undo the last macro replacement for a specific element
+    */
+   function undoLastReplacement(activeEl: EditableEl): boolean {
+-    if (undoHistory.length === 0 || !activeEl) return false
+-
+-    const activeElementId = getElementId(activeEl);
+-
+-    // Find the index of the last entry for the active element
+-    let lastEntryIndex = -1
+-    for (let i = undoHistory.length - 1; i >= 0; i--) {
+-      if (undoHistory[i].elementId === activeElementId) {
+-        lastEntryIndex = i
+-        break
+-      }
+-    }
+-
+-    if (lastEntryIndex === -1) return false
+-
+-    const lastEntry = undoHistory.splice(lastEntryIndex, 1)[0]
+-    if (!lastEntry) return false
+-
+-    const { elementRef, startPos, originalText, replacementText } = lastEntry;
+-    const element = elementRef.element;
+-
+-    // Check if element still exists and is valid
+-    if (!element || !document.contains(element as Node)) {
+-      return false
+-    }
+-
+-    const currentContent = getTextContent(element)
+-    const currentCursorPos = getCursorPosition(element)
+-
+-    // Calculate where the replacement should be in current content
+-    const expectedReplacementPos = startPos
+-    const expectedEndPos = startPos + replacementText.length
+-
+-    // Verify the replacement text is still there
+-    const actualText = currentContent.substring(expectedReplacementPos, expectedEndPos)
+-
+-    // Debug: Uncomment for undo restoration debugging
+-    // console.log('[UNDO] Restoration debug:', {
+-    //   currentContent: JSON.stringify(currentContent),
+-    //   startPos, expectedReplacementPos, expectedEndPos,
+-    //   replacementText: JSON.stringify(replacementText),
+-    //   actualText: JSON.stringify(actualText),
+-    //   originalText: JSON.stringify(originalText),
+-    //   matches: actualText === replacementText
+-    // })
+-
+-    if (actualText === replacementText) {
+-      // Simple case: replacement is still in original position
+-      if ('value' in element) {
+-        const before = currentContent.substring(0, expectedReplacementPos)
+-        const after = currentContent.substring(expectedEndPos)
+-        const newValue = before + originalText + after
+-
+-        element.value = newValue
+-
+-        // Set cursor at end of restored text
+-        element.setSelectionRange(startPos + originalText.length, startPos + originalText.length)
+-        element.dispatchEvent(new Event('input', { bubbles: true }))
+-      } else if (element.isContentEditable || (element as any).contentEditable === 'true') {
+-        // Use Selection API to preserve formatting
+-        undoInContentEditablePreservingFormat(element, expectedReplacementPos, expectedEndPos, originalText)
+-        element.dispatchEvent(new Event('input', { bubbles: true }))
+-      }
+-      return true
+-    } else {
+-      // Complex case: try to find the replacement text elsewhere
+-      const replacementIndex = currentContent.indexOf(replacementText, Math.max(0, startPos - 10))
+-
+-      if (replacementIndex !== -1) {
+-        const endIndex = replacementIndex + replacementText.length
+-
+-        if ('value' in element) {
+-          const newValue = currentContent.substring(0, replacementIndex) +
+-                          originalText +
+-                          currentContent.substring(endIndex)
+-          element.value = newValue
+-          element.setSelectionRange(replacementIndex + originalText.length, replacementIndex + originalText.length)
+-          element.dispatchEvent(new Event('input', { bubbles: true }))
+-        } else if (element.isContentEditable) {
+-          undoInContentEditablePreservingFormat(element, replacementIndex, endIndex, originalText)
+-          element.dispatchEvent(new Event('input', { bubbles: true }))
+-        }
+-        return true
+-      }
+-    }
+-
+-    return false
++    return history.undo(activeEl)
+   }
+ 
+   /**
+    * Clear undo history for a specific element or all
+    */
+   function clearUndoHistory(element?: EditableEl): void {
+-    if (element) {
+-      const elementId = getElementId(element);
+-      // Remove entries for specific element
+-      for (let i = undoHistory.length - 1; i >= 0; i--) {
+-        if (undoHistory[i].elementId === elementId) {
+-          undoHistory.splice(i, 1)
+-        }
+-      }
+-    } else {
+-      // Clear all history
+-      undoHistory.length = 0
+-    }
++    history.clear(element)
+   }
+ 
+   /**
+    * Check if there is undo history for a specific element
+    */
+   function hasUndoHistory(element: EditableEl): boolean {
+-    if (!element) return false
+-    const elementId = getElementId(element)
+-    return undoHistory.some(entry => entry.elementId === elementId)
++    return history.hasHistory(element)
+   }
+ 
+   /**
+    * Get the number of undo history entries
+    */
+   function getUndoHistoryLength(): number {
+-    return undoHistory.length
++    return history.getHistoryLength()
++  }
++
++  /**
++   * Get element ID (for debugging/testing)
++   */
++  function getElementId(element: EditableEl): string {
++    return history.getElementId(element)
++  }
++
++  /**
++   * Get current cursor position (for backward compatibility)
++   */
++  function getCursorPosition(element: EditableEl): number | null {
++    return getSelection(element)?.start ?? null
++  }
++
++  /**
++   * Set cursor position (for backward compatibility)
++   * This is a simplified version - full implementation is in editableUtils
++   */
++  function setCursorPosition(element: EditableEl, position: number): void {
++    if ('setSelectionRange' in element) {
++      element.focus()
++      element.setSelectionRange(position, position)
++    }
++    // For contentEditable, this would need more complex logic from editableUtils
+   }
+ 
++  // Re-export utilities for backward compatibility
+   return {
+     performReplacement,
+     undoLastReplacement,
+@@ -454,7 +129,7 @@ export function createMacroReplacement() {
+     getElementId,
+     getTextContent,
+     getCursorPosition,
+-    setCursorPosition,
++    setCursorPosition
+   }
+ }
+ 
+diff --git a/src/content/main.test.ts b/src/content/main.test.ts
+index 1dcf6ab..4daab1e 100644
+--- a/src/content/main.test.ts
++++ b/src/content/main.test.ts
+@@ -25,7 +25,13 @@ const mockOverlays = vi.hoisted(() => ({
+     destroy: vi.fn(),
+     setOnMacroSelected: vi.fn(),
+   },
+-  searchOverlayManager: {},
++  searchOverlayManager: {
++    show: vi.fn(),
++    hide: vi.fn(),
++    isVisible: vi.fn(() => false),
++    destroy: vi.fn(),
++    setOnMacroSelected: vi.fn(),
++  },
+   updateAllMacros: vi.fn(),
+ }))
+ 
+diff --git a/src/content/main.ts b/src/content/main.ts
+index 5017e16..7d2fe71 100644
+--- a/src/content/main.ts
++++ b/src/content/main.ts
+@@ -2,7 +2,7 @@ import { useMacroStore } from "../store/useMacroStore"
+ import { createMacroCore, MacroCore } from "./detector/macroCore"
+ import { createSuggestionsCoordinator, SuggestionsCoordinator } from "./coordinators/SuggestionsCoordinator"
+ import { loadMacros, listenMacrosChange } from "./storage/macroStorage"
+-import { updateAllMacros, suggestionsOverlayManager } from "./overlays"
++import { updateAllMacros, suggestionsOverlayManager, searchOverlayManager } from "./overlays"
+ import { Macro } from "../types"
+ 
+ // Module-level state
+@@ -71,13 +71,20 @@ function manageMacroState() {
+       macroCore = createAndInitializeMacroCore(suggestionsCoordinator)
+       isDetectorActive = true
+ 
+-      // Wire the overlay manager to use macro core's replacement function for proper undo tracking
++      // Wire the suggestions overlay manager to use macro core's replacement function for proper undo tracking
+       overlayManager.setOnMacroSelected((macro, buffer, element) => {
+         if (macroCore) {
+           macroCore.handleMacroSelectedFromOverlay(macro, buffer, element)
+         }
+       })
+ 
++      // Wire the search overlay manager to use macro core's insertion function for proper undo tracking
++      searchOverlayManager.setOnMacroSelected((macro, element) => {
++        if (macroCore) {
++          macroCore.handleMacroSelectedFromSearchOverlay(macro, element)
++        }
++      })
++
+       // Set macros if we have them
+       const macros = useMacroStore.getState().macros
+       if (macros.length > 0) {
+diff --git a/src/content/overlays/searchOverlay/searchOverlayManager.ts b/src/content/overlays/searchOverlay/searchOverlayManager.ts
+index 073c7da..76aaa97 100644
+--- a/src/content/overlays/searchOverlay/searchOverlayManager.ts
++++ b/src/content/overlays/searchOverlay/searchOverlayManager.ts
+@@ -1,25 +1,44 @@
+ import React from 'react';
+-import { Macro } from '../../../types';
++import { Macro, EditableEl } from '../../../types';
+ import { MacroSearchOverlay } from './ui/MacroSearchOverlay';
+ import { createReactRenderer } from '../services/reactRenderer';
+ import { createFocusManager } from '../services/focusManager';
+-import { createMacroInserter } from '../services/macroInserter';
+ import { createStyleInjector } from '../services/styleInjector';
+ import { SEARCH_OVERLAY_STYLES } from './searchOverlayStyles';
++import { getActiveEditable } from '../../detector/editableUtils';
+ 
+ export function createSearchOverlayManager() {
+   const renderer = createReactRenderer('macro-search-overlay');
+   const focusManager = createFocusManager();
+-  const macroInserter = createMacroInserter(focusManager);
+   const styleInjector = createStyleInjector('macro-search-overlay-styles', SEARCH_OVERLAY_STYLES);
+ 
+   let isVisible = false;
+   let position = { x: 0, y: 0 };
+ 
++  // Callback for when a macro is selected - should be set by coordinator
++  let onMacroSelectedCallback: ((macro: Macro, element: EditableEl) => void) | null = null;
++
+   const handleMacroSelection = (macro: Macro): void => {
+     const targetElement = focusManager.getSavedState()?.element ?? null;
++
++    if (!targetElement) {
++      focusManager.clear();
++      return;
++    }
++
++    const editableElement = getActiveEditable(targetElement);
++
++    if (!editableElement) {
++      focusManager.clear();
++      return;
++    }
++
+     focusManager.clear();
+-    macroInserter.insertMacro(macro, targetElement);
++
++    // If we have a callback registered (from the detector), use it for proper undo tracking
++    if (onMacroSelectedCallback) {
++      onMacroSelectedCallback(macro, editableElement);
++    }
+ 
+     const event = new CustomEvent('macro-search-selected', {
+       detail: { macro },
+@@ -69,6 +88,10 @@ export function createSearchOverlayManager() {
+     styleInjector.remove();
+   };
+ 
++  const setOnMacroSelected = (callback: (macro: Macro, element: EditableEl) => void) => {
++    onMacroSelectedCallback = callback;
++  };
++
+   initialize();
+ 
+   return {
+@@ -76,6 +99,7 @@ export function createSearchOverlayManager() {
+     hide,
+     isVisible: getVisibility,
+     destroy,
++    setOnMacroSelected,
+   };
+ }
+ 
+diff --git a/tsconfig.json b/tsconfig.json
+index 26c7a3c..cbc2fc5 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -1,7 +1,7 @@
+ {
+   "compilerOptions": {
+     "esModuleInterop": true,
+-    "lib": ["dom", "es2016"],
++    "lib": ["dom", "es2021"],
+     "types": ["chrome", "vitest/globals"],
+     "jsx": "react-jsx"
+   }

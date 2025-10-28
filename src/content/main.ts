@@ -2,7 +2,7 @@ import { useMacroStore } from "../store/useMacroStore"
 import { createMacroCore, MacroCore } from "./detector/macroCore"
 import { createSuggestionsCoordinator, SuggestionsCoordinator } from "./coordinators/SuggestionsCoordinator"
 import { loadMacros, listenMacrosChange } from "./storage/macroStorage"
-import { updateAllMacros, suggestionsOverlayManager } from "./overlays"
+import { updateAllMacros, suggestionsOverlayManager, searchOverlayManager } from "./overlays"
 import { Macro } from "../types"
 
 // Module-level state
@@ -71,10 +71,17 @@ function manageMacroState() {
       macroCore = createAndInitializeMacroCore(suggestionsCoordinator)
       isDetectorActive = true
 
-      // Wire the overlay manager to use macro core's replacement function for proper undo tracking
+      // Wire the suggestions overlay manager to use macro core's replacement function for proper undo tracking
       overlayManager.setOnMacroSelected((macro, buffer, element) => {
         if (macroCore) {
           macroCore.handleMacroSelectedFromOverlay(macro, buffer, element)
+        }
+      })
+
+      // Wire the search overlay manager to use macro core's insertion function for proper undo tracking
+      searchOverlayManager.setOnMacroSelected((macro, element) => {
+        if (macroCore) {
+          macroCore.handleMacroSelectedFromSearchOverlay(macro, element)
         }
       })
 

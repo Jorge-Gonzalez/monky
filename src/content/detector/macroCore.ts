@@ -60,6 +60,13 @@ export function createMacroCore(actions: DetectorActions) {
   }
 
   /**
+   * Handle macro selection from search overlay
+   */
+  function handleMacroSelectedFromSearchOverlay(macro: Macro, element: EditableEl): void {
+    detector.handleMacroSelectedFromSearchOverlay(macro, element)
+  }
+
+  /**
    * Destroy the macro system and clean up
    */
   function destroy(): void {
@@ -74,6 +81,7 @@ export function createMacroCore(actions: DetectorActions) {
     clearUndoHistory,
     getUndoHistoryLength,
     handleMacroSelectedFromOverlay,
+    handleMacroSelectedFromSearchOverlay,
     destroy,
   }
 }

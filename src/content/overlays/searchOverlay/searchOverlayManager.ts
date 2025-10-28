@@ -1,25 +1,44 @@
 import React from 'react';
-import { Macro } from '../../../types';
+import { Macro, EditableEl } from '../../../types';
 import { MacroSearchOverlay } from './ui/MacroSearchOverlay';
 import { createReactRenderer } from '../services/reactRenderer';
 import { createFocusManager } from '../services/focusManager';
-import { createMacroInserter } from '../services/macroInserter';
 import { createStyleInjector } from '../services/styleInjector';
 import { SEARCH_OVERLAY_STYLES } from './searchOverlayStyles';
+import { getActiveEditable } from '../../detector/editableUtils';
 
 export function createSearchOverlayManager() {
   const renderer = createReactRenderer('macro-search-overlay');
   const focusManager = createFocusManager();
-  const macroInserter = createMacroInserter(focusManager);
   const styleInjector = createStyleInjector('macro-search-overlay-styles', SEARCH_OVERLAY_STYLES);
 
   let isVisible = false;
   let position = { x: 0, y: 0 };
 
+  // Callback for when a macro is selected - should be set by coordinator
+  let onMacroSelectedCallback: ((macro: Macro, element: EditableEl) => void) | null = null;
+
   const handleMacroSelection = (macro: Macro): void => {
     const targetElement = focusManager.getSavedState()?.element ?? null;
+
+    if (!targetElement) {
+      focusManager.clear();
+      return;
+    }
+
+    const editableElement = getActiveEditable(targetElement);
+
+    if (!editableElement) {
+      focusManager.clear();
+      return;
+    }
+
     focusManager.clear();
-    macroInserter.insertMacro(macro, targetElement);
+
+    // If we have a callback registered (from the detector), use it for proper undo tracking
+    if (onMacroSelectedCallback) {
+      onMacroSelectedCallback(macro, editableElement);
+    }
 
     const event = new CustomEvent('macro-search-selected', {
       detail: { macro },
@@ -69,6 +88,10 @@ export function createSearchOverlayManager() {
     styleInjector.remove();
   };
 
+  const setOnMacroSelected = (callback: (macro: Macro, element: EditableEl) => void) => {
+    onMacroSelectedCallback = callback;
+  };
+
   initialize();
 
   return {
@@ -76,6 +99,7 @@ export function createSearchOverlayManager() {
     hide,
     isVisible: getVisibility,
     destroy,
+    setOnMacroSelected,
   };
 }
 

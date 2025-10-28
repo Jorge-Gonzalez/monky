@@ -448,6 +448,30 @@ export function createMacroDetector(actions: DetectorActions) {
     cancelDetection()
   }
 
+  /**
+   * Handle macro selection from search overlay (inserts at cursor position)
+   */
+  function handleMacroSelectedFromSearchOverlay(macro: Macro, element: EditableEl): void {
+    if (!element) {
+      return
+    }
+
+    // Restore focus to the element first
+    element.focus()
+
+    const cursorPos = replacement.getCursorPosition(element)
+
+    if (cursorPos === null) {
+      return
+    }
+
+    // Insert at current cursor position (no text to replace)
+    // Use performReplacement to ensure proper undo tracking
+    replacement.performReplacement(element, cursorPos, cursorPos, macro.text, macro)
+
+    actions.onMacroCommitted(String(macro.id))
+  }
+
   return {
     initialize,
     setMacros,
@@ -459,6 +483,7 @@ export function createMacroDetector(actions: DetectorActions) {
     getUndoHistoryLength: () => replacement.getUndoHistoryLength(),
     // Expose for overlay integration
     handleMacroSelectedFromOverlay,
+    handleMacroSelectedFromSearchOverlay,
   }
 }
 

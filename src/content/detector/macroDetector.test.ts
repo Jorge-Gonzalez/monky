@@ -26,6 +26,7 @@ vi.mock('./editableUtils', () => ({
   getSelection: vi.fn(),
   replaceText: vi.fn(),
   getCursorCoordinates: vi.fn(),
+  getTextContent: vi.fn(),
 }))
 
 vi.mock('../keyUtils', () => ({
