@@ -212,8 +212,9 @@ describe('MacroDetector - Undo System', () => {
 
       typeIn(inputElement, '/tambien ')
 
-      // Verify replacement happened with HTML content
-      expect(inputElement.value).toBe('Tambien a mi\n\nBlockquote:\n\n> Lo que no se tiene no se perdio, entonces por que se anhela, los anhelos y los miedos dos caras de la misma moneda la alegria y la miseria inalcanzables pero simpre presentes tranparentes.');
+      // Verify replacement happened - input fields normalize multiline text to single line
+      // The macro's text property has newlines which get converted to spaces
+      expect(inputElement.value).toBe('Tambien a mi Blockquote: > Lo que no se tiene no se perdio, entonces por que se anhela, los anhelos y los miedos dos caras de la misma moneda la alegria y la miseria inalcanzables pero simpre presentes tranparentes.');
       expect(detector.getUndoHistoryLength()).toBe(1);
 
       // Undo the replacement

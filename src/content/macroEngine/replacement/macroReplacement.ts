@@ -3,6 +3,18 @@ import { getTextContent, getSelection, replaceText } from "./editableUtils"
 import { createReplacementHistory } from "./replacementHistory"
 
 /**
+ * Normalizes text for input elements by removing newlines and collapsing whitespace.
+ * This duplicates the logic from inputTextReplacement.ts to determine what text
+ * will actually be inserted into the input element.
+ *
+ * Note: We preserve leading/trailing spaces intentionally - they may be meaningful
+ * in the replacement text.
+ */
+function normalizeForInputElement(text: string): string {
+  return text.replace(/\r?\n|\r/g, ' ').replace(/\s+/g, ' ')
+}
+
+/**
  * Creates a macro replacement manager that handles text replacements and undo operations.
  * Uses a position-based undo system that captures text positions and snippets.
  */
@@ -38,23 +50,30 @@ export function createMacroReplacement() {
                      : textContent.substring(startPos, endPos))
     }
 
+    // Determine the actual text that will be inserted into the element
+    // For input elements, text is normalized (newlines removed, whitespace collapsed)
+    // For textarea and contenteditable, text is used as-is
+    const actualReplacementText = (element instanceof HTMLInputElement)
+      ? normalizeForInputElement(replacementText)
+      : replacementText
+
     // Debug: Uncomment for undo history debugging
     // console.log('[UNDO] Storing history entry:', {
     //   startPos: undoRange.startPos,
     //   endPos: undoRange.endPos,
     //   originalText: JSON.stringify(undoRange.originalText),
     //   replacementText: JSON.stringify(replacementText),
-    //   actualReplacementRange: { startPos, endPos },
-    //   actualReplacementText: JSON.stringify(textContent.substring(startPos, endPos))
+    //   actualReplacementText: JSON.stringify(actualReplacementText),
+    //   actualReplacementRange: { startPos, endPos }
     // })
 
-    // Store in undo history using the original range
+    // Store in undo history using the actual text that will be inserted
     history.createEntry(
       element,
       undoRange.startPos,
       undoRange.endPos,
       undoRange.originalText,
-      replacementText
+      actualReplacementText
     )
 
     // Perform the actual replacement using tested editableUtils
