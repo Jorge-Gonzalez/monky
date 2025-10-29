@@ -4,7 +4,7 @@ import { MacroSuggestions } from './ui/MacroSuggestions';
 import { createReactRenderer } from '../services/reactRenderer';
 import { createStyleInjector } from '../services/styleInjector';
 import { SUGGESTIONS_OVERLAY_STYLES } from './SuggestionsOverlayStyles';
-import { getActiveEditable, getSelection, replaceText } from '../../detector/editableUtils';
+import { getActiveEditable, getSelection, replaceText } from '../../macroEngine/replacement/editableUtils';
 import { getCaretCoordinates } from './utils/caretPosition';
 import { calculateOptimalPosition } from './utils/popupPositioning';
 

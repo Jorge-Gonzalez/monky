@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, afterEach } from "vitest"
 import { replaceText } from "./editableUtils"
-import type { Macro } from "../../types"
+import type { Macro } from "../../../types"
 
 describe("replaceText", () => {
   describe("in contenteditable element", () => {

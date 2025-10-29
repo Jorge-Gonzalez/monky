@@ -1,4 +1,4 @@
-import { Macro, EditableEl } from "../../types"
+import { Macro, EditableEl } from "../../../types"
 import { getTextContent, getSelection, replaceText } from "./editableUtils"
 import { createReplacementHistory } from "./replacementHistory"
 

@@ -1,4 +1,4 @@
-import { EditableEl } from "../../types"
+import { EditableEl } from "../../../types"
 import { getTextContent, findTextNodeForOffset, setCursorAtOffset } from "./editableUtils"
 import { undoMostRecentInsertion, hasMarkers } from "./richTextReplacement"
 

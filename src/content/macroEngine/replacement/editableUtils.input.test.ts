@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, afterEach } from "vitest"
 import { replaceText } from "./editableUtils"
-import type { Macro } from "./detector-core"
+import type { Macro } from "../detector-core"
 
 describe("replaceText (input/textarea)", () => {
   let input: HTMLInputElement

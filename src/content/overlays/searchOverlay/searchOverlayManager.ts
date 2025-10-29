@@ -5,7 +5,7 @@ import { createReactRenderer } from '../services/reactRenderer';
 import { createFocusManager } from '../services/focusManager';
 import { createStyleInjector } from '../services/styleInjector';
 import { SEARCH_OVERLAY_STYLES } from './searchOverlayStyles';
-import { getActiveEditable } from '../../detector/editableUtils';
+import { getActiveEditable } from '../../macroEngine/replacement/editableUtils';
 
 export function createSearchOverlayManager() {
   const renderer = createReactRenderer('macro-search-overlay');

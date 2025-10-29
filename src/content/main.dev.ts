@@ -27,25 +27,25 @@ if (typeof chrome === 'undefined' || !chrome.storage) {
 }
 
 import { useMacroStore } from '../store/useMacroStore'
-import { createMacroCore, MacroCore } from './detector/macroCore'
+import { createMacroDetector,MacroDetector } from "./macroEngine/macroDetector"
 import { createSuggestionsCoordinator } from './coordinators/SuggestionsCoordinator'
 import { createSuggestionsOverlayManager } from './overlays/suggestionsOverlay/SuggestionsOverlayManager'
 import { loadMacros, listenMacrosChange } from './storage/macroStorage'
 import { Macro } from '../types'
 
 // Module-level state for development
-let macroCore: MacroCore | null = null
+let macroEngine: MacroDetector | null = null
 let isDetectorActive = false
 
 /**
  * Creates and initializes the macro core for development.
  */
-function createAndInitializeMacroCore(): MacroCore {
+function createAndInitializeMacroEngine(): MacroDetector {
   const overlayManager = createSuggestionsOverlayManager([])
   const suggestionsCoordinator = createSuggestionsCoordinator(overlayManager)
-  const core = createMacroCore(suggestionsCoordinator)
-  core.initialize()
-  return core
+  const engine = createMacroDetector(suggestionsCoordinator)
+  engine.initialize()
+  return engine
 }
 
 /**
@@ -58,20 +58,20 @@ function manageMacroState() {
 
   if (isDisabled) {
     if (isDetectorActive) {
-      macroCore?.destroy()
-      macroCore = null
+      macroEngine?.destroy()
+      macroEngine = null
       isDetectorActive = false
       console.log('[DEV] Macro system deactivated for', window.location.hostname)
     }
   } else {
     if (!isDetectorActive) {
-      macroCore = createAndInitializeMacroCore()
+      macroEngine = createAndInitializeMacroEngine()
       isDetectorActive = true
 
       // Set macros if we have them from the store already
       const macros = useMacroStore.getState().macros
       if (macros.length > 0) {
-        macroCore.setMacros(macros)
+        macroEngine.setMacros(macros)
         console.log('[DEV] Set', macros.length, 'initial macros on new macro core')
       }
 
@@ -95,7 +95,7 @@ async function main() {
     console.log('[DEV] Loaded', initialMacros.length, 'initial macros from storage')
 
     const updateMacros = (macros: Macro[]) => {
-      macroCore?.setMacros(macros)
+      macroEngine?.setMacros(macros)
     }
 
     // Set up listeners for any subsequent changes to macros or config.
@@ -106,10 +106,10 @@ async function main() {
     manageMacroState()
 
     // If the macro core was activated, ensure it has the initial macros.
-    if (macroCore && initialMacros.length > 0) {
+    if (macroEngine && initialMacros.length > 0) {
       // This might be redundant if the store was empty and got populated,
       // but it's a good safeguard.
-      macroCore.setMacros(initialMacros)
+      macroEngine.setMacros(initialMacros)
     }
 
     console.log('[DEV] ✅ Macro detection system ready!')

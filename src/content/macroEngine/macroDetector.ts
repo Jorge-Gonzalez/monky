@@ -1,16 +1,23 @@
 import { useMacroStore } from "../../store/useMacroStore"
-import { updateStateOnKey, isExact } from "./detector-core"
-import { getActiveEditable, getSelection, replaceText, getCursorCoordinates } from "./editableUtils"
+import { updateStateOnKey, isExact, getExact } from "./detector-core"
+import { getActiveEditable, getSelection, replaceText, getCursorCoordinates } from "./replacement/editableUtils"
 import { Macro, CoreState, EditableEl } from "../../types"
 import { isPrintableKey, UNSUPPORTED_KEYS } from "./keyUtils"
 import { defaultMacroConfig } from "../../config/defaults"
 import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro } from "../systemMacros/systemMacros"
 import { DetectorActions } from "../actions/detectorActions"
+import { createMacroReplacement } from "./replacement/macroReplacement"
 
 const COMMIT_KEYS = new Set([" ", "Enter"])
 const CONFIRM_DELAY_MS = 1850
 
+/**
+ * Creates the core macro system that coordinates detection and replacement
+ * This is the main entry point for the macro functionality
+ */
 export function createMacroDetector(actions: DetectorActions) {
+  // Create replacement manager
+  const replacement = createMacroReplacement()
   let macros: Macro[] = []
   let activeEl: EditableEl = null
   let state: CoreState = { active: false, buffer: "" }
@@ -32,21 +39,14 @@ export function createMacroDetector(actions: DetectorActions) {
   }
 
   function cancelDetection() {
-    // console.log(`[MACRO-DETECTOR] 🚫 cancelDetection called | Was active: ${state.active}, buffer: "${state.buffer}"`)
     clearTimer()
     clearBlurTimer()
     const wasActive = state.active
-    const wasBuffer = state.buffer
     state = { active: false, buffer: "" }
     
     if (wasActive) {
-      // console.log(`[MACRO-DETECTOR] 🚫 Calling onDetectionCancelled (was buffer: "${wasBuffer}")`)
       actions.onDetectionCancelled()
     }
-  }
-
-  function getExact(buffer: string): Macro | null {
-    return macros.find(m => m.command === buffer) || null
   }
 
   function commitReplace(macro: Macro, sel: { start: number; end: number } | null, isImmediate: boolean) {
@@ -54,51 +54,46 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    // Handle system macros
-    if (isSystemMacro(macro)) {
-      let commandStart: number
-      let endPos: number
-
-      if (selectionOnSchedule && !isImmediate) {
-        endPos = selectionOnSchedule.end + 1
-        commandStart = endPos - state.buffer.length
-      } else if (sel) {
-        endPos = sel.end
-        const commandLengthInDom = isImmediate ? state.buffer.length - 1 : state.buffer.length
-        commandStart = endPos - commandLengthInDom
-      } else {
-        cancelDetection()
-        return
-      }
-
-      if (commandStart >= 0) {
-        const deleteMacro: Macro = {
-          id: 'temp-delete',
-          command: '',
-          text: '',
-          contentType: 'text/plain'
-        }
-        replaceText(activeEl, deleteMacro, commandStart, endPos)
-      }
-
-      handleSystemMacro(macro)
-      actions.onMacroCommitted(String(macro.id))
-      cancelDetection()
-      return
-    }
-
-    // Regular macro replacement
+    // Calculate positions
     let commandStart: number
     let endPos: number
 
     if (selectionOnSchedule && !isImmediate) {
       endPos = selectionOnSchedule.end + 1
-      commandStart = endPos - state.buffer.length
+      commandStart = Math.max(0, endPos - state.buffer.length)
     } else if (sel) {
       endPos = sel.end
-      const commandLengthInDom = isImmediate ? state.buffer.length - 1 : state.buffer.length
-      commandStart = endPos - commandLengthInDom
-    } else {
+      commandStart = Math.max(0, endPos - state.buffer.length)
+    }
+
+    // Store original range for undo tracking (before space adjustment)
+    const originalCommandStart = commandStart
+    const originalEndPos = endPos
+
+    // Find the actual start of the macro (the '/' character) to avoid including preceding spaces
+    const text = replacement.getTextContent(activeEl)
+    const macroText = text.substring(commandStart, endPos)
+    const slashIndex = macroText.lastIndexOf('/')
+
+    if (slashIndex !== -1) {
+      // Adjust commandStart to point to the '/' character, not any preceding space
+      commandStart = commandStart + slashIndex
+    }
+
+    // Debug: Uncomment for range calculation debugging
+    // console.log('[COMMIT-REPLACE] Final range:', {
+    //   mode: isImmediate ? 'immediate' : 'scheduled',
+    //   buffer: state.buffer,
+    //   bufferLength: state.buffer.length,
+    //   originalCommandStart: Math.max(0, endPos - state.buffer.length),
+    //   adjustedCommandStart: commandStart,
+    //   endPos,
+    //   textContent: text,
+    //   textToReplace: text.substring(commandStart, endPos),
+    //   macroText: macro.text
+    // })
+
+    if (!sel && !selectionOnSchedule) {
       cancelDetection()
       return
     }
@@ -107,8 +102,27 @@ export function createMacroDetector(actions: DetectorActions) {
       cancelDetection()
       return
     }
-    
-    replaceText(activeEl, macro, commandStart, endPos)
+
+    // Handle system macros (without undo tracking)
+    if (isSystemMacro(macro)) {
+      const deleteMacro: Macro = {
+        id: 'temp-delete',
+        command: '',
+        text: '',
+        contentType: 'text/plain'
+      }
+      replaceText(activeEl, deleteMacro, commandStart, endPos)
+      handleSystemMacro(macro)
+      actions.onMacroCommitted(String(macro.id))
+      cancelDetection()
+      return
+    }
+
+    // Regular macro replacement with undo tracking
+    // Use adjusted range for replacement, but original range for undo tracking
+    // In immediate mode, also pass the original macro command for correct undo
+    const originalCommandForUndo = isImmediate ? state.buffer : undefined;
+    replacement.performReplacement(activeEl, commandStart, endPos, macro.text, macro, originalCommandStart, originalEndPos, originalCommandForUndo)
     actions.onMacroCommitted(String(macro.id))
     cancelDetection()
   }
@@ -116,23 +130,21 @@ export function createMacroDetector(actions: DetectorActions) {
   function scheduleConfirmIfExact(sel: { start: number; end: number } | null): boolean {
     clearTimer()
 
-    // Do not attempt commit logic when the buffer is exactly a configured prefix (e.g., "/")
     if (config.prefixes.includes(state.buffer)) return false
-
-    if (!isExact(state, macros)) return false
+    if (!isExact(state.buffer, macros)) return false
 
     const isPrefix = macros.some(m => m.command.startsWith(state.buffer) && m.command !== state.buffer)
 
     if (!isPrefix) {
-      commitReplace(getExact(state.buffer)!, sel, true)
+      commitReplace(getExact(state.buffer, macros)!, sel, true)
       return true
     } else {
       if (!sel) return false
       selectionOnSchedule = sel
 
       timer = window.setTimeout(() => {
-        if (isExact(state, macros) && activeEl) {
-          commitReplace(getExact(state.buffer)!, null, false)
+        if (isExact(state.buffer, macros) && activeEl) {
+          commitReplace(getExact(state.buffer, macros)!, null, false)
         } else {
           cancelDetection()
         }
@@ -142,17 +154,30 @@ export function createMacroDetector(actions: DetectorActions) {
   }
 
   function onKeyDown(e: KeyboardEvent) {
-    // console.log(`[MACRO-DETECTOR] 🔧 KeyDown: "${e.key}" | Active: ${state.active} | Buffer: "${state.buffer}" | UseCommitKeys: ${config.useCommitKeys}`)
-    
+    // Handle Ctrl+Z / Cmd+Z for undo
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+      const editable = getActiveEditable(e.target)
+      activeEl = editable // Set active element for undo context
+
+      // Only handle undo if we have history for this element
+      if (editable && replacement.hasUndoHistory(editable)) {
+        const undone = replacement.undoLastReplacement(editable)
+
+        if (undone) {
+          e.preventDefault()
+          e.stopPropagation()
+          return
+        }
+      }
+    }
+
     if (config.disabledSites.includes(window.location.hostname)) {
-      // console.log(`[MACRO-DETECTOR] 🚫 Site disabled: ${window.location.hostname}`)
       return
     }
 
     const editable = getActiveEditable(e.target)
     if (!editable) {
       if (state.active) {
-        // console.log(`[MACRO-DETECTOR] 🔍 No editable element, cancelling detection`)
         cancelDetection()
       }
       return
@@ -162,7 +187,6 @@ export function createMacroDetector(actions: DetectorActions) {
     const sel = getSelection(editable)
     if (!sel || sel.start !== sel.end) {
       if (state.active) {
-        // console.log(`[MACRO-DETECTOR] 🔍 Selection invalid (start: ${sel?.start}, end: ${sel?.end}), cancelling detection`)
         cancelDetection()
       }
       return
@@ -172,7 +196,6 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Handle navigation keys
     if (state.active && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-      // console.log(`[MACRO-DETECTOR] 🔼🔽 Navigation key: ${e.key}`)
       let direction: 'up' | 'down' | 'left' | 'right';
       if (e.key === 'ArrowUp') direction = 'up';
       else if (e.key === 'ArrowDown') direction = 'down';
@@ -181,37 +204,26 @@ export function createMacroDetector(actions: DetectorActions) {
       
       const handled = actions.onNavigationRequested(direction as any)
       if (handled) {
-        // console.log(`[MACRO-DETECTOR] ✅ Navigation handled, preventing default`)
         e.preventDefault()
       }
       return
     }
 
-    // Handle Tab key - show all suggestions for fuzzy search
+    // Handle Tab key
     if (state.active && e.key === 'Tab') {
-      // console.log(`[MACRO-DETECTOR] 📋 Tab pressed, showing all suggestions for fuzzy search`)
-      
-      // Check if navigation is currently being handled by overlay
       if (actions.onNavigationRequested && actions.onNavigationRequested('right' as any)) {
-        // If the overlay is handling navigation, let it handle Tab as well
         e.preventDefault();
         return;
       }
       
-      e.preventDefault(); // Prevent default tab behavior (losing focus)
-      e.stopPropagation(); // Stop the event from propagating to other listeners
-      
-      // Clear any pending blur timer since we're intentionally triggering an overlay
+      e.preventDefault();
+      e.stopPropagation();
       clearBlurTimer()
       
-      // For Tab key during detection, we want to trigger showAll mode in the suggestions
-      // We'll implement a new interface method for this purpose
       if (actions.onShowAllRequested) {
         const coords = getCursorCoordinates();
         actions.onShowAllRequested(state.buffer, coords || undefined);
       } else {
-        // Fallback for coordinators that don't support onShowAllRequested
-        // Just continue with normal detection update
         const coords = getCursorCoordinates();
         actions.onDetectionUpdated(state.buffer, coords || undefined);
       }
@@ -220,10 +232,8 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Handle Escape
     if (state.active && e.key === 'Escape') {
-      // console.log(`[MACRO-DETECTOR] 🚪 Escape pressed, cancelling detection`)
       const handled = actions.onCancelRequested()
       if (handled) {
-        // console.log(`[MACRO-DETECTOR] ✅ Escape handled, preventing default`)
         e.preventDefault()
       }
       cancelDetection()
@@ -232,72 +242,48 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Handle commit keys in manual mode
     if (config.useCommitKeys && state.buffer && COMMIT_KEYS.has(e.key)) {
-      // console.log(`[MACRO-DETECTOR] 🎯 COMMIT KEY DETECTED: "${e.key}" | Buffer: "${state.buffer}" | UseCommitKeys: ${config.useCommitKeys}`)
-      
-      // Ask action handler if they want to handle this
       const handled = actions.onCommitRequested(state.buffer)
-      // console.log(`[MACRO-DETECTOR] 🎯 Commit request handled: ${handled}`)
-      
+
       if (handled) {
-        // console.log(`[MACRO-DETECTOR] ✅ Preventing default for commit key: ${e.key}`)
-        e.preventDefault()
-        // If the coordinator handled it, it means a selection was made from the overlay.
-        // We need to commit the replacement here. The coordinator's job is just to
-        // confirm the selection, not to trigger the replacement logic itself.
-        const macroToCommit = getExact(state.buffer);
+        // Only prevent event and commit if we have an exact match
+        // If handled=true but no exact match, it means the overlay is visible
+        // and will handle the selection, so don't prevent the event
+        const macroToCommit = getExact(state.buffer, macros);
         if (macroToCommit) {
-          // console.log(`[MACRO-DETECTOR] 🎯 Committing exact macro from overlay selection: ${macroToCommit.command}`)
-          commitReplace(macroToCommit, sel, false)
-        } else {
-          // console.log(`[MACRO-DETECTOR] ⚠️  No exact macro found for buffer: "${state.buffer}"`)
-        }
-        // If no exact macro, do nothing (the coordinator might have done something else)
-      } else {
-        // console.log(`[MACRO-DETECTOR] 🎯 Overlay didn't handle commit, checking for exact match`)
-        // If not handled by the overlay (e.g., it's not visible),
-        // proceed with the default commit logic.
-        if (isExact(state, macros)) {
-          // console.log(`[MACRO-DETECTOR] ✅ Exact match found, committing and preventing default`)
-          // If it's an exact match, we always handle it and prevent default.
           e.preventDefault()
-          commitReplace(getExact(state.buffer)!, sel, false)
+          commitReplace(macroToCommit, sel, false)
+        }
+        // If no exact match, let the event bubble to the overlay
+      } else {
+        if (isExact(state.buffer, macros)) {
+          e.preventDefault()
+          commitReplace(getExact(state.buffer, macros)!, sel, false)
         } else {
-          // If not an exact match, cancel detection and allow the key to be typed.
           cancelDetection()
         }
-        // If not handled and not an exact match, we do nothing and let the
-        // key (e.g., a space) be typed normally. The detector will now be cancelled.
-        // itself on the next non-matching key.
       }
       return
     }
 
     // Handle Backspace
     if (e.key === "Backspace") {
-      // console.log(`[MACRO-DETECTOR] ⌫ Backspace pressed | Before: active=${state.active}, buffer="${state.buffer}"`)
       clearTimer()
       const prevState = { ...state }
       
-      // If detection was previously cancelled, we need to reconstruct the buffer
-      // from the actual text content to properly handle backspace recovery
       let currentState = state
       if (!state.active && !state.buffer) {
-        // Try to reconstruct the current typing context from the element
         const textContent = activeEl && 'value' in activeEl 
           ? activeEl.value 
           : activeEl?.textContent || ''
         const cursorPos = sel.start
         
-        // Look backwards from cursor to find a potential macro prefix
         let reconstructedBuffer = ''
         for (let i = cursorPos - 1; i >= 0; i--) {
           const char = textContent[i]
           if (char === ' ' || char === '\n' || char === '\t') break
           reconstructedBuffer = char + reconstructedBuffer
           
-          // Check if this looks like a macro buffer
           if (config.prefixes.some(prefix => reconstructedBuffer.startsWith(prefix))) {
-            // console.log(`[MACRO-DETECTOR] ⌫ Reconstructed buffer from text: "${reconstructedBuffer}"`)
             currentState = { active: true, buffer: reconstructedBuffer }
             break
           }
@@ -305,13 +291,10 @@ export function createMacroDetector(actions: DetectorActions) {
       }
       
       state = updateStateOnKey(currentState, e.key, macros, config.prefixes)
-      // console.log(`[MACRO-DETECTOR] ⌫ After backspace: active=${state.active}, buffer="${state.buffer}" | Previous: active=${prevState.active}, buffer="${prevState.buffer}"`)
       
       if (state.active) {
-        // console.log(`[MACRO-DETECTOR] ⌫ Detection still active, updating with buffer: "${state.buffer}"`)
         actions.onDetectionUpdated(state.buffer)
       } else {
-        // console.log(`[MACRO-DETECTOR] ⌫ Detection became inactive, cancelling`)
         cancelDetection()
       }
       return
@@ -319,18 +302,15 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Handle printable characters
     if (isPrintableKey(e)) {
-      // console.log(`[MACRO-DETECTOR] 📝 Printable key: "${e.key}" | Before: active=${state.active}, buffer="${state.buffer}"`)
       const prevBuffer = state.buffer
       state = updateStateOnKey(state, e.key, macros, config.prefixes)
-      // console.log(`[MACRO-DETECTOR] 📝 After update: active=${state.active}, buffer="${state.buffer}" | Mode: ${config.useCommitKeys ? 'MANUAL' : 'AUTO'}`)
 
       if (!config.useCommitKeys) {
-        // console.log(`[MACRO-DETECTOR] 🤖 AUTOMATIC MODE`)
-        // Automatic mode
         if (state.active) {
           const committedImmediately = scheduleConfirmIfExact(sel)
-          // console.log(`[MACRO-DETECTOR] 🤖 Committed immediately: ${committedImmediately}`)
           if (committedImmediately) {
+            // In immediate mode, prevent the character from being added to avoid duplication
+            // The macro replacement will handle the full command that includes the triggering character
             e.preventDefault()
           }
           
@@ -350,22 +330,15 @@ export function createMacroDetector(actions: DetectorActions) {
           }
         }
       } else {
-        // console.log(`[MACRO-DETECTOR] 👤 MANUAL MODE`)
-        // Manual mode
         if (state.active) {
           if (prevStateActive) {
-            // console.log(`[MACRO-DETECTOR] 👤 Detection continuing, updating buffer: "${state.buffer}"`)
-            // Only get coordinates when updating, not on every key press
             const coords = getCursorCoordinates()
             actions.onDetectionUpdated(state.buffer, coords ?? undefined)
           } else {
-            // console.log(`[MACRO-DETECTOR] 👤 Detection started, buffer: "${state.buffer}"`)
-            // Only get coordinates when starting, not on every key press
             const coords = getCursorCoordinates()
             actions.onDetectionStarted(state.buffer, coords ?? undefined)
           }
         } else if (prevStateActive) {
-          // console.log(`[MACRO-DETECTOR] 👤 Detection became inactive, cancelling`)
           cancelDetection()
         }
       }
@@ -388,12 +361,10 @@ export function createMacroDetector(actions: DetectorActions) {
   }
 
   function onBlur() {
-    // Add a small delay to prevent interference with Tab-triggered overlays
-    // This allows the overlay to show without being immediately cancelled
     clearBlurTimer()
     blurTimer = window.setTimeout(() => {
       cancelDetection()
-    }, 100) // 100ms delay should be enough for the overlay to establish itself
+    }, 100)
   }
 
   function updateConfig() {
@@ -419,6 +390,7 @@ export function createMacroDetector(actions: DetectorActions) {
     listenersAttached = false
     clearBlurTimer()
     cancelDetection()
+    replacement.clearUndoHistory()
   }
 
   function initialize(): void {
@@ -430,7 +402,6 @@ export function createMacroDetector(actions: DetectorActions) {
   function setMacros(newMacros: Macro[]): void {
     macros = [...SYSTEM_MACROS, ...newMacros]
     
-    // If the actions object has setMacros method (like SuggestionsCoordinator), call it
     if ('setMacros' in actions && typeof actions.setMacros === 'function') {
       (actions as any).setMacros([...SYSTEM_MACROS, ...newMacros]);
     }
@@ -440,11 +411,79 @@ export function createMacroDetector(actions: DetectorActions) {
     return { ...state }
   }
 
+  /**
+   * Handle macro selection from overlay (e.g., manual commit mode)
+   */
+  function handleMacroSelectedFromOverlay(macro: Macro, buffer: string, element?: EditableEl): void {
+    // Use provided element or try to get the current active element
+    const targetEl = element || activeEl || getActiveEditable(document.activeElement)
+
+    if (!targetEl) {
+      return
+    }
+
+    const textContent = replacement.getTextContent(targetEl)
+    const cursorPos = replacement.getCursorPosition(targetEl)
+
+    if (cursorPos === null) {
+      return
+    }
+
+    // Find the buffer text before the cursor
+    const triggerIndex = textContent.lastIndexOf(buffer, cursorPos)
+
+    if (triggerIndex === -1) {
+      return
+    }
+
+    const endPos = triggerIndex + buffer.length
+
+    // Use performReplacement to ensure proper undo tracking
+    replacement.performReplacement(targetEl, triggerIndex, endPos, macro.text, macro)
+
+    // Notify that macro was committed
+    actions.onMacroCommitted(String(macro.id))
+
+    // Clean up detection state
+    cancelDetection()
+  }
+
+  /**
+   * Handle macro selection from search overlay (inserts at cursor position)
+   */
+  function handleMacroSelectedFromSearchOverlay(macro: Macro, element: EditableEl): void {
+    if (!element) {
+      return
+    }
+
+    // Restore focus to the element first
+    element.focus()
+
+    const cursorPos = replacement.getCursorPosition(element)
+
+    if (cursorPos === null) {
+      return
+    }
+
+    // Insert at current cursor position (no text to replace)
+    // Use performReplacement to ensure proper undo tracking
+    replacement.performReplacement(element, cursorPos, cursorPos, macro.text, macro)
+
+    actions.onMacroCommitted(String(macro.id))
+  }
+
   return {
     initialize,
     setMacros,
     getState,
     destroy: detachListeners,
+    // Expose undo utilities for external use (delegate to replacement)
+    undoLastReplacement: (element: EditableEl) => replacement.undoLastReplacement(element),
+    clearUndoHistory: (element?: EditableEl) => replacement.clearUndoHistory(element),
+    getUndoHistoryLength: () => replacement.getUndoHistoryLength(),
+    // Expose for overlay integration
+    handleMacroSelectedFromOverlay,
+    handleMacroSelectedFromSearchOverlay,
   }
 }
 

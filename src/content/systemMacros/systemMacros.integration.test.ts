@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { createMacroDetector } from '../detector/macroDetector'
+import { createMacroDetector } from '../macroEngine/macroDetector'
 import { SYSTEM_MACROS } from './systemMacros'
 import { Macro } from '../../types'
 import { DetectorActions } from '../actions/detectorActions'

@@ -37,7 +37,7 @@ vi.mock('../overlays/services/styleInjector', () => ({
   }))
 }))
 
-vi.mock('./editableUtils', () => ({
+vi.mock('./replacement/editableUtils', () => ({
   getActiveEditable: vi.fn(),
   getSelection: vi.fn(),
   replaceText: vi.fn(),
@@ -52,7 +52,7 @@ vi.mock('../overlays/suggestionsOverlay/utils/popupPositioning', () => ({
   calculateOptimalPosition: vi.fn(() => ({ x: 100, y: 200, placement: 'bottom' })),
 }))
 
-import { getActiveEditable, getSelection, replaceText, getCursorCoordinates } from './editableUtils'
+import { getActiveEditable, getSelection, replaceText, getCursorCoordinates } from './replacement/editableUtils'
 
 describe('Tab Key Integration Tests', () => {
   const mockMacros: Macro[] = [

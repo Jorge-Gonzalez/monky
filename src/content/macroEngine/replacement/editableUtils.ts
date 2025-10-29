@@ -1,4 +1,4 @@
-import type { Macro, EditableEl } from '../../types'
+import type { Macro, EditableEl } from '../../../types'
 import { replaceWithMarker, type MacroMarkerData } from './richTextReplacement'
 import { replaceInInput } from './inputTextReplacement'
 import { replacePlainText } from './plainTextReplacement'

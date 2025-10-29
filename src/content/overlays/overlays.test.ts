@@ -30,13 +30,13 @@ vi.mock('./searchOverlay/ui/MacroSearchOverlay', async () => ({
 }))
 
 // Mock editableUtils functions
-vi.mock('../detector/editableUtils', () => ({
+vi.mock('../macroEngine/replacement/editableUtils', () => ({
   getActiveEditable: vi.fn(),
   getSelection: vi.fn(),
   replaceText: vi.fn()
 }))
 
-import * as editableUtils from '../detector/editableUtils'
+import * as editableUtils from '../macroEngine/replacement/editableUtils'
 
 describe('Overlay Managers - Focus and Cursor Management', () => {
   let testMacros: Macro[]

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest"
-import { updateStateOnKey, isExact, CoreState, Macro } from "./detector-core"
+import { updateStateOnKey, isExact } from "./detector-core"
+import type { Macro, CoreState } from '../../types';
 
 const macros: Macro[] = [
   { id: 1, command: "/sig", text: "Saludos" },
@@ -56,16 +57,16 @@ describe("detector-core: updateStateOnKey", () => {
 describe("detector-core: isExact", () => {
   it("returns true when buffer exactly matches a macro command", () => {
     const state: CoreState = { active: true, buffer: "/sig" }
-    expect(isExact(state, macros)).toBe(true)
+    expect(isExact(state.buffer, macros)).toBe(true)
   })
 
   it("returns false for partial/non-matching buffer", () => {
     const state: CoreState = { active: true, buffer: "/si" }
-    expect(isExact(state, macros)).toBe(false)
+    expect(isExact(state.buffer, macros)).toBe(false)
   })
 
   it("returns true for another macro", () => {
     const state: CoreState = { active: true, buffer: "/bye" }
-    expect(isExact(state, macros)).toBe(true)
+    expect(isExact(state.buffer, macros)).toBe(true)
   })
 })

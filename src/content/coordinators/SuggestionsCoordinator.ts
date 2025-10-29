@@ -1,6 +1,6 @@
 import { EditableEl, Macro } from '../../types';
 import { SuggestionsOverlayManager } from '../overlays/suggestionsOverlay/SuggestionsOverlayManager';
-import { getActiveEditable, getCursorCoordinates } from '../detector/editableUtils';
+import { getActiveEditable, getCursorCoordinates } from '../macroEngine/replacement/editableUtils';
 import { DetectorActions } from '../actions/detectorActions';
 
 export function createSuggestionsCoordinator(

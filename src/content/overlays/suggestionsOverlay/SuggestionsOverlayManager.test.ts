@@ -27,7 +27,7 @@ vi.mock('../services/styleInjector', () => ({
 }));
 
 // Mock the editable utils
-vi.mock('../../detector/editableUtils', () => ({
+vi.mock('../../macroEngine/replacement/editableUtils', () => ({
   getActiveEditable: vi.fn(),
   getSelection: vi.fn(),
   replaceText: vi.fn(),
@@ -43,7 +43,7 @@ vi.mock('./utils/popupPositioning', () => ({
   calculateOptimalPosition: vi.fn(),
 }));
 
-import { getActiveEditable, getSelection, replaceText } from '../../detector/editableUtils';
+import { getActiveEditable, getSelection, replaceText } from '../../macroEngine/replacement/editableUtils';
 import { getCaretCoordinates } from './utils/caretPosition'; // This import is correct
 import { calculateOptimalPosition } from './utils/popupPositioning';
 

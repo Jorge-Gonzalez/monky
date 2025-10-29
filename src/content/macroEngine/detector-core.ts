@@ -39,6 +39,10 @@ export function updateStateOnKey(
 }
 
 // Checks if the current buffer exactly matches any macro command
-export function isExact(state: CoreState, macros: Macro[]) {
-  return !!macros.find(macro => macro.command === state.buffer)
+export function isExact(buffer: string, macros: Macro[]) {
+  return !!macros.find(macro => macro.command === buffer)
+}
+
+export function getExact(buffer: string, macros: Macro[]): Macro | null {
+  return macros.find(m => m.command === buffer) || null
 }

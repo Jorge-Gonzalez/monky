@@ -77,6 +77,13 @@ describe('MacroDetector - Undo System', () => {
       html: '<ul><li>Review code</li><li>Update docs</li><li>Test features</li></ul>',
       contentType: 'text/html',
     },
+    {
+      id: '7',
+      command: "/tambien",
+      text: "Tambien a mi\n\nBlockquote:\n\n> Lo que no se tiene no se perdio, entonces por que se anhela, los anhelos y los miedos dos caras de la misma moneda la alegria y la miseria inalcanzables pero simpre presentes tranparentes.",
+      html: "<p><b>Tambien a mi</b></p><p>Blockquote:</p><blockquote>Lo que no se tiene no se perdio, entonces por que se anhela, los anhelos y los miedos dos caras de la misma moneda la alegria y la miseria inalcanzables pero simpre presentes tranparentes.</blockquote>",
+      contentType: "text/html",
+    }
   ]
 
   beforeEach(() => {
@@ -200,6 +207,22 @@ describe('MacroDetector - Undo System', () => {
   })
 
   describe('Basic Undo Functionality', () => {
+
+    it('should undo macro replacement with html content in input element', () => {
+
+      typeIn(inputElement, '/tambien ')
+
+      // Verify replacement happened with HTML content
+      expect(inputElement.value).toBe('Tambien a mi\n\nBlockquote:\n\n> Lo que no se tiene no se perdio, entonces por que se anhela, los anhelos y los miedos dos caras de la misma moneda la alegria y la miseria inalcanzables pero simpre presentes tranparentes.');
+      expect(detector.getUndoHistoryLength()).toBe(1);
+
+      // Undo the replacement
+      inputElement.dispatchEvent(getUndoEvent());
+
+      // Verify undo worked
+      expect(inputElement.value).toBe('/tambien');
+      expect(detector.getUndoHistoryLength()).toBe(0);
+    })
 
     it('should undo macro replacement in input element', () => {
 

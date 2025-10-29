@@ -1,31 +1,31 @@
 import { useMacroStore } from "../store/useMacroStore"
-import { createMacroCore, MacroCore } from "./detector/macroCore"
+import { createMacroDetector,MacroDetector } from "./macroEngine/macroDetector"
 import { createSuggestionsCoordinator, SuggestionsCoordinator } from "./coordinators/SuggestionsCoordinator"
 import { loadMacros, listenMacrosChange } from "./storage/macroStorage"
 import { updateAllMacros, suggestionsOverlayManager, searchOverlayManager } from "./overlays"
 import { Macro } from "../types"
 
 // Module-level state
-let macroCore: MacroCore | null = null
+let macroEngine: MacroDetector | null = null
 let isDetectorActive = false
 let suggestionsCoordinator: SuggestionsCoordinator | null = null
 let overlayManager = suggestionsOverlayManager
 
 /**
- * Creates and initializes the macro core with its action handlers.
+ * Creates and initializes the macro engine with its action handlers.
  */
-function createAndInitializeMacroCore(actions: SuggestionsCoordinator): MacroCore {
-  const core = createMacroCore(actions)
-  core.initialize()
-  return core
+function createAndInitializeMacroEngine(actions: SuggestionsCoordinator): MacroDetector {
+  const engine = createMacroDetector(actions)
+  engine.initialize()
+  return engine
 }
 
 /**
- * Updates the macros in the macro core, coordinator and overlay managers.
+ * Updates the macros in the macro engine, coordinator and overlay managers.
  */
 function updateMacros(macros: Macro[]): void {
-  if (macroCore) {
-    macroCore.setMacros(macros)
+  if (macroEngine) {
+    macroEngine.setMacros(macros)
   }
   // Keep overlay managers in sync (if they subscribe separately)
   updateAllMacros(macros)
@@ -44,9 +44,9 @@ function manageMacroState() {
   const isDisabled = config.disabledSites.includes(window.location.hostname)
 
   if (isDisabled) {
-    if (isDetectorActive && macroCore) {
-      macroCore.destroy()
-      macroCore = null
+    if (isDetectorActive && macroEngine) {
+      macroEngine.destroy()
+      macroEngine = null
       isDetectorActive = false
     }
 
@@ -68,27 +68,27 @@ function manageMacroState() {
     }
 
     if (!isDetectorActive) {
-      macroCore = createAndInitializeMacroCore(suggestionsCoordinator)
+      macroEngine = createAndInitializeMacroEngine(suggestionsCoordinator)
       isDetectorActive = true
 
-      // Wire the suggestions overlay manager to use macro core's replacement function for proper undo tracking
+      // Wire the suggestions overlay manager to use macro engine's replacement function for proper undo tracking
       overlayManager.setOnMacroSelected((macro, buffer, element) => {
-        if (macroCore) {
-          macroCore.handleMacroSelectedFromOverlay(macro, buffer, element)
+        if (macroEngine) {
+          macroEngine.handleMacroSelectedFromOverlay(macro, buffer, element)
         }
       })
 
-      // Wire the search overlay manager to use macro core's insertion function for proper undo tracking
+      // Wire the search overlay manager to use macro engine's insertion function for proper undo tracking
       searchOverlayManager.setOnMacroSelected((macro, element) => {
-        if (macroCore) {
-          macroCore.handleMacroSelectedFromSearchOverlay(macro, element)
+        if (macroEngine) {
+          macroEngine.handleMacroSelectedFromSearchOverlay(macro, element)
         }
       })
 
       // Set macros if we have them
       const macros = useMacroStore.getState().macros
       if (macros.length > 0) {
-        macroCore.setMacros(macros)
+        macroEngine.setMacros(macros)
       }
     }
   }
@@ -119,9 +119,9 @@ async function main() {
   // Run the initial check to activate or deactivate the macro system and coordinator.
   manageMacroState()
 
-  // If macro core is active, set initial macros
-  if (macroCore && initialMacros.length > 0) {
-    macroCore.setMacros(initialMacros)
+  // If macro engine is active, set initial macros
+  if (macroEngine && initialMacros.length > 0) {
+    macroEngine.setMacros(initialMacros)
   }
 
   // Keep overlay managers updated as well
@@ -136,9 +136,9 @@ async function main() {
  * Cleanup function to destroy all resources.
  */
 function cleanup() {
-  if (macroCore) {
-    macroCore.destroy()
-    macroCore = null
+  if (macroEngine) {
+    macroEngine.destroy()
+    macroEngine = null
     isDetectorActive = false
   }
 
@@ -163,9 +163,9 @@ export function onExecute() {
   main()
 }
 
-// Export macro core access for debugging/testing
-export function getMacroCore(): MacroCore | null {
-  return macroCore
+// Export macro engine access for debugging/testing
+export function getMacroEngine(): MacroDetector | null {
+  return macroEngine
 }
 
 // Auto-initialize when module is imported

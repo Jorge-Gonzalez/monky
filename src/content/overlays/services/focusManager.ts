@@ -1,4 +1,4 @@
-import { getActiveEditable, getSelection } from '../../detector/editableUtils';
+import { getActiveEditable, getSelection } from '../../macroEngine/replacement/editableUtils';
 
 interface SavedFocusState {
   element: HTMLElement;

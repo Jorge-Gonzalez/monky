@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { getActiveEditable, getSelection, EditableElement } from '../../../detector/editableUtils';
+import { getActiveEditable, getSelection, EditableElement } from '../../../macroEngine/replacement/editableUtils';
 
 interface SavedState {
   element: EditableElement;
