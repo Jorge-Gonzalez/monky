@@ -1,38 +1,32 @@
 import { useMacroStore } from "../store/useMacroStore"
 import { createMacroDetector,MacroDetector } from "./macroEngine/macroDetector"
-import { createSuggestionsCoordinator, SuggestionsCoordinator } from "./coordinators/SuggestionsCoordinator"
 import { loadMacros, listenMacrosChange } from "./storage/macroStorage"
-import { updateAllMacros, suggestionsOverlayManager, searchOverlayManager } from "./overlays"
+import { updateAllMacros, suggestionsCoordinator, searchCoordinator } from "./overlays"
 import { Macro } from "../types"
 
 // Module-level state
 let macroEngine: MacroDetector | null = null
 let isDetectorActive = false
-let suggestionsCoordinator: SuggestionsCoordinator | null = null
-let overlayManager = suggestionsOverlayManager
+let isSuggestionsCoordinatorAttached = false
 
 /**
  * Creates and initializes the macro engine with its action handlers.
  */
-function createAndInitializeMacroEngine(actions: SuggestionsCoordinator): MacroDetector {
-  const engine = createMacroDetector(actions)
+function createAndInitializeMacroEngine(): MacroDetector {
+  const engine = createMacroDetector(suggestionsCoordinator)
   engine.initialize()
   return engine
 }
 
 /**
- * Updates the macros in the macro engine, coordinator and overlay managers.
+ * Updates the macros in the macro engine and coordinators.
  */
 function updateMacros(macros: Macro[]): void {
   if (macroEngine) {
     macroEngine.setMacros(macros)
   }
-  // Keep overlay managers in sync (if they subscribe separately)
+  // Keep coordinators in sync with updated macros
   updateAllMacros(macros)
-  // Ensure the single coordinator instance has the latest macros
-  if (suggestionsCoordinator) {
-    suggestionsCoordinator.setMacros(macros)
-  }
 }
 
 /**
@@ -50,15 +44,21 @@ function manageMacroState() {
       isDetectorActive = false
     }
 
-    if (suggestionsCoordinator) {
+    if (isSuggestionsCoordinatorAttached) {
       suggestionsCoordinator.detach()
-      suggestionsCoordinator = null
+      isSuggestionsCoordinatorAttached = false
     }
+
+    // Detach the search coordinator when disabled
+    searchCoordinator.detach()
   } else {
-    // Ensure a single coordinator instance is created and attached
-    if (!suggestionsCoordinator) {
-      suggestionsCoordinator = createSuggestionsCoordinator(overlayManager)
+    // Attach the search coordinator when enabled
+    searchCoordinator.attach()
+
+    // Ensure the suggestions coordinator is attached
+    if (!isSuggestionsCoordinatorAttached) {
       suggestionsCoordinator.attach()
+      isSuggestionsCoordinatorAttached = true
 
       // Provide current macros to the coordinator immediately
       const macros = useMacroStore.getState().macros
@@ -68,28 +68,30 @@ function manageMacroState() {
     }
 
     if (!isDetectorActive) {
-      macroEngine = createAndInitializeMacroEngine(suggestionsCoordinator)
+      macroEngine = createAndInitializeMacroEngine()
       isDetectorActive = true
-
-      // Wire the suggestions overlay manager to use macro engine's replacement function for proper undo tracking
-      overlayManager.setOnMacroSelected((macro, buffer, element) => {
-        if (macroEngine) {
-          macroEngine.handleMacroSelectedFromOverlay(macro, buffer, element)
-        }
-      })
-
-      // Wire the search overlay manager to use macro engine's insertion function for proper undo tracking
-      searchOverlayManager.setOnMacroSelected((macro, element) => {
-        if (macroEngine) {
-          macroEngine.handleMacroSelectedFromSearchOverlay(macro, element)
-        }
-      })
 
       // Set macros if we have them
       const macros = useMacroStore.getState().macros
       if (macros.length > 0) {
         macroEngine.setMacros(macros)
       }
+    }
+
+    // Wire the coordinators to use macro engine's functions for proper undo tracking
+    // This should happen every time manageMacroState runs when enabled, not just on first activation
+    if (macroEngine) {
+      suggestionsCoordinator.setOnMacroSelected((macro, buffer, element) => {
+        if (macroEngine) {
+          macroEngine.handleMacroSelectedFromOverlay(macro, buffer, element)
+        }
+      })
+
+      searchCoordinator.setOnMacroSelected((macro, element) => {
+        if (macroEngine) {
+          macroEngine.handleMacroSelectedFromSearchOverlay(macro, element)
+        }
+      })
     }
   }
 }
@@ -142,10 +144,13 @@ function cleanup() {
     isDetectorActive = false
   }
 
-  if (suggestionsCoordinator) {
+  if (isSuggestionsCoordinatorAttached) {
     suggestionsCoordinator.detach()
-    suggestionsCoordinator = null
+    isSuggestionsCoordinatorAttached = false
   }
+
+  // Detach search coordinator
+  searchCoordinator.detach()
 }
 
 // Export init function for tests compatibility

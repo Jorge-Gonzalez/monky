@@ -16,21 +16,40 @@ vi.mock("./storage/macroStorage", async () => {
 })
 
 const mockOverlays = vi.hoisted(() => ({
-  suggestionsOverlayManager: {
+  suggestionsCoordinator: {
     isVisible: vi.fn().mockReturnValue(false),
     show: vi.fn(),
     showAll: vi.fn(),
     hide: vi.fn(),
-    updateMacros: vi.fn(),
+    setMacros: vi.fn(),
     destroy: vi.fn(),
     setOnMacroSelected: vi.fn(),
+    attach: vi.fn(),
+    detach: vi.fn(),
+    enable: vi.fn(),
+    disable: vi.fn(),
+    isEnabled: vi.fn(() => true),
+    updateConfig: vi.fn(),
+    onDetectionStarted: vi.fn(),
+    onDetectionUpdated: vi.fn(),
+    onDetectionCancelled: vi.fn(),
+    onMacroCommitted: vi.fn(),
+    onCommitRequested: vi.fn(() => false),
+    onNavigationRequested: vi.fn(() => false),
+    onCancelRequested: vi.fn(() => false),
+    onShowAllRequested: vi.fn(),
   },
-  searchOverlayManager: {
+  searchCoordinator: {
     show: vi.fn(),
     hide: vi.fn(),
     isVisible: vi.fn(() => false),
     destroy: vi.fn(),
     setOnMacroSelected: vi.fn(),
+    attach: vi.fn(),
+    detach: vi.fn(),
+    enable: vi.fn(),
+    disable: vi.fn(),
+    isEnabled: vi.fn(() => true),
   },
   updateAllMacros: vi.fn(),
 }))

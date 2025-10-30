@@ -1,21 +1,34 @@
 import { Macro, EditableEl } from "../../../types"
-import { getTextContent, getSelection, replaceText } from "./editableUtils"
+import { getTextContent, getSelection, normalizeForInputElement } from "./editableUtils"
+import { replaceInInput } from "./inputTextReplacement"
+import { replacePlainText } from "./plainTextReplacement"
 import { createReplacementHistory } from "./replacementHistory"
+import { replaceWithMarker } from "./richTextReplacement"
 
 /**
- * Normalizes text for input elements by removing newlines and collapsing whitespace.
- * This duplicates the logic from inputTextReplacement.ts to determine what text
- * will actually be inserted into the input element.
- *
- * Note: We preserve leading/trailing spaces intentionally - they may be meaningful
- * in the replacement text.
+ * Replaces a range of text in an editable element with the text from a macro.
+ * It handles <input>, <textarea>, and contenteditable elements.
  */
-function normalizeForInputElement(text: string): string {
-  return text.replace(/\r?\n|\r/g, ' ').replace(/\s+/g, ' ')
+export function replaceText(el: EditableEl, macro: Macro, startPos: number, endPos: number) {
+  if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+    return replaceInInput(el, startPos, endPos, macro.text)
+  }
+
+  if (macro.contentType === 'text/html' && macro.html) {
+    return replaceWithMarker(el, startPos, endPos, macro.html, {
+      macroId: String(macro.id),
+      originalCommand: macro.command,
+      insertedAt: Date.now(),
+      isHtml: true
+    })
+  }
+
+  return replacePlainText(el, startPos, endPos, macro.text)
 }
 
 /**
  * Creates a macro replacement manager that handles text replacements and undo operations.
+ * Uses a marker based undo approach for rich text elements by wrapping inserted content with a marker element.
  * Uses a position-based undo system that captures text positions and snippets.
  */
 export function createMacroReplacement() {

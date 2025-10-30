@@ -1,5 +1,5 @@
 import { Macro } from "../../types"
-import { searchOverlayManager, suggestionsOverlayManager } from "../overlays";
+import { searchCoordinator, suggestionsCoordinator } from "../overlays";
 
 /**
  * System macros for keyboard shortcuts and special functionality.
@@ -82,9 +82,9 @@ export function handleSystemMacro(macro: Macro): boolean {
 
 function showSearchOverlay() {
   console.log('🔍 Search overlay triggered!')
-  
+
   // Show the actual search overlay
-  searchOverlayManager.show();
+  searchCoordinator.show();
 }
 
 function showKeyboardHelp() {
@@ -106,10 +106,10 @@ function showMacroList() {
 
 function toggleSuggestionsOverlay() {
   console.log('🔄 Toggle suggestions overlay triggered!')
-  
-  if (suggestionsOverlayManager.isVisible()) {
-    suggestionsOverlayManager.hide();
+
+  if (suggestionsCoordinator.isVisible()) {
+    suggestionsCoordinator.hide();
   } else {
-    suggestionsOverlayManager.showAll();
+    suggestionsCoordinator.showAll();
   }
 }

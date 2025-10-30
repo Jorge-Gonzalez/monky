@@ -122,6 +122,27 @@ export function createSuggestionsCoordinator(
     },
 
     setMacros,
+
+    // Public interface methods for direct overlay control
+    isVisible: (): boolean => manager.isVisible(),
+
+    hide: (): void => {
+      manager.hide();
+    },
+
+    showAll: (x?: number, y?: number, buffer?: string): void => {
+      if (!isEnabled) return;
+      manager.showAll(x, y, buffer);
+    },
+
+    setOnMacroSelected: (callback: (macro: Macro, buffer: string, element: EditableEl) => void): void => {
+      manager.setOnMacroSelected(callback);
+    },
+
+    destroy: (): void => {
+      coordinator.detach();
+      manager.destroy();
+    },
   };
 
   return coordinator;
@@ -150,4 +171,10 @@ export interface SuggestionsCoordinator extends DetectorActions {
   isEnabled: () => boolean;
   updateConfig: () => void;
   setMacros: (macros: Macro[]) => void;
+  // Public interface methods for direct overlay control
+  isVisible: () => boolean;
+  hide: () => void;
+  showAll: (x?: number, y?: number, buffer?: string) => void;
+  setOnMacroSelected: (callback: (macro: Macro, buffer: string, element: EditableEl) => void) => void;
+  destroy: () => void;
 }

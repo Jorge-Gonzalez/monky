@@ -28,21 +28,19 @@ if (typeof chrome === 'undefined' || !chrome.storage) {
 
 import { useMacroStore } from '../store/useMacroStore'
 import { createMacroDetector,MacroDetector } from "./macroEngine/macroDetector"
-import { createSuggestionsCoordinator } from './coordinators/SuggestionsCoordinator'
-import { createSuggestionsOverlayManager } from './overlays/suggestionsOverlay/SuggestionsOverlayManager'
 import { loadMacros, listenMacrosChange } from './storage/macroStorage'
+import { suggestionsCoordinator, searchCoordinator } from './overlays'
 import { Macro } from '../types'
 
 // Module-level state for development
 let macroEngine: MacroDetector | null = null
 let isDetectorActive = false
+let isSuggestionsCoordinatorAttached = false
 
 /**
  * Creates and initializes the macro core for development.
  */
 function createAndInitializeMacroEngine(): MacroDetector {
-  const overlayManager = createSuggestionsOverlayManager([])
-  const suggestionsCoordinator = createSuggestionsCoordinator(overlayManager)
   const engine = createMacroDetector(suggestionsCoordinator)
   engine.initialize()
   return engine
@@ -63,7 +61,30 @@ function manageMacroState() {
       isDetectorActive = false
       console.log('[DEV] Macro system deactivated for', window.location.hostname)
     }
+
+    if (isSuggestionsCoordinatorAttached) {
+      suggestionsCoordinator.detach()
+      isSuggestionsCoordinatorAttached = false
+    }
+
+    // Detach the search coordinator when disabled
+    searchCoordinator.detach()
   } else {
+    // Attach the search coordinator when enabled
+    searchCoordinator.attach()
+
+    // Ensure the suggestions coordinator is attached
+    if (!isSuggestionsCoordinatorAttached) {
+      suggestionsCoordinator.attach()
+      isSuggestionsCoordinatorAttached = true
+
+      // Provide current macros to the coordinator immediately
+      const macros = useMacroStore.getState().macros
+      if (macros.length > 0) {
+        suggestionsCoordinator.setMacros(macros)
+      }
+    }
+
     if (!isDetectorActive) {
       macroEngine = createAndInitializeMacroEngine()
       isDetectorActive = true
@@ -76,6 +97,22 @@ function manageMacroState() {
       }
 
       console.log('[DEV] Macro system activated for', window.location.hostname)
+    }
+
+    // Wire the coordinators to use macro engine's functions for proper undo tracking
+    // This should happen every time manageMacroState runs when enabled
+    if (macroEngine) {
+      suggestionsCoordinator.setOnMacroSelected((macro, buffer, element) => {
+        if (macroEngine) {
+          macroEngine.handleMacroSelectedFromOverlay(macro, buffer, element)
+        }
+      })
+
+      searchCoordinator.setOnMacroSelected((macro, element) => {
+        if (macroEngine) {
+          macroEngine.handleMacroSelectedFromSearchOverlay(macro, element)
+        }
+      })
     }
   }
 }
@@ -118,6 +155,25 @@ async function main() {
   }
 }
 
+/**
+ * Cleanup function to destroy all resources.
+ */
+function cleanup() {
+  if (macroEngine) {
+    macroEngine.destroy()
+    macroEngine = null
+    isDetectorActive = false
+  }
+
+  if (isSuggestionsCoordinatorAttached) {
+    suggestionsCoordinator.detach()
+    isSuggestionsCoordinatorAttached = false
+  }
+
+  // Detach search coordinator
+  searchCoordinator.detach()
+}
+
 // Auto-execute for development
 if (typeof window !== 'undefined') {
   main()
@@ -126,4 +182,16 @@ if (typeof window !== 'undefined') {
 // Export for compatibility
 export function onExecute() {
   main()
+}
+
+// Export cleanup for tests
+export function cleanupMacroSystem() {
+  cleanup()
+}
+
+// Cleanup on unload (for hot reload during development)
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    cleanup()
+  })
 }

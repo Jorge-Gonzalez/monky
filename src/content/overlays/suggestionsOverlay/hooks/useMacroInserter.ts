@@ -1,4 +1,5 @@
-import { replaceText, EditableElement } from '../../../macroEngine/replacement/editableUtils';
+import { EditableElement } from '../../../macroEngine/replacement/editableUtils';
+import { replaceText } from '../../../macroEngine/replacement/macroReplacement';
 import { Macro } from '../../../../types';
 
 interface SavedState {

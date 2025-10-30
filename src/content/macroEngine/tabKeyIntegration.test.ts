@@ -52,7 +52,8 @@ vi.mock('../overlays/suggestionsOverlay/utils/popupPositioning', () => ({
   calculateOptimalPosition: vi.fn(() => ({ x: 100, y: 200, placement: 'bottom' })),
 }))
 
-import { getActiveEditable, getSelection, replaceText, getCursorCoordinates } from './replacement/editableUtils'
+import { getActiveEditable, getSelection, getCursorCoordinates } from './replacement/editableUtils'
+import { replaceText } from './replacement/macroReplacement'
 
 describe('Tab Key Integration Tests', () => {
   const mockMacros: Macro[] = [

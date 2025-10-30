@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { createMacroDetector } from './macroDetector'
-import { DetectorActions } from '../actions/detectorActions'
-import { Macro } from '../../types'
-import { typeIn } from '../../utils/testUtils'
-import { useMacroStore } from "../../store/useMacroStore"
+import { createMacroDetector } from '../macroDetector'
+import { DetectorActions } from '../../actions/detectorActions'
+import { Macro } from '../../../types'
+import { typeIn } from '../../../utils/testUtils'
+import { useMacroStore } from "../../../store/useMacroStore"
 
 describe('ContentEditable Formatting Preservation', () => {
   let detector: ReturnType<typeof createMacroDetector>

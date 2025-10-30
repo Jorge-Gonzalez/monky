@@ -1,7 +1,4 @@
-import type { Macro, EditableEl } from '../../../types'
-import { replaceWithMarker, type MacroMarkerData } from './richTextReplacement'
-import { replaceInInput } from './inputTextReplacement'
-import { replacePlainText } from './plainTextReplacement'
+import type { EditableEl } from '../../../types'
 
 export function getActiveEditable(target: EventTarget | null): EditableEl {
   if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
@@ -154,31 +151,14 @@ export function setCursorAtOffset(root: Node, offset: number) {
     selection.addRange(range)
   }
 }
-
 /**
- * Replaces a range of text in an editable element with the text from a macro.
- * It handles <input>, <textarea>, and contenteditable elements.
+ * Normalizes text for input elements by removing newlines and collapsing whitespace.
+ * This duplicates the logic from inputTextReplacement.ts to determine what text
+ * will actually be inserted into the input element.
+ *
+ * Note: We preserve leading/trailing spaces intentionally - they may be meaningful
+ * in the replacement text.
  */
-export function replaceText(el: EditableEl, macro: Macro, startPos: number, endPos: number) {
-  if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
-    return replaceInInput(el, startPos, endPos, macro.text || htmlToPlainText(macro.html))
-  }
-  
-  if (macro.contentType === 'text/html' && macro.html) {
-    return replaceWithMarker(el, startPos, endPos, macro.html, {
-      macroId: String(macro.id),
-      originalCommand: macro.command,
-      insertedAt: Date.now(),
-      isHtml: true
-    })
-  }
-  
-  return replacePlainText(el, startPos, endPos, macro.text)
-}
-
-function htmlToPlainText(html: string | undefined): string {
-  if (!html) return ''
-  const tempDiv = document.createElement('div')
-  tempDiv.innerHTML = html
-  return tempDiv.textContent || ''
+export function normalizeForInputElement(text: string): string {
+  return text.replace(/\r?\n|\r/g, ' ').replace(/\s+/g, ' ')
 }

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, afterEach } from "vitest"
-import { replaceText } from "./editableUtils"
+import { replaceText } from './macroReplacement'
 import type { Macro } from "../../../types"
 import { getSelection } from "./editableUtils"
 

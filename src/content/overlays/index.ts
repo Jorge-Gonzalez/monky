@@ -1,18 +1,24 @@
-import { createSearchOverlayManager, SearchOverlayManager } from './searchOverlay/searchOverlayManager';
-import { createSuggestionsOverlayManager, SuggestionsOverlayManager } from './suggestionsOverlay';
+import { createSearchOverlayManager } from './searchOverlay/searchOverlayManager';
+import { createSuggestionsOverlayManager } from './suggestionsOverlay';
+import { createSearchCoordinator, SearchCoordinator } from '../coordinators/SearchCoordinator';
+import { createSuggestionsCoordinator, SuggestionsCoordinator } from '../coordinators/SuggestionsCoordinator';
 import { Macro } from '../../types';
 
-// Create and export singleton instances
-export const searchOverlayManager: SearchOverlayManager = createSearchOverlayManager();
-export const suggestionsOverlayManager: SuggestionsOverlayManager = createSuggestionsOverlayManager([]);
+// Create managers (private, only used by coordinators)
+const searchOverlayManager = createSearchOverlayManager();
+const suggestionsOverlayManager = createSuggestionsOverlayManager([]);
 
-// Convenience function for updating macros in the manager
+// Create and export singleton coordinators (public API)
+export const searchCoordinator: SearchCoordinator = createSearchCoordinator(searchOverlayManager);
+export const suggestionsCoordinator: SuggestionsCoordinator = createSuggestionsCoordinator(suggestionsOverlayManager);
+
+// Convenience function for updating macros
 export function updateAllMacros(macros: Macro[]): void {
-  suggestionsOverlayManager.updateMacros(macros);
+  suggestionsCoordinator.setMacros(macros);
 }
 
 // Convenience function for cleanup
 export function destroyAllOverlays(): void {
-  searchOverlayManager.destroy();
-  suggestionsOverlayManager.destroy();
+  searchCoordinator.destroy();
+  suggestionsCoordinator.destroy();
 }

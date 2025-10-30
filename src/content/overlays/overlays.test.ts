@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { searchOverlayManager } from '.'
+import { searchCoordinator } from '.'
 import { Macro } from '../../types'
 
 // Mock React and ReactDOM with proper structure
@@ -83,7 +83,7 @@ describe('Overlay Managers - Focus and Cursor Management', () => {
   afterEach(() => {
     // Cleanup - suppress any errors since we're testing
     try {
-      searchOverlayManager.hide()
+      searchCoordinator.hide()
     } catch (e) {
       // Ignore cleanup errors in tests
     }
@@ -97,8 +97,8 @@ describe('Overlay Managers - Focus and Cursor Management', () => {
 
       // Show search overlay - we can't directly test the stored element since it's private
       // but we can test the focus restoration behavior
-      searchOverlayManager.show()
-      
+      searchCoordinator.show()
+
       // The functionality works if focus is restored later
       // We can't assert that focus has moved, as the component is mocked.
       // Instead, we verify that the focus manager's state was saved,
@@ -108,15 +108,15 @@ describe('Overlay Managers - Focus and Cursor Management', () => {
 
     it('should restore focus when hiding search overlay', () => {
       mockInput.focus();
-      searchOverlayManager.show();
-      
+      searchCoordinator.show();
+
       // Clear focus (simulate overlay interaction)
       mockInput.blur()
       expect(document.activeElement).not.toBe(mockInput)
 
       // Hide overlay and wait for focus restoration
-      searchOverlayManager.hide()
-      
+      searchCoordinator.hide()
+
       return new Promise<void>((resolve) => {
         setTimeout(() => {
           expect(document.activeElement).toBe(mockInput)
@@ -127,14 +127,14 @@ describe('Overlay Managers - Focus and Cursor Management', () => {
 
     it('should handle focus restoration when element is removed', () => {
       mockInput.focus()
-      searchOverlayManager.show()
-      
+      searchCoordinator.show()
+
       // Remove the element from DOM
       mockInput.remove()
-      
+
       // Hide overlay - should not throw error
       expect(() => {
-        searchOverlayManager.hide()
+        searchCoordinator.hide()
       }).not.toThrow()
     })
   })
@@ -150,22 +150,22 @@ describe('Overlay Managers - Focus and Cursor Management', () => {
       // Mock getSelection to return the cursor position
       vi.mocked(editableUtils.getSelection).mockReturnValue({ start: 5, end: 5 })
 
-      searchOverlayManager.show()
-      
+      searchCoordinator.show()
+
       // Test that getSelection was called - this indirectly tests cursor position saving
       expect(editableUtils.getSelection).toHaveBeenCalledWith(mockInput)
     })
 
     it('should save cursor position in contenteditable elements', () => {
       mockContentEditable.focus()
-      
+
       // Mock getActiveEditable to return the contenteditable element
       vi.mocked(editableUtils.getActiveEditable).mockReturnValue(mockContentEditable)
       // Mock contenteditable selection
       vi.mocked(editableUtils.getSelection).mockReturnValue({ start: 3, end: 3 })
 
-      searchOverlayManager.show()
-      
+      searchCoordinator.show()
+
       // Test that getSelection was called - this indirectly tests cursor position saving
       expect(editableUtils.getSelection).toHaveBeenCalledWith(mockContentEditable)
     })
@@ -176,11 +176,11 @@ describe('Overlay Managers - Focus and Cursor Management', () => {
       mockInput.focus()
       vi.mocked(editableUtils.getActiveEditable).mockReturnValue(mockInput)
       vi.mocked(editableUtils.getSelection).mockReturnValue({ start: 0, end: 0 })
-      
+
       // Should not throw during complete workflow
       expect(() => {
-        searchOverlayManager.show()
-        searchOverlayManager.hide()
+        searchCoordinator.show()
+        searchCoordinator.hide()
       }).not.toThrow()
     })
   })

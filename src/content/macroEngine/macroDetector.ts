@@ -1,6 +1,7 @@
 import { useMacroStore } from "../../store/useMacroStore"
 import { updateStateOnKey, isExact, getExact } from "./detector-core"
-import { getActiveEditable, getSelection, replaceText, getCursorCoordinates } from "./replacement/editableUtils"
+import { getActiveEditable, getSelection, getCursorCoordinates } from "./replacement/editableUtils"
+import { replaceText } from './replacement/macroReplacement'
 import { Macro, CoreState, EditableEl } from "../../types"
 import { isPrintableKey, UNSUPPORTED_KEYS } from "./keyUtils"
 import { defaultMacroConfig } from "../../config/defaults"
@@ -70,14 +71,22 @@ export function createMacroDetector(actions: DetectorActions) {
     const originalCommandStart = commandStart
     const originalEndPos = endPos
 
-    // Find the actual start of the macro (the '/' character) to avoid including preceding spaces
+    // Find the actual start of the macro (the prefix character) to avoid including preceding spaces
     const text = replacement.getTextContent(activeEl)
     const macroText = text.substring(commandStart, endPos)
-    const slashIndex = macroText.lastIndexOf('/')
 
-    if (slashIndex !== -1) {
-      // Adjust commandStart to point to the '/' character, not any preceding space
-      commandStart = commandStart + slashIndex
+    // Find the last occurrence of any configured prefix
+    let prefixIndex = -1
+    for (const prefix of config.prefixes) {
+      const idx = macroText.lastIndexOf(prefix)
+      if (idx > prefixIndex) {
+        prefixIndex = idx
+      }
+    }
+
+    if (prefixIndex !== -1) {
+      // Adjust commandStart to point to the prefix character, not any preceding space
+      commandStart = commandStart + prefixIndex
     }
 
     // Debug: Uncomment for range calculation debugging
