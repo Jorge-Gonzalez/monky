@@ -160,7 +160,10 @@ export function MacroSuggestions({
             key={macro.id}
             ref={(el) => { buttonRefs.current[index] = el; }}
             className={`macro-suggestions-command-item ${index === navigation.selectedIndex ? 'selected' : ''}`}
-            onClick={() => onSelectMacro(macro)}
+            onMouseDown={(e) => {
+              e.preventDefault(); // Prevent blur on the input
+              onSelectMacro(macro);
+            }}
             type="button"
             role="option"
             aria-selected={index === navigation.selectedIndex}

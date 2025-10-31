@@ -85,7 +85,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
       })
       inputElement.dispatchEvent(undoEvent)
 
-      expect(inputElement.value).toBe('/hello')
+      expect(inputElement.value).toBe('')
     })
 
     it('should handle rapid typing with multiple macros', () => {
@@ -108,33 +108,28 @@ describe('MacroDetector - Undo Integration Tests', () => {
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
         key: 'z', ctrlKey: true, bubbles: true 
       }))
-      expect(inputElement.value).toContain('Hi!')
-      expect(inputElement.value).toContain('/hello')
+      expect(inputElement.value).toBe('Hi! ')
 
       // Undo first
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'z', ctrlKey: true, bubbles: true
       }))
-      expect(inputElement.value).toContain('/h')
+      expect(inputElement.value).toBe(' ')
     })
 
     it('should handle undo after user continues typing', () => {
-      inputElement.focus()
-      inputElement.value = '/hello'
-      inputElement.setSelectionRange(6, 6)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+      
+      typeIn(inputElement, '/hello ')
 
       // User continues typing after replacement
-      const continuedText = inputElement.value + 'How are you?'
-      inputElement.value = continuedText
-      inputElement.setSelectionRange(continuedText.length, continuedText.length)
+      typeIn(inputElement, ' How are you?')
 
       // User wants to undo the macro
       inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
-      expect(inputElement.value).toBe('/helloHow are you?')
+      expect(inputElement.value).toBe(' How are you?')
     })
 
     it('should handle undo in middle of document', () => {
@@ -150,7 +145,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
-      expect(inputElement.value).toBe('Start text /hello end text')
+      expect(inputElement.value).toBe('Start text  end text')
     })
   })
 
@@ -163,11 +158,11 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
       expect(inputElement.value).toBe('Hi!') // Shortest match
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'z', ctrlKey: true, bubbles: true
       }))
 
-      expect(inputElement.value).toBe('/h')
+      expect(inputElement.value).toBe('')
     })
 
     it('should handle undo with exact vs prefix match', () => {
@@ -180,7 +175,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
-      expect(inputElement.value).toBe('/hello')
+      expect(inputElement.value).toBe('')
     })
   })
 
@@ -212,7 +207,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
-      expect(contentEditableDiv.textContent).toContain('/hello')
+      expect(contentEditableDiv.textContent).toBe('')
     })
 
     it('should handle undo when contentEditable has multiple text nodes', () => {
@@ -302,7 +297,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
-      expect(textarea.value).toBe('/brb')
+      expect(textarea.value).toBe('')
       expect(inputElement.value).toBe('Hello, World!') // Unchanged
       expect(detector.getUndoHistoryLength()).toBe(1)
     })
@@ -324,7 +319,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
-      expect(inputElement.value).toBe('/hello')
+      expect(inputElement.value).toBe('')
       expect(textarea.value).toBe('Be right back!') // Unchanged
     })
 
@@ -402,21 +397,21 @@ describe('MacroDetector - Undo Integration Tests', () => {
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
-      // Cursor should be at end of "/hello"
-      expect(inputElement.selectionStart).toBe(13)
-      expect(inputElement.selectionEnd).toBe(13)
+      // Cursor should be at the position where replacement was removed
+      expect(inputElement.selectionStart).toBe(7)
+      expect(inputElement.selectionEnd).toBe(7)
     })
 
     it('should handle undo at document boundaries', () => {
 
       typeIn(inputElement, '/hello ')
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
+      inputElement.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'z', ctrlKey: true, bubbles: true
       }))
 
-      expect(inputElement.value).toBe('/hello')
-      expect(inputElement.selectionStart).toBe(6)
+      expect(inputElement.value).toBe('')
+      expect(inputElement.selectionStart).toBe(0)
     })
 
     it('should handle multiple undos without errors', () => {
@@ -430,7 +425,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
         }))
       }
 
-      // Should only undo once and then stop
+      // Should not have any macros to undo (typed /h but never triggered it)
       expect(inputElement.value).toBe('/h')
     })
   })
@@ -524,7 +519,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
-      expect(inputElement.value).toBe('/hello')
+      expect(inputElement.value).toBe('')
       expect(label.textContent).toBe('Message')
 
       document.body.removeChild(label)
@@ -543,7 +538,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
-      expect(inputElement.value).toBe('/special')
+      expect(inputElement.value).toBe('')
     })
 
     it('should handle unicode emoji in macros', () => {
@@ -556,7 +551,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
-      expect(inputElement.value).toBe('/wave')
+      expect(inputElement.value).toBe('')
     })
 
     it('should handle newlines in macro text', () => {
@@ -572,7 +567,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
-      expect(textarea.value).toBe('/multi')
+      expect(textarea.value).toBe('')
 
       document.body.removeChild(textarea)
     })
@@ -591,7 +586,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
         key: 'z', ctrlKey: true, bubbles: true 
       }))
 
-      expect(inputElement.value).toBe('/hello pasted text')
+      expect(inputElement.value).toBe(' pasted text')
     })
   })
 
@@ -614,7 +609,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
       // Programmatic undo
       const result = detector.undoLastReplacement(inputElement)
       expect(result).toBe(true)
-      expect(inputElement.value).toBe('/hello')
+      expect(inputElement.value).toBe('')
     })
 
     it('should return false when undoLastReplacement has no history', () => {

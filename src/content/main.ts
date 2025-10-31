@@ -100,6 +100,10 @@ function manageMacroState() {
  * Main entry point for the content script.
  */
 async function main() {
+  // Set a flag to indicate the extension content script is loading
+  // Use a DOM attribute instead of window property because content scripts run in isolated context
+  document.documentElement.setAttribute('data-macro-extension-loaded', 'true')
+
   // Wait for the store to be hydrated from storage before doing anything.
   await useMacroStore.persist.rehydrate()
 

@@ -203,15 +203,16 @@ export function undoMostRecentInsertion(element: EditableEl): boolean {
     const selection = window.getSelection()
     if (!selection) return false
 
-    // Create a text node with the original command
-    const originalText = document.createTextNode(markerData.originalCommand)
+    // Remove the marker completely (replace with empty string)
+    // This matches the new undo behavior where we just delete the replacement
+    const emptyText = document.createTextNode('')
 
-    // Replace the marker with the original text
-    marker.replaceWith(originalText)
+    // Replace the marker with empty text
+    marker.replaceWith(emptyText)
 
-    // Place cursor after the restored command
+    // Place cursor at the position where marker was removed
     const range = document.createRange()
-    range.setStartAfter(originalText)
+    range.setStartAfter(emptyText)
     range.collapse(true)
     selection.removeAllRanges()
     selection.addRange(range)

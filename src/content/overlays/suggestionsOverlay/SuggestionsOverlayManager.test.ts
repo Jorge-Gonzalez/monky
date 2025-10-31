@@ -448,4 +448,76 @@ describe('SuggestionsOverlayManager', () => {
       expect(typeof props.onClose).toBe('function');
     });
   });
+
+  describe('Button Click Integration', () => {
+    test('triggers macro replacement when button is clicked via callback', () => {
+      const manager = createSuggestionsOverlayManager(mockMacros);
+      const mockCallback = vi.fn();
+
+      // Set up the callback (simulating what the main.ts does)
+      manager.setOnMacroSelected(mockCallback);
+
+      // Show the overlay
+      manager.show('test', 100, 200);
+
+      // Get the onSelectMacro callback that was passed to the component
+      const renderCall = mockRenderer.render.mock.calls[0][0];
+      const onSelectMacro = renderCall.props.onSelectMacro;
+
+      // Simulate clicking a button (which calls onSelectMacro)
+      onSelectMacro(mockMacros[0]);
+
+      // Verify the callback was called with the correct parameters
+      expect(mockCallback).toHaveBeenCalledWith(mockMacros[0], 'test', mockElement);
+      expect(mockCallback).toHaveBeenCalledTimes(1);
+
+      // Verify the overlay was hidden after selection
+      expect(manager.isVisible()).toBe(false);
+    });
+
+    test('button click works even without registered callback (fallback mode)', () => {
+      const manager = createSuggestionsOverlayManager(mockMacros);
+
+      // Don't set a callback - testing fallback behavior
+
+      // Show the overlay
+      manager.show('test', 100, 200);
+
+      // Get the onSelectMacro callback that was passed to the component
+      const renderCall = mockRenderer.render.mock.calls[0][0];
+      const onSelectMacro = renderCall.props.onSelectMacro;
+
+      // Simulate clicking a button
+      onSelectMacro(mockMacros[0]);
+
+      // Verify replaceText was called (fallback behavior)
+      expect(replaceText).toHaveBeenCalled();
+
+      // Verify the overlay was hidden after selection
+      expect(manager.isVisible()).toBe(false);
+    });
+
+    test('button click in showAll mode triggers replacement correctly', () => {
+      const manager = createSuggestionsOverlayManager(mockMacros);
+      const mockCallback = vi.fn();
+
+      manager.setOnMacroSelected(mockCallback);
+
+      // Show the overlay in showAll mode with a buffer
+      manager.showAll(100, 200, '/te');
+
+      // Get the onSelectMacro callback
+      const renderCall = mockRenderer.render.mock.calls[0][0];
+      const onSelectMacro = renderCall.props.onSelectMacro;
+
+      // Simulate clicking a button
+      onSelectMacro(mockMacros[0]);
+
+      // Verify the callback was called with the buffer from showAll
+      expect(mockCallback).toHaveBeenCalledWith(mockMacros[0], '/te', mockElement);
+
+      // Verify the overlay was hidden
+      expect(manager.isVisible()).toBe(false);
+    });
+  });
 });

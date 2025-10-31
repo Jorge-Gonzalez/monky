@@ -31,6 +31,7 @@ import { createMacroDetector,MacroDetector } from "./macroEngine/macroDetector"
 import { loadMacros, listenMacrosChange } from './storage/macroStorage'
 import { suggestionsCoordinator, searchCoordinator } from './overlays'
 import { Macro } from '../types'
+import { initExtensionConflictDetector } from './devExtensionConflictDetector'
 
 // Module-level state for development
 let macroEngine: MacroDetector | null = null
@@ -177,6 +178,7 @@ function cleanup() {
 // Auto-execute for development
 if (typeof window !== 'undefined') {
   main()
+  initExtensionConflictDetector()
 }
 
 // Export for compatibility

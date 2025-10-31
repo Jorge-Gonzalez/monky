@@ -18,7 +18,7 @@ export const dummyMacros: Macro[] = [
   
   // Rich HTML macros - formatted content
   {
-    id: 'html-sig',
+    id: '101',
     command: '/sig',
     text: 'John Doe - Software Developer',
     html: '<p><strong>John Doe</strong><br><em>Software Developer</em></p>',
@@ -26,11 +26,19 @@ export const dummyMacros: Macro[] = [
     is_sensitive: false,
   },
   {
-    id: 'html-list',
+    id: '102',
     command: '/tasks',
     text: 'Review code, Update docs, Test features',
     html: '<ul><li>Review code</li><li>Update docs</li><li>Test features</li></ul>',
     contentType: 'text/html',
     is_sensitive: false,
   },
+  {
+    id: '103',
+    command: '/si',
+    text: 'Yes, I am available for a meeting at 3 PM.',
+    contentType: 'text/plain',
+    is_sensitive: false,
+  },
+  
 ]

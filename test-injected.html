@@ -38,6 +38,24 @@
             min-height: 100px;
         }
 
+        .warning-banner {
+            background-color: #701d1d;
+            color: white;
+            padding: 1em;
+            margin-bottom: 1em;
+            border-radius: 4px;
+            border-left: 4px solid #c92a2a;
+            display: none;
+        }
+        .warning-banner.show {
+            display: block;
+        }
+        .warning-banner strong {
+            display: block;
+            margin-bottom: 0.5em;
+            font-size: 1.1em;
+        }
+
         @media (prefers-color-scheme: dark) {
             body {
                 background-color: #1a1a1a;
@@ -78,7 +96,13 @@
 
 </head>
 <body>
-    <h1>Macro Extension Test Page (Injected)</h1>
+    <div id="extension-warning" class="warning-banner">
+        <strong>⚠️ WARNING: Extension Conflict Detected!</strong>
+        <p>The Macro Replacer extension is currently active on this page. This will cause conflicts with the injected development script, resulting in double initialization and unexpected behavior.</p>
+        <p><strong>Solution:</strong> Disable the Macro Replacer extension or add <code>localhost</code> to the disabled sites list in the extension options.</p>
+    </div>
+
+    <h1>Macro Extension Test Page (Injected) 2</h1>
     <p>This page directly includes the content script for live development.</p>
     <p>Try typing a macro command you have configured (e.g., <code>/sig</code>) in any of the fields below.</p>
 
@@ -108,24 +132,5 @@
             <p>And some more text to finish.</p>
         </div>
     </div>
-
-    <script>
-        // Check if we're being served through the Vite dev server
-        document.addEventListener('DOMContentLoaded', () => {
-            const vitePort = '5173'; // Default Vite port
-            const expectedHost = `localhost:${vitePort}`;
-            const expectedUrl = `http://${expectedHost}/test-injected.html`;
-
-            if (location.host === expectedHost) {
-                 // The presence of the /@vite/client script is the real test,
-                 // but we can give a good initial status.
-                updateConnectionStatus(true, 'Vite HMR ready. Content script is injected.');
-            } else if (location.protocol === 'file:') {
-                updateConnectionStatus(false, `Open this page via the Vite server: ${expectedUrl}`);
-            } else {
-                updateConnectionStatus(false, `Incorrect server. Please use the Vite dev server at ${expectedUrl}`);
-            }
-        });
-    </script>
 </body>
 </html>

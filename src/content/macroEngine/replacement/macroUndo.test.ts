@@ -128,45 +128,45 @@ describe('MacroDetector - Undo System', () => {
   describe('Cursor Position After Undo', () => {
 
     it('should restore cursor position after undo in input', () => {
-      
+
       typeIn(inputElement, '/hello ')
 
       inputElement.dispatchEvent(getUndoEvent())
 
-      // Cursor should be at end of restored text
-      expect(inputElement.selectionStart).toBe(6)
-      expect(inputElement.selectionEnd).toBe(6)
+      // Cursor should be at start (empty field after undo)
+      expect(inputElement.selectionStart).toBe(0)
+      expect(inputElement.selectionEnd).toBe(0)
     })
 
     it('should restore cursor position after undo in textarea', () => {
       textareaElement.focus()
       textareaElement.value = 'prefix '
       textareaElement.setSelectionRange(7, 7)
-      
+
       typeIn(textareaElement, '/email ')
 
       textareaElement.dispatchEvent(getUndoEvent())
 
-      expect(textareaElement.value).toBe('prefix /email')
-      expect(textareaElement.selectionStart).toBe(13)
+      expect(textareaElement.value).toBe('prefix ')
+      expect(textareaElement.selectionStart).toBe(7)
     })
   })
 
   describe('Integration with Detection System', () => {
 
     it('should track undo even when detection is cancelled', () => {
-      
+
       typeIn(inputElement, '/hello ')
 
       // Detection should be cancelled after commit
       expect(detector.getState().active).toBe(false)
-      
+
       // But undo history should still exist
       expect(detector.getUndoHistoryLength()).toBe(1)
 
       inputElement.dispatchEvent(getUndoEvent())
 
-      expect(inputElement.value).toBe('/hello')
+      expect(inputElement.value).toBe('')
     })
 
     it('should not interfere with native browser undo when no macro history', () => {
@@ -220,8 +220,8 @@ describe('MacroDetector - Undo System', () => {
       // Undo the replacement
       inputElement.dispatchEvent(getUndoEvent());
 
-      // Verify undo worked
-      expect(inputElement.value).toBe('/tambien');
+      // Verify undo worked - should clear the replacement
+      expect(inputElement.value).toBe('');
       expect(detector.getUndoHistoryLength()).toBe(0);
     })
 
@@ -236,13 +236,13 @@ describe('MacroDetector - Undo System', () => {
       // Undo the replacement
       inputElement.dispatchEvent(getUndoEvent())
 
-      // Verify undo worked
-      expect(inputElement.value).toBe('/hello')
+      // Verify undo worked - should clear the replacement
+      expect(inputElement.value).toBe('')
       expect(detector.getUndoHistoryLength()).toBe(0)
     })
 
     it('should undo macro replacement in textarea element', () => {
-      
+
       typeIn(textareaElement, '/email ')
 
       expect(textareaElement.value).toBe('test@example.com')
@@ -251,13 +251,13 @@ describe('MacroDetector - Undo System', () => {
       // Undo
       textareaElement.dispatchEvent(getUndoEvent())
 
-      expect(textareaElement.value).toBe('/email')
+      expect(textareaElement.value).toBe('')
       expect(detector.getUndoHistoryLength()).toBe(0)
     })
 
     it('should undo macro replacement in contentEditable element', () => {
       contentEditableDiv.focus()
-      
+
       // Set up initial selection
       const selection = window.getSelection()!
       const range = document.createRange()
@@ -274,19 +274,19 @@ describe('MacroDetector - Undo System', () => {
       // Undo
       contentEditableDiv.dispatchEvent(getUndoEvent())
 
-      expect(contentEditableDiv.textContent).toBe('/hello')
+      expect(contentEditableDiv.textContent).toBe('')
       expect(detector.getUndoHistoryLength()).toBe(0)
     })
 
     it('should work with Cmd+Z on Mac', () => {
       inputElement.focus()
-      
+
       typeIn(inputElement, '/hello ')
 
       // Use metaKey instead of ctrlKey (Mac style)
       inputElement.dispatchEvent(getMacUndoEvent())
 
-      expect(inputElement.value).toBe('/hello')
+      expect(inputElement.value).toBe('')
     })
   })
 
@@ -296,7 +296,7 @@ describe('MacroDetector - Undo System', () => {
 
       // First macro
       typeIn(inputElement, '/hello ')
-      
+
       // Second macro
       typeIn(inputElement, '/email ')
 
@@ -304,17 +304,16 @@ describe('MacroDetector - Undo System', () => {
       expect(inputElement.value).toContain('test@example.com')
       expect(detector.getUndoHistoryLength()).toBe(2)
 
-      // Undo second macro
+      // Undo second macro - removes just the second replacement
       inputElement.dispatchEvent(getUndoEvent())
 
-      expect(inputElement.value).toContain('Hello, World!')
-      expect(inputElement.value).toContain('/email')
+      expect(inputElement.value).toBe('Hello, World!')
       expect(detector.getUndoHistoryLength()).toBe(1)
 
-      // Undo first macro
+      // Undo first macro - removes the first replacement
       inputElement.dispatchEvent(getUndoEvent())
 
-      expect(inputElement.value).toContain('/hello')
+      expect(inputElement.value).toBe('')
       expect(detector.getUndoHistoryLength()).toBe(0)
     })
 
@@ -332,22 +331,22 @@ describe('MacroDetector - Undo System', () => {
   describe('Undo with Text Modifications', () => {
     it('should undo when user typed after replacement', () => {
       inputElement.focus()
-      
+
       typeIn(inputElement, '/hello ')
-      
+
       // User types more text (manually, not through typeIn to avoid triggering detection)
       const currentValue = inputElement.value
       inputElement.value = currentValue + ' extra text'
       inputElement.setSelectionRange(inputElement.value.length, inputElement.value.length)
 
-      // Undo should still work
+      // Undo should still work - removes the replacement but keeps the extra text
       inputElement.dispatchEvent(getUndoEvent())
 
-      expect(inputElement.value).toBe('/hello extra text')
+      expect(inputElement.value).toBe(' extra text')
     })
 
     it('should undo when user typed before replacement', () => {
-            
+
       // User types at the beginning
       typeIn(inputElement, 'prefix ')
 
@@ -355,8 +354,8 @@ describe('MacroDetector - Undo System', () => {
 
       inputElement.dispatchEvent(getUndoEvent())
 
-      // Should still find and undo the replacement
-      expect(inputElement.value).toContain('/hello')
+      // Should still find and undo the replacement, keeping the prefix
+      expect(inputElement.value).toBe('prefix ')
     })
 
     it('should handle undo when replacement text was partially edited', () => {
@@ -473,7 +472,7 @@ describe('MacroDetector - Undo System', () => {
 
       textareaElement.dispatchEvent(getUndoEvent())
 
-      expect(textareaElement.value).toBe('/sig')
+      expect(textareaElement.value).toBe('')
     })
 
     it('should handle empty replacement text', () => {
@@ -484,7 +483,8 @@ describe('MacroDetector - Undo System', () => {
 
       inputElement.dispatchEvent(getUndoEvent())
 
-      expect(inputElement.value).toBe('/empty')
+      // Undo replaces empty string with empty string - still empty
+      expect(inputElement.value).toBe('')
     })
   })
 
@@ -495,9 +495,9 @@ describe('MacroDetector - Undo System', () => {
 
       inputElement.dispatchEvent(getUndoEvent())
 
-      // Cursor should be at end of restored text
-      expect(inputElement.selectionStart).toBe(6)
-      expect(inputElement.selectionEnd).toBe(6)
+      // Cursor should be at start (empty field)
+      expect(inputElement.selectionStart).toBe(0)
+      expect(inputElement.selectionEnd).toBe(0)
     })
 
     it('should restore cursor position after undo in textarea', () => {
@@ -506,8 +506,8 @@ describe('MacroDetector - Undo System', () => {
 
       textareaElement.dispatchEvent(getUndoEvent())
 
-      expect(textareaElement.value).toBe('prefix /email')
-      expect(textareaElement.selectionStart).toBe(13)
+      expect(textareaElement.value).toBe('prefix ')
+      expect(textareaElement.selectionStart).toBe(7)
     })
   })
 
@@ -518,13 +518,13 @@ describe('MacroDetector - Undo System', () => {
 
       // Detection should be cancelled after commit
       expect(detector.getState().active).toBe(false)
-      
+
       // But undo history should still exist
       expect(detector.getUndoHistoryLength()).toBe(1)
 
       inputElement.dispatchEvent(getUndoEvent())
 
-      expect(inputElement.value).toBe('/hello')
+      expect(inputElement.value).toBe('')
     })
 
     it('should not interfere with native browser undo when no macro history', () => {
@@ -589,8 +589,8 @@ describe('MacroDetector - Undo System', () => {
       const undoEvent = getUndoEvent()
       contentEditableDiv.dispatchEvent(undoEvent)
 
-      // This should restore the original command
-      expect(contentEditableDiv.textContent).toBe('/fir')
+      // This should clear the replacement
+      expect(contentEditableDiv.textContent).toBe('')
     })
 
     it('should undo HTML list macro replacement in contentEditable element', () => {
@@ -617,8 +617,8 @@ describe('MacroDetector - Undo System', () => {
       const undoEvent = getUndoEvent()
       contentEditableDiv.dispatchEvent(undoEvent)
 
-      // This should restore the original command
-      expect(contentEditableDiv.textContent).toBe('/tasks')
+      // This should clear the replacement
+      expect(contentEditableDiv.textContent).toBe('')
     })
 
     it('should handle plain text macros in contentEditable as before', () => {
@@ -644,8 +644,8 @@ describe('MacroDetector - Undo System', () => {
       const undoEvent = getUndoEvent()
       contentEditableDiv.dispatchEvent(undoEvent)
 
-      // This should restore the original command
-      expect(contentEditableDiv.textContent).toBe('/hello')
+      // This should clear the replacement
+      expect(contentEditableDiv.textContent).toBe('')
     })
   })
 })

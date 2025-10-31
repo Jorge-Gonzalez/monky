@@ -200,7 +200,7 @@ describe('MacroSuggestions', () => {
       render(<MacroSuggestions {...defaultProps} onSelectMacro={mockOnSelect} />);
 
       const firstItem = screen.getByText('test-macro');
-      fireEvent.click(firstItem);
+      fireEvent.mouseDown(firstItem);
 
       expect(mockOnSelect).toHaveBeenCalledWith(mockMacros[0]);
       expect(mockOnSelect).toHaveBeenCalledTimes(1);
@@ -211,9 +211,25 @@ describe('MacroSuggestions', () => {
       render(<MacroSuggestions {...defaultProps} onSelectMacro={mockOnSelect} />);
 
       const secondItem = screen.getByText('another-test');
-      fireEvent.click(secondItem);
+      fireEvent.mouseDown(secondItem);
 
       expect(mockOnSelect).toHaveBeenCalledWith(mockMacros[1]);
+    });
+
+    test('prevents default behavior on mousedown to avoid blur on input', () => {
+      const mockOnSelect = vi.fn();
+      render(<MacroSuggestions {...defaultProps} onSelectMacro={mockOnSelect} />);
+
+      const firstItem = screen.getByText('test-macro');
+      const mouseDownEvent = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+      const preventDefaultSpy = vi.spyOn(mouseDownEvent, 'preventDefault');
+
+      firstItem.dispatchEvent(mouseDownEvent);
+
+      // Verify preventDefault was called to prevent blur
+      expect(preventDefaultSpy).toHaveBeenCalled();
+      // Verify the macro selection still happened
+      expect(mockOnSelect).toHaveBeenCalledWith(mockMacros[0]);
     });
   });
 

@@ -129,9 +129,7 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Regular macro replacement with undo tracking
     // Use adjusted range for replacement, but original range for undo tracking
-    // In immediate mode, also pass the original macro command for correct undo
-    const originalCommandForUndo = isImmediate ? state.buffer : undefined;
-    replacement.performReplacement(activeEl, commandStart, endPos, macro.text, macro, originalCommandStart, originalEndPos, originalCommandForUndo)
+    replacement.performReplacement(activeEl, commandStart, endPos, macro.text, macro, originalCommandStart, originalEndPos)
     actions.onMacroCommitted(String(macro.id))
     cancelDetection()
   }

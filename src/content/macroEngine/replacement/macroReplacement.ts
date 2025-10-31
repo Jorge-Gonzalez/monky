@@ -45,22 +45,16 @@ export function createMacroReplacement() {
     replacementText: string,
     macro: Macro,
     undoStartPos?: number,
-    undoEndPos?: number,
-    originalMacroCommand?: string
+    undoEndPos?: number
   ): void {
     if (!element) return
 
-    const textContent = getTextContent(element)
-
-    // For undo, use the original range (before space adjustment) if provided
-    // In immediate mode, we may have a specific original command to restore
+    // For undo, we store empty string so that undo simply deletes the replacement
+    // without restoring the typed command, allowing users to immediately type again
     const undoRange = {
       startPos: undoStartPos ?? startPos,
       endPos: undoEndPos ?? endPos,
-      originalText: originalMacroCommand ||
-                   (undoStartPos !== undefined && undoEndPos !== undefined
-                     ? textContent.substring(undoStartPos, undoEndPos)
-                     : textContent.substring(startPos, endPos))
+      originalText: '' // Undo should just clear the replacement, not restore the command
     }
 
     // Determine the actual text that will be inserted into the element

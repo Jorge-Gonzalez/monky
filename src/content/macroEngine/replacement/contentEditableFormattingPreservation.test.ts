@@ -248,14 +248,16 @@ describe('ContentEditable Formatting Preservation', () => {
       expect(contentEditableDiv.textContent).toContain('Hello, World!')
 
       // Undo
-      contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
+      contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'z',
+        ctrlKey: true,
+        bubbles: true
       }))
 
       expect(contentEditableDiv.innerHTML).toContain('<strong>Bold</strong>')
-      expect(contentEditableDiv.textContent).toContain('/hello')
+      // New behavior: undo removes the replacement without restoring the command
+      expect(contentEditableDiv.textContent).not.toContain('Hello, World!')
+      expect(contentEditableDiv.textContent).toContain('Bold')
     })
 
     it('should preserve formatting after multiple macro replacements and undos', () => {
@@ -282,23 +284,26 @@ describe('ContentEditable Formatting Preservation', () => {
       expect(contentEditableDiv.innerHTML).toContain('<em>Italic</em>')
 
       // Undo second
-      contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
+      contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'z',
+        ctrlKey: true,
+        bubbles: true
       }))
 
-      expect(contentEditableDiv.textContent).toContain('/sig')
+      // New behavior: undo removes the replacement without restoring the command
+      expect(contentEditableDiv.textContent).not.toContain('Best regards')
+      expect(contentEditableDiv.textContent).toContain('and ')
       expect(contentEditableDiv.innerHTML).toContain('<em>Italic</em>')
 
       // Undo first
-      contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
+      contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'z',
+        ctrlKey: true,
+        bubbles: true
       }))
 
-      expect(contentEditableDiv.textContent).toContain('/hello')
+      // New behavior: undo removes the first replacement too
+      expect(contentEditableDiv.textContent).not.toContain('Hello, World!')
       expect(contentEditableDiv.innerHTML).toContain('<em>Italic</em>')
     })
   })

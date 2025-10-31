@@ -160,7 +160,7 @@ describe('Rich Text Replacement', () => {
 
       const undone = undoMostRecentInsertion(contentEditableDiv)
       expect(undone).toBe(true)
-      expect(contentEditableDiv.textContent).toBe('/hello')
+      expect(contentEditableDiv.textContent).toBe('')
       expect(hasMarkers(contentEditableDiv)).toBe(false)
     })
 
@@ -186,7 +186,7 @@ describe('Rich Text Replacement', () => {
 
       const undone = undoMostRecentInsertion(contentEditableDiv)
       expect(undone).toBe(true)
-      expect(contentEditableDiv.textContent).toBe('/sig')
+      expect(contentEditableDiv.textContent).toBe('')
       expect(contentEditableDiv.innerHTML).not.toContain('<strong>')
       expect(hasMarkers(contentEditableDiv)).toBe(false)
     })
@@ -214,11 +214,10 @@ describe('Rich Text Replacement', () => {
 
       expect(getMarkerCount(contentEditableDiv)).toBe(2)
 
-      // Undo should remove the most recent one (second)
+      // Undo should remove the most recent one (second) without restoring the command
       const undone = undoMostRecentInsertion(contentEditableDiv)
       expect(undone).toBe(true)
-      expect(contentEditableDiv.textContent).toContain('/world')
-      expect(contentEditableDiv.textContent).toContain('Hello')
+      expect(contentEditableDiv.textContent).toBe('Hello ')
       expect(getMarkerCount(contentEditableDiv)).toBe(1)
     })
 
@@ -247,7 +246,8 @@ describe('Rich Text Replacement', () => {
 
       const undone = undoMostRecentInsertion(contentEditableDiv)
       expect(undone).toBe(true)
-      expect(contentEditableDiv.textContent).toContain('/hello')
+      // Undo removes the marker but keeps prefix and suffix
+      expect(contentEditableDiv.textContent).toBe('Prefix  Suffix')
       expect(contentEditableDiv.textContent).toContain('Prefix')
       expect(contentEditableDiv.textContent).toContain('Suffix')
     })
@@ -403,7 +403,7 @@ describe('Rich Text Replacement', () => {
 
       const undone = undoMostRecentInsertion(contentEditableDiv)
       expect(undone).toBe(true)
-      expect(contentEditableDiv.textContent).toBe('/table')
+      expect(contentEditableDiv.textContent).toBe('')
     })
 
     it('should maintain cursor position after insertion', () => {
