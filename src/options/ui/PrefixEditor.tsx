@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { t } from '../../lib/i18n';
-import { OptionsManager } from '../managers/createOptionsManager';
+import { OptionsCoordinator } from '../coordinators/optionsCoordinator';
 
 const ALL_PREFIXES = ['/', ';', ':', '#', '!'];
 
 interface PrefixEditorProps {
-  manager: OptionsManager;
+  coordinator: OptionsCoordinator;
   prefixes: string[];
 }
 
-export default function PrefixEditor({ manager, prefixes }: PrefixEditorProps) {
+export default function PrefixEditor({ coordinator, prefixes }: PrefixEditorProps) {
   const [shake, setShake] = useState<string | null>(null);
 
   const handlePrefixClick = (prefix: string) => {
@@ -20,7 +20,7 @@ export default function PrefixEditor({ manager, prefixes }: PrefixEditorProps) {
       return;
     }
     const newPrefixes = isSelected ? prefixes.filter(p => p !== prefix) : [...prefixes, prefix];
-    manager.setPrefixes(newPrefixes);
+    coordinator.setPrefixes(newPrefixes);
   };
 
   return (

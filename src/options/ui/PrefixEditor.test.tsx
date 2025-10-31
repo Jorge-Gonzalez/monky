@@ -2,29 +2,35 @@
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import PrefixEditor from './PrefixEditor'
-import { OptionsManager } from '../managers/createOptionsManager'
+import { OptionsCoordinator } from '../coordinators/optionsCoordinator'
 
 // Mock the i18n function
 vi.mock('../../lib/i18n', () => ({
   t: (key: string) => key,
 }))
 
-// Helper to create a mock manager
-const createMockManager = (): OptionsManager => ({
+// Helper to create a mock coordinator
+const createMockCoordinator = (): OptionsCoordinator => ({
   setPrefixes: vi.fn(),
-  // Add other manager methods as mocks if needed for other tests
   setUseCommitKeys: vi.fn(),
   getState: vi.fn(() => ({ prefixes: [], useCommitKeys: false })),
   subscribe: vi.fn(() => () => {}),
+  resetToDefaults: vi.fn(),
+  attach: vi.fn(),
+  detach: vi.fn(),
+  enable: vi.fn(),
+  disable: vi.fn(),
+  isEnabled: vi.fn(() => true),
+  destroy: vi.fn(),
 })
 
 describe('PrefixEditor Component', () => {
-  let mockManager: OptionsManager
+  let mockCoordinator: OptionsCoordinator
 
   beforeEach(() => {
     vi.useFakeTimers()
     vi.clearAllMocks()
-    mockManager = createMockManager()
+    mockCoordinator = createMockCoordinator()
   })
 
   afterEach(() => {
@@ -33,14 +39,14 @@ describe('PrefixEditor Component', () => {
 
   it('renders without crashing', () => {
     const initialPrefixes = ['/', '#']
-    render(<PrefixEditor manager={mockManager} prefixes={initialPrefixes} />)
+    render(<PrefixEditor coordinator={mockCoordinator} prefixes={initialPrefixes} />)
     expect(screen.getByText('options.prefixEditor.title')).toBeInTheDocument()
     expect(screen.getByText('options.prefixEditor.description')).toBeInTheDocument()
   })
 
   it('renders buttons and sets the correct aria-checked state', () => {
     const initialPrefixes = ['/', '#']
-    render(<PrefixEditor manager={mockManager} prefixes={initialPrefixes} />)
+    render(<PrefixEditor coordinator={mockCoordinator} prefixes={initialPrefixes} />)
 
     const slashButton = screen.getByRole('switch', { name: '/' })
     const hashButton = screen.getByRole('switch', { name: '#' })
@@ -51,28 +57,28 @@ describe('PrefixEditor Component', () => {
     expect(semicolonButton).toHaveAttribute('aria-checked', 'false')
   })
 
-  it('calls manager.setPrefixes with the new array when a prefix is added', () => {
+  it('calls coordinator.setPrefixes with the new array when a prefix is added', () => {
     const initialPrefixes = ['/', '#']
-    render(<PrefixEditor manager={mockManager} prefixes={initialPrefixes} />)
+    render(<PrefixEditor coordinator={mockCoordinator} prefixes={initialPrefixes} />)
 
     const semicolonButton = screen.getByRole('switch', { name: ';' })
     fireEvent.click(semicolonButton)
-    expect(mockManager.setPrefixes).toHaveBeenCalledWith(['/', '#', ';'])
+    expect(mockCoordinator.setPrefixes).toHaveBeenCalledWith(['/', '#', ';'])
   })
 
-  it('calls manager.setPrefixes with the new array when a prefix is removed', () => {
+  it('calls coordinator.setPrefixes with the new array when a prefix is removed', () => {
     const initialPrefixes = ['/', '#']
-    render(<PrefixEditor manager={mockManager} prefixes={initialPrefixes} />)
+    render(<PrefixEditor coordinator={mockCoordinator} prefixes={initialPrefixes} />)
 
     const slashButton = screen.getByRole('switch', { name: '/' })
     fireEvent.click(slashButton)
-    expect(mockManager.setPrefixes).toHaveBeenCalledWith(['#'])
+    expect(mockCoordinator.setPrefixes).toHaveBeenCalledWith(['#'])
   })
 
   it('does not allow removing the last prefix', () => {
     // Arrange
     const initialPrefixes = ['/']
-    render(<PrefixEditor manager={mockManager} prefixes={initialPrefixes} />)
+    render(<PrefixEditor coordinator={mockCoordinator} prefixes={initialPrefixes} />)
 
     const slashButton = screen.getByRole('switch', { name: '/' })
     expect(slashButton).toHaveAttribute('aria-checked', 'true')
@@ -81,13 +87,13 @@ describe('PrefixEditor Component', () => {
     fireEvent.click(slashButton)
 
     // Assert
-    expect(mockManager.setPrefixes).not.toHaveBeenCalled()
+    expect(mockCoordinator.setPrefixes).not.toHaveBeenCalled()
   })
 
   it('provides visual feedback when trying to remove the last prefix', () => {
     // Arrange
     const initialPrefixes = ['/']
-    render(<PrefixEditor manager={mockManager} prefixes={initialPrefixes} />)
+    render(<PrefixEditor coordinator={mockCoordinator} prefixes={initialPrefixes} />)
     const slashButton = screen.getByRole('switch', { name: '/' })
 
     // Act: Try to uncheck the last prefix

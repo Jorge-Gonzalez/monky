@@ -3,8 +3,8 @@ import { render, screen, cleanup } from '@testing-library/react'
 import { describe, it, expect, vi, Mock, beforeEach } from 'vitest'
 import { t } from '../../lib/i18n'
 import Options from './Options' // Import the actual component
-import { useOptionsManager } from '../managers/useOptionsManager'
-import { OptionsManager } from '../managers/createOptionsManager'
+import { useOptionsCoordinator } from '../hooks/useOptionsCoordinator'
+import { OptionsCoordinator } from '../coordinators/optionsCoordinator'
 
 // Mock the i18n function
 vi.mock('../../lib/i18n', () => ({
@@ -22,28 +22,35 @@ vi.mock('./ReplacementMode', () => ({ // Use default export
   default: () => <div data-testid="replacement-mode">ReplacementMode</div>,
 }));
 
-// Mock the manager hook
-vi.mock('../managers/useOptionsManager', () => ({
-  useOptionsManager: vi.fn(),
+// Mock the coordinator hook
+vi.mock('../hooks/useOptionsCoordinator', () => ({
+  useOptionsCoordinator: vi.fn(),
 }))
 
-const createMockManager = (): OptionsManager => {
+const createMockCoordinator = (): OptionsCoordinator => {
   const unsubscribe = vi.fn();
   return {
     getState: vi.fn(() => ({ prefixes: ['/'], useCommitKeys: false })),
     subscribe: vi.fn(() => unsubscribe), // Return the mock unsubscribe function
     setPrefixes: vi.fn(),
     setUseCommitKeys: vi.fn(),
+    resetToDefaults: vi.fn(),
+    attach: vi.fn(),
+    detach: vi.fn(),
+    enable: vi.fn(),
+    disable: vi.fn(),
+    isEnabled: vi.fn(() => true),
+    destroy: vi.fn(),
   };
 }
 
 describe('Options Component', () => {
-  let mockManager: OptionsManager;
+  let mockCoordinator: OptionsCoordinator;
 
   beforeEach(() => {
     vi.clearAllMocks()
-    mockManager = createMockManager()
-    ;(useOptionsManager as Mock).mockReturnValue(mockManager)
+    mockCoordinator = createMockCoordinator()
+    ;(useOptionsCoordinator as Mock).mockReturnValue(mockCoordinator)
   })
 
   it('renders without crashing', () => {
@@ -57,15 +64,14 @@ describe('Options Component', () => {
     expect(screen.getByTestId('replacement-mode')).toBeInTheDocument()
   })
 
-  it('subscribes to the manager on mount and unsubscribes on unmount', () => {
-    // Get the mock unsubscribe function that `subscribe` will return
-    const mockUnsubscribe = mockManager.subscribe();
-    // Reset the call count on subscribe itself before rendering
-    (mockManager.subscribe as vi.Mock).mockClear();
-
+  it('subscribes to the coordinator on mount and unsubscribes on unmount', () => {
     const { unmount } = render(<Options />)
-    expect(mockManager.subscribe).toHaveBeenCalledTimes(1)
+    expect(mockCoordinator.subscribe).toHaveBeenCalledTimes(1)
+
+    // Get the unsubscribe function that was returned
+    const unsubscribeFn = (mockCoordinator.subscribe as any).mock.results[0].value
+
     unmount()
-    expect(mockUnsubscribe).toHaveBeenCalledTimes(1) // The unsubscribe function
+    expect(unsubscribeFn).toHaveBeenCalledTimes(1)
   })
 })
