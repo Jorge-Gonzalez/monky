@@ -6,33 +6,37 @@ interface ReplacementModeProps {
   useCommitKeys: boolean;
 }
 
+/**
+ * ReplacementMode - Configure macro replacement behavior
+ * Uses semantic CSS classes compatible with modal system
+ */
 export default function ReplacementMode({ coordinator, useCommitKeys }: ReplacementModeProps) {
   return (
-    <div className="p-4 border rounded-lg mt-4">
-      <h3 className="font-bold mb-2">{t('replacementMode.title')}</h3>
-      <div className="flex items-center space-x-4">
-        <label className="flex items-center cursor-pointer">
+    <div className="section">
+      <h3 className="section-title">{t('replacementMode.title')}</h3>
+      <div className="replacement-mode-options">
+        <label className="replacement-mode-option">
           <input
             type="radio"
             name="behavior"
             checked={!useCommitKeys}
             onChange={() => coordinator.setUseCommitKeys(false)}
-            className="mr-2"
+            className="replacement-mode-radio"
           />
-          {t('replacementMode.auto')}
+          <span className="replacement-mode-label">{t('replacementMode.auto')}</span>
         </label>
-        <label className="flex items-center cursor-pointer">
+        <label className="replacement-mode-option">
           <input
             type="radio"
             name="behavior"
             checked={useCommitKeys}
             onChange={() => coordinator.setUseCommitKeys(true)}
-            className="mr-2"
+            className="replacement-mode-radio"
           />
-          {t('replacementMode.manual')}
+          <span className="replacement-mode-label">{t('replacementMode.manual')}</span>
         </label>
       </div>
-      <p className="text-sm text-gray-500 mt-2">
+      <p className="section-description">
         El modo automático reemplaza el texto tan pronto como sea posible, con una breve pausa si un macro más largo es posible.
       </p>
     </div>

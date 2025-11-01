@@ -1,8 +1,6 @@
 import { createOptionsManager } from '../managers/optionsManager';
 import { createOptionsCoordinator, OptionsCoordinator } from '../coordinators/optionsCoordinator';
 
-export { OptionsState } from '../managers/optionsManager';
-
 /**
  * Singleton instance of the options coordinator
  * Shared across all components that use this hook

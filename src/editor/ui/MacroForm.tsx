@@ -323,78 +323,70 @@ export default function MacroForm({ editing, onDone, manager }:{ editing: Macro 
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-md">
       <div>
-        <label htmlFor="macro-command" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label htmlFor="macro-command" className="label">
           {t('macroForm.triggerLabel')}
         </label>
         <input
           id="macro-command"
-          className={`border rounded p-2 w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:border-transparent ${
-            command && !isCommandValid 
-              ? 'border-red-300 dark:border-red-600 focus:ring-red-500' 
-              : 'border-gray-300 dark:border-gray-700 focus:ring-blue-500'
-          }`}
+          className={`input ${command && !isCommandValid ? 'input-error' : ''}`}
           value={command}
           onChange={e=>setCommand(e.target.value)}
           placeholder={`e.g., ${prefixes[0]}sig`}
           maxLength={50}
         />
         {command && !isCommandValid && (
-          <p className="text-red-500 text-xs mt-1">
+          <p className="validation-error">
             Command must start with: {prefixes.join(', ')}
           </p>
         )}
       </div>
 
       <div>
-        <label htmlFor="macro-text" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label htmlFor="macro-text" className="label">
           {t('macroForm.textLabel')}
         </label>
-        
+
         {/* Medium Editor */}
-        <div 
+        <div
           ref={editorRef}
           contentEditable
           suppressContentEditableWarning
-          className="border rounded-md bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 overflow-auto min-h-[150px] p-3 medium-editor-element"
-          style={{ outline: 'none', minHeight: '150px' }}
+          className="editor-content medium-editor-element"
+          style={{ outline: 'none' }}
           data-placeholder="Enter your macro content..."
         />
       </div>
 
-      <label className="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+      <label className="inline-flex items-center gap-sm">
         <input
           type="checkbox"
           checked={isSensitive}
           onChange={e=>setSensitive(e.target.checked)}
-          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          className="checkbox"
         />
-        {t('macroForm.sensitiveLabel')}
+        <span className="label" style={{ marginBottom: 0 }}>{t('macroForm.sensitiveLabel')}</span>
       </label>
 
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md p-3">
-          <p className="text-red-600 dark:text-red-400 text-sm font-medium">{error}</p>
+        <div className="alert alert-error">
+          <p className="font-medium">{error}</p>
         </div>
       )}
 
-      <div className="flex gap-2">
-        <button 
-          type="submit" 
+      <div className="button-group">
+        <button
+          type="submit"
           disabled={!isFormValid}
-          className={`px-4 py-2 rounded-md transition-colors duration-200 font-medium ${
-            isFormValid
-              ? 'bg-green-600 hover:bg-green-700 text-white'
-              : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-          }`}
+          className="btn btn-success"
         >
           {editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}
         </button>
         {editing && (
-          <button 
-            type="button" 
-            className="px-4 py-2 border rounded-md bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200 font-medium" 
+          <button
+            type="button"
+            className="btn btn-secondary"
             onClick={onDone}
           >
             {t('macroForm.cancelButton')}

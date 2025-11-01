@@ -23,11 +23,20 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     build: {
       outDir: 'dist',
       minify: isTerser ? 'terser' : 'esbuild',
+      // Enable CSS minification (Vite uses Lightning CSS by default)
+      cssMinify: true,
       terserOptions: isTerser
         ? {
           compress: {
             drop_console: true,
             drop_debugger: true,
+            // Optimize string concatenation and template literals
+            unsafe_methods: true,
+            passes: 2, // Run compression twice for better results
+          },
+          format: {
+            // Remove comments from output
+            comments: false,
           },
         }
         : undefined,

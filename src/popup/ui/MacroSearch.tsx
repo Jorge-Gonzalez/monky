@@ -32,20 +32,20 @@ export function MacroSearch({ macros }: MacroSearchProps) {
         value={query}
         onChange={e => setQuery(e.target.value)}
         placeholder={t('popup.searchPlaceholder')}
-        className="border p-2 rounded w-full mb-2 popup-input"
+        className="input w-full mb-2"
       />
-      <ul className="max-h-64 overflow-y-auto macro-search-results">
+      <ul className="macro-search-results scrollable" style={{ maxHeight: '256px', overflowY: 'auto' }}>
         {results.length > 0 ? (
           results.map(result => (
-            <li key={result.obj.id} className="p-2 border-b popup-list-item">
+            <li key={result.obj.id} className="p-2 border-b border-primary">
               <>
                 <div className="font-bold">{result.obj.command}</div>
-                <p className="text-sm truncate popup-text-secondary">{result.obj.text}</p>
+                <p className="text-sm truncate text-secondary">{result.obj.text}</p>
               </>
             </li>
           ))
         ) : (
-          <p className="p-2 popup-text-secondary">{t('macroList.noMacros')}</p>
+          <p className="p-2 text-secondary">{t('macroList.noMacros')}</p>
         )}
       </ul>
     </div>

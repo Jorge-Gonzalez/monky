@@ -1,5 +1,8 @@
 /**
  * Styles specific to the macro search view
+ *
+ * Uses shared patterns from modalStyles.ts where possible
+ * Only defines search-specific styles here
  */
 export const SEARCH_VIEW_STYLES = `
   /* Search view container */
@@ -11,21 +14,22 @@ export const SEARCH_VIEW_STYLES = `
 
   /* Input container */
   #monky-modal .macro-search-input-container {
-    padding: 16px;
+    padding: var(--spacing-lg);
     border-bottom: 1px solid var(--border-primary);
   }
 
+  /* Search uses shared .input pattern from modalStyles */
   #monky-modal .macro-search-input {
     width: 100%;
-    padding: 8px 12px;
+    padding: var(--spacing-sm) var(--spacing-md);
     border: 1px solid var(--border-input);
-    border-radius: 6px;
-    font-size: 14px;
+    border-radius: var(--radius-md);
+    font-size: var(--text-md);
     background-color: var(--bg-input);
     color: var(--text-primary);
     outline: none;
     box-sizing: border-box;
-    transition: border-color 0.15s;
+    transition: border-color var(--transition-fast);
   }
 
   #monky-modal .macro-search-input:focus {
@@ -33,7 +37,7 @@ export const SEARCH_VIEW_STYLES = `
     box-shadow: 0 0 0 2px var(--bg-tertiary);
   }
 
-  /* Results container */
+  /* Results container - extends .scrollable pattern */
   #monky-modal .macro-search-results {
     flex: 1;
     max-height: 400px;
@@ -43,18 +47,18 @@ export const SEARCH_VIEW_STYLES = `
   }
 
   #monky-modal .macro-search-results::-webkit-scrollbar {
-    width: 8px !important;
-    height: 8px !important;
+    width: var(--spacing-sm) !important;
+    height: var(--spacing-sm) !important;
   }
 
   #monky-modal .macro-search-results::-webkit-scrollbar-track {
     background: var(--scrollbar-track) !important;
-    border-radius: 4px !important;
+    border-radius: var(--radius-sm) !important;
   }
 
   #monky-modal .macro-search-results::-webkit-scrollbar-thumb {
     background: var(--scrollbar-thumb) !important;
-    border-radius: 4px !important;
+    border-radius: var(--radius-sm) !important;
     border: 1px solid var(--scrollbar-track) !important;
   }
 
@@ -62,20 +66,21 @@ export const SEARCH_VIEW_STYLES = `
     background: var(--scrollbar-thumb-hover) !important;
   }
 
+  /* Empty state - uses shared .empty-state pattern */
   #monky-modal .macro-search-empty {
-    padding: 16px;
+    padding: var(--spacing-lg);
     color: var(--text-secondary);
     text-align: center;
-    font-size: 14px;
+    font-size: var(--text-md);
   }
 
-  /* Search result items */
+  /* Search result items - search-specific pattern */
   #monky-modal .macro-search-item {
-    padding: 12px;
+    padding: var(--spacing-md);
     border-bottom: 1px solid var(--border-secondary);
     color: var(--text-primary);
     cursor: pointer;
-    transition: background-color 0.15s;
+    transition: background-color var(--transition-fast);
   }
 
   #monky-modal .macro-search-item:hover {
@@ -89,13 +94,13 @@ export const SEARCH_VIEW_STYLES = `
   #monky-modal .macro-search-item-command {
     font-weight: 500;
     color: var(--text-accent);
-    font-size: 14px;
+    font-size: var(--text-md);
   }
 
   #monky-modal .macro-search-item-text {
-    font-size: 12px;
+    font-size: var(--text-sm);
     color: var(--text-secondary);
-    margin-top: 4px;
+    margin-top: var(--spacing-xs);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -103,23 +108,24 @@ export const SEARCH_VIEW_STYLES = `
 
   /* Footer */
   #monky-modal .macro-search-footer {
-    padding: 8px;
+    padding: var(--spacing-sm);
     border-top: 1px solid var(--border-primary);
-    font-size: 12px;
+    font-size: var(--text-sm);
     color: var(--text-secondary);
     display: flex;
     justify-content: space-between;
     background-color: var(--bg-primary);
   }
 
+  /* Keyboard hints - uses shared .kbd pattern */
   #monky-modal .macro-search-kbd {
-    padding: 2px 4px;
-    border-radius: 3px;
+    padding: 2px var(--spacing-xs);
+    border-radius: var(--radius-sm);
     font-family: monospace;
     background-color: var(--kbd-bg);
     border: 1px solid var(--kbd-border);
     color: var(--text-primary);
-    margin-left: 4px;
+    margin-left: var(--spacing-xs);
   }
 
   #monky-modal .macro-search-kbd:first-child {

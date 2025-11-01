@@ -1,0 +1,111 @@
+/**
+ * CSS Reset - Minimal reset for consistent cross-browser styling
+ * Based on modern CSS reset practices
+ */
+
+/* Box sizing reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Reset HTML and body */
+html {
+  -webkit-text-size-adjust: 100%;
+  -moz-tab-size: 4;
+  tab-size: 4;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reset typography */
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/* Reset lists */
+ol, ul {
+  list-style: none;
+}
+
+/* Reset images and media */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Reset form elements */
+input, button, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Reset tables */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Reset links */
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+/* Prevent text overflow */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* Remove default button styles */
+button, input, select, textarea {
+  background-color: transparent;
+  border: none;
+}
+
+/* Remove default input appearance */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Accessibility: Preserve focus styles */
+:focus-visible {
+  outline: 2px solid var(--text-accent, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* Remove all animations and transitions for people who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

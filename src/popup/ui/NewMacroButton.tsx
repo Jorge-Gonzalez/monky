@@ -1,4 +1,3 @@
-import React from 'react';
 import { t } from '../../lib/i18n';
 
 export default function NewMacroButton() {
@@ -9,7 +8,7 @@ export default function NewMacroButton() {
   return (
     <button
       onClick={handleNewMacro}
-      className="px-2 py-1 text-xs font-semibold rounded transition-colors popup-button-primary"
+      className="btn-primary px-2 py-1 text-xs font-semibold rounded transition-colors"
       title={t('popup.newMacro')}
     >
       + {t('popup.newMacro')}

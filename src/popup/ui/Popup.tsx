@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { t } from '../../lib/i18n';
 import { MacroSearch } from './MacroSearch';
 import SiteToggle from './SiteToggle';
@@ -20,9 +20,9 @@ export default function Popup() {
   useThemeColors(popupRef, theme, true);
 
   return (
-    <div ref={popupRef} className="p-2 w-80 popup-container">
+    <div ref={popupRef} className="p-2 popup-container">
       <div className="flex justify-between items-center mb-2 gap-2">
-        <div className="flex items-center gap-2 flex-grow">
+        <div className="flex items-center gap-2 grow">
           <h1 className="text-lg font-bold">{t('popup.title')}</h1>
           <NewMacroButton />
         </div>

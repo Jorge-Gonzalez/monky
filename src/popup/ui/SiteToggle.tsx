@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { t } from '../../lib/i18n';
 import { useMacroStore } from '../../store/useMacroStore';
 
@@ -36,19 +36,40 @@ export default function SiteToggle() {
   const displayHostname = hostname || t('popup.localFile');
 
   return (
-    <div className="flex items-center justify-between p-2 my-2 border rounded-md popup-section">
+    <div className="section flex items-center justify-between">
       <div className="text-sm overflow-hidden">
         <p className="font-medium">{t('popup.macrosOnThisSite')}</p>
-        <p className="text-xs truncate popup-text-secondary" title={displayHostname}>{displayHostname}</p>
+        <p className="text-xs truncate text-secondary" title={displayHostname}>{displayHostname}</p>
       </div>
-      <label className="relative inline-flex items-center cursor-pointer ml-2 flex-shrink-0">
+      <label className="relative inline-flex items-center cursor-pointer ml-2 shrink-0">
         <input
           type="checkbox"
-          className="sr-only peer"
+          className="checkbox"
           checked={isEnabled}
           onChange={() => toggleSiteDisabled(hostname)}
+          style={{ position: 'absolute', opacity: 0 }}
         />
-        <div className="w-11 h-6 rounded-full peer peer-focus:ring-2 popup-toggle-bg peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:border after:rounded-full after:h-5 after:w-5 after:transition-all popup-toggle-knob peer-checked:popup-toggle-knob-checked"></div>
+        <div style={{
+          width: '44px',
+          height: '24px',
+          borderRadius: '9999px',
+          backgroundColor: isEnabled ? 'var(--text-accent)' : 'var(--border-input)',
+          position: 'relative',
+          transition: 'background-color 0.15s'
+        }}>
+          <div style={{
+            content: '',
+            position: 'absolute',
+            top: '2px',
+            left: isEnabled ? 'calc(100% - 22px)' : '2px',
+            width: '20px',
+            height: '20px',
+            borderRadius: '9999px',
+            backgroundColor: 'white',
+            transition: 'left 0.15s',
+            border: '1px solid var(--border-primary)'
+          }} />
+        </div>
       </label>
     </div>
   );

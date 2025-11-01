@@ -1,22 +1,24 @@
 # Unified Modal System
 
+src/content/overlays/modal
+
 A centralized modal architecture that supports multiple views (Search, Settings, Editor) with seamless navigation between them.
 
 ## Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────┐
-│              ModalCoordinator                    │
+│              ModalCoordinator                   │
 │  (Public API - attach/detach, enable/disable)   │
 └──────────────────┬──────────────────────────────┘
                    │
 ┌──────────────────▼──────────────────────────────┐
-│              ModalManager                        │
+│              ModalManager                       │
 │  (Lifecycle, rendering, view switching)         │
 └──────────────────┬──────────────────────────────┘
                    │
 ┌──────────────────▼──────────────────────────────┐
-│              ModalShell                          │
+│              ModalShell                         │
 │  (Backdrop, dialog, navigation, theming)        │
 └──────────────────┬──────────────────────────────┘
                    │

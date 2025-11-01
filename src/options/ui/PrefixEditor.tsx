@@ -9,6 +9,10 @@ interface PrefixEditorProps {
   prefixes: string[];
 }
 
+/**
+ * PrefixEditor - Configure macro trigger prefixes
+ * Uses semantic CSS classes compatible with modal system
+ */
 export default function PrefixEditor({ coordinator, prefixes }: PrefixEditorProps) {
   const [shake, setShake] = useState<string | null>(null);
 
@@ -24,9 +28,9 @@ export default function PrefixEditor({ coordinator, prefixes }: PrefixEditorProp
   };
 
   return (
-    <div className="p-4 border rounded-lg mt-4">
-      <h3 className="font-bold mb-2">{t('options.prefixEditor.title')}</h3>
-      <div className="flex flex-wrap gap-2">
+    <div className="section">
+      <h3 className="section-title">{t('options.prefixEditor.title')}</h3>
+      <div className="prefix-options">
         {ALL_PREFIXES.map(prefix => {
           const isSelected = prefixes.includes(prefix);
           return (
@@ -36,18 +40,14 @@ export default function PrefixEditor({ coordinator, prefixes }: PrefixEditorProp
               role="switch"
               aria-checked={isSelected}
               onClick={() => handlePrefixClick(prefix)}
-              className={`px-4 py-2 rounded-md font-mono text-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                isSelected
-                  ? 'bg-blue-500 text-white shadow-inner'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600'
-              } ${shake === prefix ? 'animate-shake' : ''}`}
+              className={`prefix-button ${isSelected ? 'selected' : ''} ${shake === prefix ? 'shake' : ''}`}
             >
               {prefix}
             </button>
           );
         })}
       </div>
-      <p className="text-sm text-gray-500 mt-2">{t('options.prefixEditor.description')}</p>
+      <p className="section-description">{t('options.prefixEditor.description')}</p>
     </div>
   );
 }
