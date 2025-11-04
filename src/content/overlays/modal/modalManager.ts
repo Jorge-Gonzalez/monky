@@ -9,10 +9,10 @@ import { createReactRenderer } from '../services/reactRenderer';
 import { createFocusManager } from '../services/focusManager';
 import { createStyleInjector } from '../services/styleInjector';
 import { getActiveEditable } from '../../macroEngine/replacement/editableUtils';
-import { MODAL_STYLES } from './modalStyles';
-import { SEARCH_VIEW_STYLES } from '../views/search/searchViewStyles';
-import { SETTINGS_VIEW_STYLES } from '../views/settings/settingsViewStyles';
-import { EDITOR_VIEW_STYLES } from '../views/macroEditor/editorViewStyles';
+import MODAL_STYLES from './modalStyles.css?raw';
+import SEARCH_VIEW_STYLES from '../views/search/searchViewStyles.css?raw';
+import SETTINGS_VIEW_STYLES from '../views/settings/settingsViewStyles.css?raw';
+import EDITOR_VIEW_STYLES from '../views/macroEditor/editorViewStyles.css?raw';
 
 /**
  * Unified modal manager that handles all modal views

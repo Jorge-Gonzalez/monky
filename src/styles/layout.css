@@ -12,7 +12,14 @@
  * Color variables are provided by the theme system (src/theme/)
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Karla:wght@200&display=swap');
+/* Local font declaration */
+@font-face {
+  font-family: Karla;
+  src: url('../../assets/KarlaVariable.woff2') format('woff2-variations');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* ===== Layout Variables ===== */
 :root {
@@ -38,6 +45,7 @@
   --text-lg: 15px;
   --text-xl: 18px;
   --text-2xl: 20px;
+  --text-3xl: 24px;
 
   /* Transition timing */
   --transition-fast: 0.15s;
@@ -55,7 +63,7 @@
 .page-title {
   font-size: var(--text-2xl);
   font-weight: 200;
-  font-family: 'Karla', sans-serif;
+  font-family: Karla, sans-serif;
   color: var(--text-primary);
   margin: 0 0 var(--spacing-lg) 0;
 }
@@ -78,8 +86,9 @@
 
 .section-title {
   font-size: var(--text-lg);
-  font-weight: 200;
-  font-family: 'Karla', sans-serif;
+  font-weight: 300;
+  font-family: Karla, sans-serif;
+  font-optical-sizing: auto;
   color: var(--text-primary);
   margin: 0 0 var(--spacing-md) 0;
 }
@@ -127,7 +136,7 @@
 
 .input-error:focus {
   border-color: #dc2626;
-  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+  box-shadow: 0 0 0 2px rgb(220 38 38 / 20%);
 }
 
 /* Checkbox */
@@ -279,25 +288,25 @@
 }
 
 .alert-error {
-  background-color: rgba(220, 38, 38, 0.1);
+  background-color: rgb(220 38 38 / 10%);
   border-color: #dc2626;
   color: #dc2626;
 }
 
 .alert-warning {
-  background-color: rgba(245, 158, 11, 0.1);
+  background-color: rgb(245 158 11 / 10%);
   border-color: #f59e0b;
   color: #d97706;
 }
 
 .alert-info {
-  background-color: rgba(59, 130, 246, 0.1);
+  background-color: rgb(59 130 246 / 10%);
   border-color: #3b82f6;
   color: #2563eb;
 }
 
 .alert-success {
-  background-color: rgba(22, 163, 74, 0.1);
+  background-color: rgb(22 163 74 / 10%);
   border-color: #16a34a;
   color: #15803d;
 }

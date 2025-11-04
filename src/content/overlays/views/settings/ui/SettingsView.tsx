@@ -23,7 +23,7 @@ export function SettingsView(_props: BaseModalViewProps) {
       <div className="settings-container">
         <h1 className="view-title">{t('options.title')}</h1>
         <p className="view-description">
-          Configure your macro extension preferences.
+          {t('options.description')}
         </p>
         <PrefixEditor coordinator={coordinator} prefixes={state.prefixes} />
         <ReplacementMode coordinator={coordinator} useCommitKeys={state.useCommitKeys} />

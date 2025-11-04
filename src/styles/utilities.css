@@ -3,6 +3,8 @@
  * Common utility classes to replace Tailwind in the codebase
  */
 
+/* stylelint-disable declaration-block-single-line-max-declarations */
+
 /* ===== Display Utilities ===== */
 .block { display: block; }
 .inline-block { display: inline-block; }
@@ -221,10 +223,10 @@
 .rounded-none { border-radius: 0; }
 
 /* ===== Shadow Utilities ===== */
-.shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
-.shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); }
-.shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
-.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+.shadow-sm { box-shadow: 0 1px 2px 0 rgb(0 0 0 / 05%); }
+.shadow { box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%), 0 1px 2px 0 rgb(0 0 0 / 06%); }
+.shadow-md { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -1px rgb(0 0 0 / 06%); }
+.shadow-lg { box-shadow: 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -2px rgb(0 0 0 / 05%); }
 .shadow-none { box-shadow: none; }
 
 /* ===== Position Utilities ===== */
@@ -320,3 +322,5 @@
 .whitespace-nowrap { white-space: nowrap; }
 .whitespace-pre { white-space: pre; }
 .whitespace-pre-wrap { white-space: pre-wrap; }
+
+/* stylelint-enable declaration-block-single-line-max-declarations */

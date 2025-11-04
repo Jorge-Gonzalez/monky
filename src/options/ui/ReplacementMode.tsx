@@ -31,9 +31,9 @@ export default function ReplacementMode({ coordinator, useCommitKeys }: Replacem
             name="behavior"
             checked={useCommitKeys}
             onChange={() => coordinator.setUseCommitKeys(true)}
-            className="replacement-mode-radio"
+            className="radio"
           />
-          <span className="replacement-mode-label">{t('replacementMode.manual')}</span>
+          <span className="radio-label">{t('replacementMode.manual')}</span>
         </label>
       </div>
       <p className="section-description">

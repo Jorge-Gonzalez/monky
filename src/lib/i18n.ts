@@ -61,6 +61,7 @@ const translations = {
 
     options: {
       title: 'Extension Options',
+      description: 'Configure your macro extension preferences.',
       prefixEditor: {
         title: 'Macro Prefixes',
         description: 'Select the characters that can start a macro trigger (e.g., /brb).',
@@ -133,6 +134,7 @@ const translations = {
 
     options: {
       title: 'Opciones de la Extensión',
+      description: 'Configura las preferencias de tu extensión de macros.',
       prefixEditor: {
         title: 'Prefijos de Macro',
         description: 'Selecciona los caracteres que pueden iniciar un trigger de macro (ej. /brb).',

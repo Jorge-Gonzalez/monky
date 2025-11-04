@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/stylelintrc",
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "color-hex-length": "long",
+    "selector-class-pattern": null,
+    "selector-id-pattern": null,
+    "custom-property-pattern": null,
+    "comment-empty-line-before": null,
+    "declaration-empty-line-before": null,
+    "rule-empty-line-before": [
+      "always-multi-line",
+      {
+        "except": ["first-nested"],
+        "ignore": ["after-comment"]
+      }
+    ]
+  }
+}
