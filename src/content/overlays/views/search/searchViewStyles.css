@@ -42,10 +42,13 @@
     flex: 1;
     max-height: 400px;
     overflow-y: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 0.33fr) 1fr;
   }
 
   /* Empty state - uses shared .empty-state pattern */
   .macro-search-empty {
+    grid-column: 1 / -1;
     padding: var(--spacing-lg);
     color: var(--text-secondary);
     text-align: center;
@@ -54,34 +57,50 @@
 
   /* Search result items - search-specific pattern */
   .macro-search-item {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+  }
+
+  .macro-search-item-command,
+  .macro-search-item-text {
     padding: var(--spacing-md);
     border-bottom: 1px solid var(--border-secondary);
     color: var(--text-primary);
     cursor: pointer;
     transition: background-color var(--transition-fast);
-  }
-
-  .macro-search-item:hover {
-    background-color: var(--bg-secondary);
-  }
-
-  .macro-search-item.selected {
-    background-color: var(--bg-tertiary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .macro-search-item-command {
     font-weight: 500;
     color: var(--text-accent);
     font-size: var(--text-md);
+    /* text-align: right; */
   }
 
   .macro-search-item-text {
     font-size: var(--text-sm);
     color: var(--text-secondary);
-    margin-top: var(--spacing-xs);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    /* margin-top is no longer needed as items are aligned in the grid */
+  }
+
+  .macro-search-item:hover .macro-search-item-command,
+  .macro-search-item:hover .macro-search-item-text {
+    background-color: var(--bg-secondary);
+  }
+
+  .macro-search-item.selected .macro-search-item-command,
+  .macro-search-item.selected .macro-search-item-text {
+    background-color: var(--bg-tertiary);
+  }
+
+  .macro-search-item.selected .macro-search-item-text {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
   }
 
   /* Footer */

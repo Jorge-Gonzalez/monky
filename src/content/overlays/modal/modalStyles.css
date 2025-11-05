@@ -1,21 +1,15 @@
 /**
- * Shared styles for the unified modal system
+ * Modal Styles - Modal-specific infrastructure
+ *
+ * Contains only modal-specific structure and layout.
+ * All shared component patterns (including fonts) are loaded from layout.css (imported in modalManager.ts).
  *
  * Architecture:
- * - Theme variables for spacing, sizing, and visual consistency
- * - Semantic component patterns shared across views
- * - View-specific styles remain in view style files
+ * - Modal backdrop and dialog structure
+ * - Modal navigation tabs
+ * - Modal content wrapper
+ * - Modal-specific root styling
  */
-
-/* Local font declaration */
-
-@font-face {
-  font-family: Karla;
-  src: url('/public/KarlaVariable.woff2') format('woff2-variations');
-  font-weight: 200 800;
-  font-style: normal;
-  font-display: swap;
-}
 
 /* ===== Modal Infrastructure ===== */
 
@@ -30,71 +24,9 @@
   justify-content: center;
 }
 
-
+/* ===== #monky-modal Root Container ===== */
 #monky-modal {
-  /* ===== Theme Variables & Root Container ===== */
-  /* Spacing scale */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 12px;
-  --spacing-lg: 16px;
-  --spacing-xl: 20px;
-  --spacing-2xl: 24px;
-  --spacing-3xl: 40px;
-
-  /* Border radius scale */
-  --radius-sm: 3px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-
-  /* Font size scale */
-  --text-xs: 11px;
-  --text-sm: 12px;
-  --text-base: 13px;
-  --text-md: 14px;
-  --text-lg: 15px;
-  --text-xl: 18px;
-  --text-2xl: 20px;
-
-  /* Transition timing */
-  --transition-fast: 0.15s;
-
-  * {
-    box-sizing: border-box;
-  }
-
-  > * {
-    pointer-events: auto !important;
-  }
-
-  /* Custom scrollbar styles */
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
-
-  ::-webkit-scrollbar {
-    width: var(--spacing-sm) !important;
-    height: var(--spacing-sm) !important;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: var(--scrollbar-track) !important;
-    border-radius: var(--radius-sm) !important;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb) !important;
-    border-radius: var(--radius-sm) !important;
-    border: 1px solid var(--scrollbar-track) !important;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-thumb-hover) !important;
-  }
-
   /* Root container styles */
-  font-family: Karla, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-optical-sizing: auto;
-  line-height: 1.5;
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
@@ -102,6 +34,12 @@
   height: 100vh !important;
   z-index: 2147483647 !important;
   pointer-events: none !important;
+
+  > * {
+    pointer-events: auto !important;
+  }
+
+  /* ===== Modal Structure ===== */
 
   /* Dialog - the modal container */
   .modal-dialog {
@@ -167,423 +105,79 @@
     display: flex;
     flex-direction: column;
   }
-
-  /* ===== Shared Component Patterns ===== */
-
-  /* View container pattern */
-  .view-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: var(--spacing-xl);
-  }
-
-  /* View header pattern */
-  .view-title {
-    font-size: var(--text-2xl);
-    font-weight: 300;
-    color: var(--text-primary);
-    margin: 0 0 var(--spacing-sm) 0;
-  }
-
-  .view-description {
-    font-size: var(--text-md);
-    color: var(--text-secondary);
-    margin: 0 0 var(--spacing-2xl) 0;
-  }
-
-  /* Section pattern - bordered container */
-  .section {
-    padding: var(--spacing-lg);
-    border: 1px solid var(--border-primary);
-    border-radius: var(--radius-md);
-    margin-bottom: var(--spacing-lg);
-    background-color: var(--bg-secondary);
-  }
-
-  .section-title {
-    font-size: var(--text-lg);
-    font-weight: 200;
-    font-family: Karla, sans-serif;
-    color: var(--text-primary);
-    margin: 0 0 var(--spacing-md) 0;
-  }
-
-  .section-description {
-    font-size: var(--text-base);
-    color: var(--text-secondary);
-    margin: var(--spacing-sm) 0 0 0;
-    line-height: 1.5;
-  }
-
-  /* Input pattern */
-  .input {
-    width: 100%;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border: 1px solid var(--border-input);
-    border-radius: var(--radius-md);
-    font-size: var(--text-md);
-    background-color: var(--bg-input);
-    color: var(--text-primary);
-    outline: none;
-    box-sizing: border-box;
-    transition: border-color var(--transition-fast);
-  }
-
-  .input:focus {
-    border-color: var(--text-accent);
-    box-shadow: 0 0 0 2px var(--bg-tertiary);
-  }
-
-  /* Radio button pattern */
-  .radio {
-    margin-right: var(--spacing-sm);
-    cursor: pointer;
-    width: 16px;
-    height: 16px;
-    accent-color: var(--text-accent);
-  }
-
-  .radio-label {
-    font-size: var(--text-md);
-    color: var(--text-primary);
-    cursor: pointer;
-    user-select: none;
-  }
-
-  /* Button patterns */
-  .btn {
-    padding: var(--spacing-sm) var(--spacing-lg);
-    border-radius: var(--radius-md);
-    font-size: var(--text-md);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    border: none;
-    outline: none;
-  }
-
-  .btn:focus {
-    box-shadow: 0 0 0 2px var(--text-accent);
-  }
-
-  .btn-primary {
-    background-color: var(--text-accent);
-    color: white;
-  }
-
-  .btn-primary:hover {
-    opacity: 0.9;
-  }
-
-  .btn-secondary {
-    background-color: var(--bg-secondary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-primary);
-  }
-
-  .btn-secondary:hover {
-    background-color: var(--bg-tertiary);
-  }
-
-  /* Button group pattern */
-  .button-group {
-    display: flex;
-    gap: var(--spacing-sm);
-  }
-
-  /* Keyboard hint pattern */
-  .kbd {
-    padding: 2px var(--spacing-xs);
-    border-radius: var(--radius-sm);
-    font-family: monospace;
-    background-color: var(--kbd-bg);
-    border: 1px solid var(--kbd-border);
-    color: var(--text-primary);
-    margin-left: var(--spacing-xs);
-    font-size: var(--text-xs);
-  }
-
-  .kbd:first-child {
-    margin-left: 0;
-  }
-
-  /* Empty state pattern */
-  .empty-state {
-    padding: var(--spacing-lg);
-    color: var(--text-secondary);
-    text-align: center;
-    font-size: var(--text-md);
-  }
-
-  /* Divider patterns */
-  .divider-top {
-    border-top: 1px solid var(--border-primary);
-    padding-top: var(--spacing-lg);
-  }
-
-  .divider-bottom {
-    border-bottom: 1px solid var(--border-primary);
-    padding-bottom: var(--spacing-lg);
-  }
-
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border-primary);
-    margin: var(--spacing-2xl) 0;
-  }
-
-  /* ===== Extended Form Patterns ===== */
-
-  /* Form labels */
-  .label {
-    display: block;
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-xs);
-  }
-
-  /* Input states */
-  .input-error {
-    border-color: #dc2626;
-  }
-
-  .input-error:focus {
-    border-color: #dc2626;
-    box-shadow: 0 0 0 2px rgb(220 38 38 / 20%);
-  }
-
-  /* Checkbox */
-  .checkbox {
-    width: 16px;
-    height: 16px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-input);
-    cursor: pointer;
-  }
-
-  .checkbox:checked {
-    accent-color: var(--text-accent);
-  }
-
-  .checkbox:focus {
-    outline: 2px solid var(--text-accent);
-    outline-offset: 2px;
-  }
-
-  /* Content editable areas */
-  .editor-content {
-    border: 1px solid var(--border-input);
-    border-radius: var(--radius-md);
-    background-color: var(--bg-input);
-    color: var(--text-primary);
-    padding: var(--spacing-md);
-    min-height: 150px;
-    outline: none;
-    overflow: auto;
-  }
-
-  .editor-content:focus-within {
-    border-color: var(--text-accent);
-    box-shadow: 0 0 0 2px var(--bg-tertiary);
-  }
-
-  /* ===== Extended Button Patterns ===== */
-
-  /* Success button */
-  .btn-success {
-    background-color: #16a34a;
-    color: white;
-  }
-
-  .btn-success:hover {
-    background-color: #15803d;
-  }
-
-  /* Danger button */
-  .btn-danger {
-    background-color: #dc2626;
-    color: white;
-  }
-
-  .btn-danger:hover {
-    background-color: #b91c1c;
-  }
-
-  /* Link-style buttons */
-  .btn-link {
-    background: none;
-    border: none;
-    color: var(--text-accent);
-    text-decoration: none;
-    font-size: var(--text-sm);
-    padding: 0;
-    cursor: pointer;
-    font-weight: 400;
-  }
-
-  .btn-link:hover {
-    text-decoration: underline;
-  }
-
-  .btn-link-danger {
-    background: none;
-    border: none;
-    color: #dc2626;
-    text-decoration: none;
-    font-size: var(--text-sm);
-    padding: 0;
-    cursor: pointer;
-    font-weight: 400;
-  }
-
-  .btn-link-danger:hover {
-    text-decoration: underline;
-  }
-
-  /* Disabled button state */
-  .btn:disabled {
-    background-color: var(--bg-secondary);
-    color: var(--text-secondary);
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-
-  .btn:disabled:hover {
-    background-color: var(--bg-secondary);
-    opacity: 0.6;
-  }
-
-  /* ===== Alert/Feedback Patterns ===== */
-
-  /* Base alert */
-  .alert {
-    padding: var(--spacing-md);
-    border-radius: var(--radius-md);
-    border: 1px solid;
-    margin-bottom: var(--spacing-lg);
-  }
-
-  /* Error alert */
-  .alert-error {
-    background-color: rgb(220 38 38 / 10%);
-    border-color: #dc2626;
-    color: #dc2626;
-  }
-
-  /* Warning alert */
-  .alert-warning {
-    background-color: rgb(245 158 11 / 10%);
-    border-color: #f59e0b;
-    color: #d97706;
-  }
-
-  /* Info alert */
-  .alert-info {
-    background-color: rgb(59 130 246 / 10%);
-    border-color: #3b82f6;
-    color: #2563eb;
-  }
-
-  /* Success alert */
-  .alert-success {
-    background-color: rgb(22 163 74 / 10%);
-    border-color: #16a34a;
-    color: #15803d;
-  }
-
-  /* Inline validation messages */
-  .validation-error {
-    color: #dc2626;
-    font-size: var(--text-xs);
-    margin-top: var(--spacing-xs);
-  }
-
-  .validation-success {
-    color: #16a34a;
-    font-size: var(--text-xs);
-    margin-top: var(--spacing-xs);
-  }
-
-  /* ===== Card Patterns ===== */
-
-  /* Card container */
-  .card {
-    background-color: var(--bg-primary);
-    border: 1px solid var(--border-primary);
-    border-radius: var(--radius-md);
-    padding: var(--spacing-md);
-  }
-
-  /* Card with elevation */
-  .card-elevated {
-    background-color: var(--bg-primary);
-    border: 1px solid var(--border-primary);
-    border-radius: var(--radius-md);
-    padding: var(--spacing-md);
-    box-shadow: 0 1px 3px 0 var(--shadow-color);
-  }
-
-  /* ===== Layout Utilities ===== */
-
-  /* Vertical spacing */
-  .space-y-xs > * + * {
-    margin-top: var(--spacing-xs);
-  }
-
-  .space-y-sm > * + * {
-    margin-top: var(--spacing-sm);
-  }
-
-  .space-y-md > * + * {
-    margin-top: var(--spacing-md);
-  }
-
-  .space-y-lg > * + * {
-    margin-top: var(--spacing-lg);
-  }
-
-  /* Horizontal gaps */
-  .gap-xs {
-    gap: var(--spacing-xs);
-  }
-
-  .gap-sm {
-    gap: var(--spacing-sm);
-  }
-
-  .gap-md {
-    gap: var(--spacing-md);
-  }
-
-  .gap-lg {
-    gap: var(--spacing-lg);
-  }
-
-  /* Flex utilities */
-  .flex {
-    display: flex;
-  }
-
-  .inline-flex {
-    display: inline-flex;
-  }
-
-  .items-center {
-    align-items: center;
-  }
-
-  /* Typography utilities */
-  .text-mono {
-    font-family: monospace;
-  }
-
-  .font-medium {
-    font-weight: 500;
-  }
-
-  .font-semibold {
-    font-weight: 600;
-  }
 }
+
+
+/* ===== Sub-Component-Specific Patterns (This must to be abstracted as behavior constrains as well and therefore minimize or eliminate the the need to be associated with a particular component and become more generalized patterns that can be reused.) ===== */
+
+/* Prefix Editor */
+.prefix-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.prefix-button {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-family: monospace;
+  font-size: var(--text-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid var(--border-primary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.prefix-button:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.prefix-button:focus {
+  box-shadow: 0 0 0 2px var(--text-accent);
+}
+
+.prefix-button.selected {
+  background-color: var(--text-accent);
+  color: white;
+  border-color: var(--text-accent);
+}
+
+.prefix-button.shake {
+  animation: prefix-shake 0.4s;
+}
+
+@keyframes prefix-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* Replacement Mode */
+.replacement-mode-options {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.replacement-mode-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.replacement-mode-radio {
+  margin-right: var(--spacing-sm);
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--text-accent);
+}
+
+.replacement-mode-label {
+  font-size: var(--text-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+

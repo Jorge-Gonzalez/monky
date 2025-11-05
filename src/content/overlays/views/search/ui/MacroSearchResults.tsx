@@ -1,5 +1,5 @@
 import React from 'react';
-import { Macro } from '../../../../types';
+import { Macro } from '../../../../../types';
 
 interface MacroSearchResultsProps {
   macros: Macro[];
@@ -45,7 +45,7 @@ function MacroSearchItem({ macro, isSelected, onClick }: MacroSearchItemProps) {
   return (
     <div className={`macro-search-item ${isSelected ? 'selected' : ''}`} onClick={onClick}>
       <div className="macro-search-item-command">{macro.command}</div>
-      {macro.text && <div className="macro-search-item-text">{macro.text}</div>}
+      <div className="macro-search-item-text">{macro.text}</div>
     </div>
   );
 }

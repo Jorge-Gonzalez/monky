@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import fuzzysort from 'fuzzysort';
-import { Macro } from '../../../types';
+import { Macro } from '../../../../../types';
 
-const MAX_RESULTS = 8;
+const MAX_RESULTS = 50;
 
 export function useMacroSearch(macros: Macro[], query: string) {
   return useMemo(() => {

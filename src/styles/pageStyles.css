@@ -1,0 +1,102 @@
+/**
+ * Page Styles - Page-specific layout patterns
+ *
+ * Contains only patterns specific to full-page contexts (Options, Editor pages).
+ * All shared component patterns are in layout.css.
+ */
+
+/* ===== Page Container Patterns ===== */
+
+.page-container {
+  padding: var(--spacing-2xl);
+  max-width: 672px; /* 2xl = 42rem = 672px */
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.page-title {
+  font-size: var(--text-2xl);
+  font-weight: 200;
+  font-family: Karla, sans-serif;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+.page-description {
+  font-size: var(--text-md);
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-2xl) 0;
+}
+
+/* ===== Component-Specific Patterns (used in pages) ===== */
+
+/* Prefix Editor */
+.prefix-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.prefix-button {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-family: monospace;
+  font-size: var(--text-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid var(--border-primary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.prefix-button:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.prefix-button:focus {
+  box-shadow: 0 0 0 2px var(--text-accent);
+}
+
+.prefix-button.selected {
+  background-color: var(--text-accent);
+  color: white;
+  border-color: var(--text-accent);
+}
+
+.prefix-button.shake {
+  animation: prefix-shake 0.4s;
+}
+
+@keyframes prefix-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* Replacement Mode */
+.replacement-mode-options {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.replacement-mode-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.replacement-mode-radio {
+  margin-right: var(--spacing-sm);
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--text-accent);
+}
+
+.replacement-mode-label {
+  font-size: var(--text-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
+}
