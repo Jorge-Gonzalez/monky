@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semantic Compositional Grammar Examples</title>
+  <link rel="stylesheet" href="layout-refactored.css">
+  <link rel="stylesheet" href="modalStyles-refactored.css">
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- EXAMPLE 1: Command Prefix Selector -->
+<!-- ============================================ -->
+<!--
+  Reading: "A horizontal row of equal square blocks, wrapping allowed, 
+           snugly spaced, forming a selectable group with minimum 1 selected"
+-->
+<section class="section">
+  <h3 class="section-title">Command Prefix Selector</h3>
+  <p class="section-description">
+    Select one or more command prefix characters. At least one must remain selected.
+  </p>
+  
+  <div class="horizontal blocks equal-square wrap-allowed snug selectable-group min-selected-1">
+    <button class="prefix-button is-selected" data-value="!">!</button>
+    <button class="prefix-button is-selected" data-value="/">/</button>
+    <button class="prefix-button" data-value=".">.</button>
+    <button class="prefix-button" data-value=",">,</button>
+    <button class="prefix-button" data-value=";">;</button>
+    <button class="prefix-button" data-value=":">:</button>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- EXAMPLE 2: Replacement Mode Options -->
+<!-- ============================================ -->
+<!--
+  Reading: "Horizontal items that fit their content, with loose spacing"
+-->
+<section class="section">
+  <h3 class="section-title">Replacement Mode</h3>
+  
+  <div class="horizontal items fit-content loose">
+    <label class="replacement-mode-option">
+      <input type="radio" name="mode" class="radio" value="immediate" checked>
+      <span class="radio-label">Immediate</span>
+    </label>
+    <label class="replacement-mode-option">
+      <input type="radio" name="mode" class="radio" value="manual">
+      <span class="radio-label">Manual</span>
+    </label>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- EXAMPLE 3: Settings Form with Aligned Labels -->
+<!-- ============================================ -->
+<!--
+  Reading: "Vertical rows with two sections each, 
+           aligning start to the max width of first section,
+           comfortably spaced"
+-->
+<section class="section">
+  <h3 class="section-title">Settings Form</h3>
+  
+  <form class="rows two-sections align-start-max comfortable">
+    <div>
+      <label class="label">Name</label>
+      <input type="text" class="input" placeholder="Enter your name">
+    </div>
+    <div>
+      <label class="label">Email Address</label>
+      <input type="email" class="input" placeholder="your.email@example.com">
+    </div>
+    <div>
+      <label class="label">Website</label>
+      <input type="url" class="input" placeholder="https://example.com">
+    </div>
+  </form>
+</section>
+
+<!-- ============================================ -->
+<!-- EXAMPLE 4: Action Bar -->
+<!-- ============================================ -->
+<!--
+  Reading: "Horizontal items fitting content, aligned center,
+           justified between edges, with snug spacing within groups"
+-->
+<section class="section">
+  <h3 class="section-title">Action Bar</h3>
+  
+  <div class="horizontal items fit-content align-center justify-between">
+    <div class="horizontal items fit-content snug">
+      <button class="btn btn-secondary">Cancel</button>
+      <button class="btn btn-secondary">Reset</button>
+    </div>
+    <div class="horizontal items fit-content snug">
+      <button class="btn btn-primary">Save</button>
+      <button class="btn btn-success">Apply</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- EXAMPLE 5: Responsive Card Grid -->
+<!-- ============================================ -->
+<!--
+  Reading: "Grid of blocks that fill container,
+           minimum 1 column, maximum 3 columns,
+           minimum item width 250px, comfortably spaced"
+-->
+<section class="section">
+  <h3 class="section-title">Card Grid (Resize window to see)</h3>
+  
+  <div class="grid blocks fill-container min-1-col max-3-col min-width-250 comfortable">
+    <article class="card">
+      <h4>Card 1</h4>
+      <p>Content goes here</p>
+    </article>
+    <article class="card">
+      <h4>Card 2</h4>
+      <p>Content goes here</p>
+    </article>
+    <article class="card">
+      <h4>Card 3</h4>
+      <p>Content goes here</p>
+    </article>
+    <article class="card">
+      <h4>Card 4</h4>
+      <p>Content goes here</p>
+    </article>
+    <article class="card">
+      <h4>Card 5</h4>
+      <p>Content goes here</p>
+    </article>
+    <article class="card">
+      <h4>Card 6</h4>
+      <p>Content goes here</p>
+    </article>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- EXAMPLE 6: Toolbar with Separated Groups -->
+<!-- ============================================ -->
+<!--
+  Reading: "Horizontal items fitting content, wrapping prevented,
+           with tight spacing within groups, separated between groups"
+-->
+<section class="section">
+  <h3 class="section-title">Toolbar</h3>
+  
+  <div class="horizontal items fit-content wrap-prevent comfortable" style="gap: var(--spacing-3xl);">
+    <div class="horizontal items fit-content tight">
+      <button class="btn btn-secondary">Cut</button>
+      <button class="btn btn-secondary">Copy</button>
+      <button class="btn btn-secondary">Paste</button>
+    </div>
+    <div class="horizontal items fit-content tight">
+      <button class="btn btn-secondary">Undo</button>
+      <button class="btn btn-secondary">Redo</button>
+    </div>
+    <div class="horizontal items fit-content tight">
+      <button class="btn btn-secondary">Bold</button>
+      <button class="btn btn-secondary">Italic</button>
+      <button class="btn btn-secondary">Underline</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- EXAMPLE 7: Sidebar Layout (Responsive) -->
+<!-- ============================================ -->
+<!--
+  Reading: "Horizontal sidebar-main layout,
+           comfortable spacing, stacks on small screens"
+-->
+<section class="section">
+  <h3 class="section-title">Sidebar Layout (Resize to see responsive)</h3>
+  
+  <div class="horizontal sidebar-main comfortable stack-small" style="min-height: 200px;">
+    <aside class="card" style="min-width: 200px;">
+      <h4>Navigation</h4>
+      <ul style="list-style: none; padding: 0;">
+        <li><a href="#" class="btn-link">Home</a></li>
+        <li><a href="#" class="btn-link">Settings</a></li>
+        <li><a href="#" class="btn-link">About</a></li>
+      </ul>
+    </aside>
+    <main class="card fill-remaining">
+      <h4>Main Content</h4>
+      <p>This area fills the remaining space. On small screens, the layout stacks vertically.</p>
+    </main>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- EXAMPLE 8: Icon Selection (Single Select) -->
+<!-- ============================================ -->
+<!--
+  Reading: "Horizontal blocks, equal circles,
+           snugly spaced, selectable group with max 1 selected"
+-->
+<section class="section">
+  <h3 class="section-title">Icon Theme Selector</h3>
+  
+  <div class="horizontal blocks equal-circle snug selectable-group" style="--max-selected: 1;">
+    <button style="background-color: #ef4444; border: 2px solid #dc2626;" class="is-selected"></button>
+    <button style="background-color: #10b981; border: 2px solid #059669;"></button>
+    <button style="background-color: #3b82f6; border: 2px solid #2563eb;"></button>
+    <button style="background-color: #8b5cf6; border: 2px solid #7c3aed;"></button>
+    <button style="background-color: #f59e0b; border: 2px solid #d97706;"></button>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- EXAMPLE 9: Tag Selector (Multi-select) -->
+<!-- ============================================ -->
+<!--
+  Reading: "Horizontal blocks fitting content,
+           wrapping allowed, snugly spaced,
+           selectable group with no constraints"
+-->
+<section class="section">
+  <h3 class="section-title">Tag Selector</h3>
+  
+  <div class="horizontal blocks fit-content wrap-allowed snug selectable-group">
+    <button class="btn btn-secondary is-selected">JavaScript</button>
+    <button class="btn btn-secondary">TypeScript</button>
+    <button class="btn btn-secondary is-selected">React</button>
+    <button class="btn btn-secondary">Vue</button>
+    <button class="btn btn-secondary">Angular</button>
+    <button class="btn btn-secondary">Svelte</button>
+    <button class="btn btn-secondary">Next.js</button>
+  </div>
+</section>
+
+<!-- ============================================ -->
+<!-- EXAMPLE 10: Alert Messages -->
+<!-- ============================================ -->
+<section class="vertical rows comfortable">
+  <div class="alert alert-success">
+    <strong>Success!</strong> Your settings have been saved.
+  </div>
+  <div class="alert alert-error">
+    <strong>Error:</strong> Unable to connect to server.
+  </div>
+  <div class="alert alert-warning">
+    <strong>Warning:</strong> Your session will expire in 5 minutes.
+  </div>
+  <div class="alert alert-info">
+    <strong>Info:</strong> New features are available. Check them out!
+  </div>
+</section>
+
+<script>
+  // Simple selectable group behavior
+  document.querySelectorAll('.selectable-group').forEach(group => {
+    const minSelected = group.classList.contains('min-selected-1') ? 1 : 0;
+    
+    group.addEventListener('click', (e) => {
+      const button = e.target.closest('[class*="button"], button');
+      if (!button || !group.contains(button)) return;
+      
+      const isSelected = button.classList.contains('is-selected');
+      const selectedCount = group.querySelectorAll('.is-selected').length;
+      
+      if (isSelected) {
+        // Trying to deselect
+        if (selectedCount <= minSelected) {
+          // Show constraint violation
+          button.classList.add('shake');
+          setTimeout(() => button.classList.remove('shake'), 400);
+          return;
+        }
+        button.classList.remove('is-selected');
+      } else {
+        // Selecting
+        button.classList.add('is-selected');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

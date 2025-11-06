@@ -1,0 +1,171 @@
+/**
+ * Modal Styles - Modal-specific infrastructure with Semantic Grammar
+ *
+ * Uses compositional classes from layout.css
+ * Modal-specific structure only - all shared patterns loaded from layout.css
+ */
+
+/* ===== Modal Infrastructure ===== */
+
+/* Backdrop - full screen overlay */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: var(--shadow-color);
+  z-index: 10000;
+  
+  /* Structure: centered container */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== #monky-modal Root Container ===== */
+#monky-modal {
+  /* Root container styles */
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 2147483647 !important;
+  pointer-events: none !important;
+
+  > * {
+    pointer-events: auto !important;
+  }
+
+  /* ===== Modal Dialog Structure ===== */
+
+  .modal-dialog {
+    background-color: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 25px 50px -12px var(--shadow-color);
+    border: 1px solid var(--border-primary);
+    min-width: 400px;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow: hidden;
+    
+    /* Structure: vertical sections */
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== Navigation Tabs ===== */
+  /* Structure: horizontal blocks that fill, no wrap */
+  /* Behavior: equal sizes, aligned center */
+  
+  .modal-navigation {
+    display: flex;
+    border-bottom: 1px solid var(--border-primary);
+    background-color: var(--bg-primary);
+  }
+
+  .modal-nav-tab {
+    /* Structure: fills equally */
+    flex: 1;
+    
+    /* Appearance */
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: var(--text-base);
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    
+    /* Behavior: interactive */
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    
+    /* Layout: horizontal items centered */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .modal-nav-tab:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+  }
+
+  .modal-nav-tab.active {
+    color: var(--text-accent);
+    border-bottom-color: var(--text-accent);
+    background-color: var(--bg-secondary);
+  }
+
+  .modal-nav-icon {
+    font-size: var(--text-md);
+  }
+
+  .modal-nav-label {
+    font-size: var(--text-base);
+  }
+
+  /* ===== Content Area ===== */
+  /* Structure: fills remaining space vertically */
+  /* Behavior: scrollable */
+  
+  .modal-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* ===== Composed Component Patterns ===== */
+
+/**
+ * Prefix Selector Pattern
+ * Structure: horizontal blocks, equal squares
+ * Behavior: wrap allowed, snug spacing, selectable group
+ * Constraint: minimum 1 selected
+ * Interaction: shake on invalid deselection
+ */
+.prefix-selector {
+  /* Composed from semantic classes - see usage below */
+}
+
+.prefix-button {
+  /* Base button appearance */
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-family: monospace;
+  font-size: var(--text-lg);
+  border: 1px solid var(--border-primary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  outline: none;
+  
+  /* Interaction handled by .selectable-group in layout.css */
+}
+
+.prefix-button:focus {
+  box-shadow: 0 0 0 2px var(--text-accent);
+}
+
+/* Selected state handled by .selectable-group > .is-selected */
+/* Shake animation handled by .shake in layout.css */
+
+/**
+ * Replacement Mode Pattern  
+ * Structure: horizontal items
+ * Behavior: fit content, spaced
+ */
+.replacement-mode-options {
+  /* Composed from semantic classes - see usage below */
+}
+
+.replacement-mode-option {
+  /* Structure: horizontal items aligned center */
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: var(--spacing-sm);
+}
+
+/* Radio and label styles inherited from layout.css (.radio, .radio-label) */
