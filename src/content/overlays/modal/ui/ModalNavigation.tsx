@@ -34,7 +34,7 @@ export function ModalNavigation({ currentView, onViewChange }: ModalNavigationPr
   ];
 
   return (
-    <div className="modal-navigation">
+    <nav className="horizontal blocks equal-sizes align-center justify-center" style={{ borderBottom: '1px solid var(--border-primary)' }}>
       {tabs.map(tab => (
         <button
           key={tab.view}
@@ -47,6 +47,6 @@ export function ModalNavigation({ currentView, onViewChange }: ModalNavigationPr
           <span className="modal-nav-label">{tab.label}</span>
         </button>
       ))}
-    </div>
+    </nav>
   );
 }

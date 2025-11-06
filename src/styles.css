@@ -1,5 +1,6 @@
 /* Import reset, layout system, and utilities */
 @import './styles/reset.css';
+@import './styles/layout-semantic.css'; /* New semantic compositional CSS system */
 @import './styles/layout.css';
 @import './styles/utilities.css';
 

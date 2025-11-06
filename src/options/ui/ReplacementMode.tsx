@@ -14,18 +14,18 @@ export default function ReplacementMode({ coordinator, useCommitKeys }: Replacem
   return (
     <div className="section">
       <h3 className="section-title">{t('replacementMode.title')}</h3>
-      <div className="replacement-mode-options">
-        <label className="replacement-mode-option">
+      <div className="horizontal items fit-content loose">
+        <label className="horizontal items fit-content align-center snug">
           <input
             type="radio"
             name="behavior"
             checked={!useCommitKeys}
             onChange={() => coordinator.setUseCommitKeys(false)}
-            className="replacement-mode-radio"
+            className="radio"
           />
-          <span className="replacement-mode-label">{t('replacementMode.auto')}</span>
+          <span className="radio-label">{t('replacementMode.auto')}</span>
         </label>
-        <label className="replacement-mode-option">
+        <label className="horizontal items fit-content align-center snug">
           <input
             type="radio"
             name="behavior"

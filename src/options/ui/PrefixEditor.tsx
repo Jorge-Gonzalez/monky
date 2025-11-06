@@ -30,7 +30,7 @@ export default function PrefixEditor({ coordinator, prefixes }: PrefixEditorProp
   return (
     <div className="section">
       <h3 className="section-title">{t('options.prefixEditor.title')}</h3>
-      <div className="prefix-options">
+      <div className="horizontal blocks equal-square wrap-allowed snug selectable-group min-selected-1">
         {ALL_PREFIXES.map(prefix => {
           const isSelected = prefixes.includes(prefix);
           return (
@@ -40,7 +40,7 @@ export default function PrefixEditor({ coordinator, prefixes }: PrefixEditorProp
               role="switch"
               aria-checked={isSelected}
               onClick={() => handlePrefixClick(prefix)}
-              className={`prefix-button ${isSelected ? 'selected' : ''} ${shake === prefix ? 'shake' : ''}`}
+              className={`prefix-button ${isSelected ? 'is-selected' : ''} ${shake === prefix ? 'shake' : ''}`}
             >
               {prefix}
             </button>

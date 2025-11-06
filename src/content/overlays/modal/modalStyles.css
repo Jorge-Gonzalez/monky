@@ -55,15 +55,8 @@
     flex-direction: column;
   }
 
-  /* Navigation tabs */
-  .modal-navigation {
-    display: flex;
-    border-bottom: 1px solid var(--border-primary);
-    background-color: var(--bg-primary);
-  }
-
+  /* Navigation tabs - layout handled by semantic classes */
   .modal-nav-tab {
-    flex: 1;
     padding: var(--spacing-md) var(--spacing-lg);
     border: none;
     background: transparent;
@@ -74,7 +67,6 @@
     transition: all var(--transition-fast);
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 6px;
     border-bottom: 2px solid transparent;
   }
@@ -108,76 +100,25 @@
 }
 
 
-/* ===== Sub-Component-Specific Patterns (This must to be abstracted as behavior constrains as well and therefore minimize or eliminate the the need to be associated with a particular component and become more generalized patterns that can be reused.) ===== */
+/* ===== Component-Specific Appearance ===== */
 
-/* Prefix Editor */
-.prefix-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
-}
-
+/* Prefix Editor - appearance only, layout handled by semantic classes */
 .prefix-button {
   padding: var(--spacing-sm) var(--spacing-lg);
   border-radius: var(--radius-md);
   font-family: monospace;
   font-size: var(--text-lg);
-  cursor: pointer;
-  transition: all var(--transition-fast);
   border: 1px solid var(--border-primary);
   background-color: var(--bg-primary);
   color: var(--text-primary);
   outline: none;
 }
 
-.prefix-button:hover {
-  background-color: var(--bg-tertiary);
-}
-
 .prefix-button:focus {
   box-shadow: 0 0 0 2px var(--text-accent);
 }
 
-.prefix-button.selected {
-  background-color: var(--text-accent);
-  color: white;
-  border-color: var(--text-accent);
-}
-
-.prefix-button.shake {
-  animation: prefix-shake 0.4s;
-}
-
-@keyframes prefix-shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-}
-
-/* Replacement Mode */
-.replacement-mode-options {
-  display: flex;
-  gap: var(--spacing-lg);
-}
-
-.replacement-mode-option {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.replacement-mode-radio {
-  margin-right: var(--spacing-sm);
-  cursor: pointer;
-  width: 16px;
-  height: 16px;
-  accent-color: var(--text-accent);
-}
-
-.replacement-mode-label {
-  font-size: var(--text-md);
-  color: var(--text-primary);
-  cursor: pointer;
-  user-select: none;
-}
+/* Note: .selected state is now handled by .selectable-group > .is-selected in layout-semantic.css */
+/* Note: .shake animation is handled by .shake in layout-semantic.css */
+/* Note: hover states are handled by .selectable-group in layout-semantic.css */
 

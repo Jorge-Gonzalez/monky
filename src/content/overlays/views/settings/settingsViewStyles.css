@@ -2,15 +2,8 @@
  * Settings view specific styles
  *
  * This file contains ONLY styles distinctive to the settings view.
- * Shared patterns (section, buttons, inputs, prefix, replacement-mode) are in modalStyles.ts
+ * Shared patterns are now handled by the semantic compositional CSS system.
  */
-/* Settings view container - extends .scrollable pattern with specific layout */
-
-@keyframes prefix-shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-}
 
 #monky-modal {
   .settings-view {
@@ -23,74 +16,5 @@
   /* Settings content padding wrapper */
   .settings-container {
     padding: var(--spacing-xl);
-  }
-
-  /* ===== Component-Specific Patterns ===== */
-
-  /* Prefix Editor */
-
-  .prefix-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
-  }
-
-  .prefix-button {
-    padding: var(--spacing-sm) var(--spacing-lg);
-    border-radius: var(--radius-md);
-    font-family: monospace;
-    font-size: var(--text-lg);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    border: 1px solid var(--border-primary);
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    outline: none;
-  }
-
-  .prefix-button:hover {
-    background-color: var(--bg-tertiary);
-  }
-
-  .prefix-button:focus {
-    box-shadow: 0 0 0 2px var(--text-accent);
-  }
-
-  .prefix-button.selected {
-    background-color: var(--text-accent);
-    color: white;
-    border-color: var(--text-accent);
-  }
-
-  .prefix-button.shake {
-    animation: prefix-shake 0.2s;
-  }
-
-  /* Replacement Mode */
-
-  .replacement-mode-options {
-    display: flex;
-    gap: var(--spacing-lg);
-  }
-
-  .replacement-mode-option {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-
-  .replacement-mode-radio {
-    margin-right: var(--spacing-sm);
-    cursor: pointer;
-    width: 16px;
-    height: 16px;
-    accent-color: var(--text-accent);
-  }
-
-  .replacement-mode-label {
-    font-size: var(--text-md);
-    color: var(--text-primary);
-    cursor: pointer;
-    user-select: none;
   }
 }
