@@ -34,11 +34,11 @@ export function ModalNavigation({ currentView, onViewChange }: ModalNavigationPr
   ];
 
   return (
-    <nav className="horizontal blocks equal-sizes align-center justify-center" style={{ borderBottom: '1px solid var(--border-primary)' }}>
+    <nav className="horizontal equal-sizes align-center justify-center" style={{ borderBottom: '1px solid var(--border-primary)' }}>
       {tabs.map(tab => (
         <button
           key={tab.view}
-          className={`modal-nav-tab ${currentView === tab.view ? 'active' : ''}`}
+          className={`modal-nav-tab panel-button padded-comfortable horizontal items align-center justify-center snug ${currentView === tab.view ? 'active' : ''}`}
           onClick={() => onViewChange(tab.view)}
           aria-label={`Switch to ${tab.label}`}
           aria-current={currentView === tab.view ? 'page' : undefined}

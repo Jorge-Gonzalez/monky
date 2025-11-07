@@ -40,7 +40,7 @@ export default function PrefixEditor({ coordinator, prefixes }: PrefixEditorProp
               role="switch"
               aria-checked={isSelected}
               onClick={() => handlePrefixClick(prefix)}
-              className={`prefix-button ${isSelected ? 'is-selected' : ''} ${shake === prefix ? 'shake' : ''}`}
+              className={`btn btn-outlined text-mono text-lg ${isSelected ? 'is-selected' : ''} ${shake === prefix ? 'shake' : ''}`}
             >
               {prefix}
             </button>

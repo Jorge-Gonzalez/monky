@@ -315,21 +315,21 @@ describe('MacroForm Component', () => {
   describe('Form Validation', () => {
     it('disables submit button when command is empty', () => {
       render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
-      
+
       const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
       expect(submitButton).toBeDisabled()
-      expect(submitButton).toHaveClass('cursor-not-allowed')
+      // Note: cursor-not-allowed is applied via CSS pseudo-class :disabled, not a class
     })
 
     it('disables submit button when text is empty (valid command, no content)', () => {
       render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
-      
+
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/test' } })
-      
+
       const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
       expect(submitButton).toBeDisabled()
-      expect(submitButton).toHaveClass('cursor-not-allowed')
+      // Note: cursor-not-allowed is applied via CSS pseudo-class :disabled, not a class
     })
 
     it('keeps submit button disabled when valid command is entered but no text content is added', () => {
@@ -343,10 +343,11 @@ describe('MacroForm Component', () => {
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/validcommand' } })
       expect(submitButton).toBeDisabled()
-      expect(submitButton).toHaveClass('bg-gray-300', 'cursor-not-allowed')
-      
-      // Verify command input styling is correct (valid command)
-      expect(commandInput).toHaveClass('border-gray-300', 'focus:ring-blue-500')
+      // Note: disabled styles applied via CSS pseudo-class :disabled
+
+      // Verify command input has valid styling (no error class)
+      expect(commandInput).toHaveClass('input')
+      expect(commandInput).not.toHaveClass('input-error')
       expect(commandInput).not.toHaveClass('border-red-300')
     })
 
@@ -404,21 +405,23 @@ describe('MacroForm Component', () => {
 
     it('shows red border for invalid command input', () => {
       render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
-      
+
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: 'invalidcommand' } })
-      
-      expect(commandInput).toHaveClass('border-red-300', 'focus:ring-red-500')
+
+      // Semantic CSS uses .input-error class for validation errors
+      expect(commandInput).toHaveClass('input-error')
     })
 
     it('shows normal border for valid command input', () => {
       render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
-      
+
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/validcommand' } })
-      
-      expect(commandInput).toHaveClass('border-gray-300', 'focus:ring-blue-500')
-      expect(commandInput).not.toHaveClass('border-red-300')
+
+      // Semantic CSS uses .input class for normal inputs
+      expect(commandInput).toHaveClass('input')
+      expect(commandInput).not.toHaveClass('input-error')
     })
 
     it('prevents form submission with validation error message when command is invalid', async () => {

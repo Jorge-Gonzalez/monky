@@ -50,8 +50,28 @@
   --transition-medium: 0.3s;
 }
 
+/* ===== Global Animations ===== */
+/* Keyframes must be at root level to work across all contexts */
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
 /* ===== Universal Base ===== */
-:where(#monky-modal, body) {
+:where(#monky-modal, #monky-page) {
   * {
     box-sizing: border-box;
     font-family: Karla, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -141,36 +161,7 @@
 
   /* ===== BEHAVIOR: Sizing Strategies ===== */
 
-  /* Fill behaviors */
-  .fill-container.horizontal > *,
-  .fill-container.vertical > * {
-    flex: 1 1 0%;
-    min-width: 0;
-    min-height: 0;
-  }
-
-  .fill-remaining {
-    flex: 1 1 0%;
-    min-width: 0;
-    min-height: 0;
-  }
-
-  .fit-content > * {
-    flex: 0 0 auto;
-  }
-
-  .fit-content {
-    width: fit-content;
-  }
-
-  .equal-sizes.horizontal > * {
-    flex: 1 1 0%;
-  }
-
-  .equal-sizes.vertical > * {
-    flex: 1 1 0%;
-  }
-
+  
   /* Uniform sizing */
   .equal-square > * {
     aspect-ratio: 1;
@@ -185,6 +176,65 @@
     height: 3rem;
     border-radius: 50%;
     flex: 0 0 auto;
+  }
+  
+  /* Fill behaviors */
+  .fit-content > * {
+    flex: 0 0 auto;
+  }
+
+  /* ===== INTERACTION: Selectable Groups ===== */
+
+  .selectable-group > * {
+    cursor: pointer;
+    position: relative;
+    transition: all var(--transition-fast);
+    user-select: none;
+  }
+
+  .selectable-group > *:hover {
+    background-color: var(--bg-tertiary);
+  }
+
+  .selectable-group > *:active {
+    transform: scale(0.98);
+  }
+
+  .selectable-group > .is-selected {
+    background-color: var(--text-accent);
+    color: white;
+    border-color: var(--text-accent);
+  }
+
+  .selectable-group > .is-selected:hover {
+    background-color: var(--text-accent);
+    opacity: 0.9;
+  }
+
+  /* Fill behaviors */
+  .fill-container.horizontal > *,
+  .fill-container.vertical > * {
+    flex: 1 1 0%;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .fill-remaining {
+    flex: 1 1 0%;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .fit-content {
+    width: fit-content;
+  }
+
+  .equal-sizes.horizontal > * {
+    flex: 1 1 0%;
+  }
+
+  .equal-sizes.vertical > * {
+    flex: 1 1 0%;
   }
 
   /* ===== BEHAVIOR: Spacing Patterns ===== */
@@ -373,7 +423,7 @@
 
   /* ===== BEHAVIOR: Responsive ===== */
 
-  @media (max-width: 640px) {
+  @media (width <= 640px) {
     .stack-small {
       flex-direction: column !important;
     }
@@ -387,34 +437,6 @@
     }
   }
 
-  /* ===== INTERACTION: Selectable Groups ===== */
-
-  .selectable-group > * {
-    cursor: pointer;
-    position: relative;
-    transition: all var(--transition-fast);
-    user-select: none;
-  }
-
-  .selectable-group > *:hover {
-    background-color: var(--bg-tertiary);
-  }
-
-  .selectable-group > *:active {
-    transform: scale(0.98);
-  }
-
-  .selectable-group > .is-selected {
-    background-color: var(--text-accent);
-    color: white;
-    border-color: var(--text-accent);
-  }
-
-  .selectable-group > .is-selected:hover {
-    background-color: var(--text-accent);
-    opacity: 0.9;
-  }
-
   /* Selection constraints */
   .min-selected-1 > .is-selected:only-of-type {
     cursor: not-allowed;
@@ -426,25 +448,11 @@
   }
 
   /* ===== INTERACTION: Feedback Animations ===== */
-
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-    20%, 40%, 60%, 80% { transform: translateX(4px); }
-  }
-
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-  }
-
-  @keyframes flash {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
+  /* Note: @keyframes are defined at root level above :where() wrapper */
 
   .shake {
-    animation: shake 0.4s ease;
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+    transition: none !important;
   }
 
   .pulse {
@@ -620,6 +628,16 @@
     background-color: var(--bg-tertiary);
   }
 
+  .btn-outlined {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+  }
+
+  .btn-outlined:hover {
+    background-color: var(--bg-tertiary);
+  }
+
   .btn-success {
     background-color: #16a34a;
     color: white;
@@ -678,6 +696,30 @@
   .btn:disabled:hover {
     background-color: var(--bg-secondary);
     opacity: 0.6;
+  }
+
+  /* Panel buttons - buttons integrated into panel/group layouts */
+  .panel-button {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    font-weight: 500;
+    font-size: var(--text-base);
+    transition: all var(--transition-fast);
+  }
+
+  /* ===== BEHAVIOR: Padding Patterns ===== */
+
+  .padded-snug {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .padded-comfortable {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .padded-loose {
+    padding: var(--spacing-lg) var(--spacing-xl);
   }
 
   /* ===== COMPONENT PATTERNS: Alerts ===== */
@@ -775,6 +817,42 @@
   .text-mono {
     font-family: monospace;
   }
+
+  /* ===== UTILITIES: Text Sizes ===== */
+
+  .text-xs {
+    font-size: var(--text-xs);
+  }
+
+  .text-sm {
+    font-size: var(--text-sm);
+  }
+
+  .text-base {
+    font-size: var(--text-base);
+  }
+
+  .text-md {
+    font-size: var(--text-md);
+  }
+
+  .text-lg {
+    font-size: var(--text-lg);
+  }
+
+  .text-xl {
+    font-size: var(--text-xl);
+  }
+
+  .text-2xl {
+    font-size: var(--text-2xl);
+  }
+
+  .text-3xl {
+    font-size: var(--text-3xl);
+  }
+
+  /* ===== UTILITIES: Font Weights ===== */
 
   .font-medium {
     font-weight: 500;

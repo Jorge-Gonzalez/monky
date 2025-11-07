@@ -99,13 +99,13 @@ describe('PrefixEditor Component', () => {
     // Act: Try to uncheck the last prefix
     fireEvent.click(slashButton)
 
-    // Assert: The shake animation class is applied
-    expect(slashButton).toHaveClass('animate-shake')
+    // Assert: The shake animation class is applied (semantic CSS uses .shake)
+    expect(slashButton).toHaveClass('shake')
 
     // Assert: The class is removed after the animation duration
     act(() => {
       vi.advanceTimersByTime(400) // Matches timeout in component
     })
-    expect(slashButton).not.toHaveClass('animate-shake')
+    expect(slashButton).not.toHaveClass('shake')
   })
 })

@@ -9,7 +9,7 @@ import { createReactRenderer } from '../services/reactRenderer';
 import { createFocusManager } from '../services/focusManager';
 import { createStyleInjector } from '../services/styleInjector';
 import { getActiveEditable } from '../../macroEngine/replacement/editableUtils';
-import LAYOUT_STYLES from '../../../styles/layout.css?raw';
+import LAYOUT_SEMANTIC_STYLES from '../../../styles/layout-semantic.css?raw';
 import MODAL_STYLES from './modalStyles.css?raw';
 import SEARCH_VIEW_STYLES from '../views/search/searchViewStyles.css?raw';
 import SETTINGS_VIEW_STYLES from '../views/settings/settingsViewStyles.css?raw';
@@ -22,9 +22,9 @@ export function createModalManager() {
   const renderer = createReactRenderer('monky-modal');
   const focusManager = createFocusManager();
 
-  // Combine all styles - layout must come first as it's the base design system
+  // Combine all styles - semantic layout first, then component styles
   const allStyles = [
-    LAYOUT_STYLES,
+    LAYOUT_SEMANTIC_STYLES,
     MODAL_STYLES,
     SEARCH_VIEW_STYLES,
     SETTINGS_VIEW_STYLES,

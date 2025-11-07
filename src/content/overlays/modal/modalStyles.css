@@ -2,7 +2,7 @@
  * Modal Styles - Modal-specific infrastructure
  *
  * Contains only modal-specific structure and layout.
- * All shared component patterns (including fonts) are loaded from layout.css (imported in modalManager.ts).
+ * All shared component patterns (including fonts) are loaded from layout-semantic.css (imported in modalManager.ts).
  *
  * Architecture:
  * - Modal backdrop and dialog structure
@@ -55,19 +55,9 @@
     flex-direction: column;
   }
 
-  /* Navigation tabs - layout handled by semantic classes */
+  /* Navigation tabs - appearance only, all layout/behavior handled by semantic classes */
   .modal-nav-tab {
-    padding: var(--spacing-md) var(--spacing-lg);
-    border: none;
-    background: transparent;
     color: var(--text-secondary);
-    font-size: var(--text-base);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    display: flex;
-    align-items: center;
-    gap: 6px;
     border-bottom: 2px solid transparent;
   }
 
@@ -83,7 +73,7 @@
   }
 
   .modal-nav-icon {
-    font-size: var(--text-md);
+    height: 18px;
   }
 
   .modal-nav-label {
@@ -98,27 +88,4 @@
     flex-direction: column;
   }
 }
-
-
-/* ===== Component-Specific Appearance ===== */
-
-/* Prefix Editor - appearance only, layout handled by semantic classes */
-.prefix-button {
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--radius-md);
-  font-family: monospace;
-  font-size: var(--text-lg);
-  border: 1px solid var(--border-primary);
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  outline: none;
-}
-
-.prefix-button:focus {
-  box-shadow: 0 0 0 2px var(--text-accent);
-}
-
-/* Note: .selected state is now handled by .selectable-group > .is-selected in layout-semantic.css */
-/* Note: .shake animation is handled by .shake in layout-semantic.css */
-/* Note: hover states are handled by .selectable-group in layout-semantic.css */
 
