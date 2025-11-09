@@ -5,16 +5,14 @@
  * Shared patterns are now handled by the semantic compositional CSS system.
  */
 
-#monky-modal {
-  .settings-view {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow-y: auto;
-  }
+.settings-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
 
-  /* Settings content padding wrapper */
-  .settings-container {
-    padding: var(--spacing-xl);
-  }
+/* Settings content padding wrapper */
+.settings-container {
+  padding: var(--spacing-xl);
 }

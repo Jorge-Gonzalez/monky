@@ -1,0 +1,29 @@
+import { useState, useRef, useEffect } from 'react';
+import { createEditorManager } from '../managers/editorManager';
+import { createEditorCoordinator, EditorCoordinator } from '../coordinators/editorCoordinator';
+import { createDefaultEditorActions } from '../actions/createDefaultEditorActions';
+
+/**
+ * Hook to get the editor coordinator instance
+ *
+ * This hook follows the same pattern as useOptionsCoordinator,
+ * providing a consistent API across the application.
+ */
+export function useEditorCoordinator(): EditorCoordinator {
+  const [coordinator] = useState(() => {
+    const actions = createDefaultEditorActions();
+    const manager = createEditorManager(actions);
+    return createEditorCoordinator(manager);
+  });
+
+  const coordinatorRef = useRef<EditorCoordinator>(coordinator);
+
+  useEffect(() => {
+    // Cleanup on unmount
+    return () => {
+      coordinatorRef.current.destroy();
+    };
+  }, []);
+
+  return coordinatorRef.current;
+}

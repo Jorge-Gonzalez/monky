@@ -14,24 +14,36 @@ import MODAL_STYLES from './modalStyles.css?raw';
 import SEARCH_VIEW_STYLES from '../views/search/searchViewStyles.css?raw';
 import SETTINGS_VIEW_STYLES from '../views/settings/settingsViewStyles.css?raw';
 import EDITOR_VIEW_STYLES from '../views/macroEditor/editorViewStyles.css?raw';
+import MEDIUM_EDITOR_STYLES from 'medium-editor/dist/css/medium-editor.css?raw';
+import MEDIUM_EDITOR_THEME from 'medium-editor/dist/css/themes/default.css?raw';
 
 /**
  * Unified modal manager that handles all modal views
  */
 export function createModalManager() {
-  const renderer = createReactRenderer('monky-modal');
+  const renderer = createReactRenderer('monky-modal', true); // Enable shadow DOM
   const focusManager = createFocusManager();
 
   // Combine all styles - semantic layout first, then component styles
+  // For Shadow DOM, we only need to strip out the #monky-modal root container styles
+  const adaptModalStyles = (css: string): string => {
+    // Remove the #monky-modal root container block (only needed for regular DOM positioning)
+    return css
+      .replace(/#monky-modal\s*\{[^}]*\}/g, '')
+      .replace(/#monky-modal\s+>\s+\*\s*\{[^}]*\}/g, '');
+  };
+
   const allStyles = [
     LAYOUT_SEMANTIC_STYLES,
-    MODAL_STYLES,
+    adaptModalStyles(MODAL_STYLES),
     SEARCH_VIEW_STYLES,
     SETTINGS_VIEW_STYLES,
     EDITOR_VIEW_STYLES,
+    MEDIUM_EDITOR_STYLES,
+    MEDIUM_EDITOR_THEME,
   ].join('\n');
 
-  const styleInjector = createStyleInjector('monky-modal-styles', allStyles);
+  let styleInjector: ReturnType<typeof createStyleInjector>;
 
   let isVisible = false;
   let currentView: ModalView = 'search';
@@ -113,8 +125,11 @@ export function createModalManager() {
   };
 
   const initialize = (): void => {
-    styleInjector.inject();
     renderer.initialize();
+    // Create style injector with shadow root after renderer is initialized
+    const shadowRoot = renderer.getShadowRoot();
+    styleInjector = createStyleInjector('monky-modal-styles', allStyles, shadowRoot);
+    styleInjector.inject();
   };
 
   const show = (view?: ModalView, x?: number, y?: number): void => {

@@ -16,7 +16,7 @@ export interface PopupActions {
   /**
    * Called when user wants to create a new macro.
    */
-  onCreateNewMacroRequested(): void
+  onCreateNewMacroRequested(): void | Promise<void>
 
   /**
    * Called when there's an error in the popup.

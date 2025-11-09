@@ -1,33 +1,33 @@
 /**
  * Styles for the macro editor view
  */
-#monky-modal .macro-editor-view {
+.macro-editor-view {
   padding: 20px;
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-#monky-modal .editor-container {
+.editor-container {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-#monky-modal .editor-title {
+.editor-title {
   font-size: 20px;
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 8px 0;
+  margin: 0 0 8px;
 }
 
-#monky-modal .editor-description {
+.editor-description {
   font-size: 14px;
   color: var(--text-secondary);
-  margin: 0 0 20px 0;
+  margin: 0 0 20px;
 }
 
-#monky-modal .editor-placeholder {
+.editor-placeholder {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -38,7 +38,7 @@
   color: var(--text-secondary);
 }
 
-#monky-modal .editor-actions {
+.editor-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;

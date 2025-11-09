@@ -26,8 +26,31 @@ describe('MacroItemEditor Component', () => {
 
   const mockOnEdit = vi.fn()
 
+  const mockCoordinator = {
+    createMacro: vi.fn(),
+    updateMacro: vi.fn(),
+    deleteMacro: vi.fn(),
+    getEditingMacro: vi.fn(() => null),
+    setEditingMacro: vi.fn(),
+    resetForm: vi.fn(),
+    updateSettings: vi.fn(),
+    getState: vi.fn(() => ({
+      macros: [],
+      editingMacro: null,
+      settings: {},
+      error: null,
+    })),
+    subscribe: vi.fn(() => () => {}),
+    attach: vi.fn(),
+    detach: vi.fn(),
+    enable: vi.fn(),
+    disable: vi.fn(),
+    isEnabled: vi.fn(() => true),
+    destroy: vi.fn(),
+  }
+
   it('renders without crashing', () => {
-    render(<MacroItemEditor macro={mockMacro} onEdit={mockOnEdit} />)
+    render(<MacroItemEditor macro={mockMacro} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
     expect(screen.getByText('/test')).toBeInTheDocument()
   })
 
@@ -36,14 +59,14 @@ describe('MacroItemEditor Component', () => {
       ...mockMacro,
       text: 'A'.repeat(100)
     }
-    
-    render(<MacroItemEditor macro={longTextMacro} onEdit={mockOnEdit} />)
+
+    render(<MacroItemEditor macro={longTextMacro} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
     expect(screen.getByText('A'.repeat(80) + '…')).toBeInTheDocument()
   })
 
   it('calls onEdit when edit button is clicked', () => {
-    render(<MacroItemEditor macro={mockMacro} onEdit={mockOnEdit} />)
-    
+    render(<MacroItemEditor macro={mockMacro} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
+
     fireEvent.click(screen.getByText('macroItemEditor.edit'))
     expect(mockOnEdit).toHaveBeenCalledWith(mockMacro)
   })

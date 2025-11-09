@@ -35,10 +35,15 @@ export function ModalShell({
 
   if (!isVisible) return null;
 
+  // Clone children and inject modalContainerRef prop
+  const childrenWithProps = React.isValidElement(children)
+    ? React.cloneElement(children as React.ReactElement<any>, { containerRef: modalRef })
+    : children;
+
   return (
     <div
       className="modal-backdrop"
-      onClick={onClose}
+      onMouseDown={onClose}
       role="presentation"
     >
       <div
@@ -47,7 +52,7 @@ export function ModalShell({
         role="dialog"
         aria-modal="true"
         aria-label="Monky Modal"
-        onClick={e => e.stopPropagation()}
+        onMouseDown={e => e.stopPropagation()}
       >
         <ModalNavigation
           currentView={currentView}
@@ -55,7 +60,7 @@ export function ModalShell({
         />
 
         <div className="modal-content">
-          {children}
+          {childrenWithProps}
         </div>
       </div>
     </div>

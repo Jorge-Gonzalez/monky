@@ -25,18 +25,41 @@ describe('MacroListEditor Component', () => {
     { id: 2, command: '/test2', text: 'Test text 2' },
   ]
 
+  const mockCoordinator = {
+    createMacro: vi.fn(),
+    updateMacro: vi.fn(),
+    deleteMacro: vi.fn(),
+    getEditingMacro: vi.fn(() => null),
+    setEditingMacro: vi.fn(),
+    resetForm: vi.fn(),
+    updateSettings: vi.fn(),
+    getState: vi.fn(() => ({
+      macros: [],
+      editingMacro: null,
+      settings: {},
+      error: null,
+    })),
+    subscribe: vi.fn(() => () => {}),
+    attach: vi.fn(),
+    detach: vi.fn(),
+    enable: vi.fn(),
+    disable: vi.fn(),
+    isEnabled: vi.fn(() => true),
+    destroy: vi.fn(),
+  }
+
   it('renders without crashing', () => {
-    render(<MacroListEditor macros={mockMacros} onEdit={mockOnEdit} />)
+    render(<MacroListEditor macros={mockMacros} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
     expect(screen.getAllByTestId('macro-item-editor')).toHaveLength(2)
   })
 
   it('displays message when no macros exist', () => {
-    render(<MacroListEditor macros={[]} onEdit={mockOnEdit} />)
+    render(<MacroListEditor macros={[]} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
     expect(screen.getByText('macroListEditor.noMacros')).toBeInTheDocument()
   })
 
   it('renders a MacroItemEditor for each macro', () => {
-    render(<MacroListEditor macros={mockMacros} onEdit={mockOnEdit} />)
+    render(<MacroListEditor macros={mockMacros} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
     
     mockMacros.forEach(macro => {
       expect(screen.getByText(macro.command)).toBeInTheDocument()
@@ -44,7 +67,7 @@ describe('MacroListEditor Component', () => {
   })
 
   it('calls onEdit with the correct macro when an item is edited', () => {
-    render(<MacroListEditor macros={mockMacros} onEdit={mockOnEdit} />)
+    render(<MacroListEditor macros={mockMacros} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
 
     // Find all the "Edit" buttons rendered by our mock components
     const editButtons = screen.getAllByRole('button', { name: 'Edit' })

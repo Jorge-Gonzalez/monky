@@ -1,30 +1,43 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { BaseModalViewProps } from '../../../modal/types';
+import { useEditorCoordinator } from '../../../../../editor/hooks/useEditorCoordinator';
+import MacroForm from '../../../../../editor/ui/MacroForm';
+import MacroListEditor from '../../../../../editor/ui/MacroListEditor';
+import { t } from '../../../../../lib/i18n';
 
 /**
  * MacroEditorView - Create and edit macros
  *
- * Placeholder for macro creation/editing interface
+ * Integrates the macro editor functionality into the modal system
  */
-export function MacroEditorView({ onClose, onViewChange }: BaseModalViewProps) {
+export function MacroEditorView({ containerRef }: BaseModalViewProps) {
+  const coordinator = useEditorCoordinator();
+  const [state, setState] = useState(coordinator.getState());
+
+  useEffect(() => {
+    const unsubscribe = coordinator.subscribe(setState);
+    return unsubscribe;
+  }, [coordinator]);
+
+  const handleEdit = (macro: any) => {
+    coordinator.setEditingMacro(macro);
+  };
+
+  const handleDone = () => {
+    coordinator.resetForm();
+  };
+
   return (
     <div className="macro-editor-view">
       <div className="editor-container">
-        <h2 className="editor-title">Macro Editor</h2>
-        <p className="editor-description">
-          Create and edit macros here.
-        </p>
-
-        <div className="editor-placeholder">
-          <div className="placeholder-icon">✏️</div>
-          <p>Macro editor interface coming soon...</p>
-        </div>
-
-        <div className="editor-actions">
-          <button className="btn btn-secondary" onClick={onClose}>
-            Close
-          </button>
-        </div>
+        <h1 className="view-title">{t('editor.title')}</h1>
+        <MacroForm
+          editing={state.editingMacro}
+          onDone={handleDone}
+          coordinator={coordinator}
+          containerRef={containerRef}
+        />
+        <MacroListEditor macros={state.macros} onEdit={handleEdit} coordinator={coordinator} />
       </div>
     </div>
   );

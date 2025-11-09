@@ -21,6 +21,7 @@
 [x] Fix: The undo test are currently made to be used with commit keys but currently the detector is working in auto mode.
 [?] Fix: in auto mode the undo does not get cleared and repeats the command after the previous undo.
 [x] Search overlay is not restoring focus not managing undo.
+[ ] When the user adds content to the buffer the macro suggestions should update its content accordingly.
 
 
 

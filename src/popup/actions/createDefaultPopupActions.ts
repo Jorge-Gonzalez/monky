@@ -15,8 +15,12 @@ export function createDefaultPopupActions(): PopupActions {
       useMacroStore.getState().toggleSiteDisabled(hostname);
     },
 
-    onCreateNewMacroRequested() {
-      chrome.tabs.create({ url: chrome.runtime.getURL('src/editor/index.html') });
+    async onCreateNewMacroRequested() {
+      // Send message to content script to open the editor modal
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (tab.id) {
+        chrome.tabs.sendMessage(tab.id, { type: 'open-editor' });
+      }
     },
 
     onError(error) {

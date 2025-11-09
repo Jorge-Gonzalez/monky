@@ -5,27 +5,34 @@ import 'medium-editor/dist/css/themes/default.css'
 import { useMacroStore } from '../../store/useMacroStore'
 import { getErrorMessage } from '../../lib/errors'
 import { t } from '../../lib/i18n'
-import { EditorManager } from '../managers/createEditorManager'
+import { EditorCoordinator } from '../coordinators/editorCoordinator'
 import { icons } from './icons'
 import { Macro } from '../../types'
 
-export default function MacroForm({ editing, onDone, manager }:{ editing: Macro | null, onDone:()=>void, manager: EditorManager }){
+export default function MacroForm({ editing, onDone, coordinator, containerRef: containerRef }: {
+  editing: Macro | null,
+  onDone: () => void,
+  coordinator: EditorCoordinator,
+  containerRef?: React.RefObject<HTMLDivElement>
+}) {
   const prefixes = useMacroStore(s => s.config?.prefixes || ['/'])
   const [command, setCommand] = useState(editing?.command || '')
   const [text, setText] = useState(editing?.html || editing?.text || '')
   const [isSensitive, setSensitive] = useState(!!editing?.is_sensitive)
   const [error, setError] = useState<string | null>(null)
-  
+
   const editorRef = useRef<HTMLDivElement>(null)
   const mediumEditor = useRef<any>(null)
-  const effectiveManager = manager
+  const effectiveCoordinator = coordinator
 
   // Initialize Medium Editor
   useEffect(() => {
     if (editorRef.current && !mediumEditor.current) {
       try {
         mediumEditor.current = new MediumEditor.default(editorRef.current, {
+          elementsContainer: containerRef?.current, // 👈 keep toolbar and elements inside container
           toolbar: {
+            relativeContainer: containerRef?.current, // 👈 keep toolbar inside modal
             buttons: [
               {
                 name: 'bold',
@@ -66,10 +73,10 @@ export default function MacroForm({ editing, onDone, manager }:{ editing: Macro 
             cleanReplacements: [],
             cleanAttrs: ['class', 'style', 'dir'],
             cleanTags: ['meta']
-          }
+          },
         })
 
-        // Listen for content changes
+        // Listen for content changes from MediumEditor
         mediumEditor.current.subscribe('editableInput', () => {
           if (editorRef.current) {
             setText(editorRef.current.innerHTML)
@@ -302,12 +309,12 @@ export default function MacroForm({ editing, onDone, manager }:{ editing: Macro 
 
     let result
     if (editing && editing.id){
-      result = await effectiveManager.updateMacro(editing.id, macroData)
+      result = await effectiveCoordinator.updateMacro(editing.id, macroData)
       if (result.success) {
         onDone()
       }
     } else {
-      result = await effectiveManager.createMacro(macroData)
+      result = await effectiveCoordinator.createMacro(macroData)
       if (result.success) {
         // Reset form for next entry
         setCommand('')

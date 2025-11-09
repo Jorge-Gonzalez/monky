@@ -24,9 +24,57 @@
   justify-content: center;
 }
 
-/* ===== #monky-modal Root Container ===== */
+/* ===== Modal Structure ===== */
+
+/* Dialog - the modal container */
+.modal-dialog {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 25px 50px -12px var(--shadow-color);
+  border: 1px solid var(--border-primary);
+  min-width: 400px;
+  max-width: 600px;
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation tabs - appearance only, all layout/behavior handled by semantic classes */
+.modal-nav-tab {
+  color: var(--text-secondary);
+  border-bottom: 2px solid transparent;
+}
+
+.modal-nav-tab:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.modal-nav-tab.active {
+  color: var(--text-accent);
+  border-bottom-color: var(--text-accent);
+  background-color: var(--bg-secondary);
+}
+
+.modal-nav-icon {
+  height: 18px;
+}
+
+.modal-nav-label {
+  font-size: var(--text-base);
+}
+
+/* Content area */
+.modal-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Root Container (for non-Shadow DOM environments) ===== */
 #monky-modal {
-  /* Root container styles */
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
@@ -34,58 +82,9 @@
   height: 100vh !important;
   z-index: 2147483647 !important;
   pointer-events: none !important;
+}
 
-  > * {
-    pointer-events: auto !important;
-  }
-
-  /* ===== Modal Structure ===== */
-
-  /* Dialog - the modal container */
-  .modal-dialog {
-    background-color: var(--bg-primary);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 25px 50px -12px var(--shadow-color);
-    border: 1px solid var(--border-primary);
-    min-width: 400px;
-    max-width: 600px;
-    max-height: 85vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Navigation tabs - appearance only, all layout/behavior handled by semantic classes */
-  .modal-nav-tab {
-    color: var(--text-secondary);
-    border-bottom: 2px solid transparent;
-  }
-
-  .modal-nav-tab:hover {
-    background-color: var(--bg-secondary);
-    color: var(--text-primary);
-  }
-
-  .modal-nav-tab.active {
-    color: var(--text-accent);
-    border-bottom-color: var(--text-accent);
-    background-color: var(--bg-secondary);
-  }
-
-  .modal-nav-icon {
-    height: 18px;
-  }
-
-  .modal-nav-label {
-    font-size: var(--text-base);
-  }
-
-  /* Content area */
-  .modal-content {
-    flex: 1;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
+#monky-modal > * {
+  pointer-events: auto !important;
 }
 

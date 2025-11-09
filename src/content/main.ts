@@ -1,7 +1,7 @@
 import { useMacroStore } from "../store/useMacroStore"
 import { createMacroDetector,MacroDetector } from "./macroEngine/macroDetector"
 import { loadMacros, listenMacrosChange } from "./storage/macroStorage"
-import { updateAllMacros, suggestionsCoordinator, searchCoordinator } from "./overlays"
+import { updateAllMacros, suggestionsCoordinator, searchCoordinator, modalCoordinator } from "./overlays"
 import { Macro } from "../types"
 
 // Module-level state
@@ -176,6 +176,15 @@ export function onExecute() {
 export function getMacroEngine(): MacroDetector | null {
   return macroEngine
 }
+
+// Listen for messages from other parts of the extension (e.g., popup)
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'open-editor') {
+    modalCoordinator.show('editor');
+    sendResponse({ success: true });
+  }
+  return true;
+});
 
 // Auto-initialize when module is imported
 main()

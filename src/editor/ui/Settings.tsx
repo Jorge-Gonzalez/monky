@@ -1,19 +1,19 @@
 import React from 'react'
-import { EditorManager } from '../managers/createEditorManager'
+import { EditorCoordinator } from '../coordinators/editorCoordinator'
 import { type MacroConfig } from '../../store/useMacroStore'
 import { t } from '../../lib/i18n'
 
 interface SettingsProps {
-  manager: EditorManager;
+  coordinator: EditorCoordinator;
   language: MacroConfig['language'];
 }
 
-export default function Settings({ manager }: SettingsProps) {
-  const { language } = manager.getState().settings;
+export default function Settings({ coordinator }: SettingsProps) {
+  const { language } = coordinator.getState().settings;
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLanguage = e.target.value as MacroConfig['language'];
-    manager.updateSettings({ language: newLanguage });
+    coordinator.updateSettings({ language: newLanguage });
   }
 
   return (

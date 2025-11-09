@@ -1,12 +1,12 @@
 import React from 'react'
-import { EditorManager } from '../managers/createEditorManager'
+import { EditorCoordinator } from '../coordinators/editorCoordinator'
 import { t } from '../../lib/i18n'
 
 
-export default function MacroItemEditor({ macro, onEdit, manager }:{ macro:any, onEdit:(m:any)=>void, manager: EditorManager }){
+export default function MacroItemEditor({ macro, onEdit, coordinator }:{ macro:any, onEdit:(m:any)=>void, coordinator: EditorCoordinator }){
   async function onDelete(){
-    if (manager) {
-      await manager.deleteMacro(macro.id);
+    if (coordinator) {
+      await coordinator.deleteMacro(String(macro.id));
     }
   }
 

@@ -30,12 +30,12 @@ vi.mock('../../lib/i18n', () => ({
   t: (key: string) => key,
 }))
 
-// Mock the new useEditorManager hook
-let mockManager: any;
+// Mock the new useEditorCoordinator hook
+let mockCoordinator: any;
 
-vi.mock('../managers/useEditorManager', () => ({
-  // This mock now returns a stable 'mockManager' instance.
-  useEditorManager: () => mockManager,
+vi.mock('../hooks/useEditorCoordinator', () => ({
+  // This mock now returns a stable 'mockCoordinator' instance.
+  useEditorCoordinator: () => mockCoordinator,
 }))
 
 vi.mock('../../store/useMacroStore', () => {
@@ -68,7 +68,7 @@ describe('Editor Component', () => {
     let subscribers: any[] = [];
     vi.clearAllMocks();
 
-    // Create a fresh, stable mock manager for each test.
+    // Create a fresh, stable mock coordinator for each test.
     const state = {
       editingMacro: null,
       macros: [
@@ -79,13 +79,13 @@ describe('Editor Component', () => {
       error: null,
     };
 
-    mockManager = {
-      setEditingMacro: vi.fn((macro) => { 
+    mockCoordinator = {
+      setEditingMacro: vi.fn((macro) => {
         state.editingMacro = macro;
         subscribers.forEach(cb => cb({ ...state })); // Notify subscribers with a new object
       }),
-      resetForm: vi.fn(() => { 
-        state.editingMacro = null; 
+      resetForm: vi.fn(() => {
+        state.editingMacro = null;
         subscribers.forEach(cb => cb({ ...state })); // Notify subscribers with a new object
       }),
       updateSettings: vi.fn(),
@@ -95,6 +95,17 @@ describe('Editor Component', () => {
         // Return an unsubscribe function
         return () => { subscribers = subscribers.filter(sub => sub !== callback); };
       }),
+      // Add coordinator-specific methods
+      createMacro: vi.fn(),
+      updateMacro: vi.fn(),
+      deleteMacro: vi.fn(),
+      getEditingMacro: vi.fn(),
+      attach: vi.fn(),
+      detach: vi.fn(),
+      enable: vi.fn(),
+      disable: vi.fn(),
+      isEnabled: vi.fn(() => true),
+      destroy: vi.fn(),
     };
   })
 
@@ -120,11 +131,11 @@ describe('Editor Component', () => {
       fireEvent.click(editButton)
     })
 
-    // Assert that the manager was called correctly
-    expect(mockManager.setEditingMacro).toHaveBeenCalledWith(mockManager.getState().macros[0])
+    // Assert that the coordinator was called correctly
+    expect(mockCoordinator.setEditingMacro).toHaveBeenCalledWith(mockCoordinator.getState().macros[0])
 
     // Assert UI update: The mock MacroForm should now display the JSON of the macro being edited.
-    expect(screen.getByTestId('editing-state')).toHaveTextContent(JSON.stringify(mockManager.getState().editingMacro))
+    expect(screen.getByTestId('editing-state')).toHaveTextContent(JSON.stringify(mockCoordinator.getState().editingMacro))
 
     // 3. User clicks "Done"
     const doneButton = screen.getByRole('button', { name: 'Done' })
@@ -132,8 +143,8 @@ describe('Editor Component', () => {
       fireEvent.click(doneButton)
     })
 
-    // Assert that the manager was called to reset the form
-    expect(mockManager.resetForm).toHaveBeenCalled()
+    // Assert that the coordinator was called to reset the form
+    expect(mockCoordinator.resetForm).toHaveBeenCalled()
 
     // Assert UI update: The mock MacroForm should have reverted to displaying 'null'.
     expect(screen.getByTestId('editing-state')).toHaveTextContent('null')

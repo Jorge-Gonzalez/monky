@@ -1,35 +1,35 @@
 import { useEffect, useState } from 'react'
 import MacroForm from './MacroForm'
 import MacroListEditor from './MacroListEditor'
-import { useEditorManager } from '../managers/useEditorManager'
+import { useEditorCoordinator } from '../hooks/useEditorCoordinator'
 import Settings from './Settings'
 import { t } from '../../lib/i18n'
 
 export default function Editor(){
-  const manager = useEditorManager();
-  const [state, setState] = useState(manager.getState());
+  const coordinator = useEditorCoordinator();
+  const [state, setState] = useState(coordinator.getState());
   
-  // Subscribe to manager state changes
+  // Subscribe to coordinator state changes
   useEffect(() => {
-    const unsubscribe = manager.subscribe(setState);
+    const unsubscribe = coordinator.subscribe(setState);
     return unsubscribe;
-  }, [manager]);
+  }, [coordinator]);
 
   const handleEdit = (macro: any) => {
-    manager.setEditingMacro(macro);
+    coordinator.setEditingMacro(macro);
   };
 
   const handleDone = () => {
-    manager.resetForm();
+    coordinator.resetForm();
   };
 
   return (
     <div className="page-container">
       <h1 className="page-title">{t('editor.title')}</h1>
-      <MacroForm editing={state.editingMacro} onDone={handleDone} manager={manager}/>
+      <MacroForm editing={state.editingMacro} onDone={handleDone} coordinator={coordinator}/>
       <hr className="divider" />
-      <Settings manager={manager} language={state.settings.language} />
-      <MacroListEditor macros={state.macros} onEdit={handleEdit} manager={manager} />
+      <Settings coordinator={coordinator} language={state.settings.language} />
+      <MacroListEditor macros={state.macros} onEdit={handleEdit} coordinator={coordinator} />
     </div>
   )
 }

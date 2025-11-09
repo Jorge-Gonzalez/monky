@@ -82,8 +82,8 @@ vi.mock('../../store/useMacroStore', () => {
   }
 })
 
-// Helper function to create a mock manager that implements the full EditorManager interface
-function createMockManager(addMacroFn = mockAddMacro, updateMacroFn = mockUpdateMacro) {
+// Helper function to create a mock coordinator that implements the full EditorCoordinator interface
+function createMockCoordinator(addMacroFn = mockAddMacro, updateMacroFn = mockUpdateMacro) {
   return {
     createMacro: addMacroFn,
     updateMacro: updateMacroFn,
@@ -99,12 +99,18 @@ function createMockManager(addMacroFn = mockAddMacro, updateMacroFn = mockUpdate
       error: null,
     })),
     subscribe: vi.fn(() => () => {}),
+    attach: vi.fn(),
+    detach: vi.fn(),
+    enable: vi.fn(),
+    disable: vi.fn(),
+    isEnabled: vi.fn(() => true),
+    destroy: vi.fn(),
   };
 }
 
 describe('MacroForm Component', () => {
   const mockOnDone = vi.fn()
-  let defaultMockManager: any
+  let defaultMockCoordinator: any
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -114,19 +120,19 @@ describe('MacroForm Component', () => {
     mockSubscribe.mockClear()
     mockDestroy.mockClear()
     editableInputCallback = null
-    
-    // Create a fresh mock manager for each test
-    defaultMockManager = createMockManager()
+
+    // Create a fresh mock coordinator for each test
+    defaultMockCoordinator = createMockCoordinator()
   })
 
   it('renders without crashing', () => {
-    render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+    render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
     // Check for a visible element instead of form role since form element might not have explicit role
     expect(screen.getByLabelText('macroForm.triggerLabel')).toBeInTheDocument()
   })
 
   it('renders form fields correctly', () => {
-    render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+    render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
     
     expect(screen.getByLabelText('macroForm.triggerLabel')).toBeInTheDocument()
     expect(screen.getByText('macroForm.textLabel')).toBeInTheDocument()
@@ -135,7 +141,7 @@ describe('MacroForm Component', () => {
   })
 
   it('allows user to input command', () => {
-    render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+    render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
     
     const commandInput = screen.getByLabelText('macroForm.triggerLabel')
     
@@ -145,7 +151,7 @@ describe('MacroForm Component', () => {
   })
 
   it('calls addMacro on submit when creating a new macro', async () => {
-    render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+    render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
     
     const commandInput = screen.getByLabelText('macroForm.triggerLabel')
     const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
@@ -168,7 +174,7 @@ describe('MacroForm Component', () => {
 
     // Use waitFor to handle the async nature of submission
     await waitFor(() => {
-      expect(defaultMockManager.createMacro).toHaveBeenCalledWith({
+      expect(defaultMockCoordinator.createMacro).toHaveBeenCalledWith({
         command: '/test',
         text: 'Test text',
         html: undefined, // Simple text doesn't need HTML
@@ -186,7 +192,7 @@ describe('MacroForm Component', () => {
       is_sensitive: true,
     }
 
-    render(<MacroForm editing={editingMacro} onDone={mockOnDone} manager={createMockManager()} />)
+    render(<MacroForm editing={editingMacro} onDone={mockOnDone} coordinator={createMockCoordinator()} />)
     
     expect(screen.getByRole('button', { name: 'macroForm.updateButton' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'macroForm.cancelButton' })).toBeInTheDocument()
@@ -196,7 +202,7 @@ describe('MacroForm Component', () => {
 
   it('calls updateMacro on submit when editing', async () => {
     const editingMacro = { id: 1, command: '/old', text: 'Old text' }
-    render(<MacroForm editing={editingMacro} onDone={mockOnDone} manager={createMockManager()} />)
+    render(<MacroForm editing={editingMacro} onDone={mockOnDone} coordinator={createMockCoordinator()} />)
 
     const commandInput = screen.getByLabelText('macroForm.triggerLabel')
     const updateButton = screen.getByRole('button', { name: 'macroForm.updateButton' })
@@ -230,7 +236,7 @@ describe('MacroForm Component', () => {
   })
 
   it('does not submit if command is empty', () => {
-    render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+    render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
     const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
 
     // Test with empty fields
@@ -239,7 +245,7 @@ describe('MacroForm Component', () => {
   })
 
   it('detects rich content and saves as HTML', async () => {
-    render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+    render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
     
     const commandInput = screen.getByLabelText('macroForm.triggerLabel')
     const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
@@ -261,7 +267,7 @@ describe('MacroForm Component', () => {
     fireEvent.click(submitButton)
 
     await waitFor(() => {
-      expect(defaultMockManager.createMacro).toHaveBeenCalledWith({
+      expect(defaultMockCoordinator.createMacro).toHaveBeenCalledWith({
         command: '/rich',
         text: 'Bold text',
         html: '<p><strong>Bold text</strong></p>',
@@ -276,7 +282,7 @@ describe('MacroForm Component', () => {
     const errorMessage = 'Duplicate command'
     mockAddMacro.mockReturnValue({ success: false, error: errorMessage })
 
-    render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+    render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
     fireEvent.change(screen.getByLabelText('macroForm.triggerLabel'), { target: { value: '/fail' } })
     
     // Simulate some text content
@@ -299,7 +305,7 @@ describe('MacroForm Component', () => {
   })
 
   it('initializes and destroys medium editor correctly', async () => {
-    const { unmount } = render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+    const { unmount } = render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
     
     // Wait for the effect to run
     await waitFor(() => {
@@ -314,7 +320,7 @@ describe('MacroForm Component', () => {
   // New tests for validation behavior
   describe('Form Validation', () => {
     it('disables submit button when command is empty', () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
 
       const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
       expect(submitButton).toBeDisabled()
@@ -322,7 +328,7 @@ describe('MacroForm Component', () => {
     })
 
     it('disables submit button when text is empty (valid command, no content)', () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
 
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/test' } })
@@ -333,7 +339,7 @@ describe('MacroForm Component', () => {
     })
 
     it('keeps submit button disabled when valid command is entered but no text content is added', () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       // Start with empty form - button should be disabled
       const submitButton = screen.getByRole('button', { name: 'macroForm.saveButton' })
@@ -352,7 +358,7 @@ describe('MacroForm Component', () => {
     })
 
     it('disables submit button when command has invalid prefix', () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: 'invalidcommand' } })
@@ -373,7 +379,7 @@ describe('MacroForm Component', () => {
     })
 
     it('enables submit button when both command and text are valid', () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/test' } })
@@ -395,7 +401,7 @@ describe('MacroForm Component', () => {
     })
 
     it('shows validation error for invalid prefix', () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: 'invalidcommand' } })
@@ -404,7 +410,7 @@ describe('MacroForm Component', () => {
     })
 
     it('shows red border for invalid command input', () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
 
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: 'invalidcommand' } })
@@ -414,7 +420,7 @@ describe('MacroForm Component', () => {
     })
 
     it('shows normal border for valid command input', () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
 
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/validcommand' } })
@@ -425,7 +431,7 @@ describe('MacroForm Component', () => {
     })
 
     it('prevents form submission with validation error message when command is invalid', async () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: 'invalidcommand' } })
@@ -456,7 +462,7 @@ describe('MacroForm Component', () => {
     })
 
     it('prevents form submission when text is empty', async () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/test' } })
@@ -475,7 +481,7 @@ describe('MacroForm Component', () => {
     })
 
     it('updates placeholder text based on first prefix', () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       expect(commandInput).toHaveAttribute('placeholder', 'e.g., /sig')
@@ -486,7 +492,7 @@ describe('MacroForm Component', () => {
   describe('Rich Text Support', () => {
     it('initializes medium-editor with rich text paste support', async () => {
       const MediumEditor = await import('medium-editor')
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       await waitFor(() => {
         expect(MediumEditor.default).toHaveBeenCalledWith(
@@ -505,7 +511,7 @@ describe('MacroForm Component', () => {
     })
 
     it('handles complex rich content with lists correctly', async () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/complex' } })
@@ -526,7 +532,7 @@ describe('MacroForm Component', () => {
 
       await waitFor(() => {
         // After refactoring, we assert against the manager's method
-        expect(defaultMockManager.createMacro).toHaveBeenCalledWith({
+        expect(defaultMockCoordinator.createMacro).toHaveBeenCalledWith({
           command: '/complex',
           text: expect.stringMatching(/La lista reloaded 3\s*\n\s*• uno\s*\n\s*• dos\s*\n\s*• tres\s*\n\s*Otra mas/),
           html: '<p><b>La lista reloaded 3</b></p><ul><li>uno</li><li>dos</li><li>tres</li></ul><p>Otra mas</p>',
@@ -537,7 +543,7 @@ describe('MacroForm Component', () => {
     })
 
     it('handles ordered lists correctly in HTML-to-text conversion', async () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/ordered' } })
@@ -557,7 +563,7 @@ describe('MacroForm Component', () => {
       fireEvent.click(submitButton)
 
       await waitFor(() => {
-        expect(defaultMockManager.createMacro).toHaveBeenCalledWith({
+        expect(defaultMockCoordinator.createMacro).toHaveBeenCalledWith({
           command: '/ordered',
           text: expect.stringContaining('1. First item\n2. Second item'),
           html: '<ol><li>First item</li><li>Second item</li></ol>',
@@ -568,7 +574,7 @@ describe('MacroForm Component', () => {
     })
 
     it('handles line breaks correctly in HTML-to-text conversion', async () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/linebreaks' } })
@@ -588,7 +594,7 @@ describe('MacroForm Component', () => {
       fireEvent.click(submitButton)
 
       await waitFor(() => {
-        expect(defaultMockManager.createMacro).toHaveBeenCalledWith({
+        expect(defaultMockCoordinator.createMacro).toHaveBeenCalledWith({
           command: '/linebreaks',
           text: expect.stringContaining('Esto es un parrafo\ndividido en dos lineas.\n\nY esto es otro parrafo aparte.'),
           html: '<p>Esto es un parrafo<br>dividido en dos lineas.</p><p>Y esto es otro parrafo aparte.</p>',
@@ -599,7 +605,7 @@ describe('MacroForm Component', () => {
     })
 
     it('falls back to plain text when HTML parsing fails', async () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/fallback' } })
@@ -619,7 +625,7 @@ describe('MacroForm Component', () => {
       fireEvent.click(submitButton)
 
       await waitFor(() => {
-        expect(defaultMockManager.createMacro).toHaveBeenCalledWith({
+        expect(defaultMockCoordinator.createMacro).toHaveBeenCalledWith({
           command: '/fallback',
           text: 'Just plain text without tags',
           html: undefined, // No HTML for plain text
@@ -630,7 +636,7 @@ describe('MacroForm Component', () => {
     })
 
     it('handles complex content with proper spacing after lists', async () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/spacing' } })
@@ -652,7 +658,7 @@ describe('MacroForm Component', () => {
       fireEvent.click(submitButton)
 
       await waitFor(() => {
-        expect(defaultMockManager.createMacro).toHaveBeenCalledWith({
+        expect(defaultMockCoordinator.createMacro).toHaveBeenCalledWith({
           command: '/spacing',
           text: expect.stringMatching(/La lista reloaded 3\s*\n\s*Cuidado pierde\s*\n\s*• uno\s*\n\s*• dos\s*\n\s*• tres\s*\n\s*Otra mas\s*\n\s*1\. algo\s*\n\s*2\. mas\s*\n\s*Esto es un parrafo\s*\n\s*dividido en dos lineas\.\s*\n\s*Y esto es otro parrafo aparte/),
           html: complexHTML,
@@ -663,7 +669,7 @@ describe('MacroForm Component', () => {
     })
 
     it('handles blockquotes with proper formatting and spacing', async () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/quote' } })
@@ -684,7 +690,7 @@ describe('MacroForm Component', () => {
       fireEvent.click(submitButton)
 
       await waitFor(() => {
-        expect(defaultMockManager.createMacro).toHaveBeenCalledWith({
+        expect(defaultMockCoordinator.createMacro).toHaveBeenCalledWith({
           command: '/quote',
           text: expect.stringMatching(/> This is a quoted text that spans multiple lines\.\s*\n\s*Regular paragraph after quote\./),
           html: blockquoteHTML,
@@ -695,7 +701,7 @@ describe('MacroForm Component', () => {
     })
 
     it('handles nested blockquotes with proper indentation', async () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/nested' } })
@@ -716,7 +722,7 @@ describe('MacroForm Component', () => {
       fireEvent.click(submitButton)
 
       await waitFor(() => {
-        expect(defaultMockManager.createMacro).toHaveBeenCalledWith({
+        expect(defaultMockCoordinator.createMacro).toHaveBeenCalledWith({
           command: '/nested',
           text: expect.stringMatching(/> Outer quote\s*\n\s*> Inner quote\s*\n\s*> Back to outer/),
           html: nestedBlockquoteHTML,
@@ -727,7 +733,7 @@ describe('MacroForm Component', () => {
     })
 
     it('handles blockquotes mixed with other content', async () => {
-      render(<MacroForm editing={null} onDone={mockOnDone} manager={defaultMockManager} />)
+      render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
       
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/mixed' } })
@@ -748,7 +754,7 @@ describe('MacroForm Component', () => {
       fireEvent.click(submitButton)
 
       await waitFor(() => {
-        expect(defaultMockManager.createMacro).toHaveBeenCalledWith({
+        expect(defaultMockCoordinator.createMacro).toHaveBeenCalledWith({
           command: '/mixed',
           text: expect.stringMatching(/Introduction paragraph\s*\n\s*> Important quote here\s*\n\s*• First item\s*\n\s*• Second item\s*\n\s*> Another quote\s*\n\s*Final paragraph/),
           html: mixedHTML,

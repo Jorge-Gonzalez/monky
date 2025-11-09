@@ -41,7 +41,7 @@
 
 /* Custom medium-editor toolbar positioning */
 .medium-editor-toolbar {
-  z-index: 1000;
+  z-index: 2147483648 !important; /* Above modal (2147483647) */
 }
 
 /* Essential typography styles for medium-editor */

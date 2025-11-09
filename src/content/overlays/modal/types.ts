@@ -28,4 +28,5 @@ export interface ModalNavigationProps {
 export interface BaseModalViewProps {
   onClose: () => void;
   onViewChange: (view: ModalView) => void;
+  modalContainerRef?: React.RefObject<HTMLDivElement>;
 }
