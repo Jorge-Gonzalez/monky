@@ -1,26 +1,20 @@
 /**
- * SearchableListView - Composed infrastructure component
+ * SearchableListView - Layer 2 Coordinator Component
  *
- * Coordinates MultiSelectList, FuzzySearchField, and ActionToolbar
- * with smart keyboard navigation. Remains domain-agnostic.
+ * This component demonstrates the 3-layer architecture pattern:
+ * - Layer 1: Primitives (MultiSelectList, FuzzySearchField, ActionToolbar)
+ * - Layer 2: THIS - Coordinator that expresses component interactions
+ * - Layer 3: Domain-specific usage (MacroListView, etc.)
  *
- * Keyboard Smart Mode (Context-aware) - enabled by default:
- * - Search field starts focused
- * - Arrow keys navigate list visually without losing search focus
- * - Enter activates the highlighted item
- * - Tab switches between search and list
- * - Up from first item stays at first item (no wrap)
- *
- * Traditional Mode (smartNavigation: false):
- * - Arrow keys only work when list has focus
- * - Use Tab to switch focus from search to list
- * - Navigation wraps around (up from first goes to last)
+ * The coordination logic lives in useSearchListCoordination hook, making this
+ * component a thin, declarative presentation of how components work together.
  */
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { MultiSelectList, MultiSelectListProps, SelectionConfig } from './MultiSelectList';
-import { FuzzySearchField, SearchAlgorithm, DataSource } from './FuzzySearchField';
+import React, { useMemo } from 'react';
+import { MultiSelectList, SelectionConfig } from './MultiSelectList';
+import { FuzzySearchField, SearchAlgorithm } from './FuzzySearchField';
 import { ActionToolbar, ToolbarButton, ToolbarPosition } from './ActionToolbar';
+import { useSearchListCoordination } from './useSearchListCoordination';
 
 /**
  * Configuration for SearchableListView behavior
@@ -95,10 +89,12 @@ export interface SearchableListViewProps<T> {
 }
 
 /**
- * SearchableListView - Composed infrastructure component
+ * SearchableListView - Thin coordinator component
  *
- * Provides a complete search + list + toolbar experience with
- * smart keyboard navigation while remaining domain-agnostic.
+ * This component demonstrates good Layer 2 design:
+ * - Minimal state (all in coordination hook)
+ * - Clear component composition
+ * - Explicit data flow through coordination API
  */
 export function SearchableListView<T>({
   items,
@@ -112,241 +108,83 @@ export function SearchableListView<T>({
   onActivate,
   onSearchChange
 }: SearchableListViewProps<T>) {
-  // Merge with defaults
-  const {
-    search: searchConfig = {},
-    list: listConfig = {},
-    toolbar: toolbarConfig = {},
-    keyboard: keyboardConfig = {}
-  } = config;
+
+  // ============================================================================
+  // CONFIGURATION
+  // ============================================================================
 
   const {
     algorithm = 'fuzzy',
-    debounce = 150,
+    debounce = 200,
     minChars = 0,
     placeholder = 'Search...',
     clearButton = true
-  } = searchConfig;
+  } = config.search || {};
 
   const {
-    emptyState = 'No items found',
-    selectionConfig = { multiSelect: true, wrapNavigation: true }
-  } = listConfig;
+    emptyState = <div className="empty-state">No items found</div>,
+    selectionConfig = { mode: 'single', toggleOnClick: true }
+  } = config.list || {};
 
   const {
     position = 'footer',
     enableShortcuts = true
-  } = toolbarConfig;
+  } = config.toolbar || {};
 
   const {
     focusOnMount = true,
     wrapNavigation = true,
     smartNavigation = true
-  } = keyboardConfig;
+  } = config.keyboard || {};
 
-  // State
-  const [filteredItems, setFilteredItems] = useState<T[]>(items);
-  const [selectedItems, setSelectedItems] = useState<T[]>([]);
-  const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
-  const [focusedIndex, setFocusedIndex] = useState<number>(-1); // -1 means no item focused yet
-  const [currentFocus, setCurrentFocus] = useState<'search' | 'list'>('search');
+  // ============================================================================
+  // COORDINATION HOOK
+  // All complex state management and interaction logic lives here
+  // ============================================================================
 
-  // Refs
-  const containerRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
+  const coordination = useSearchListCoordination({
+    items,
+    itemKey,
+    smartNavigation,
+    wrapNavigation,
+    onSelect,
+    onActivate,
+    onSearchChange
+  });
 
-  // Helper to get item key
-  const getItemKey = useCallback((item: T): string | number => {
-    if (typeof itemKey === 'function') {
-      return itemKey(item);
-    }
-    return item[itemKey] as string | number;
-  }, [itemKey]);
+  const { state, listRef, handlers } = coordination;
 
-  // Handle search results
-  const handleSearch = useCallback((query: string, results: T[]) => {
-    setFilteredItems(results);
+  // ============================================================================
+  // DERIVED STATE
+  // ============================================================================
 
-    // Auto-select first item when search results change (only if there's an actual query)
-    if (query && results.length > 0) {
-      const firstItem = results[0];
-      const firstKey = getItemKey(firstItem);
-      setSelectedKeys([firstKey]);
-      setSelectedItems([firstItem]);
-      setFocusedIndex(0); // Set focused index to first item since we're selecting it
-      if (onSelect) {
-        onSelect([firstKey], [firstItem]);
+  // Enhance renderItem to include visual focus indicator (smart mode)
+  const enhancedRenderItem = useMemo(() => {
+    return (item: T, index: number) => {
+      const isSmartFocused = smartNavigation &&
+                            state.mode === 'searching' &&
+                            state.focusedIndex === index;
+      const isNavigating = state.mode === 'navigating' && state.focusedIndex === index;
+
+      const content = renderItem(item, index);
+
+      // Wrap with focus indicator if needed
+      if (isSmartFocused || isNavigating) {
+        return <div className="search-focused-item">{content}</div>;
       }
-    } else if (!query) {
-      // Initial state or cleared search - reset selection
-      setSelectedKeys([]);
-      setSelectedItems([]);
-      setFocusedIndex(-1); // Reset to no item focused
-    } else {
-      // Query exists but no results
-      setSelectedKeys([]); // Reset selection when no results
-      setSelectedItems([]); // Reset selected items when no results
-      setFocusedIndex(-1); // Reset to no item focused when no results
-    }
 
-    if (onSearchChange) {
-      onSearchChange(query, results);
-    }
-  }, [onSearchChange, getItemKey, onSelect]);
+      return <div className="">{content}</div>;
+    };
+  }, [renderItem, smartNavigation, state.mode, state.focusedIndex]);
 
-  // Handle selection changes from list
-  const handleListSelect = useCallback((keys: (string | number)[], items: T[]) => {
-    setSelectedKeys(keys);
-    setSelectedItems(items);
-    if (onSelect) {
-      onSelect(keys, items);
-    }
-  }, [onSelect]);
-
-  // Handle activation from list or keyboard
-  const handleActivation = useCallback((item: T) => {
-    if (onActivate) {
-      onActivate(item);
-    }
-  }, [onActivate]);
-
-  // Handle when user navigates up from first item in list
-  const handleNavigationEscape = useCallback(() => {
-    setCurrentFocus('search');
-    setFocusedIndex(-1); // Reset to no item focused
-    searchInputRef.current?.focus();
-  }, []);
-
-  // Smart keyboard handler for the container
-  const handleContainerKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
-    // Determine which component should handle the key
-    const activeElement = document.activeElement;
-    const isSearchActive = activeElement === searchInputRef.current;
-    const isListActive = listRef.current?.contains(activeElement as Node);
-
-    // If list has focus, let it handle its own navigation
-    if (isListActive && currentFocus === 'list') {
-      return;
-    }
-
-    // Smart mode: Search is focused but controls list visually (only if smartNavigation is enabled)
-    if (smartNavigation && (isSearchActive || currentFocus === 'search')) {
-      switch (e.key) {
-        case 'ArrowDown':
-          e.preventDefault();
-          if (filteredItems.length > 0) {
-            let newIndex: number;
-            // If no item focused yet, start at first item
-            if (focusedIndex === -1) {
-              newIndex = 0;
-            } else {
-              const nextIndex = focusedIndex + 1;
-              if (nextIndex >= filteredItems.length) {
-                newIndex = wrapNavigation ? 0 : focusedIndex;
-              } else {
-                newIndex = nextIndex;
-              }
-            }
-
-            // Update focus and select the item
-            if (newIndex !== focusedIndex) {
-              setFocusedIndex(newIndex);
-              const item = filteredItems[newIndex];
-              const key = getItemKey(item);
-              handleListSelect([key], [item]);
-            }
-          }
-          break;
-
-        case 'ArrowUp':
-          e.preventDefault();
-          if (filteredItems.length > 0) {
-            // If no item focused yet, start at first item
-            if (focusedIndex === -1) {
-              setFocusedIndex(0);
-              const item = filteredItems[0];
-              const key = getItemKey(item);
-              handleListSelect([key], [item]);
-            } else if (focusedIndex === 0) {
-              // Already at top - keep first item selected but clear visual focus
-              // This allows the user to "escape" back to search while keeping the selection
-              setFocusedIndex(-1);
-              // Keep selection as is - don't clear selectedKeys/selectedItems
-              // Search field already has focus in smart mode, just clear the visual focus indicator
-            } else {
-              // Navigate up
-              const newIndex = focusedIndex - 1;
-              setFocusedIndex(newIndex);
-              const item = filteredItems[newIndex];
-              const key = getItemKey(item);
-              handleListSelect([key], [item]);
-            }
-          }
-          break;
-
-        case 'Enter':
-          e.preventDefault();
-          if (filteredItems[focusedIndex]) {
-            handleActivation(filteredItems[focusedIndex]);
-          }
-          break;
-
-        case 'Tab':
-          // Switch focus to list
-          e.preventDefault();
-          setCurrentFocus('list');
-          listRef.current?.focus();
-          break;
-      }
-    }
-  }, [filteredItems, focusedIndex, currentFocus, handleActivation, wrapNavigation, smartNavigation, getItemKey, handleListSelect, onSelect]);
-
-  // When user clicks in the list, update current focus
-  const handleListFocus = useCallback(() => {
-    setCurrentFocus('list');
-  }, []);
-
-  // Scroll focused item into view when navigating from search (smart mode only)
-  useEffect(() => {
-    if (smartNavigation && currentFocus === 'search' && filteredItems.length > 0 && focusedIndex >= 0) {
-      // Find the focused item element and scroll it into view
-      const listElement = listRef.current;
-      if (listElement) {
-        const itemElements = listElement.querySelectorAll('.list-item');
-        const focusedElement = itemElements[focusedIndex] as HTMLElement;
-        if (focusedElement) {
-          focusedElement.scrollIntoView({
-            block: 'nearest',
-            behavior: 'smooth'
-          });
-        }
-      }
-    }
-  }, [focusedIndex, currentFocus, filteredItems.length, smartNavigation]);
-
-  // Focus search on mount if configured
-  useEffect(() => {
-    if (focusOnMount) {
-      searchInputRef.current?.focus();
-    }
-  }, [focusOnMount]);
-
-  // Enhanced render item that adds focused state when navigating from search
-  const enhancedRenderItem = useCallback((item: T, index: number) => {
-    const isFocusedFromSearch = smartNavigation && currentFocus === 'search' && index === focusedIndex;
-    return (
-      <div className={isFocusedFromSearch ? 'search-focused-item' : ''}>
-        {renderItem(item, index)}
-      </div>
-    );
-  }, [renderItem, currentFocus, focusedIndex, smartNavigation]);
+  // ============================================================================
+  // RENDER - Pure presentation, no logic
+  // ============================================================================
 
   return (
     <div
-      ref={containerRef}
       className={`searchable-list-view ${className}`}
-      onKeyDown={handleContainerKeyDown}
+      onKeyDown={handlers.onContainerKeyDown}
     >
       {/* Search Field */}
       <div className="searchable-list-search">
@@ -359,7 +197,7 @@ export function SearchableListView<T>({
           clearButton={clearButton}
           dataSource={items}
           autoFocus={focusOnMount}
-          onSearch={handleSearch}
+          onSearch={handlers.onSearch}
           className="search-field"
         />
       </div>
@@ -368,19 +206,19 @@ export function SearchableListView<T>({
       <div
         className="searchable-list-container"
         ref={listRef}
-        onFocus={handleListFocus}
+        onFocus={handlers.onListFocus}
       >
         <MultiSelectList
-          items={filteredItems}
+          items={state.filteredItems}
           itemKey={itemKey}
           renderItem={enhancedRenderItem}
           emptyState={emptyState}
           selectionConfig={selectionConfig}
-          selection={selectedKeys}
-          keyboardNav={!smartNavigation || currentFocus === 'list'}
-          onSelect={handleListSelect}
-          onActivate={handleActivation}
-          onNavigationEscape={smartNavigation ? handleNavigationEscape : undefined}
+          selection={state.selectedKeys}
+          keyboardNav={!smartNavigation || state.mode === 'listFocused'}
+          onSelect={handlers.onListSelect}
+          onActivate={onActivate}
+          onNavigationEscape={smartNavigation ? handlers.onNavigationEscape : undefined}
           className="list"
         />
       </div>
@@ -391,8 +229,8 @@ export function SearchableListView<T>({
           <ActionToolbar
             buttons={buttons}
             position={position}
-            selectionCount={selectedItems.length}
-            selectedItems={selectedItems}
+            selectionCount={state.selectedItems.length}
+            selectedItems={state.selectedItems}
             enableShortcuts={enableShortcuts}
             className="toolbar"
           />

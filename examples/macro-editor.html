@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Macro Editor Example</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f5f7fa;
+      padding: 20px;
+    }
+
+    #root {
+      max-width: 1200px;
+      margin: 0 auto;
+      min-height: calc(100vh - 40px);
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    /* CSS Variables for theming */
+    :root {
+      /* Colors */
+      --color-primary: #007bff;
+      --color-primary-light: #e7f3ff;
+      --color-focus: #0056b3;
+      --color-success: #28a745;
+      --color-danger: #dc3545;
+
+      /* Surfaces */
+      --surface-primary: #ffffff;
+      --surface-secondary: #f8f9fa;
+      --surface-tertiary: #e9ecef;
+      --surface-hover: #f1f3f5;
+
+      /* Text */
+      --text-primary: #212529;
+      --text-secondary: #6c757d;
+      --text-tertiary: #adb5bd;
+
+      /* Borders */
+      --border-primary: #dee2e6;
+
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+
+      /* Font sizes */
+      --font-size-xs: 11px;
+      --font-size-sm: 13px;
+      --font-size-md: 14px;
+      --font-size-lg: 16px;
+      --font-size-xl: 18px;
+
+      /* Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    /* Command Input Styles */
+    .command-input-container {
+      margin-bottom: 16px;
+    }
+
+    .command-input-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: var(--font-size-md);
+      color: var(--text-primary);
+    }
+
+    .command-input {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: var(--font-size-md);
+      border: 2px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      transition: border-color 0.2s;
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    }
+
+    .command-input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+
+    .command-input-error {
+      border-color: var(--color-danger);
+    }
+
+    .command-input-error-message {
+      margin: 6px 0 0 0;
+      font-size: var(--font-size-sm);
+      color: var(--color-danger);
+    }
+
+    .command-input-hint {
+      margin: 6px 0 0 0;
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+
+    /* Rich Text Editor Styles */
+    .rich-text-editor {
+      min-height: 150px;
+      padding: 12px;
+      border: 2px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      background: var(--surface-primary);
+      font-size: var(--font-size-md);
+      line-height: 1.6;
+      transition: border-color 0.2s;
+    }
+
+    .rich-text-editor:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+
+    .rich-text-editor:empty:before {
+      content: attr(data-placeholder);
+      color: var(--text-tertiary);
+    }
+
+    /* Toggle Field Styles */
+    .toggle-field {
+      margin-bottom: 16px;
+    }
+
+    .toggle-field-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle-field-input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .toggle-field-text {
+      font-size: var(--font-size-md);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .toggle-field-description {
+      margin: 6px 0 0 28px;
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+
+    /* Macro Editor View Styles */
+    .macro-editor-view {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .macro-editor-content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .macro-editor-label {
+      font-weight: 600;
+      font-size: var(--font-size-md);
+      color: var(--text-primary);
+    }
+
+    .macro-editor-error {
+      margin: 6px 0 0 0;
+      font-size: var(--font-size-sm);
+      color: var(--color-danger);
+    }
+
+    .macro-editor-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .macro-editor-submit,
+    .macro-editor-cancel {
+      padding: 10px 24px;
+      font-size: var(--font-size-md);
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .macro-editor-submit {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    .macro-editor-submit:hover:not(:disabled) {
+      background: var(--color-focus);
+    }
+
+    .macro-editor-submit:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .macro-editor-cancel {
+      background: #6c757d;
+      color: white;
+    }
+
+    .macro-editor-cancel:hover:not(:disabled) {
+      background: #5a6268;
+    }
+
+    /* Medium Editor Overrides */
+    .medium-editor-toolbar {
+      background: #333;
+      border-radius: var(--radius-md);
+    }
+
+    .medium-editor-button {
+      background: transparent;
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .medium-editor-button:hover {
+      background: #555;
+    }
+
+    .medium-editor-button-active {
+      background: var(--color-primary);
+    }
+
+    /* Page header */
+    .page-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: var(--spacing-lg);
+      text-align: center;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .page-header h1 {
+      font-size: 24px;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .page-header p {
+      font-size: var(--font-size-sm);
+      opacity: 0.9;
+    }
+
+    /* Loading state */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      min-height: 400px;
+      font-size: var(--font-size-lg);
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div class="page-header">
+      <h1>✏️ Macro Editor Example</h1>
+      <p>Interactive demo of the 3-layer architecture macro editor components</p>
+    </div>
+    <div class="loading">Loading React application...</div>
+  </div>
+
+  <script type="module" src="./macro-editor.tsx"></script>
+</body>
+</html>

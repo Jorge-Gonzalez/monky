@@ -36,3 +36,45 @@ export type {
   SearchableListViewProps,
   SearchableListConfig
 } from './SearchableListView';
+
+export { useSearchListCoordination } from './useSearchListCoordination';
+export type {
+  CoordinationState,
+  CoordinationConfig,
+  CoordinationAPI,
+  NavigationMode
+} from './useSearchListCoordination';
+
+export { RichTextEditor } from './RichTextEditor';
+export type {
+  RichTextEditorProps,
+  RichTextEditorRef,
+  EditorToolbarButton
+} from './RichTextEditor';
+
+export { CommandInput } from './CommandInput';
+export type {
+  CommandInputProps,
+  ValidationResult
+} from './CommandInput';
+
+export { ToggleField } from './ToggleField';
+export type {
+  ToggleFieldProps
+} from './ToggleField';
+
+export { MacroEditorView } from './MacroEditorView';
+export type {
+  MacroEditorViewProps,
+  MacroEditorConfig
+} from './MacroEditorView';
+
+export { useMacroEditorCoordination } from './useMacroEditorCoordination';
+export type {
+  EditorCoordinationState,
+  EditorCoordinationConfig,
+  EditorCoordinationAPI,
+  EditorMode,
+  MacroData,
+  ValidationErrors
+} from './useMacroEditorCoordination';

@@ -48,6 +48,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           editor: 'src/editor/index.html',
           // Example pages
           macroList: 'examples/macro-list.html',
+          macroEditor: 'examples/macro-editor.html',
         },
       },
     },

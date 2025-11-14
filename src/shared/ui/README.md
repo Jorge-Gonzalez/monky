@@ -221,6 +221,255 @@ See [SearchableListView.md](./SearchableListView.md) for complete documentation.
 
 ---
 
+## Coordination Hook Pattern
+
+`SearchableListView` demonstrates the **3-Layer Architecture** using a coordination hook pattern:
+
+**Layer 1: Primitives** - Simple, focused components
+- `MultiSelectList` - List with selection
+- `FuzzySearchField` - Search input
+- `ActionToolbar` - Button toolbar
+
+**Layer 2: Coordinators** - Express component interactions
+- `useSearchListCoordination` - State machine for search/list/toolbar coordination
+- `SearchableListView` - Thin presentation layer using the coordination hook
+
+**Layer 3: Domain** - Your application-specific usage
+- `MacroListView`, `UserListView`, etc.
+
+### Why Coordination Hooks?
+
+When composing multiple interactive components, coordination logic can become complex with multiple interdependent state variables. The coordination hook pattern solves this by:
+
+1. **Encapsulating coordination logic** in a reusable hook
+2. **State machine pattern** for clear mode transitions
+3. **Named coordination rules** as declarative callbacks
+4. **Clean API** for the presentation layer
+
+### Example: Using the Coordination Hook
+
+```tsx
+import { useSearchListCoordination } from '@/shared/ui';
+
+function CustomSearchableList<T>({ items, ...props }) {
+  // All coordination logic in one hook
+  const coordination = useSearchListCoordination({
+    items,
+    itemKey: 'id',
+    smartNavigation: true,
+    wrapNavigation: true,
+    onSelect: (keys, items) => console.log('Selected:', items),
+    onActivate: (item) => console.log('Activated:', item),
+    onSearchChange: (query, results) => console.log('Search:', query, results)
+  });
+
+  const { state, listRef, handlers } = coordination;
+
+  // Thin presentation - just wire up the components
+  return (
+    <div onKeyDown={handlers.onContainerKeyDown}>
+      <FuzzySearchField
+        searchKeys={props.searchKeys}
+        dataSource={items}
+        onSearch={handlers.onSearch}
+      />
+      <div ref={listRef} onFocus={handlers.onListFocus}>
+        <MultiSelectList
+          items={state.filteredItems}
+          selection={state.selectedKeys}
+          onSelect={handlers.onListSelect}
+          onNavigationEscape={handlers.onNavigationEscape}
+        />
+      </div>
+      <ActionToolbar
+        selectedItems={state.selectedItems}
+        buttons={props.buttons}
+      />
+    </div>
+  );
+}
+```
+
+### Coordination State Machine
+
+The coordination hook implements a state machine with clear mode transitions:
+
+**Modes:**
+- `idle` - No interaction yet
+- `searching` - User typing in search field
+- `navigating` - User navigating list from search field (smart mode)
+- `listFocused` - List has keyboard focus (traditional mode)
+
+**State Transitions:**
+```
+idle → searching (user types)
+searching → navigating (arrow keys pressed)
+navigating → searching (arrow up from first item)
+searching → listFocused (Tab pressed)
+listFocused → searching (arrow up from first item)
+```
+
+**Coordination Rules:**
+1. When search results change → auto-select first item
+2. When list selection changes → update selected items
+3. When list gains focus → switch to listFocused mode
+4. When navigating up from first item → return to search mode
+
+### Benefits
+
+1. **Simplicity**: SearchableListView becomes a thin (~240 lines) presentation layer
+2. **Reusability**: Coordination logic can be shared across similar components
+3. **Testability**: Coordination rules are isolated and testable
+4. **Clarity**: State machine makes behavior explicit and predictable
+5. **Extensibility**: Easy to add new coordination rules or modes
+
+### Creating Your Own Coordinator
+
+To create a coordinator for different components:
+
+1. **Define coordination state** - What needs to be tracked?
+2. **Identify modes** - What interaction states exist?
+3. **Define coordination rules** - How do components affect each other?
+4. **Implement state machine** - How do modes transition?
+5. **Provide clean API** - What does the presentation layer need?
+
+See [`useSearchListCoordination.ts`](./useSearchListCoordination.ts) for a complete reference implementation.
+
+---
+
+## Macro Editor Components
+
+The library also includes form editing primitives and coordinators for building macro editors.
+
+### Layer 1: Form Primitives
+
+**1. RichTextEditor**
+
+Medium Editor wrapper for rich text content:
+
+```tsx
+import { RichTextEditor, RichTextEditorRef } from '@/shared/ui';
+
+const editorRef = useRef<RichTextEditorRef>(null);
+
+<RichTextEditor
+  ref={editorRef}
+  value={htmlContent}
+  onChange={(html) => setContent(html)}
+  placeholder="Enter content..."
+  containerRef={modalRef}  // For toolbar positioning in modals
+/>
+
+// Programmatic API
+editorRef.current?.getHTML()
+editorRef.current?.setHTML('<p>New content</p>')
+editorRef.current?.clear()
+editorRef.current?.focus()
+```
+
+**2. CommandInput**
+
+Prefix-validated input for commands:
+
+```tsx
+import { CommandInput } from '@/shared/ui';
+
+<CommandInput
+  value={command}
+  onChange={setCommand}
+  prefixes={['/', '#', '@']}
+  label="Command"
+  placeholder="e.g., /sig"
+  maxLength={50}
+  showValidation={true}
+/>
+```
+
+**3. ToggleField**
+
+Boolean toggle with label and description:
+
+```tsx
+import { ToggleField } from '@/shared/ui';
+
+<ToggleField
+  checked={isSensitive}
+  onChange={setIsSensitive}
+  label="Encrypt this macro"
+  description="Sensitive macros are encrypted in storage"
+/>
+```
+
+### Layer 2: MacroEditorView Coordinator
+
+Complete macro editor using the coordination pattern:
+
+```tsx
+import { MacroEditorView } from '@/shared/ui';
+
+<MacroEditorView
+  prefixes={['/', '#']}
+  initialData={editingMacro}  // For editing existing macro
+  onSubmit={async (data, isEdit) => {
+    // data contains: command, text, html, contentType, is_sensitive
+    await saveMacro(data);
+    return { success: true };
+  }}
+  onCancel={() => setEditing(null)}
+  config={{
+    command: {
+      label: 'Trigger Command',
+      placeholder: 'e.g., /sig',
+      maxLength: 50
+    },
+    editor: {
+      label: 'Macro Content',
+      placeholder: 'Enter your macro content...'
+    },
+    sensitive: {
+      label: 'Mark as sensitive',
+      description: 'Sensitive macros will be encrypted'
+    },
+    submit: {
+      createLabel: 'Create Macro',
+      updateLabel: 'Update Macro',
+      cancelLabel: 'Cancel'
+    }
+  }}
+/>
+```
+
+**Features:**
+- Auto-detects rich formatting (HTML vs plain text)
+- Extracts semantic plain text from HTML (lists, line breaks, blockquotes)
+- Validates command prefixes
+- State machine for create/edit modes
+- Form validation and error display
+
+**Coordination Hook:**
+
+For custom editors, use the coordination hook directly:
+
+```tsx
+import { useMacroEditorCoordination } from '@/shared/ui';
+
+const { state, editorRef, handlers } = useMacroEditorCoordination({
+  prefixes: ['/', '#'],
+  initialData: editingMacro,
+  onSubmit: async (data, isEdit) => {
+    // Handle save
+    return { success: true };
+  }
+});
+
+// state: { mode, command, htmlContent, plainText, isSensitive, errors, isValid, isDirty }
+// handlers: { onCommandChange, onContentChange, onSensitiveChange, onSubmit, onCancel, onReset }
+```
+
+See [examples/MacroEditorExample.tsx](./examples/MacroEditorExample.tsx) for a complete interactive demo.
+
+---
+
 ## Composition Pattern (Using Primitives)
 
 If SearchableListView doesn't fit your needs, compose primitives directly:
