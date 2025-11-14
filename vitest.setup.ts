@@ -1,6 +1,9 @@
 import { vi } from 'vitest'
 import '@testing-library/jest-dom'
 
+// Mock scrollIntoView - not implemented in jsdom
+Element.prototype.scrollIntoView = vi.fn()
+
 // Mock `window.matchMedia` for the `useTheme` hook.
 // This is necessary because JSDOM, the test environment, doesn't implement it.
 vi.stubGlobal(
