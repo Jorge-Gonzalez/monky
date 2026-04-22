@@ -1,71 +1,95 @@
-# Monky - Text Macro Expansion Extension
+# Monky — Text Macro Expansion Extension
 
-Version 0.4.1
+> Version 0.4.1
 
-Monky is a browser extension that boosts your productivity by allowing you to define and use text macros (snippets) that expand automatically as you type. It supports both plain and rich text, giving you the power to insert anything from a simple signature to a formatted list with a few keystrokes.
+Monky is a browser extension that boosts productivity by letting you define text macros that expand automatically as you type. It supports plain and rich text, works across any editable field on the web, and is built around a keyboard-centric interface.
 
-## ✨ Features
+---
 
--   **Rich Text Macros:** Create macros with bold, italics, lists, and links using a WYSIWYG editor.
--   **Configurable Triggers:** Customize which prefix characters (like `/` or `;`) trigger macro expansion.
--   **Smart Replacement Modes:** Choose between automatic replacement on space/enter or manual replacement with a commit key.
--   **Per-Site Control:** Easily enable or disable the extension for specific websites.
--   **Theme Support:** Switch between light, dark, and system themes for a comfortable experience.
--   **Fuzzy Search:** Quickly find the macro you need in the popup search.
+## Features
 
-## 🛠️ Tech Stack
+- **Rich text macros** — create macros with bold, italics, lists, and links using a WYSIWYG editor
+- **Configurable triggers** — customize which prefix characters (like `/` or `;`) activate expansion
+- **Smart replacement modes** — automatic expansion on space/enter, or manual commit with a key
+- **Fuzzy search** — Tab triggers a full macro search overlay with fuzzy filtering, positioned at the cursor
+- **Marker-based undo** — Ctrl+Z restores the original command; undo metadata survives DOM operations
+- **Per-site control** — enable or disable the extension for specific websites
+- **Theme support** — light, dark, and system themes
 
--   **Framework:** React with Vite
--   **Language:** TypeScript
--   **State Management:** Zustand
--   **Styling:** Tailwind CSS
--   **Testing:** Vitest & React Testing Library
--   **Rich Text Editor:** MediumEditor
+---
 
-## 🚀 Getting Started
+## Tech stack
+
+```
+Framework       React + Vite
+Language        TypeScript
+State           Zustand
+Styling         Custom semantic CSS (replaced Tailwind)
+Testing         Vitest + React Testing Library · 430+ tests
+Rich text       MediumEditor + TipTap (macro editor)
+```
+
+---
+
+## Architecture
+
+The codebase follows a coordinator/manager pattern with strict separation of concerns:
+
+- **macroDetector** — detection logic only
+- **macroReplacement** — text replacement and undo tracking
+- **macroCore** — composes detection and replacement into a unified interface
+- **SuggestionsCoordinator / SearchCoordinator** — overlay lifecycle and keyboard interaction
+- **optionsManager + optionsCoordinator** — Zustand state wrapped in a public API
+
+Undo is handled by a marker-based system: every macro insertion wraps content in a transparent `<span>` with metadata in data attributes. This survives DOM operations and enables reliable undo even after the user edits around inserted content.
+
+The CSS system (`layout-semantic.css`) is a custom architecture built as a replacement for Tailwind. Classes describe layout intent rather than implementation — for example: `"horizontal blocks equal-square wrap-allowed snug selectable-group"`. It is being developed as a standalone concept.
+
+---
+
+## Getting started
 
 ### Prerequisites
 
--   Node.js (v18 or higher)
--   npm
+- Node.js v18 or higher
+- npm
 
 ### Development
 
-For the best development experience with live reloading for the extension, follow these steps:
+```bash
+npm install
+npm run dev:full
+```
 
-1.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
+Then load the `dist/` folder as an unpacked extension in `chrome://extensions`.
 
-2.  **Start the development servers:**
-    This command starts both the Vite HMR server and a custom live-reload server.
-    ```bash
-    npm run dev:full
-    ```
-
-3.  **Load the extension in your browser:**
-    -   Open Chrome/Brave and navigate to `chrome://extensions`.
-    -   Enable "Developer mode".
-    -   Click "Load unpacked" and select the `dist` folder from this project.
-
-The extension will now automatically reload when you make changes to the source code.
-
-### Production Build
-
-To create an optimized production build of the extension, run:
+### Production build
 
 ```bash
 npm run build
 ```
 
-This will generate the final files in the `dist` directory, ready for packaging or loading into the browser.
+---
 
-##  NPM Scripts
+## Scripts
 
--   `npm run dev:full`: Starts the development server with live reload.
--   `npm run dev:stop`: Stops all development servers gracefully.
--   `npm run build`: Creates a production-ready build in the `dist/` folder.
--   `npm run test`: Runs the full test suite using Vitest.
--   `npm run lint`: Lints the codebase using ESLint.
--   `npm run format`: Formats all files using Prettier.
+| Command | Description |
+|---|---|
+| `npm run dev:full` | Development server with live reload |
+| `npm run dev:stop` | Stop all development servers |
+| `npm run build` | Production build in `dist/` |
+| `npm run test` | Full test suite |
+| `npm run lint` | ESLint |
+| `npm run format` | Prettier |
+
+---
+
+## Status
+
+Active development. Core expansion, undo, fuzzy search, rich text editor, and per-site control complete.
+
+---
+
+## License
+
+MIT
