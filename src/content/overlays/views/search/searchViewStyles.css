@@ -118,6 +118,17 @@
   font-variant-numeric: tabular-nums;
 }
 
+.modal-command-item .modal-command-name {
+  color: var(--text-accent);
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.modal-command-item .modal-command-description {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
 /* Keyboard hints - uses shared .kbd pattern */
 .macro-search-kbd {
   padding: 2px var(--spacing-xs);

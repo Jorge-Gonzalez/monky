@@ -8,64 +8,154 @@ import { useScrollIntoView } from '../hooks/useScrollIntoView';
 import { useAutoFocus } from '../../../hooks/useAutoFocus';
 import { MacroSearchInput } from './MacroSearchInput';
 import { MacroSearchResults } from './MacroSearchResults';
+import { MacroCommandResults } from './MacroCommandResults';
 import { MacroSearchFooter } from './MacroSearchFooter';
 import { BaseModalViewProps } from '../../../modal/types';
+import { parseModalQuery, ModalCommand } from '../modalCommands';
 
 interface MacroSearchViewProps extends BaseModalViewProps {
   onSelectMacro: (macro: Macro) => void;
 }
 
-/**
- * MacroSearchView - Search and select macros
- *
- * This is the refactored version of MacroSearchOverlay, without the backdrop/modal wrapper.
- * The modal shell is now handled by ModalShell component.
- */
 export function MacroSearchView({
   onClose,
+  onViewChange,
+  onNavigateToEditor,
   onSelectMacro,
 }: MacroSearchViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
 
-  // Get macros from store
   const macros = useMacroStore(state => state.macros);
+  const prefixes = useMacroStore(state => state.config.prefixes);
+  const deleteMacro = useMacroStore(state => state.deleteMacro);
 
-  const filteredMacros = useMacroSearch(macros, searchQuery);
-  const navigation = useListNavigation(filteredMacros.length);
+  const parsed = parseModalQuery(searchQuery, prefixes);
 
-  // Reset state when view is mounted
-  useEffect(() => {
-    setSearchQuery('');
-    navigation.reset();
-  }, []);
+  // For normal search, filter against the raw query.
+  // For parametric mode, filter against the param (e.g. '/no').
+  const macroSearchQuery =
+    parsed.mode === 'search' ? searchQuery :
+    parsed.mode === 'parametric' ? parsed.param :
+    '';
+  const filteredMacros = useMacroSearch(macros, macroSearchQuery);
 
-  const handleSelect = useCallback(() => {
-    const selectedMacro = filteredMacros[navigation.selectedIndex];
-    if (selectedMacro) {
-      onSelectMacro(selectedMacro);
-      onClose();
-    }
-  }, [filteredMacros, navigation.selectedIndex, onSelectMacro, onClose]);
+  const showMacros = parsed.mode === 'search' || parsed.mode === 'parametric';
+  const showCommands = parsed.mode === 'discovery';
+  const visibleCommands = showCommands ? parsed.commands : [];
+
+  const listLength = showMacros ? filteredMacros.length : visibleCommands.length;
+  const navigation = useListNavigation(listLength);
+
+  useEffect(() => { navigation.reset(); }, [parsed.mode]);
+  useEffect(() => { setSearchQuery(''); navigation.reset(); }, []);
+
+  // --- Handlers ---
 
   const handleMacroSelect = useCallback((macro: Macro) => {
     onSelectMacro(macro);
     onClose();
   }, [onSelectMacro, onClose]);
 
-  // Apply side-effect hooks
+  const handleParametricSelect = useCallback((macro: Macro, command: ModalCommand) => {
+    setSearchQuery('');
+    if (command.id === 'edit') {
+      onNavigateToEditor(macro);
+    } else if (command.id === 'delete') {
+      deleteMacro(macro.id);
+    }
+  }, [onNavigateToEditor, deleteMacro]);
+
+  const handleCommandSelect = useCallback((command: ModalCommand) => {
+    setSearchQuery('');
+    switch (command.id) {
+      case 'new':      onNavigateToEditor(undefined); break;
+      case 'settings': onViewChange('settings'); break;
+      // Parametric commands: selecting from discovery list enters awaiting mode
+      case 'edit':
+      case 'delete':
+        setSearchQuery(command.command);
+        break;
+    }
+  }, [onNavigateToEditor, onViewChange]);
+
+  const handleSelect = useCallback(() => {
+    if (parsed.mode === 'instant') {
+      handleCommandSelect(parsed.command);
+    } else if (parsed.mode === 'discovery') {
+      const cmd = visibleCommands[navigation.selectedIndex];
+      if (cmd) handleCommandSelect(cmd);
+    } else if (parsed.mode === 'parametric') {
+      const macro = filteredMacros[navigation.selectedIndex];
+      if (macro) handleParametricSelect(macro, parsed.command);
+    } else if (parsed.mode === 'search') {
+      const macro = filteredMacros[navigation.selectedIndex];
+      if (macro) handleMacroSelect(macro);
+    }
+  }, [parsed, visibleCommands, filteredMacros, navigation.selectedIndex,
+      handleCommandSelect, handleParametricSelect, handleMacroSelect]);
+
   useAutoFocus(inputRef, true);
   useScrollIntoView(resultsRef, navigation.selectedIndex, '.macro-search-item.selected');
   useKeyboardNavigation({
     isActive: true,
-    itemCount: filteredMacros.length,
+    itemCount: listLength,
     selectedIndex: navigation.selectedIndex,
     onSelect: handleSelect,
     onClose,
     onNavigateUp: navigation.navigateUp,
     onNavigateDown: navigation.navigateDown,
   });
+
+  // --- Render helpers ---
+
+  const renderResults = () => {
+    if (parsed.mode === 'instant') {
+      return (
+        <MacroCommandResults
+          commands={[parsed.command]}
+          selectedIndex={0}
+          onSelect={handleCommandSelect}
+          resultsRef={resultsRef}
+        />
+      );
+    }
+    if (parsed.mode === 'discovery') {
+      return (
+        <MacroCommandResults
+          commands={visibleCommands}
+          selectedIndex={navigation.selectedIndex}
+          onSelect={handleCommandSelect}
+          resultsRef={resultsRef}
+        />
+      );
+    }
+    if (parsed.mode === 'awaiting') {
+      return (
+        <div ref={resultsRef} className="macro-search-results">
+          <div className="macro-search-empty modal-command-hint">
+            Type /{' '}or ; followed by a command name
+          </div>
+        </div>
+      );
+    }
+    // 'search' | 'parametric'
+    return (
+      <MacroSearchResults
+        macros={filteredMacros}
+        selectedIndex={navigation.selectedIndex}
+        searchQuery={macroSearchQuery}
+        onSelect={parsed.mode === 'parametric'
+          ? (m) => handleParametricSelect(m, parsed.command)
+          : handleMacroSelect}
+        resultsRef={resultsRef}
+      />
+    );
+  };
+
+  const footerCount = showCommands ? visibleCommands.length : filteredMacros.length;
+  const isCommandMode = parsed.mode !== 'search';
 
   return (
     <div className="macro-search-view">
@@ -74,16 +164,11 @@ export function MacroSearchView({
         onChange={setSearchQuery}
         inputRef={inputRef}
       />
-
-      <MacroSearchResults
-        macros={filteredMacros}
-        selectedIndex={navigation.selectedIndex}
-        searchQuery={searchQuery}
-        onSelect={handleMacroSelect}
-        resultsRef={resultsRef}
+      {renderResults()}
+      <MacroSearchFooter
+        count={footerCount}
+        isCommandMode={isCommandMode}
       />
-
-      <MacroSearchFooter count={filteredMacros.length} />
     </div>
   );
 }

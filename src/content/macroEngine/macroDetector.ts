@@ -5,7 +5,7 @@ import { replaceText } from './replacement/macroReplacement'
 import { Macro, CoreState, EditableEl } from "../../types"
 import { isPrintableKey, UNSUPPORTED_KEYS } from "./keyUtils"
 import { defaultMacroConfig } from "../../config/defaults"
-import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro } from "../systemMacros/systemMacros"
+import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro, parseParametricBuffer, handleParametricSystemCommand } from "../systemMacros/systemMacros"
 import { DetectorActions } from "../actions/detectorActions"
 import { createMacroReplacement } from "./replacement/macroReplacement"
 
@@ -134,11 +134,43 @@ export function createMacroDetector(actions: DetectorActions) {
     cancelDetection()
   }
 
+  // Returns true when the buffer is a valid parametric system command or continuation.
+  // e.g. ':edit', ':edit/', ':edit/nota' — but NOT ':editx'.
+  function isParametricContinuation(buffer: string): boolean {
+    for (const sm of SYSTEM_MACROS) {
+      if (!sm.isParametric) continue
+      if (!buffer.startsWith(sm.command)) continue
+      const rest = buffer.slice(sm.command.length)
+      if (!rest) return true
+      if (config.prefixes.some(p => rest.startsWith(p))) return true
+    }
+    return false
+  }
+
+  function commitParametricSystem(
+    systemMacroId: string,
+    param: string,
+    sel: { start: number; end: number } | null
+  ): void {
+    if (!activeEl) return
+    const currentSel = sel || getSelection(activeEl)
+    if (!currentSel) { cancelDetection(); return }
+    const endPos = currentSel.end
+    const commandStart = Math.max(0, endPos - state.buffer.length)
+    const deleteMacro: Macro = { id: 'temp-delete', command: '', text: '', contentType: 'text/plain' }
+    replaceText(activeEl, deleteMacro, commandStart, endPos)
+    handleParametricSystemCommand(systemMacroId, param)
+    actions.onMacroCommitted(systemMacroId)
+    cancelDetection()
+  }
+
   function scheduleConfirmIfExact(sel: { start: number; end: number } | null): boolean {
     clearTimer()
 
     if (config.prefixes.includes(state.buffer)) return false
-    if (!isExact(state.buffer, macros)) return false
+    const exactMacro = getExact(state.buffer, macros)
+    if (!exactMacro) return false
+    if (exactMacro.isParametric) return false  // wait for the parameter
 
     const isPrefix = macros.some(m => m.command.startsWith(state.buffer) && m.command !== state.buffer)
 
@@ -222,7 +254,18 @@ export function createMacroDetector(actions: DetectorActions) {
         e.preventDefault();
         return;
       }
-      
+
+      // For parametric commands, Tab shows suggestions filtered by the current parameter
+      const parametricResult = parseParametricBuffer(state.buffer, config.prefixes)
+      if (parametricResult) {
+        e.preventDefault()
+        e.stopPropagation()
+        clearBlurTimer()
+        const coords = getCursorCoordinates()
+        actions.onShowAllRequested(parametricResult.param, coords || undefined)
+        return
+      }
+
       e.preventDefault();
       e.stopPropagation();
       clearBlurTimer()
@@ -249,6 +292,12 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Handle commit keys in manual mode
     if (config.useCommitKeys && state.buffer && COMMIT_KEYS.has(e.key)) {
+      const parametricResult = parseParametricBuffer(state.buffer, config.prefixes)
+      if (parametricResult) {
+        e.preventDefault()
+        commitParametricSystem(String(parametricResult.systemMacro.id), parametricResult.param, sel)
+        return
+      }
       const handled = actions.onCommitRequested(state.buffer)
 
       if (handled) {
@@ -275,7 +324,6 @@ export function createMacroDetector(actions: DetectorActions) {
     // Handle Backspace
     if (e.key === "Backspace") {
       clearTimer()
-      const prevState = { ...state }
       
       let currentState = state
       if (!state.active && !state.buffer) {
@@ -297,8 +345,12 @@ export function createMacroDetector(actions: DetectorActions) {
         }
       }
       
-      state = updateStateOnKey(currentState, e.key, macros, config.prefixes)
-      
+      state = updateStateOnKey(currentState, e.key, macros, [...config.prefixes, ':'])
+
+      if (!state.active && isParametricContinuation(state.buffer)) {
+        state = { active: true, buffer: state.buffer }
+      }
+
       if (state.active) {
         actions.onDetectionUpdated(state.buffer)
       } else {
@@ -309,8 +361,24 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Handle printable characters
     if (isPrintableKey(e)) {
-      const prevBuffer = state.buffer
-      state = updateStateOnKey(state, e.key, macros, config.prefixes)
+      const effectivePrefixes = [...config.prefixes, ':']
+
+      // Parametric commit: Space/Enter while buffer is a complete parametric command
+      if (state.active && COMMIT_KEYS.has(e.key)) {
+        const parametricResult = parseParametricBuffer(state.buffer, config.prefixes)
+        if (parametricResult) {
+          e.preventDefault()
+          commitParametricSystem(String(parametricResult.systemMacro.id), parametricResult.param, sel)
+          return
+        }
+      }
+
+      state = updateStateOnKey(state, e.key, macros, effectivePrefixes)
+
+      // Keep active for valid parametric continuations that updateStateOnKey killed
+      if (!state.active && isParametricContinuation(state.buffer)) {
+        state = { active: true, buffer: state.buffer }
+      }
 
       if (!config.useCommitKeys) {
         if (state.active) {

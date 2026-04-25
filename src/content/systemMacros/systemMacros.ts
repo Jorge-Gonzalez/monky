@@ -1,115 +1,127 @@
 import { Macro } from "../../types"
-import { searchCoordinator, suggestionsCoordinator } from "../overlays";
+import { modalCoordinator } from "../overlays";
+import { useMacroStore } from "../../store/useMacroStore";
 
-/**
- * System macros for keyboard shortcuts and special functionality.
- * These are built-in macros that provide keyboard-first features.
- */
 export const SYSTEM_MACROS: Macro[] = [
   {
     id: 'system-search-overlay',
     command: '/?',
-    text: '', // No replacement text - this triggers an action
+    text: '',
     isSystemMacro: true,
     description: 'Open macro search overlay'
   },
   {
-    id: 'system-help',
-    command: '/help',
-    text: '', // No replacement text - this triggers an action
+    id: 'system-new-macro',
+    command: ':new',
+    text: '',
     isSystemMacro: true,
-    description: 'Show keyboard shortcuts help'
+    description: 'Create a new macro'
   },
   {
-    id: 'system-list-macros',
-    command: '/macros',
-    text: '', // No replacement text - this triggers an action
+    id: 'system-edit-macro',
+    command: ':edit',
+    text: '',
     isSystemMacro: true,
-    description: 'List all available macros'
+    isParametric: true,
+    description: 'Edit a macro — :edit/command'
   },
   {
-    id: 'system-toggle-new-suggestions',
-    command: '/>',
-    text: '', // No replacement text - this triggers an action
+    id: 'system-delete-macro',
+    command: ':delete',
+    text: '',
     isSystemMacro: true,
-    description: 'Toggle suggestions overlay visibility'
-  }
+    isParametric: true,
+    description: 'Delete a macro — :delete/command'
+  },
+  {
+    id: 'system-settings',
+    command: ':settings',
+    text: '',
+    isSystemMacro: true,
+    description: 'Open settings'
+  },
 ]
 
-/**
- * Checks if a macro is a system macro that should trigger special functionality
- * instead of text replacement.
- */
 export function isSystemMacro(macro: Macro): boolean {
   return macro.isSystemMacro === true || SYSTEM_MACROS.some(sm => sm.id === macro.id)
 }
 
+export function isParametricSystemMacro(macro: Macro): boolean {
+  return !!macro.isParametric
+}
+
 /**
- * Handles system macro actions.
- * @param macro The system macro to execute
- * @returns true if the system macro was handled, false otherwise
+ * Handles non-parametric system macros (exact command match).
  */
-
-// Refactor: These actions need to be moved to the coordinatiors of their respective overlays.
-
 export function handleSystemMacro(macro: Macro): boolean {
-  if (!isSystemMacro(macro)) {
-    return false
-  }
+  if (!isSystemMacro(macro)) return false
 
   switch (macro.id) {
     case 'system-search-overlay':
-      showSearchOverlay()
+      modalCoordinator.show('search')
       return true
-    
-    case 'system-help':
-      showKeyboardHelp()
+
+    case 'system-new-macro':
+      modalCoordinator.show('editor')
+      modalCoordinator.navigateToEditor(undefined)
       return true
-    
-    case 'system-list-macros':
-      showMacroList()
+
+    case 'system-settings':
+      modalCoordinator.show('settings')
       return true
-    
-    case 'system-toggle-new-suggestions':
-      // toggleSuggestionsOverlay()
-      return true
-    
+
+    // Parametric macros are handled by handleParametricSystemCommand, not here
+    case 'system-edit-macro':
+    case 'system-delete-macro':
+      return false
+
     default:
-      console.warn('Unknown system macro:', macro.id)
       return false
   }
 }
 
-function showSearchOverlay() {
-  console.log('🔍 Search overlay triggered!')
+/**
+ * Handles parametric system commands: :edit/command or :delete/command.
+ * Called by the detector when a full parametric buffer is committed.
+ */
+export function handleParametricSystemCommand(commandId: string, param: string): boolean {
+  const { macros, deleteMacro } = useMacroStore.getState()
+  const target = macros.find(m => m.command === param)
 
-  // Show the actual search overlay
-  searchCoordinator.show();
-}
+  switch (commandId) {
+    case 'system-edit-macro':
+      if (target) {
+        modalCoordinator.show('editor')
+        modalCoordinator.navigateToEditor(target)
+      }
+      return true
 
-function showKeyboardHelp() {
-  console.log('❓ Keyboard help triggered!')
-  
-  const helpText = `
-Keyboard Shortcuts:
-• /? - Open search overlay
-• /help - Show this help
-• /macros - List all macros
-• /> - Toggle suggestions overlay
-• Escape - Close overlays (when implemented)
-  `.trim()
-}
+    case 'system-delete-macro':
+      if (target) {
+        deleteMacro(target.id)
+      }
+      return true
 
-function showMacroList() {
-  console.log('📋 Macro list triggered!')
-}
-
-function toggleSuggestionsOverlay() {
-  console.log('🔄 Toggle suggestions overlay triggered!')
-
-  if (suggestionsCoordinator.isVisible()) {
-    suggestionsCoordinator.hide();
-  } else {
-    suggestionsCoordinator.showAll();
+    default:
+      return false
   }
+}
+
+/**
+ * Parses a parametric buffer like ':edit/nota' into { systemMacro, param }.
+ * Returns null if the buffer is not a valid parametric system command.
+ */
+export function parseParametricBuffer(
+  buffer: string,
+  prefixes: string[]
+): { systemMacro: Macro; param: string } | null {
+  const parametric = SYSTEM_MACROS.filter(m => m.isParametric)
+  for (const sm of parametric) {
+    if (!buffer.startsWith(sm.command)) continue
+    const rest = buffer.slice(sm.command.length)
+    if (rest && prefixes.some(p => rest.startsWith(p))) {
+      return { systemMacro: sm, param: rest }
+    }
+  }
+  return null
 }

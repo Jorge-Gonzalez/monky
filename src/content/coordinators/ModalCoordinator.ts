@@ -157,10 +157,16 @@ export function createModalCoordinator(
     }
   };
 
+  const navigateToEditor = (macro?: Macro): void => {
+    if (!isEnabled) return;
+    manager.navigateToEditor(macro);
+  };
+
   const coordinator: ModalCoordinator = {
     show,
     hide,
     switchView,
+    navigateToEditor,
     isVisible,
     getCurrentView,
     setOnMacroSelected,
@@ -208,6 +214,7 @@ export interface ModalCoordinator {
   show: (view?: ModalView, x?: number, y?: number) => void;
   hide: () => void;
   switchView: (view: ModalView) => void;
+  navigateToEditor: (macro?: Macro) => void;
   isVisible: () => boolean;
   getCurrentView: () => ModalView | null;
   setOnMacroSelected: (callback: (macro: Macro, element: EditableEl) => void) => void;

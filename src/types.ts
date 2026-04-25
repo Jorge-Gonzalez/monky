@@ -7,6 +7,7 @@ export type Macro = {
   html?: string
   contentType?: 'text/plain' | 'text/html'
   isSystemMacro?: boolean
+  isParametric?: boolean
   description?: string
 }
 

@@ -17,21 +17,14 @@ import EDITOR_VIEW_STYLES from '../views/macroEditor/editorViewStyles.css?raw';
 import MEDIUM_EDITOR_STYLES from 'medium-editor/dist/css/medium-editor.css?raw';
 import MEDIUM_EDITOR_THEME from 'medium-editor/dist/css/themes/default.css?raw';
 
-/**
- * Unified modal manager that handles all modal views
- */
 export function createModalManager() {
-  const renderer = createReactRenderer('monky-modal', true); // Enable shadow DOM
+  const renderer = createReactRenderer('monky-modal', true);
   const focusManager = createFocusManager();
 
-  // Combine all styles - semantic layout first, then component styles
-  // For Shadow DOM, we only need to strip out the #monky-modal root container styles
-  const adaptModalStyles = (css: string): string => {
-    // Remove the #monky-modal root container block (only needed for regular DOM positioning)
-    return css
+  const adaptModalStyles = (css: string): string =>
+    css
       .replace(/#monky-modal\s*\{[^}]*\}/g, '')
       .replace(/#monky-modal\s+>\s+\*\s*\{[^}]*\}/g, '');
-  };
 
   const allStyles = [
     LAYOUT_SEMANTIC_STYLES,
@@ -44,46 +37,41 @@ export function createModalManager() {
   ].join('\n');
 
   let styleInjector: ReturnType<typeof createStyleInjector>;
-
   let isVisible = false;
   let currentView: ModalView = 'search';
-  let position = { x: 0, y: 0 };
-
-  // Callback for when a macro is selected - should be set by coordinator
+  let editingMacro: Macro | undefined = undefined;
   let onMacroSelectedCallback: ((macro: Macro, element: EditableEl) => void) | null = null;
 
   const handleMacroSelection = (macro: Macro): void => {
     const targetElement = focusManager.getSavedState()?.element ?? null;
-
-    if (!targetElement) {
-      focusManager.clear();
-      return;
-    }
-
+    if (!targetElement) { focusManager.clear(); return; }
     const editableElement = getActiveEditable(targetElement);
-
-    if (!editableElement) {
-      focusManager.clear();
-      return;
-    }
-
+    if (!editableElement) { focusManager.clear(); return; }
     focusManager.clear();
-
-    // If we have a callback registered (from the detector), use it for proper undo tracking
     if (onMacroSelectedCallback) {
       onMacroSelectedCallback(macro, editableElement);
     }
+    document.dispatchEvent(new CustomEvent('macro-search-selected', { detail: { macro } }));
+  };
 
-    const event = new CustomEvent('macro-search-selected', {
-      detail: { macro },
-    });
-    document.dispatchEvent(event);
+  const navigateToEditor = (macro?: Macro): void => {
+    editingMacro = macro;
+    currentView = 'editor';
+    if (isVisible) renderModal();
+  };
+
+  const switchView = (view: ModalView): void => {
+    if (currentView === view) return;
+    if (view !== 'editor') editingMacro = undefined;
+    currentView = view;
+    if (isVisible) renderModal();
   };
 
   const renderView = (): React.ReactElement => {
     const viewProps = {
       onClose: hide,
       onViewChange: switchView,
+      onNavigateToEditor: navigateToEditor,
     };
 
     switch (currentView) {
@@ -98,7 +86,10 @@ export function createModalManager() {
       case 'settings':
         return React.createElement(SettingsView, viewProps);
       case 'editor':
-        return React.createElement(MacroEditorView, viewProps);
+        return React.createElement(MacroEditorView, {
+          ...viewProps,
+          initialMacro: editingMacro,
+        });
       default:
         return React.createElement(MacroSearchView, {
           ...viewProps,
@@ -111,64 +102,41 @@ export function createModalManager() {
   };
 
   const renderModal = (): void => {
-    const viewContent = renderView();
-
     renderer.render(
       React.createElement(ModalShell, {
         isVisible: true,
         onClose: hide,
         currentView,
         onViewChange: switchView,
-        children: viewContent,
+        children: renderView(),
       })
     );
   };
 
   const initialize = (): void => {
     renderer.initialize();
-    // Create style injector with shadow root after renderer is initialized
     const shadowRoot = renderer.getShadowRoot();
     styleInjector = createStyleInjector('monky-modal-styles', allStyles, shadowRoot);
     styleInjector.inject();
   };
 
   const show = (view?: ModalView, x?: number, y?: number): void => {
-    if (view) {
-      currentView = view;
-    }
-
-    if (x !== undefined && y !== undefined) {
-      position = { x, y };
-    }
-
+    if (view) currentView = view;
+    if (x !== undefined && y !== undefined) {/* position unused but kept for API compat */}
     focusManager.saveFocus();
     isVisible = true;
-
     renderModal();
   };
 
   const hide = (): void => {
     if (!isVisible) return;
-
     isVisible = false;
     renderer.clear();
     focusManager.restoreFocus();
   };
 
-  const switchView = (view: ModalView): void => {
-    if (currentView === view) return;
-
-    currentView = view;
-    if (isVisible) {
-      renderModal();
-    }
-  };
-
   const getVisibility = (): boolean => isVisible;
-
-  const getCurrentView = (): ModalView | null => {
-    return isVisible ? currentView : null;
-  };
+  const getCurrentView = (): ModalView | null => isVisible ? currentView : null;
 
   const destroy = (): void => {
     hide();
@@ -182,15 +150,7 @@ export function createModalManager() {
 
   initialize();
 
-  return {
-    show,
-    hide,
-    switchView,
-    isVisible: getVisibility,
-    getCurrentView,
-    destroy,
-    setOnMacroSelected,
-  };
+  return { show, hide, switchView, navigateToEditor, isVisible: getVisibility, getCurrentView, destroy, setOnMacroSelected };
 }
 
 export type ModalManager = ReturnType<typeof createModalManager>;
