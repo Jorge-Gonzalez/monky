@@ -13,7 +13,7 @@ function isSystemDark(): boolean {
 }
 
 export function useThemeColors(
-  ref: React.RefObject<HTMLElement>,
+  ref: React.RefObject<HTMLElement | null>,
   theme: ThemeMode,
   isEnabled: boolean
 ) {

@@ -28,7 +28,7 @@ export function ModalShell({
   const theme = useMacroStore(state => state.config.theme);
 
   // Apply global modal keyboard handlers
-  useModalKeyboard(isVisible, onClose);
+  useModalKeyboard(isVisible, onClose, currentView, onViewChange);
 
   // Apply theme colors to modal
   useThemeColors(modalRef, theme, isVisible);

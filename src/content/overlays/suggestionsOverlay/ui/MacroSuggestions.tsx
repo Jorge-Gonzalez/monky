@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useMemo, useEffect, useState, useLayoutEffect } from 'react';
+import { useRef, useCallback, useMemo, useEffect, useState, useLayoutEffect } from 'react';
 import fuzzysort from 'fuzzysort';
 import { Macro } from '../../../../types';
 import { useThemeColors } from '../../../../theme/hooks/useThemeColors';
@@ -34,7 +34,7 @@ export function MacroSuggestions({
   const prevFilteredRef = useRef<Macro[] | null>(null);
 
   const theme = useMacroStore(state => state.config.theme);
-  useThemeColors(containerRef as React.RefObject<HTMLElement>, theme, isVisible);
+  useThemeColors(containerRef, theme, isVisible);
 
   const filteredMacros = useMemo(() => {
     if (!macros || macros.length === 0) {

@@ -12,7 +12,7 @@
 [x] Fix: the popup scrollbar is not themed.
 [x] Fix; the popup dark theme is different than the search overlay, color consistencies and common color palette is required.
 [x] The new macro button in the popup is missing.
-[ ] Unify all the interface popup and editor into the overlay modal currently used only to search. So they are going to be new views accessible by two buttons: create/edit macros and options.
+[x] Unify all the interface popup and editor into the overlay modal currently used only to search. So they are going to be new views accessible by two buttons: create/edit macros and options.
 [ ] In the search modal it should be little label indicating the current number of macros in the results.
 [x] The undo should be able to delete an immediately replaced macro. That should be the undo behavior after a macro commit.
 [x] Fix: I found an issue in while working with the tests: the space is not triggering a macro if there is another macro that starts with the same prefix.
@@ -24,7 +24,7 @@
 [x] Fix:The macro suggestions is missing the styles
 [x] Fix:The macro suggestions should trim long macros in the preview area to fit into the one line of the popup.
 [x] The macro suggestions row of buttons are trimming short command and long command indistinctly, it should prioritize trimming the longest ones, providing space to read the short standard ones. Please note that this trimming is accounting for edge cases. The macros tend to be short mostly.
-[ ] Fix:The search overlay is no longer a search overlay it has now integrated three tabs the search, the editor,and the settings. (should the name of the overlay change in the code? Something like main overlay) Now it needs to be able to navigate among tabs with the left and right arrow keys.
+[x] Fix:The search overlay is no longer a search overlay it has now integrated three tabs the search, the editor,and the settings. (should the name of the overlay change in the code? Something like main overlay) Now it needs to be able to navigate among tabs with the left and right arrow keys.
 [ ] Fix:The icon is not visible in the toolbar in dark mode.
 [ ] Fix:the main overlay does not have the icon or banding
 [ ] Fix:In the search tab it may be reflected the number of matching macros.
