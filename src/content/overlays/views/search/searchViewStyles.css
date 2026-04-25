@@ -113,6 +113,11 @@
   background-color: var(--bg-primary);
 }
 
+.macro-search-count {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
 /* Keyboard hints - uses shared .kbd pattern */
 .macro-search-kbd {
   padding: 2px var(--spacing-xs);

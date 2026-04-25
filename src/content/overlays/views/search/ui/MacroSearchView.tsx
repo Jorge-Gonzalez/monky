@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { Macro } from '../../../../../types';
 import { useMacroStore } from '../../../../../store/useMacroStore';
 import { useMacroSearch } from '../hooks/useMacroSearch';
@@ -23,7 +23,6 @@ interface MacroSearchViewProps extends BaseModalViewProps {
  */
 export function MacroSearchView({
   onClose,
-  onViewChange,
   onSelectMacro,
 }: MacroSearchViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -84,7 +83,7 @@ export function MacroSearchView({
         resultsRef={resultsRef}
       />
 
-      <MacroSearchFooter />
+      <MacroSearchFooter count={filteredMacros.length} />
     </div>
   );
 }

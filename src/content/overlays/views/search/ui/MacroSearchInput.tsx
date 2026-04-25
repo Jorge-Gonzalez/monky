@@ -3,7 +3,7 @@ import React from 'react';
 interface MacroSearchInputProps {
   value: string;
   onChange: (value: string) => void;
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export function MacroSearchInput({ value, onChange, inputRef }: MacroSearchInputProps) {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 export function useScrollIntoView(
-  containerRef: React.RefObject<HTMLElement>,
+  containerRef: React.RefObject<HTMLElement | null>,
   selectedIndex: number,
   selector: string = '.selected'
 ) {
