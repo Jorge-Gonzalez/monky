@@ -28,7 +28,7 @@ const POPUP_ESTIMATED_HEIGHT = 75; // Adjust based on your typical popup height
 
 export function createSuggestionsOverlayManager(macros: Macro[]) {
   const renderer = createReactRenderer('macro-suggestions');
-  const styleInjector = createStyleInjector('macro-suggestions-styles', SUGGESTIONS_OVERLAY_STYLES);
+  let styleInjector: ReturnType<typeof createStyleInjector>;
 
   let currentMacros = macros;
   let savedState: SavedState | null = null;
@@ -133,10 +133,6 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
   };
 
   const restoreTimers = new Set<number>();
-  const clearRestoreTimers = () => {
-    restoreTimers.forEach(t => clearTimeout(t));
-    restoreTimers.clear();
-  };
 
   const restoreFocus = (element: EditableEl | null, delay = 10) => {
     if (!element || !document.body.contains(element)) {
@@ -169,8 +165,10 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
   };
 
   const initialize = (): void => {
-    styleInjector.inject();
     renderer.initialize();
+    const shadowRoot = renderer.getShadowRoot();
+    styleInjector = createStyleInjector('macro-suggestions-styles', SUGGESTIONS_OVERLAY_STYLES, shadowRoot);
+    styleInjector.inject();
   };
 
   const showAll = (x?: number, y?: number, buffer?: string): void => {
@@ -247,7 +245,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
 
   const hide = (): void => {
     if (!overlayState.isVisible) return;
-    const elementToFocus = savedState?.element;
+    const elementToFocus = savedState?.element ?? null;
     const wasShowAllMode = overlayState.mode === 'showAll';
     
     overlayState = {
@@ -277,7 +275,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
   const destroy = (): void => {
     hide();
     renderer.destroy();
-    styleInjector.remove();
+    styleInjector?.remove();
   };
 
   const setOnMacroSelected = (callback: (macro: Macro, buffer: string, element: EditableEl) => void) => {

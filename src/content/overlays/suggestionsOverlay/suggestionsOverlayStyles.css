@@ -1,19 +1,15 @@
 #macro-suggestions {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.5;
+  position: fixed !important;
+  z-index: 2147483646 !important;
 }
 
 #macro-suggestions * {
   box-sizing: border-box;
 }
 
-#macro-suggestions {
-  position: fixed !important;
-  z-index: 2147483646 !important;
-}
-
 .macro-suggestions-container {
-  transition: top 0.1s ease-out;
   background-color: var(--bg-primary);
   border-radius: 8px;
   box-shadow: 0 10px 25px -5px var(--shadow-color);
@@ -74,7 +70,7 @@
   min-width: 0;
 }
 
-  .macro-suggestions-commands-list {
+.macro-suggestions-commands-list {
   display: flex;
   padding: 4px;
   gap: 4px;
@@ -82,8 +78,10 @@
 }
 
 .macro-suggestions-command-item {
-  flex-grow: 1;
-  padding: 3px 6px 3px 6px;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 8em;
+  padding: 3px 6px;
   border: 1px solid transparent;
   border-radius: 6px;
   background-color: var(--bg-secondary);
@@ -131,7 +129,6 @@
   color: var(--text-secondary);
   min-height: 2.5em;
 }
-
 
 .macro-suggestions-footer {
   padding: 6px 12px;
