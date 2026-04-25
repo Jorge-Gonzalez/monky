@@ -144,6 +144,7 @@ export function MacroEditorExample() {
                 value={demoContent}
                 onChange={setDemoContent}
                 placeholder="Type some rich text..."
+                fixedToolbar={true}
               />
               <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
                 <button
@@ -201,7 +202,8 @@ export function MacroEditorExample() {
               },
               editor: {
                 label: 'Macro Content',
-                placeholder: 'Enter your macro content with rich formatting...'
+                placeholder: 'Enter your macro content with rich formatting...',
+                fixedToolbar: true
               },
               sensitive: {
                 label: 'Mark as sensitive',

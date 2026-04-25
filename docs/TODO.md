@@ -1,9 +1,7 @@
 ### TODO
 
 [x] Los prefijos pueden ser una lista especifiaca al menos una cantidad especifica.
-[ ] Exportar e importar macros. ver si existe algun formato estandard.
-[ ] Trabajar la experiencia de usario. imagen controles
-    por ej la seleccion de habilitar y deshabilitar.
+[ ] Implement, import and export macros. What is the most standard format.
 [x] fuzzy find
 [x] autocompletion list with tab
 [x] convert the popup in a side panel
@@ -21,7 +19,17 @@
 [x] Fix: The undo test are currently made to be used with commit keys but currently the detector is working in auto mode.
 [?] Fix: in auto mode the undo does not get cleared and repeats the command after the previous undo.
 [x] Search overlay is not restoring focus not managing undo.
-[ ] When the user adds content to the buffer the macro suggestions should update its content accordingly.
+[ ] When the user adds content to the buffer and the macro suggestions is displaying, the macro suggestions should update its content accordingly, fine grining the suggestions.
+[x] Fix:The macro suggestions is missing the styles
+[ ] Fix:The macro suggestions should trim long macros in the preview area to fit into the one line of the popup.
+[ ] The macro suggestions row of buttons are trimming short command and long command indistinctly, it should prioritize trimming the longest ones, providing space to read the short standard ones. Please note that this trimming is accounting for edge cases. The macros tend to be short mostly.
+[ ] Fix:The search overlay is no longer a search overlay it has now integrated three tabs the search, the editor,and the settings. (should the name of the overlay change in the code? Something like main overlay) Now it needs to be able to navigate among tabs with the left and right arrow keys.
+[ ] Fix:The icon is not visible in the toolbar in dark mode.
+[ ] Fix:the main overlay does not have the icon or banding
+[ ] Fix:In the search tab it may be reflected the number of matching macros.
+[ ] Fix:The editor interface feels wrong the lists of macros there to edit is difficult to navigate, currently it does not have scrollbar, not the option to create a new macro.Maybe pressing plus on the search marco for a new macro and tab for edit the current selected macro will remove the list from the macro editor.
+define what is going to be in the macro menu on the extension icon. Maybe the help.
+[ ] Fine tune the UX. images controls ex: the enable and disable interface element.
 
 
 
@@ -39,5 +47,8 @@
 
 ### Search
 
-[ ] Fix: The search is no bringing the focus back.
+[X] Fix: The search is no bringing the focus back.
+
+
+
 

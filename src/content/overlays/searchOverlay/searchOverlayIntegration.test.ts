@@ -36,6 +36,7 @@ vi.mock('../services/reactRenderer', () => ({
     initialize: vi.fn(),
     clear: vi.fn(),
     destroy: vi.fn(),
+    getShadowRoot: vi.fn(() => null),
   }))
 }))
 

@@ -32,6 +32,7 @@ export interface MacroEditorConfig {
     placeholder?: string;
     label?: string;
     containerRef?: React.RefObject<HTMLElement>;
+    fixedToolbar?: boolean;
   };
 
   /** Sensitive toggle configuration */
@@ -108,7 +109,8 @@ export function MacroEditorView({
   const {
     placeholder: editorPlaceholder = 'Enter your macro content...',
     label: editorLabel = 'Content',
-    containerRef: editorContainerRef
+    containerRef: editorContainerRef,
+    fixedToolbar: editorFixedToolbar = false
   } = config.editor || {};
 
   const {
@@ -177,6 +179,7 @@ export function MacroEditorView({
           onChange={handlers.onContentChange}
           placeholder={editorPlaceholder}
           containerRef={editorContainerRef}
+          fixedToolbar={editorFixedToolbar}
         />
 
         {state.errors.content && (
