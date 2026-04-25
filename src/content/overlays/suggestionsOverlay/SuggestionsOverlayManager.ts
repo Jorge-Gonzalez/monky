@@ -270,6 +270,15 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
     }
   };
 
+  const updateBuffer = (buffer: string): void => {
+    if (!overlayState.isVisible) return;
+    overlayState = { ...overlayState, filterBuffer: buffer };
+    if (savedState) {
+      savedState = { ...savedState, trigger: buffer };
+    }
+    renderSuggestions();
+  };
+
   const getVisibility = (): boolean => overlayState.isVisible;
 
   const destroy = (): void => {
@@ -289,6 +298,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
     showAll,
     hide,
     updateMacros,
+    updateBuffer,
     isVisible: getVisibility,
     destroy,
     setOnMacroSelected,
@@ -300,6 +310,7 @@ export interface SuggestionsOverlayManager {
   showAll: (x?: number, y?: number, buffer?: string) => void;
   hide: () => void;
   updateMacros: (newMacros: Macro[]) => void;
+  updateBuffer: (buffer: string) => void;
   isVisible: () => boolean;
   destroy: () => void;
   setOnMacroSelected: (callback: (macro: Macro, buffer: string, element: EditableEl) => void) => void;

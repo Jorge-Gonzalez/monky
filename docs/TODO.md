@@ -19,10 +19,11 @@
 [x] Fix: The undo test are currently made to be used with commit keys but currently the detector is working in auto mode.
 [?] Fix: in auto mode the undo does not get cleared and repeats the command after the previous undo.
 [x] Search overlay is not restoring focus not managing undo.
-[ ] When the user adds content to the buffer and the macro suggestions is displaying, the macro suggestions should update its content accordingly, fine grining the suggestions.
+[x] When the user adds content to the buffer and the macro suggestions is displaying, it should be useful that the macro suggestions should update its content accordingly, fine grining the suggestions.
+[x] The macro text content sometimes is long and it will make the macro suggestions grow to an unconftable size, we need to trim the content as well up to certain characters.
 [x] Fix:The macro suggestions is missing the styles
-[ ] Fix:The macro suggestions should trim long macros in the preview area to fit into the one line of the popup.
-[ ] The macro suggestions row of buttons are trimming short command and long command indistinctly, it should prioritize trimming the longest ones, providing space to read the short standard ones. Please note that this trimming is accounting for edge cases. The macros tend to be short mostly.
+[x] Fix:The macro suggestions should trim long macros in the preview area to fit into the one line of the popup.
+[x] The macro suggestions row of buttons are trimming short command and long command indistinctly, it should prioritize trimming the longest ones, providing space to read the short standard ones. Please note that this trimming is accounting for edge cases. The macros tend to be short mostly.
 [ ] Fix:The search overlay is no longer a search overlay it has now integrated three tabs the search, the editor,and the settings. (should the name of the overlay change in the code? Something like main overlay) Now it needs to be able to navigate among tabs with the left and right arrow keys.
 [ ] Fix:The icon is not visible in the toolbar in dark mode.
 [ ] Fix:the main overlay does not have the icon or banding
