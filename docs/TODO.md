@@ -31,8 +31,14 @@
 [ ] Fix:The editor interface feels wrong the lists of macros there to edit is difficult to navigate, currently it does not have scrollbar, not the option to create a new macro.Maybe pressing plus on the search marco for a new macro and tab for edit the current selected macro will remove the list from the macro editor.
 define what is going to be in the macro menu on the extension icon. Maybe the help.
 [ ] Fine tune the UX. images controls ex: the enable and disable interface element.
-
-
+[ ] The save new macro button is not closing the overlay.(Should it show display the created macro as confirmation or close, currently is just clearing out the editor's fields)
+[ ] in auto mode :edit/some-command and :delete/some-command currently are needing the confirmation char space or enter to trigger, but the current behavior for macros in auto mode is that it gets triggered as soon as a complete match is made or with a delay if it is a match but there is another longer macro with the same match. This should be the same behavior for this system parametric commands. When fix it please confirm that the current implementation is used to avoid reimplementing it for this case. :new in the other hand is working as expected.
+[ ] Create macros is allowig duplicate commands
+[ ] :new and :edit on the text field, needs to move the focus to the fisrt field on the editor form
+[ ] Cancel ont the editor is not closing the overlay.
+[ ] The /? has been registered in the app as a special command to launch the search panel. Now that we are using the : prefix for system commands, the /? command needs to change to :? all the implementation for handling the /? exception needs to be revised and or removed as it no longer is required, and instead just implement it as an additional system macro in the line of :edit :delete and :new
+[ ] In the editor when entering a edit the placeholder tex is being displayed ont top of the actual text
+[ ] The editor update button is sending the user to the search panel, What would be the desired behaiviour.
 
 ### Suggestions
 

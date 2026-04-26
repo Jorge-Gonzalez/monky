@@ -14,6 +14,8 @@ describe('SuggestionsCoordinator', () => {
       hide: vi.fn(),
       isVisible: vi.fn(() => false),
       updateMacros: vi.fn(),
+      updateBuffer: vi.fn(),
+      setOnMacroSelected: vi.fn(),
       destroy: vi.fn(),
     };
 
@@ -61,22 +63,21 @@ describe('SuggestionsCoordinator', () => {
         expect(mockManager.show).not.toHaveBeenCalled();
       });
 
-      test('saves buffer and does not auto-update when manager is visible', () => {
+      test('calls updateBuffer when manager is visible', () => {
         vi.mocked(mockManager.isVisible).mockReturnValue(true);
-        
+
         mockActions.onDetectionUpdated('updated', { x: 250, y: 350 });
 
-        // Should not auto-update (disabled feature - only Tab key shows suggestions)
+        expect(mockManager.updateBuffer).toHaveBeenCalledWith('updated');
         expect(mockManager.show).not.toHaveBeenCalled();
       });
 
-      test('saves buffer without triggering overlay when no position provided', () => {
-        vi.mocked(mockManager.isVisible).mockReturnValue(true);
-        
+      test('does not call updateBuffer when manager is not visible', () => {
+        vi.mocked(mockManager.isVisible).mockReturnValue(false);
+
         mockActions.onDetectionUpdated('updated');
 
-        // Should not auto-show (only Tab key triggers overlay)
-        expect(mockManager.show).not.toHaveBeenCalled();
+        expect(mockManager.updateBuffer).not.toHaveBeenCalled();
       });
     });
 

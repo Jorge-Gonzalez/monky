@@ -10,6 +10,7 @@ const mockRenderer = {
   initialize: vi.fn(),
   clear: vi.fn(),
   destroy: vi.fn(),
+  getShadowRoot: vi.fn(() => null),
 };
 
 const mockStyleInjector = {
@@ -113,6 +114,7 @@ describe('SuggestionsOverlayManager', () => {
       expect(manager).toHaveProperty('showAll');
       expect(manager).toHaveProperty('hide');
       expect(manager).toHaveProperty('updateMacros');
+      expect(manager).toHaveProperty('updateBuffer');
       expect(manager).toHaveProperty('isVisible');
       expect(manager).toHaveProperty('destroy');
     });
@@ -403,6 +405,44 @@ describe('SuggestionsOverlayManager', () => {
       
       const renderCall = mockRenderer.render.mock.calls[mockRenderer.render.mock.calls.length - 1][0];
       expect(renderCall.props.macros).toEqual(newMacros);
+    });
+  });
+
+  describe('Update Buffer', () => {
+    test('does nothing when overlay is hidden', () => {
+      const manager = createSuggestionsOverlayManager(mockMacros);
+      const rendersBefore = mockRenderer.render.mock.calls.length;
+
+      manager.updateBuffer('/updated');
+
+      expect(mockRenderer.render.mock.calls.length).toBe(rendersBefore);
+    });
+
+    test('updates filterBuffer and re-renders when visible', () => {
+      const manager = createSuggestionsOverlayManager(mockMacros);
+      manager.show('/si', 100, 200);
+      const rendersBefore = mockRenderer.render.mock.calls.length;
+
+      manager.updateBuffer('/sig');
+
+      expect(mockRenderer.render.mock.calls.length).toBe(rendersBefore + 1);
+      const calls = mockRenderer.render.mock.calls;
+      const lastProps = calls[calls.length - 1][0].props;
+      expect(lastProps.filterBuffer).toBe('/sig');
+    });
+
+    test('updates savedState trigger so the correct text is replaced on select', () => {
+      const manager = createSuggestionsOverlayManager(mockMacros);
+      const mockCallback = vi.fn();
+      manager.setOnMacroSelected(mockCallback);
+      manager.show('/si', 100, 200);
+
+      manager.updateBuffer('/sig');
+
+      const renderCalls = mockRenderer.render.mock.calls;
+      const onSelectMacro = renderCalls[renderCalls.length - 1][0].props.onSelectMacro;
+      onSelectMacro(mockMacros[0]);
+      expect(mockCallback).toHaveBeenCalledWith(mockMacros[0], '/sig', mockElement);
     });
   });
 

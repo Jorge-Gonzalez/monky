@@ -168,6 +168,36 @@ export function createMacroDetector(actions: DetectorActions) {
     clearTimer()
 
     if (config.prefixes.includes(state.buffer)) return false
+
+    // Parametric system commands: auto-commit when param matches a known macro,
+    // using the same immediate/delayed logic as regular macros.
+    const parametricResult = parseParametricBuffer(state.buffer, config.prefixes)
+    if (parametricResult) {
+      const paramTarget = macros.find(m => m.command === parametricResult.param)
+      if (!paramTarget) return false
+
+      const isParamPrefix = macros.some(
+        m => !m.isSystemMacro && m.command.startsWith(parametricResult.param) && m.command !== parametricResult.param
+      )
+
+      if (!isParamPrefix) {
+        commitParametricSystem(String(parametricResult.systemMacro.id), parametricResult.param, sel)
+        return true
+      } else {
+        if (!sel) return false
+        selectionOnSchedule = sel
+        timer = window.setTimeout(() => {
+          const current = parseParametricBuffer(state.buffer, config.prefixes)
+          if (current && macros.find(m => m.command === current.param) && activeEl) {
+            commitParametricSystem(String(current.systemMacro.id), current.param, null)
+          } else {
+            cancelDetection()
+          }
+        }, CONFIRM_DELAY_MS)
+        return false
+      }
+    }
+
     const exactMacro = getExact(state.buffer, macros)
     if (!exactMacro) return false
     if (exactMacro.isParametric) return false  // wait for the parameter
@@ -301,19 +331,20 @@ export function createMacroDetector(actions: DetectorActions) {
       const handled = actions.onCommitRequested(state.buffer)
 
       if (handled) {
-        // Only prevent event and commit if we have an exact match
-        // If handled=true but no exact match, it means the overlay is visible
-        // and will handle the selection, so don't prevent the event
+        // Only prevent event and commit if we have an exact, non-parametric match.
+        // Parametric macros need a parameter (e.g. :edit/cmd) — don't commit bare :edit.
+        // If handled=true but no exact match, the overlay is visible and handles selection.
         const macroToCommit = getExact(state.buffer, macros);
-        if (macroToCommit) {
+        if (macroToCommit && !macroToCommit.isParametric) {
           e.preventDefault()
           commitReplace(macroToCommit, sel, false)
         }
         // If no exact match, let the event bubble to the overlay
       } else {
-        if (isExact(state.buffer, macros)) {
+        const macroToCommit = getExact(state.buffer, macros)
+        if (macroToCommit && !macroToCommit.isParametric) {
           e.preventDefault()
-          commitReplace(getExact(state.buffer, macros)!, sel, false)
+          commitReplace(macroToCommit, sel, false)
         } else {
           cancelDetection()
         }
@@ -357,6 +388,17 @@ export function createMacroDetector(actions: DetectorActions) {
         cancelDetection()
       }
       return
+    }
+
+    // Auto mode: Enter commits parametric system commands.
+    // Enter is not printable (length > 1) so it never reaches the isPrintableKey block.
+    if (!config.useCommitKeys && state.active && e.key === 'Enter') {
+      const parametricResult = parseParametricBuffer(state.buffer, config.prefixes)
+      if (parametricResult) {
+        e.preventDefault()
+        commitParametricSystem(String(parametricResult.systemMacro.id), parametricResult.param, sel)
+        return
+      }
     }
 
     // Handle printable characters
