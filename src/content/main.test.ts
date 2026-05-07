@@ -39,10 +39,13 @@ const mockOverlays = vi.hoisted(() => ({
     onCancelRequested: vi.fn(() => false),
     onShowAllRequested: vi.fn(),
   },
-  searchCoordinator: {
+  modalCoordinator: {
     show: vi.fn(),
     hide: vi.fn(),
     isVisible: vi.fn(() => false),
+    getCurrentView: vi.fn(() => null),
+    switchView: vi.fn(),
+    navigateToEditor: vi.fn(),
     destroy: vi.fn(),
     setOnMacroSelected: vi.fn(),
     attach: vi.fn(),

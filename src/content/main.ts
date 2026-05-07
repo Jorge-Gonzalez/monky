@@ -1,7 +1,7 @@
 import { useMacroStore } from "../store/useMacroStore"
 import { createMacroDetector,MacroDetector } from "./macroEngine/macroDetector"
 import { loadMacros, listenMacrosChange } from "./storage/macroStorage"
-import { updateAllMacros, suggestionsCoordinator, searchCoordinator, modalCoordinator } from "./overlays"
+import { updateAllMacros, suggestionsCoordinator, modalCoordinator } from "./overlays"
 import { Macro } from "../types"
 
 // Module-level state
@@ -50,10 +50,10 @@ function manageMacroState() {
     }
 
     // Detach the search coordinator when disabled
-    searchCoordinator.detach()
+    modalCoordinator.detach()
   } else {
-    // Attach the search coordinator when enabled
-    searchCoordinator.attach()
+    // Attach the modal coordinator when enabled
+    modalCoordinator.attach()
 
     // Ensure the suggestions coordinator is attached
     if (!isSuggestionsCoordinatorAttached) {
@@ -87,7 +87,7 @@ function manageMacroState() {
         }
       })
 
-      searchCoordinator.setOnMacroSelected((macro, element) => {
+      modalCoordinator.setOnMacroSelected((macro, element) => {
         if (macroEngine) {
           macroEngine.handleMacroSelectedFromSearchOverlay(macro, element)
         }
@@ -153,8 +153,7 @@ function cleanup() {
     isSuggestionsCoordinatorAttached = false
   }
 
-  // Detach search coordinator
-  searchCoordinator.detach()
+  modalCoordinator.detach()
 }
 
 // Export init function for tests compatibility

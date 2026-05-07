@@ -265,7 +265,7 @@ export function createHistoryCoordinator() {
   }
 }
 
-// ============ coordinators/compositeActions.ts ============
+// ============ actions/compositeActions.ts ============
 // Combine multiple coordinators
 export function createCompositeActions(...handlers: CounterActions[]): CounterActions {
   return {

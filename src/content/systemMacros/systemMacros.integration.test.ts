@@ -51,11 +51,12 @@ describe('System Macros Integration', () => {
 
       // Since we can't directly access the internal macros array,
       // we'll test this by checking that system macros are defined properly
-      expect(SYSTEM_MACROS).toHaveLength(4)
+      expect(SYSTEM_MACROS).toHaveLength(5)
       expect(SYSTEM_MACROS.find(m => m.command === '/?')).toBeDefined()
-      expect(SYSTEM_MACROS.find(m => m.command === '/help')).toBeDefined()
-      expect(SYSTEM_MACROS.find(m => m.command === '/macros')).toBeDefined()
-      expect(SYSTEM_MACROS.find(m => m.command === '/>')).toBeDefined()
+      expect(SYSTEM_MACROS.find(m => m.command === ':new')).toBeDefined()
+      expect(SYSTEM_MACROS.find(m => m.command === ':edit')).toBeDefined()
+      expect(SYSTEM_MACROS.find(m => m.command === ':delete')).toBeDefined()
+      expect(SYSTEM_MACROS.find(m => m.command === ':settings')).toBeDefined()
     })
 
     it('should maintain system macro properties', () => {
@@ -64,7 +65,8 @@ describe('System Macros Integration', () => {
         expect(macro.text).toBe('')
         expect(macro.description).toBeTruthy()
         expect(typeof macro.command).toBe('string')
-        expect(macro.command.startsWith('/')).toBe(true)
+        // Commands can now start with / or :
+        expect(macro.command.startsWith('/') || macro.command.startsWith(':')).toBe(true)
       })
     })
 
@@ -95,22 +97,28 @@ describe('System Macros Integration', () => {
       expect(searchMacro?.id).toBe('system-search-overlay')
     })
 
-    it('should define help command', () => {
-      const helpMacro = SYSTEM_MACROS.find(m => m.command === '/help')
-      expect(helpMacro).toBeDefined()
-      expect(helpMacro?.id).toBe('system-help')
+    it('should define new macro command', () => {
+      const newMacro = SYSTEM_MACROS.find(m => m.command === ':new')
+      expect(newMacro).toBeDefined()
+      expect(newMacro?.id).toBe('system-new-macro')
     })
 
-    it('should define macro list command', () => {
-      const listMacro = SYSTEM_MACROS.find(m => m.command === '/macros')
-      expect(listMacro).toBeDefined()
-      expect(listMacro?.id).toBe('system-list-macros')
+    it('should define edit macro command', () => {
+      const editMacro = SYSTEM_MACROS.find(m => m.command === ':edit')
+      expect(editMacro).toBeDefined()
+      expect(editMacro?.id).toBe('system-edit-macro')
     })
 
-    it('should define toggle new suggestions command', () => {
-      const toggleMacro = SYSTEM_MACROS.find(m => m.command === '/>')
-      expect(toggleMacro).toBeDefined()
-      expect(toggleMacro?.id).toBe('system-toggle-new-suggestions')
+    it('should define delete macro command', () => {
+      const deleteMacro = SYSTEM_MACROS.find(m => m.command === ':delete')
+      expect(deleteMacro).toBeDefined()
+      expect(deleteMacro?.id).toBe('system-delete-macro')
+    })
+
+    it('should define settings command', () => {
+      const settingsMacro = SYSTEM_MACROS.find(m => m.command === ':settings')
+      expect(settingsMacro).toBeDefined()
+      expect(settingsMacro?.id).toBe('system-settings')
     })
   })
 
@@ -128,7 +136,7 @@ describe('System Macros Integration', () => {
 
     it('should provide keyboard shortcuts through macro system', () => {
       // Verify that all expected keyboard shortcuts are available as macros
-      const expectedCommands = ['/?', '/help', '/macros', '/>']
+      const expectedCommands = ['/?', ':new', ':edit', ':delete', ':settings']
       
       expectedCommands.forEach(command => {
         const macro = SYSTEM_MACROS.find(m => m.command === command)

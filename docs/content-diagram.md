@@ -7,11 +7,11 @@ graph TB
     end
     
     subgraph "Macro Detection System"
-        detector["detector/macroDetector.ts"]
-        detector_core["detector/detector-core.ts"]
-        editableUtils["detector/editableUtils.ts"]
-        keyUtils["detector/keyUtils.ts"]
-        tabKeyIntegration["detector/tabKeyIntegration.test.ts"]
+        detector["macroEngine/macroDetector.ts"]
+        detector_core["macroEngine/detector-core.ts"]
+        editableUtils["macroEngine/replacement/editableUtils.ts"]
+        keyUtils["macroEngine/keyUtils.ts"]
+        tabKeyIntegration["macroEngine/tabKeyIntegration.test.ts"]
         
         detector --> detector_core
         detector --> editableUtils
@@ -21,47 +21,40 @@ graph TB
     subgraph "Action Handlers"
         actions["actions/detectorActions.ts"]
         defaults["actions/detectorDefaults.ts"]
+        compActions["actions/compositeActions.ts"]
+        analytics["actions/analyticsActions.ts"]
     end
     
     subgraph "Coordination System"
-        coordinator["coordinators/NewSuggestionsCoordinator.ts"]
+        suggestions_coordinator["coordinators/SuggestionsCoordinator.ts"]
+        modal_coordinator["coordinators/ModalCoordinator.ts"]
         statistics["coordinators/statisticsCoordinator.ts"]
-        compActions["coordinators/compositeActions.ts"]
-        analytics["coordinators/analyticsActions.ts"]
     end
     
     subgraph "Overlay System"
         overlays_index["overlays/index.ts"]
         
-        subgraph "New Suggestions Overlay"
-            new_suggestions_manager["overlays/newSuggestionsOverlay/NewSuggestionsOverlayManager.ts"]
-            new_suggestions_ui["overlays/newSuggestionsOverlay/ui/*"]
-            new_suggestions_hooks["overlays/newSuggestionsOverlay/hooks/*"]
-            new_suggestions_utils["overlays/newSuggestionsOverlay/utils/*"]
-            new_suggestions_styles["overlays/newSuggestionsOverlay/NewSuggestionsOverlayStyles.ts"]
-        end
-        
-        subgraph "Search Overlay"
-            search_manager["overlays/searchOverlay/searchOverlayManager.ts"]
-            search_ui["overlays/searchOverlay/ui/*"]
-            search_styles["overlays/searchOverlay/searchOverlayStyles.ts"]
+        subgraph "Modal System (Search, Settings, Editor)"
+            modal_manager["overlays/modal/modalManager.ts"]
+            modal_ui["overlays/modal/ui/*"]
+            modal_views["overlays/views/*"]
         end
         
         subgraph "Suggestions Overlay"
-            suggestions_manager["overlays/suggestionsOverlay/suggestionsOverlayManager.ts"]
+            suggestions_manager["overlays/suggestionsOverlay/SuggestionsOverlayManager.ts"]
             suggestions_ui["overlays/suggestionsOverlay/ui/*"]
-            suggestions_styles["overlays/suggestionsOverlay/suggestionsOverlayStyles.ts"]
+            suggestions_hooks["overlays/suggestionsOverlay/hooks/*"]
+            suggestions_utils["overlays/suggestionsOverlay/utils/*"]
+            suggestions_styles["overlays/suggestionsOverlay/SuggestionsOverlayStyles.ts"]
         end
         
         subgraph "Overlay Services"
             react_renderer["overlays/services/reactRenderer.ts"]
             style_injector["overlays/services/styleInjector.ts"]
             focus_manager["overlays/services/focusManager.ts"]
-            macro_inserter["overlays/services/macroInserter.ts"]
         end
         
         subgraph "Overlay Hooks"
-            compose_effects["overlays/hooks/composeEffects.ts"]
             use_auto_focus["overlays/hooks/useAutoFocus.ts"]
         end
     end
@@ -76,66 +69,61 @@ graph TB
     
     %% Connections showing the flow
     main --> detector
-    main --> coordinator
+    main --> suggestions_coordinator
+    main --> modal_coordinator
     main --> storage
     
-    detector --> coordinator
-    coordinator --> new_suggestions_manager
-    new_suggestions_manager --> react_renderer
-    new_suggestions_manager --> style_injector
-    new_suggestions_manager --> new_suggestions_ui
+    detector --> suggestions_coordinator
+    detector --> modal_coordinator
     
-    search_manager --> react_renderer
-    search_manager --> style_injector
-    search_manager --> focus_manager
-    search_manager --> macro_inserter
-    search_manager --> search_ui
+    suggestions_coordinator --> suggestions_manager
+    modal_coordinator --> modal_manager
     
     suggestions_manager --> react_renderer
     suggestions_manager --> style_injector
     suggestions_manager --> suggestions_ui
     
+    modal_manager --> react_renderer
+    modal_manager --> style_injector
+    modal_manager --> modal_ui
+    modal_manager --> modal_views
+    
     %% Data flow
     storage -.->|"loads macros"| main
     storage -.->|"listens for changes"| detector
-    detector -.->|"sends detection events"| coordinator
-    coordinator -.->|"shows overlays"| new_suggestions_manager
-    coordinator -.->|"shows search overlay"| search_manager
-    coordinator -.->|"shows suggestions"| suggestions_manager
+    detector -.->|"sends detection events"| suggestions_coordinator
     detector -.->|"detects system macros"| system_macros
     
     %% Action flow
     actions -.->|"defines"| detector
-    actions -.->|"defines"| coordinator
+    actions -.->|"defines"| suggestions_coordinator
     
     %% Styling
-    new_suggestions_styles --> new_suggestions_manager
     suggestions_styles --> suggestions_manager
-    search_styles --> search_manager
     
     %% Hooks and utilities
-    compose_effects --> new_suggestions_ui
-    use_auto_focus --> new_suggestions_ui
-    new_suggestions_utils --> new_suggestions_manager
+    use_auto_focus --> suggestions_ui
+    use_auto_focus --> modal_ui
 
     style main fill:#e1f5fe
     style "Macro Detection System" fill:#f3e5f5
     style "Overlay System" fill:#e8f5e8
     style "Coordination System" fill:#fff3e0
     style detector fill:#ffcdd2,stroke:#e91e63,stroke-width:2px
-    style coordinator fill:#c8e6c9,stroke:#4caf50,stroke-width:2px
-    style new_suggestions_manager fill:#fff9c4,stroke:#ffeb3b,stroke-width:2px
-    style search_manager fill:#d1c4e9,stroke:#9c27b0,stroke-width:2px
+    style suggestions_coordinator fill:#c8e6c9,stroke:#4caf50,stroke-width:2px
+    style modal_coordinator fill:#c8e6c9,stroke:#4caf50,stroke-width:2px
+    style suggestions_manager fill:#fff9c4,stroke:#ffeb3b,stroke-width:2px
+    style modal_manager fill:#fff9c4,stroke:#ffeb3b,stroke-width:2px
 ```
 
 ## Macro Detection Flow
 
 1. **Main Initialization** (`main.ts`)
    - Loads macros from storage
-   - Initializes macro detector and coordinator
+   - Initializes macro detector and coordinators (Suggestions, Modal)
    - Sets up state management with useMacroStore
 
-2. **Macro Detection** (`detector/macroDetector.ts`)
+2. **Macro Detection** (`macroEngine/macroDetector.ts`)
    - Listens for keyboard events on text input elements
    - Tracks user typing in "buffer" to detect macro prefixes (like "/")
    - Detects when user types potential macro commands
@@ -150,23 +138,21 @@ graph TB
    - **Escape**: Cancel current detection
 
 4. **Overlay System**
-   - **New Suggestions Overlay**: Shows filtered macro list as you type
-   - **Search Overlay**: Full macro search functionality when pressing Tab
-   - **Suggestions Overlay**: Traditional suggestions dropdown
+   - **Suggestions Overlay**: Shows filtered macro list as you type near the caret
+   - **Modal System**: Full screen overlays for Search, Settings, and Macro Editing
 
 5. **Coordination**
-   - `NewSuggestionsCoordinator` manages communication between detector and overlays
-   - Handles click-outside-to-close functionality
-   - Manages macro data flow between components
+   - `SuggestionsCoordinator` manages the real-time suggestions overlay
+   - `ModalCoordinator` manages the unified modal system (Search, Editor, Settings)
 
 ## Key Files by Functionality
 
-- **Detection Logic**: `detector/macroDetector.ts`, `detector/detector-core.ts`
-- **Text Input Handling**: `detector/editableUtils.ts`
-- **Keyboard Events**: `detector/keyUtils.ts`
-- **Overlay Management**: `overlays/newSuggestionsOverlay/NewSuggestionsOverlayManager.ts`
-- **UI Components**: `overlays/*/ui/*`
-- **Event Coordination**: `coordinators/NewSuggestionsCoordinator.ts`
+- **Detection Logic**: `macroEngine/macroDetector.ts`, `macroEngine/detector-core.ts`
+- **Text Input Handling**: `macroEngine/replacement/editableUtils.ts`
+- **Keyboard Events**: `macroEngine/keyUtils.ts`
+- **Suggestions Management**: `overlays/suggestionsOverlay/SuggestionsOverlayManager.ts`
+- **Modal Management**: `overlays/modal/modalManager.ts`
+- **Event Coordination**: `coordinators/SuggestionsCoordinator.ts`, `coordinators/ModalCoordinator.ts`
 - **Macro Storage**: `storage/macroStorage.ts`
 
-This architecture enables the extension to detect macro prefixes as users type in any text input, display relevant suggestions, and allow users to select macros using Tab for full search or arrow keys for navigation.
+This architecture enables the extension to detect macro prefixes as users type in any text input, display relevant suggestions, and allow users to select macros or perform system commands.

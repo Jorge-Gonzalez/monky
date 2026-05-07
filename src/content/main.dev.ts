@@ -29,7 +29,7 @@ if (typeof chrome === 'undefined' || !chrome.storage) {
 import { useMacroStore } from '../store/useMacroStore'
 import { createMacroDetector,MacroDetector } from "./macroEngine/macroDetector"
 import { loadMacros, listenMacrosChange } from './storage/macroStorage'
-import { suggestionsCoordinator, searchCoordinator } from './overlays'
+import { suggestionsCoordinator, modalCoordinator } from './overlays'
 import { Macro } from '../types'
 import { initExtensionConflictDetector } from './devExtensionConflictDetector'
 
@@ -69,10 +69,9 @@ function manageMacroState() {
     }
 
     // Detach the search coordinator when disabled
-    searchCoordinator.detach()
+    modalCoordinator.detach()
   } else {
-    // Attach the search coordinator when enabled
-    searchCoordinator.attach()
+    modalCoordinator.attach()
 
     // Ensure the suggestions coordinator is attached
     if (!isSuggestionsCoordinatorAttached) {
@@ -109,7 +108,7 @@ function manageMacroState() {
         }
       })
 
-      searchCoordinator.setOnMacroSelected((macro, element) => {
+      modalCoordinator.setOnMacroSelected((macro, element) => {
         if (macroEngine) {
           macroEngine.handleMacroSelectedFromSearchOverlay(macro, element)
         }
@@ -171,8 +170,7 @@ function cleanup() {
     isSuggestionsCoordinatorAttached = false
   }
 
-  // Detach search coordinator
-  searchCoordinator.detach()
+  modalCoordinator.detach()
 }
 
 // Auto-execute for development
