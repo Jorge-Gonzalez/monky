@@ -51,6 +51,7 @@
 
 .modal-nav-branding svg {
   color: var(--text-accent);
+  opacity: 0.9;
 }
 
 /* Navigation tabs - appearance only, all layout/behavior handled by semantic classes */
