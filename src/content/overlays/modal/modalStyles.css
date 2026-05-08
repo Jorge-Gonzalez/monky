@@ -40,6 +40,19 @@
   flex-direction: column;
 }
 
+/* Modal Navigation Container */
+.modal-nav-container {
+  min-height: 48px;
+}
+
+.modal-nav-branding {
+  margin-right: 1rem;
+}
+
+.modal-nav-branding svg {
+  color: var(--text-accent);
+}
+
 /* Navigation tabs - appearance only, all layout/behavior handled by semantic classes */
 .modal-nav-tab {
   color: var(--text-secondary);
