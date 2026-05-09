@@ -26,7 +26,7 @@
 [x] The macro suggestions row of buttons are trimming short command and long command indistinctly, it should prioritize trimming the longest ones, providing space to read the short standard ones. Please note that this trimming is accounting for edge cases. The macros tend to be short mostly.
 [x] Fix:The search overlay is no longer a search overlay it has now integrated three tabs the search, the editor,and the settings. (should the name of the overlay change in the code? Something like main overlay) Now it needs to be able to navigate among tabs with the left and right arrow keys.
 [ ] Fix:The icon is not visible in the toolbar in dark mode.
-[ ] Fix:the main overlay does not have the icon or banding
+[x] Fix:the main overlay does not have the icon or banding
 [ ] Fix:In the search tab it may be reflected the number of matching macros.
 [ ] Fix:The editor interface feels wrong the lists of macros there to edit is difficult to navigate, currently it does not have scrollbar, not the option to create a new macro.Maybe pressing plus on the search marco for a new macro and tab for edit the current selected macro will remove the list from the macro editor.
 define what is going to be in the macro menu on the extension icon. Maybe the help.
@@ -39,6 +39,9 @@ define what is going to be in the macro menu on the extension icon. Maybe the he
 [ ] The /? has been registered in the app as a special command to launch the search panel. Now that we are using the : prefix for system commands, the /? command needs to change to :? all the implementation for handling the /? exception needs to be revised and or removed as it no longer is required, and instead just implement it as an additional system macro in the line of :edit :delete and :new
 [ ] In the editor when entering a edit the placeholder tex is being displayed ont top of the actual text
 [ ] The editor update button is sending the user to the search panel, What would be the desired behaiviour.
+[x] Clean up legacy code files adn documents
+[ ] Change the small texts secctions to a cleannest UI typeface.
+[ ] Utilize a standard dimension among views in the modal so it does not get resized when switching.
 
 ### Suggestions
 
