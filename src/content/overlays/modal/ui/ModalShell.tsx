@@ -57,6 +57,7 @@ export function ModalShell({
         <ModalNavigation
           currentView={currentView}
           onViewChange={onViewChange}
+          theme={theme}
         />
 
         <div className="modal-content">

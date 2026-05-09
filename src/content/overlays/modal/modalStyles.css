@@ -47,11 +47,17 @@
 
 .modal-nav-branding {
   margin-right: 1rem;
+  color: var(--text-accent);
 }
 
 .modal-nav-branding svg {
-  color: var(--text-accent);
-  opacity: 0.8;
+  color: inherit;
+}
+
+.monky-logo-word {
+  display: block;
+  width: auto;
+  height: 26px;
 }
 
 /* Navigation tabs - appearance only, all layout/behavior handled by semantic classes */

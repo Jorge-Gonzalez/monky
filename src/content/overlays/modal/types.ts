@@ -1,4 +1,4 @@
-import type { Macro } from '../../../types';
+import type { Macro, ThemeMode } from '../../../types';
 
 export type ModalView = 'search' | 'settings' | 'editor';
 
@@ -13,6 +13,7 @@ export interface ModalShellProps {
 export interface ModalNavigationProps {
   currentView: ModalView;
   onViewChange: (view: ModalView) => void;
+  theme: ThemeMode;
 }
 
 export interface BaseModalViewProps {
