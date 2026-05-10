@@ -12,9 +12,9 @@
 
 /* ===== Local Font ===== */
 @font-face {
-  font-family: Karla;
-  src: url('/KarlaVariable.woff2') format('woff2-variations');
-  font-weight: 200 800;
+  font-family: 'IBM Plex Condensed Light';
+  src: url('/ibm-plex-sans-condensed-v15-latin-300.woff2') format('woff2');
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
@@ -37,14 +37,14 @@
   --radius-lg: 8px;
 
   /* Font size scale */
-  --text-xs: 11px;
-  --text-sm: 12px;
-  --text-base: 13px;
-  --text-md: 14px;
-  --text-lg: 15px;
-  --text-xl: 18px;
-  --text-2xl: 20px;
-  --text-3xl: 24px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 16px;
+  --text-xl: 19px;
+  --text-2xl: 21px;
+  --text-3xl: 25px;
 
   /* Transition timing */
   --transition-fast: 0.15s;
@@ -79,7 +79,7 @@
 /* Universal selector for all elements */
 * {
   box-sizing: border-box;
-  font-family: Karla, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'IBM Plex Condensed Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-optical-sizing: auto;
   line-height: 1.5;
 }
@@ -87,7 +87,7 @@
 /* Shadow DOM: host element */
 :host {
   box-sizing: border-box;
-  font-family: Karla, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'IBM Plex Condensed Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-optical-sizing: auto;
   line-height: 1.5;
 }
@@ -95,7 +95,7 @@
 /* Shadow DOM: all descendants */
 :host * {
   box-sizing: border-box;
-  font-family: Karla, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'IBM Plex Condensed Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-optical-sizing: auto;
   line-height: 1.5;
 }
@@ -266,6 +266,14 @@
 
 .comfortable {
   gap: var(--spacing-md);
+}
+
+.relaxed {
+  gap: var(--spacing-lg);
+}
+
+.comfortable-relaxed {
+  gap: var(--spacing-md) var(--spacing-xl);
 }
 
 .spaced {
@@ -732,11 +740,24 @@
 }
 
 .padded-comfortable {
+  --gap-base: var(--spacing-md);
   padding: var(--spacing-md) var(--spacing-lg);
 }
 
-.padded-loose {
+.padded-relaxed {
   padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.padded-comfortable-loose {
+  padding: var(--spacing-md) var(--spacing-2xl);
+}
+
+.padded-loose {
+  padding: var(--spacing-xl) var(--spacing-2xl);
+}
+
+.wide {
+  --gap-x: calc(var(--gap-base) * 1.8);
 }
 
 /* ===== COMPONENT PATTERNS: Alerts ===== */

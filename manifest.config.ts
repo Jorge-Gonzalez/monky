@@ -32,7 +32,7 @@ export default defineManifest({
   options_page: 'src/options/index.html',
   web_accessible_resources: [
     {
-      resources: ['src/editor/index.html'],
+      resources: ['src/editor/index.html', 'ibm-plex-sans-condensed-v15-latin-300.woff2'],
       matches: ['<all_urls>']
     }
   ]

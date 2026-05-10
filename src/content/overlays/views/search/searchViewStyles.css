@@ -81,7 +81,7 @@
 }
 
 .macro-search-item-text {
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   color: var(--text-secondary);
   /* margin-top is no longer needed as items are aligned in the grid */
 }
@@ -137,7 +137,8 @@
   background-color: var(--kbd-bg);
   border: 1px solid var(--kbd-border);
   color: var(--text-primary);
-  margin-left: var(--spacing-xs);
+  margin-left: var(--spacing-md);
+  margin-right: var(--spacing-xs);
 }
 
 .macro-search-kbd:first-child {

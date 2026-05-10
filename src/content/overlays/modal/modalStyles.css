@@ -32,9 +32,8 @@
   border-radius: var(--radius-lg);
   box-shadow: 0 25px 50px -12px var(--shadow-color);
   border: 1px solid var(--border-primary);
-  min-width: 400px;
-  max-width: 600px;
-  max-height: 85vh;
+  width: min(600px, calc(100vw - 2rem));
+  height: min(560px, 85vh);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -88,6 +87,7 @@
 /* Content area */
 .modal-content {
   flex: 1;
+  min-height: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -107,4 +107,3 @@
 #monky-modal > * {
   pointer-events: auto !important;
 }
-

@@ -26,8 +26,13 @@ export function createModalManager() {
       .replace(/#monky-modal\s*\{[^}]*\}/g, '')
       .replace(/#monky-modal\s+>\s+\*\s*\{[^}]*\}/g, '');
 
+  const fontUrl = chrome.runtime.getURL('ibm-plex-sans-condensed-v15-latin-300.woff2');
+  const layoutStylesWithFontUrl = LAYOUT_SEMANTIC_STYLES.replace("url('/ibm-plex-sans-condensed-v15-latin-300.woff2')", `url('${fontUrl}')`);
+  const fontFaceStyles = layoutStylesWithFontUrl.match(/@font-face[\s\S]*?}\s*/)?.[0] ?? '';
+  const layoutStyles = layoutStylesWithFontUrl.replace(/@font-face[\s\S]*?}\s*/,'');
+
   const allStyles = [
-    LAYOUT_SEMANTIC_STYLES,
+    layoutStyles,
     adaptModalStyles(MODAL_STYLES),
     SEARCH_VIEW_STYLES,
     SETTINGS_VIEW_STYLES,
@@ -36,6 +41,7 @@ export function createModalManager() {
     MEDIUM_EDITOR_THEME,
   ].join('\n');
 
+  let globalFontInjector: ReturnType<typeof createStyleInjector>;
   let styleInjector: ReturnType<typeof createStyleInjector>;
   let isVisible = false;
   let currentView: ModalView = 'search';
@@ -116,6 +122,8 @@ export function createModalManager() {
   const initialize = (): void => {
     renderer.initialize();
     const shadowRoot = renderer.getShadowRoot();
+    globalFontInjector = createStyleInjector('monky-font-face', fontFaceStyles);
+    globalFontInjector.inject();
     styleInjector = createStyleInjector('monky-modal-styles', allStyles, shadowRoot);
     styleInjector.inject();
   };
@@ -142,6 +150,7 @@ export function createModalManager() {
     hide();
     renderer.destroy();
     styleInjector.remove();
+    globalFontInjector.remove();
   };
 
   const setOnMacroSelected = (callback: (macro: Macro, element: EditableEl) => void) => {

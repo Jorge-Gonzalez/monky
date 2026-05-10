@@ -17,7 +17,7 @@
 .page-title {
   font-size: var(--text-2xl);
   font-weight: 200;
-  font-family: Karla, sans-serif;
+  font-family: 'IBM Plex Condensed Light', sans-serif;
   color: var(--text-primary);
   margin: 0 0 var(--spacing-lg) 0;
 }
