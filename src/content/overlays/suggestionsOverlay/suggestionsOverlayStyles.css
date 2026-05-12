@@ -105,8 +105,6 @@
   background-color: var(--bg-tertiary);
   color: var(--text-accent);
   border-color: var(--text-accent);
-  outline: 2px solid var(--text-accent);
-  outline-offset: 1px;
 }
 
 .macro-suggestions-item-text {
