@@ -26,8 +26,8 @@ export function createModalManager() {
       .replace(/#monky-modal\s*\{[^}]*\}/g, '')
       .replace(/#monky-modal\s+>\s+\*\s*\{[^}]*\}/g, '');
 
-  const fontUrl = chrome.runtime.getURL('ibm-plex-sans-condensed-v15-latin-300.woff2');
-  const layoutStylesWithFontUrl = LAYOUT_SEMANTIC_STYLES.replace("url('/ibm-plex-sans-condensed-v15-latin-300.woff2')", `url('${fontUrl}')`);
+  const fontUrl = chrome.runtime.getURL('fonts/ibm-plex-sans-condensed-v15-latin-300.woff2');
+  const layoutStylesWithFontUrl = LAYOUT_SEMANTIC_STYLES.replace("url('/fonts/ibm-plex-sans-condensed-v15-latin-300.woff2')", `url('${fontUrl}')`);
   const fontFaceStyles = layoutStylesWithFontUrl.match(/@font-face[\s\S]*?}\s*/)?.[0] ?? '';
   const layoutStyles = layoutStylesWithFontUrl.replace(/@font-face[\s\S]*?}\s*/,'');
 
