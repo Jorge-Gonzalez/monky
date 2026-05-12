@@ -1,8 +1,10 @@
 import { useMacroStore } from '../../store/useMacroStore';
+import { Lang } from '../../types';
 
 export interface OptionsState {
   prefixes: string[];
   useCommitKeys: boolean;
+  language: Lang;
 }
 
 export interface OptionsManager {
@@ -10,6 +12,7 @@ export interface OptionsManager {
   setState(state: Partial<OptionsState>): void;
   setPrefixes(prefixes: string[]): void;
   setUseCommitKeys(useCommitKeys: boolean): void;
+  setLanguage(lang: Lang): void;
   validate(state: Partial<OptionsState>): boolean;
   syncToStore(): void;
   syncFromStore(): void;
@@ -39,6 +42,7 @@ export function createOptionsManager(): OptionsManager {
     return {
       prefixes: storeState.config.prefixes || [],
       useCommitKeys: storeState.config.useCommitKeys || false,
+      language: storeState.config.language ?? 'en',
     };
   }
 
@@ -101,6 +105,10 @@ export function createOptionsManager(): OptionsManager {
     setState({ useCommitKeys });
   };
 
+  const setLanguage = (language: Lang): void => {
+    setState({ language });
+  };
+
   /**
    * Validate options state
    */
@@ -138,6 +146,7 @@ export function createOptionsManager(): OptionsManager {
       // Call individual setters instead of setConfig
       store.setPrefixes(currentState.prefixes);
       store.setUseCommitKeys(currentState.useCommitKeys);
+      store.setLanguage(currentState.language);
     } finally {
       // Always clear the flag, even if there's an error
       isUpdating = false;
@@ -181,6 +190,7 @@ export function createOptionsManager(): OptionsManager {
     setState,
     setPrefixes,
     setUseCommitKeys,
+    setLanguage,
     validate,
     syncToStore,
     syncFromStore,

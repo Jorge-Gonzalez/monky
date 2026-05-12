@@ -1,4 +1,5 @@
 import { OptionsManager, OptionsState } from '../managers/optionsManager';
+import { Lang } from '../../types';
 
 /**
  * OptionsCoordinator: Public API for the options system
@@ -14,6 +15,7 @@ export interface OptionsCoordinator {
   getState(): OptionsState;
   setPrefixes(prefixes: string[]): void;
   setUseCommitKeys(enabled: boolean): void;
+  setLanguage(lang: Lang): void;
   resetToDefaults(): void;
 
   // Subscriptions
@@ -34,6 +36,7 @@ export interface OptionsCoordinator {
 const DEFAULT_OPTIONS: OptionsState = {
   prefixes: ['::'],
   useCommitKeys: false,
+  language: 'en',
 };
 
 /**
@@ -65,6 +68,11 @@ export function createOptionsCoordinator(
   const setUseCommitKeys = (enabled: boolean): void => {
     if (!isEnabled) return;
     manager.setUseCommitKeys(enabled);
+  };
+
+  const setLanguage = (lang: Lang): void => {
+    if (!isEnabled) return;
+    manager.setLanguage(lang);
   };
 
   /**
@@ -130,6 +138,7 @@ export function createOptionsCoordinator(
     getState,
     setPrefixes,
     setUseCommitKeys,
+    setLanguage,
     resetToDefaults,
     subscribe,
     attach,

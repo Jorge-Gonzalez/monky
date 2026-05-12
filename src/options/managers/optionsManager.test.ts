@@ -51,10 +51,10 @@ describe('OptionsManager', () => {
 
       manager.setPrefixes(['/', '::', ';']);
 
-      expect(callback).toHaveBeenCalledWith({
+      expect(callback).toHaveBeenCalledWith(expect.objectContaining({
         prefixes: ['/', '::', ';'],
         useCommitKeys: false,
-      });
+      }));
     });
 
     it('should reject invalid prefixes', () => {
@@ -92,10 +92,10 @@ describe('OptionsManager', () => {
 
       manager.setUseCommitKeys(true);
 
-      expect(callback).toHaveBeenCalledWith({
+      expect(callback).toHaveBeenCalledWith(expect.objectContaining({
         prefixes: ['::'],
         useCommitKeys: true,
-      });
+      }));
     });
 
     it('should toggle useCommitKeys multiple times correctly', () => {
@@ -189,10 +189,10 @@ describe('OptionsManager', () => {
       manager.subscribe(callback);
 
       expect(callback).toHaveBeenCalledTimes(1);
-      expect(callback).toHaveBeenCalledWith({
+      expect(callback).toHaveBeenCalledWith(expect.objectContaining({
         prefixes: ['::'],
         useCommitKeys: false,
-      });
+      }));
     });
 
     it('should support multiple subscribers', () => {
@@ -208,14 +208,14 @@ describe('OptionsManager', () => {
 
       manager.setUseCommitKeys(true);
 
-      expect(callback1).toHaveBeenCalledWith({
+      expect(callback1).toHaveBeenCalledWith(expect.objectContaining({
         prefixes: ['::'],
         useCommitKeys: true,
-      });
-      expect(callback2).toHaveBeenCalledWith({
+      }));
+      expect(callback2).toHaveBeenCalledWith(expect.objectContaining({
         prefixes: ['::'],
         useCommitKeys: true,
-      });
+      }));
     });
 
     it('should unsubscribe correctly', () => {

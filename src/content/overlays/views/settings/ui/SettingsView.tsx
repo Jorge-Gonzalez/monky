@@ -3,6 +3,7 @@ import { BaseModalViewProps } from '../../../modal/types';
 import { useOptionsCoordinator, OptionsState } from '../../../../../options';
 import PrefixEditor from '../../../../../options/ui/PrefixEditor';
 import ReplacementMode from '../../../../../options/ui/ReplacementMode';
+import LanguageSelector from '../../../../../options/ui/LanguageSelector';
 import { ImportExport } from './ImportExport';
 import { t } from '../../../../../lib/i18n';
 
@@ -28,6 +29,7 @@ export function SettingsView(_props: BaseModalViewProps) {
         </p>
         <PrefixEditor coordinator={coordinator} prefixes={state.prefixes} />
         <ReplacementMode coordinator={coordinator} useCommitKeys={state.useCommitKeys} />
+        <LanguageSelector coordinator={coordinator} language={state.language} />
         <ImportExport />
       </div>
     </div>
