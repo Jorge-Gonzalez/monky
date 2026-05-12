@@ -28,15 +28,29 @@ function commandExists(macros: Macro[], command: string, currentId?: Macro['id']
   return macros.some(m => m.command === command && String(m.id) !== String(currentId))
 }
 
-// Custom storage object that uses the promise-based chrome.storage.local API.
-// This will be polyfilled in non-extension environments (like test-injected.html).
+// Tiered storage: writes go to local (reliable) and sync (best-effort cross-device).
+// Reads prefer sync so cross-device changes are picked up; local is the fallback.
 const chromeStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
+    try {
+      const result = await chrome.storage.sync.get(name)
+      if (result[name] != null) return result[name]
+    } catch {}
     const result = await chrome.storage.local.get(name)
     return result[name] ?? null
   },
-  setItem: (name: string, value: string): Promise<void> => chrome.storage.local.set({ [name]: value }),
-  removeItem: (name: string): Promise<void> => chrome.storage.local.remove(name),
+  setItem: async (name: string, value: string): Promise<void> => {
+    await chrome.storage.local.set({ [name]: value })
+    try {
+      await chrome.storage.sync.set({ [name]: value })
+    } catch {}
+  },
+  removeItem: async (name: string): Promise<void> => {
+    await Promise.allSettled([
+      chrome.storage.sync.remove(name),
+      chrome.storage.local.remove(name),
+    ])
+  },
 }
 
 export const useMacroStore = create<MacroStore>()(
@@ -111,9 +125,9 @@ export const useMacroStore = create<MacroStore>()(
        * @param currentState The current (initial) state.
        * @returns The merged state.
        */
-      merge: (persistedState: MacroStore, currentState) => ({
+      merge: (persistedState: unknown, currentState) => ({
         ...currentState,
-        ...persistedState,
+        ...(persistedState as MacroStore),
         config: {
           ...currentState.config,
           ...(persistedState as MacroStore).config,
@@ -130,8 +144,8 @@ export const useMacroStore = create<MacroStore>()(
  */
 if (typeof chrome !== 'undefined' && chrome.storage?.onChanged) {
   chrome.storage.onChanged.addListener((changes, area) => {
-    // Check if the change happened in 'local' storage and if our store's data was the one that changed.
-    if (area === 'local') {
+    // Rehydrate when either local (same-device context switch) or sync (cross-device) changes.
+    if (area === 'local' || area === 'sync') {
       const storeName = useMacroStore.persist.getOptions().name;
       if (storeName && changes[storeName]) {
         useMacroStore.persist.rehydrate();

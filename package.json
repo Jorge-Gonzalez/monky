@@ -7,6 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "build:prod": "vite build --mode production-terser",
+    "build:firefox": "vite build --config vite.firefox.config.ts",
+    "build:firefox:prod": "vite build --config vite.firefox.config.ts --mode production",
     "preview": "vite preview",
     "test": "vitest run",
     "test:verbose": "vitest run --reporter=verbose",
