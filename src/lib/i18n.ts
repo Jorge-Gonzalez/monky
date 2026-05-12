@@ -165,53 +165,20 @@ type TranslationKeys = FlattenKeys<typeof translations['en']>;
 // The old type definition, kept for reference:
 // type TranslationKeys = keyof typeof translations['en']; // 'en' is the source of truth for keys
 
-let currentLanguage: Language = useMacroStore.getState()?.config?.language ?? 'es'
-
-/**
- * Sets the application's current language.
- * @param lang The language to set.
- */
-function setLanguage(lang: Language) {
-  if (translations[lang]) {
-    currentLanguage = lang;
-  }
-}
-
-let isInitialized = false;
-
-/**
- * Initializes the i18n service, subscribing to language changes in the store.
- * This should be called once at the application's entry point.
- */
-export function initializeI18n() {
-  if (isInitialized) return;
-  isInitialized = true;
-
-  useMacroStore.subscribe(state => {
-    const newLang = state.config.language;
-    if (newLang && newLang !== currentLanguage) {
-      setLanguage(newLang);
-    }
-  });
-}
-
-/**
- * A simple translation function.
- * @param key The key for the translation string.
- * @param options An object with values to interpolate into the string.
- */
 export function t(key: TranslationKeys, options?: Record<string, string | number>): string {
-  const keys = key.split('.')
-  let text: any = translations[currentLanguage] ?? translations.en; // Fallback to English
-  for (const k of keys) {
-    text = text?.[k]
+  const lang = (useMacroStore.getState()?.config?.language ?? 'en') as Language;
+  const locale = translations[lang] ?? translations.en;
+
+  let text: unknown = locale;
+  for (const k of key.split('.')) {
+    text = (text as Record<string, unknown>)?.[k];
   }
 
-  if (typeof text !== 'string') return key
+  if (typeof text !== 'string') return key;
 
   if (options) {
-    return Object.entries(options).reduce((acc, [k, v]) => acc.replace(`{{${k}}}`, String(v)), text)
+    return Object.entries(options).reduce((acc, [k, v]) => acc.replace(`{{${k}}}`, String(v)), text);
   }
 
-  return text
+  return text;
 }
