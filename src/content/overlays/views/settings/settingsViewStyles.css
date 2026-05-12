@@ -16,3 +16,6 @@
 .settings-container {
   padding: var(--spacing-xl);
 }
+
+.import-status--ok    { color: var(--text-accent); }
+.import-status--error { color: var(--color-error, #e06c75); }
