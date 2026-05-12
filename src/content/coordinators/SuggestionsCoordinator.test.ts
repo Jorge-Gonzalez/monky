@@ -79,6 +79,22 @@ describe('SuggestionsCoordinator', () => {
 
         expect(mockManager.updateBuffer).not.toHaveBeenCalled();
       });
+
+      test('calls updateBuffer with empty string when visible and buffer is empty', () => {
+        vi.mocked(mockManager.isVisible).mockReturnValue(true);
+
+        mockActions.onDetectionUpdated('');
+
+        expect(mockManager.updateBuffer).toHaveBeenCalledWith('');
+      });
+
+      test('does not call updateBuffer with empty string when manager is not visible', () => {
+        vi.mocked(mockManager.isVisible).mockReturnValue(false);
+
+        mockActions.onDetectionUpdated('');
+
+        expect(mockManager.updateBuffer).not.toHaveBeenCalled();
+      });
     });
 
     describe('onDetectionCancelled', () => {

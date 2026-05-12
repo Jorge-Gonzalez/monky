@@ -104,4 +104,18 @@ describe('useModalKeyboard', () => {
     expect(onViewChange).toHaveBeenCalledWith('editor');
     div.remove();
   });
+
+  // ── Escape from non-search views ─────────────────────────────────────────
+
+  it('calls onClose on Escape when currentView is editor', () => {
+    render('editor');
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls onClose on Escape when currentView is settings', () => {
+    render('settings');
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
 });

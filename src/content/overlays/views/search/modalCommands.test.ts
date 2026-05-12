@@ -158,4 +158,28 @@ describe('parseModalQuery — parametric mode', () => {
       expect(result.param).toBe('/no')
     }
   })
+
+  it('param is just the prefix character alone (no name yet)', () => {
+    const result = parseModalQuery(':edit/', PREFIXES)
+    expect(result.mode).toBe('parametric')
+    if (result.mode === 'parametric') {
+      expect(result.param).toBe('/')
+    }
+  })
+
+  it('works with a two-character prefix', () => {
+    const result = parseModalQuery(':edit;;cmd', [';;'])
+    expect(result.mode).toBe('parametric')
+    if (result.mode === 'parametric') {
+      expect(result.param).toBe(';;cmd')
+    }
+  })
+
+  it(':delete with just the prefix character alone is parametric', () => {
+    const result = parseModalQuery(':delete/', PREFIXES)
+    expect(result.mode).toBe('parametric')
+    if (result.mode === 'parametric') {
+      expect(result.param).toBe('/')
+    }
+  })
 })

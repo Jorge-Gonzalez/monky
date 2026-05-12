@@ -39,4 +39,17 @@ describe('useAutoFocus Hook', () => {
     vi.runAllTimers();
     expect(focusSpy).not.toHaveBeenCalled();
   });
+
+  it('does not throw when ref is null and isActive becomes true', () => {
+    const nullRef = { current: null };
+    const { rerender } = renderHook(({ isActive }) => useAutoFocus(nullRef, isActive), {
+      initialProps: { isActive: false },
+    });
+    expect(() => rerender({ isActive: true })).not.toThrow();
+  });
+
+  it('does not call focus when ref is null', () => {
+    const nullRef = { current: null };
+    expect(() => renderHook(() => useAutoFocus(nullRef, true))).not.toThrow();
+  });
 });
