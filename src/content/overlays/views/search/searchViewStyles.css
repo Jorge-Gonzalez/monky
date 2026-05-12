@@ -43,6 +43,7 @@
   overflow-y: auto;
   display: grid;
   grid-template-columns: minmax(0, 0.33fr) 1fr;
+  align-content: start;
 }
 
 /* Empty state - uses shared .empty-state pattern */

@@ -18,7 +18,12 @@ export function useMacroSearch(macros: Macro[], query: string) {
         threshold: -10000, // Allow more fuzzy matches
       });
 
-      return results.slice(0, MAX_RESULTS).map(r => r.obj);
+      // Stable sort: higher score first; equal scores preserve original array order.
+      return results
+        .slice()
+        .sort((a, b) => b.score !== a.score ? b.score - a.score : macros.indexOf(a.obj) - macros.indexOf(b.obj))
+        .slice(0, MAX_RESULTS)
+        .map(r => r.obj);
     } catch (error) {
       console.warn('Fuzzy search failed, falling back to simple filter:', error);
       // Fallback to simple string matching
