@@ -3,14 +3,12 @@ import { useState, useCallback, useEffect } from 'react';
 export function useListNavigation(itemCount: number) {
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
-  // Auto-select first item when items are available
+  // Clamp or reset when item count changes
   useEffect(() => {
-    if (itemCount > 0 && selectedIndex === -1) {
-      setSelectedIndex(0);
-    } else if (itemCount === 0) {
+    if (itemCount === 0) {
       setSelectedIndex(-1);
     } else if (selectedIndex >= itemCount) {
-      setSelectedIndex(Math.max(0, itemCount - 1));
+      setSelectedIndex(itemCount - 1);
     }
   }, [itemCount, selectedIndex]);
 

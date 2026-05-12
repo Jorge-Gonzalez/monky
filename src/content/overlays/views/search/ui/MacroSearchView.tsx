@@ -48,8 +48,15 @@ export function MacroSearchView({
   const listLength = showMacros ? filteredMacros.length : visibleCommands.length;
   const navigation = useListNavigation(listLength);
 
+  // Reset selection on mode switches (e.g. search ↔ command discovery)
   useEffect(() => { navigation.reset(); }, [parsed.mode]);
+  // On mount, clear any stale state
   useEffect(() => { setSearchQuery(''); navigation.reset(); }, []);
+  // Auto-select first result when query is active; clear selection when query is empty
+  useEffect(() => {
+    if (searchQuery.trim()) navigation.selectIndex(0);
+    else navigation.reset();
+  }, [searchQuery]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // --- Handlers ---
 
