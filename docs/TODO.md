@@ -1,7 +1,7 @@
 ### TODO
 
 [x] Los prefijos pueden ser una lista especifiaca al menos una cantidad especifica.
-[ ] Implement, import and export macros. What is the most standard format.
+[x] Implement, import and export macros. What is the most standard format.
 [x] fuzzy find
 [x] autocompletion list with tab
 [x] convert the popup in a side panel
@@ -13,7 +13,7 @@
 [x] Fix; the popup dark theme is different than the search overlay, color consistencies and common color palette is required.
 [x] The new macro button in the popup is missing.
 [x] Unify all the interface popup and editor into the overlay modal currently used only to search. So they are going to be new views accessible by two buttons: create/edit macros and options.
-[ ] In the search modal it should be little label indicating the current number of macros in the results.
+[x] In the search modal it should be little label indicating the current number of macros in the results.
 [x] The undo should be able to delete an immediately replaced macro. That should be the undo behavior after a macro commit.
 [x] Fix: I found an issue in while working with the tests: the space is not triggering a macro if there is another macro that starts with the same prefix.
 [x] Fix: The undo test are currently made to be used with commit keys but currently the detector is working in auto mode.
@@ -27,8 +27,8 @@
 [x] Fix:The search overlay is no longer a search overlay it has now integrated three tabs the search, the editor,and the settings. (should the name of the overlay change in the code? Something like main overlay) Now it needs to be able to navigate among tabs with the left and right arrow keys.
 [ ] Fix:The icon is not visible in the toolbar in dark mode.
 [x] Fix:the main overlay does not have the icon or banding
-[ ] Fix:In the search tab it may be reflected the number of matching macros.
-[ ] Fix:The editor interface feels wrong the lists of macros there to edit is difficult to navigate, currently it does not have scrollbar, not the option to create a new macro.Maybe pressing plus on the search marco for a new macro and tab for edit the current selected macro will remove the list from the macro editor.
+[x] Fix:In the search tab it may be reflected the number of matching macros.
+[x] Fix:The editor interface feels wrong the lists of macros there to edit is difficult to navigate, currently it does not have scrollbar, not the option to create a new macro.Maybe pressing plus on the search marco for a new macro and tab for edit the current selected macro will remove the list from the macro editor. (This has been changed: the :new and :edit commands lauches the editor)
 define what is going to be in the macro menu on the extension icon. Maybe the help.
 [ ] Fine tune the UX. images controls ex: the enable and disable interface element.
 [ ] The save new macro button is not closing the overlay.(Should it show display the created macro as confirmation or close, currently is just clearing out the editor's fields)
@@ -42,6 +42,18 @@ define what is going to be in the macro menu on the extension icon. Maybe the he
 [x] Clean up legacy code files adn documents
 [ ] Change the small texts secctions to a cleannest UI typeface.
 [ ] Utilize a standard dimension among views in the modal so it does not get resized when switching.
+[ ] The editor interface is not well rounded, feels unatural.
+[ ] Ctl v is not working in the editor field nor the html buttons.
+[?] when the search has been refined to few macros, if some have multines the can display more lines of the macro. This is tricky it shold intent to have the list on the viewable area, so basicly it has to spread the availabe space among the ones that require more vertical space.
+[ ] :new macro commant used in the user's text field or in the search view is not moving the focus to the editor's view first field.
+[ ] When the selection is reined the first macro is expaniding the visible area to the available space instead to the necesary space to display the macro text content.
+[ ] Implement the macro engine for google docs.
+[ ] The editor remains showing the placeholder text and the actual content at the same time.
+[ ] The editor does no support Crl v.
+[ ] The editor is growing down outside the interface area instead of showing a scrollbar.
+
+
+
 
 ### Suggestions
 
