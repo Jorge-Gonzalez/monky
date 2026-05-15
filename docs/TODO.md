@@ -45,13 +45,19 @@ define what is going to be in the macro menu on the extension icon. Maybe the he
 [ ] The editor interface is not well rounded, feels unatural.
 [ ] Ctl v is not working in the editor field nor the html buttons.
 [?] when the search has been refined to few macros, if some have multines the can display more lines of the macro. This is tricky it shold intent to have the list on the viewable area, so basicly it has to spread the availabe space among the ones that require more vertical space.
+[x] Fix the translations on the interface.
 [ ] :new macro commant used in the user's text field or in the search view is not moving the focus to the editor's view first field.
 [ ] When the selection is reined the first macro is expaniding the visible area to the available space instead to the necesary space to display the macro text content.
 [ ] Implement the macro engine for google docs.
 [ ] The editor remains showing the placeholder text and the actual content at the same time.
 [ ] The editor does no support Crl v.
 [ ] The editor is growing down outside the interface area instead of showing a scrollbar.
-
+[ ] Add an option to show/hide the suggestions keyboard shorcuts at the botton of the suggestons overlay.
+[ ] Fix the suggestions overlay height to match with the text rows.
+[ ] Add a scrolling feature for the selected macro text content using key up and down.
+[ ] Possible feature: add an option to select the suggestions overlay height.
+[ ] Theme changes -- new theme color selection feature.
+[ ] Possible theme layout options too.
 
 
 
