@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Macro } from '../../../../../types';
+import { t } from '../../../../../lib/i18n';
 import { useMacroStore } from '../../../../../store/useMacroStore';
 import { useMacroSearch } from '../hooks/useMacroSearch';
 import { useListNavigation } from '../hooks/useListNavigation';
@@ -142,7 +143,7 @@ export function MacroSearchView({
       return (
         <div ref={resultsRef} className="macro-search-results">
           <div className="macro-search-empty modal-command-hint">
-            Type /{' '}or ; followed by a command name
+            {t('modalSearch.awaitingHint')}
           </div>
         </div>
       );

@@ -1,4 +1,5 @@
 import { ModalCommand } from '../modalCommands';
+import { t } from '../../../../../lib/i18n';
 
 interface MacroCommandResultsProps {
   commands: ModalCommand[];
@@ -11,7 +12,7 @@ export function MacroCommandResults({ commands, selectedIndex, onSelect, results
   if (commands.length === 0) {
     return (
       <div ref={resultsRef} className="macro-search-results">
-        <div className="macro-search-empty">No matching commands</div>
+        <div className="macro-search-empty">{t('modalSearch.noMatchingCommands')}</div>
       </div>
     );
   }

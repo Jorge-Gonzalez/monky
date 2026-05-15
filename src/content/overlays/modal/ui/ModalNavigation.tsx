@@ -1,5 +1,6 @@
 import React from 'react';
 import { ModalNavigationProps, ModalView } from '../types';
+import { t } from '../../../../lib/i18n';
 
 /**
  * Icon components
@@ -46,9 +47,9 @@ const SettingsIcon = () => (
  */
 export function ModalNavigation({ currentView, onViewChange, theme }: ModalNavigationProps) {
   const tabs: Array<{ view: ModalView; label: string; icon?: React.ReactNode }> = [
-    { view: 'search', label: 'Search', icon: <SearchIcon /> },
-    { view: 'editor', label: 'Editor', icon: <EditorIcon /> },
-    { view: 'settings', label: 'Settings', icon: <SettingsIcon /> },
+    { view: 'search', label: t('modalNavigation.search'), icon: <SearchIcon /> },
+    { view: 'editor', label: t('modalNavigation.editor'), icon: <EditorIcon /> },
+    { view: 'settings', label: t('modalNavigation.settings'), icon: <SettingsIcon /> },
   ];
 
   const isDarkMode = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -66,7 +67,7 @@ export function ModalNavigation({ currentView, onViewChange, theme }: ModalNavig
             key={tab.view}
             className={`modal-nav-tab panel-button padded-comfortable-loose horizontal items align-center justify-center snug ${currentView === tab.view ? 'active' : ''}`}
             onClick={() => onViewChange(tab.view)}
-            aria-label={`Switch to ${tab.label}`}
+            aria-label={t('modalNavigation.switchTo', { view: tab.label })}
             aria-current={currentView === tab.view ? 'page' : undefined}
           >
             {tab.icon && <span className="modal-nav-icon">{tab.icon}</span>}

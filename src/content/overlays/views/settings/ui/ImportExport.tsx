@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { t } from '../../../../../lib/i18n';
 import { useMacroStore } from '../../../../../store/useMacroStore';
 import { serializeMacros, parseMacroImport, mergeImport } from '../../../../../lib/macroIO';
 
@@ -36,16 +37,17 @@ export function ImportExport() {
       try {
         const parsed = parseMacroImport(reader.result as string);
         if (parsed.length === 0) {
-          showStatus(false, 'No valid macros found in file');
+          showStatus(false, t('settings.importExport.status.noValidMacros'));
           return;
         }
         const existing = new Set(macros.map(m => m.command));
         const { added, skipped } = mergeImport(parsed, existing, addMacro);
-        const parts = [`${added} added`];
-        if (skipped > 0) parts.push(`${skipped} skipped (duplicate command)`);
-        showStatus(true, parts.join(', '));
+        const message = skipped > 0
+          ? t('settings.importExport.status.addedWithSkipped', { added, skipped })
+          : t('settings.importExport.status.added', { count: added });
+        showStatus(true, message);
       } catch {
-        showStatus(false, 'Invalid file — expected a JSON array');
+        showStatus(false, t('settings.importExport.status.invalidFile'));
       }
     };
     reader.readAsText(file);
@@ -53,17 +55,16 @@ export function ImportExport() {
 
   return (
     <div className="section">
-      <h3 className="section-title">Import / Export</h3>
+      <h3 className="section-title">{t('settings.importExport.title')}</h3>
       <p className="section-description">
-        Export your macros as JSON to back them up or move them to another device.
-        Importing merges macros — duplicates (same command) are skipped.
+        {t('settings.importExport.description')}
       </p>
       <div className="horizontal blocks snug">
         <button className="btn btn-outlined" type="button" onClick={handleExport}>
-          Export
+          {t('settings.importExport.exportButton')}
         </button>
         <button className="btn btn-outlined" type="button" onClick={() => fileInputRef.current?.click()}>
-          Import
+          {t('settings.importExport.importButton')}
         </button>
         <input
           ref={fileInputRef}

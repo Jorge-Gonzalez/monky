@@ -27,6 +27,59 @@ const translations = {
     settings: {
       title: 'Settings',
       language: 'Language',
+      importExport: {
+        title: 'Import / Export',
+        description: 'Export your macros as JSON to back them up or move them to another device. Importing merges macros — duplicates (same command) are skipped.',
+        exportButton: 'Export',
+        importButton: 'Import',
+        status: {
+          added: '{{count}} added',
+          addedWithSkipped: '{{added}} added, {{skipped}} skipped (duplicate command)',
+          invalidFile: 'Invalid file — expected a JSON array',
+          noValidMacros: 'No valid macros found in file',
+        },
+      },
+    },
+
+    modalNavigation: {
+      switchTo: 'Switch to {{view}}',
+      search: 'Search',
+      editor: 'Editor',
+      settings: 'Settings',
+    },
+
+    modalSearch: {
+      inputPlaceholder: 'Search macros...',
+      awaitingHint: 'Type / or ; followed by a command name',
+      noMatchingCommands: 'No matching commands',
+      noMacrosFound: 'No macros found',
+      startTypingHint: 'Start typing to search macros...',
+      footer: {
+        macro: '{{count}} macro',
+        macros: '{{count}} macros',
+        command: '{{count}} command',
+        commands: '{{count}} commands',
+        commandsLabel: 'commands',
+        navigate: 'navigate',
+        run: 'run',
+        select: 'select',
+        close: 'close',
+      },
+    },
+
+    macroSuggestions: {
+      footer: {
+        navigate: 'Navigate',
+        select: 'Select',
+        cancel: 'Cancel',
+      },
+    },
+
+    macroEditor: {
+      title: {
+        new: 'New Macro',
+        edit: 'Edit: {{command}}',
+      },
     },
 
     // Popup
@@ -51,7 +104,7 @@ const translations = {
 
     // Macro Form
     macroForm: {
-      triggerLabel: 'Trigger',
+      triggerLabel: 'Shortcut',
       textLabel: 'Text',
       sensitiveLabel: 'Mark as sensitive (encrypted)',
       updateButton: 'Update',
@@ -71,7 +124,8 @@ const translations = {
     replacementMode: {
       title: 'Replacement Mode',
       auto: 'Automatic (on match)',
-      manual: 'Manual (with Space, Enter, or Tab)'
+      manual: 'Manual (with Space, Enter, or Tab)',
+      description: 'In automatic mode, text replaces on match, but if a longer macro starts the same way it waits briefly before replacing.',
     },
   },
   es: {
@@ -99,8 +153,60 @@ const translations = {
     settings: {
       title: 'Configuración',
       language: 'Idioma',
+      importExport: {
+        title: 'Importar / Exportar',
+        description: 'Exporta tus macros como JSON para respaldarlas o moverlas a otro dispositivo. La importación combina macros: los duplicados (mismo comando) se omiten.',
+        exportButton: 'Exportar',
+        importButton: 'Importar',
+        status: {
+          added: '{{count}} agregados',
+          addedWithSkipped: '{{added}} agregados, {{skipped}} omitidos (comando duplicado)',
+          invalidFile: 'Archivo inválido — se esperaba un array JSON',
+          noValidMacros: 'No se encontraron macros válidas en el archivo',
+        },
+      },
     },
 
+    modalNavigation: {
+      switchTo: 'Ir a {{view}}',
+      search: 'Buscar',
+      editor: 'Editor',
+      settings: 'Configuración',
+    },
+
+    modalSearch: {
+      inputPlaceholder: 'Buscar macros...',
+      awaitingHint: 'Escribe / o ; seguido de un nombre de comando',
+      noMatchingCommands: 'No hay comandos coincidentes',
+      noMacrosFound: 'No se encontraron macros',
+      startTypingHint: 'Empieza a escribir para buscar macros...',
+      footer: {
+        macro: '{{count}} macro',
+        macros: '{{count}} macros',
+        command: '{{count}} comando',
+        commands: '{{count}} comandos',
+        commandsLabel: 'comandos',
+        navigate: 'navegar',
+        run: 'ejecutar',
+        select: 'seleccionar',
+        close: 'cerrar',
+      },
+    },
+
+    macroSuggestions: {
+      footer: {
+        navigate: 'Navegar',
+        select: 'Seleccionar',
+        cancel: 'Cancelar',
+      },
+    },
+
+    macroEditor: {
+      title: {
+        new: 'Nuevo macro',
+        edit: 'Editar: {{command}}',
+      },
+    },
 
     // Popup
     popup: {
@@ -124,7 +230,7 @@ const translations = {
 
     // Macro Form
     macroForm: {
-      triggerLabel: 'Trigger',
+      triggerLabel: 'Atajo',
       textLabel: 'Texto',
       sensitiveLabel: 'Marcar como sensible (se encripta)',
       updateButton: 'Actualizar',
@@ -144,7 +250,8 @@ const translations = {
     replacementMode: {
       title: 'Modo de Sustitución',
       auto: 'Automático (al coincidir)',
-      manual: 'Manual (con Espacio, Enter, o Tab)'
+      manual: 'Manual (con Espacio, Enter, o Tab)',
+      description: 'En modo automático, el texto se reemplaza al coincidir, pero si existe un macro más largo que empieza igual, espera un instante antes de reemplazar.',
     },
   },
   // You could add more languages here in the future, e.g., en: { ... }

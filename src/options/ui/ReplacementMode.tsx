@@ -37,7 +37,7 @@ export default function ReplacementMode({ coordinator, useCommitKeys }: Replacem
         </label>
       </div>
       <p className="section-description">
-        El modo automático reemplaza el texto tan pronto como sea posible, con una breve pausa si un macro más largo es posible.
+        {t('replacementMode.description')}
       </p>
     </div>
   );

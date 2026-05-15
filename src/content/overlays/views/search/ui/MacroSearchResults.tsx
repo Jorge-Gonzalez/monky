@@ -1,5 +1,6 @@
 import React from 'react';
 import { Macro } from '../../../../../types';
+import { t } from '../../../../../lib/i18n';
 
 interface MacroSearchResultsProps {
   macros: Macro[];
@@ -20,7 +21,7 @@ export function MacroSearchResults({
     return (
       <div ref={resultsRef} className="macro-search-results">
         <div className="macro-search-empty">
-          {searchQuery ? 'No macros found' : 'Start typing to search macros...'}
+          {searchQuery ? t('modalSearch.noMacrosFound') : t('modalSearch.startTypingHint')}
         </div>
       </div>
     );

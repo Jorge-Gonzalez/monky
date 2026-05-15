@@ -1,6 +1,7 @@
 import { useRef, useCallback, useMemo, useEffect, useState, useLayoutEffect } from 'react';
 import fuzzysort from 'fuzzysort';
 import { Macro } from '../../../../types';
+import { t } from '../../../../lib/i18n';
 import { useThemeColors } from '../../../../theme/hooks/useThemeColors';
 import { useMacroStore } from '../../../../store/useMacroStore';
 import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
@@ -195,13 +196,13 @@ export function MacroSuggestions({
         <span>
           <kbd className="macro-suggestions-kbd">←</kbd>
           <kbd className="macro-suggestions-kbd">→</kbd>/
-          <kbd className="macro-suggestions-kbd">Tab</kbd> Navigate
+          <kbd className="macro-suggestions-kbd">Tab</kbd> {t('macroSuggestions.footer.navigate')}
         </span>
         <span>
-          <kbd className="macro-suggestions-kbd">↵</kbd> Select
+          <kbd className="macro-suggestions-kbd">↵</kbd> {t('macroSuggestions.footer.select')}
         </span>
         <span>
-          <kbd className="macro-suggestions-kbd">Esc</kbd> Cancel
+          <kbd className="macro-suggestions-kbd">Esc</kbd> {t('macroSuggestions.footer.cancel')}
         </span>
       </div>
     </div>

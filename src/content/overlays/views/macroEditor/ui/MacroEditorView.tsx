@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { t } from '../../../../../lib/i18n';
 import { MacroEditorViewProps } from '../../../modal/types';
 import { useEditorCoordinator } from '../../../../../editor/hooks/useEditorCoordinator';
 import MacroForm from '../../../../../editor/ui/MacroForm';
@@ -26,8 +27,8 @@ export function MacroEditorView({ containerRef, initialMacro, onViewChange }: Ma
   };
 
   const title = state.editingMacro
-    ? `Edit: ${state.editingMacro.command}`
-    : 'New Macro';
+    ? t('macroEditor.title.edit', { command: state.editingMacro.command })
+    : t('macroEditor.title.new');
 
   return (
     <div className="macro-editor-view">

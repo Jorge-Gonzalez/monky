@@ -1,4 +1,5 @@
 import React from 'react';
+import { t } from '../../../../../lib/i18n';
 
 interface MacroSearchInputProps {
   value: string;
@@ -14,7 +15,7 @@ export function MacroSearchInput({ value, onChange, inputRef }: MacroSearchInput
         type="text"
         value={value}
         onChange={e => onChange(e.target.value)}
-        placeholder="Search macros..."
+        placeholder={t('modalSearch.inputPlaceholder')}
         className="macro-search-input"
       />
     </div>
