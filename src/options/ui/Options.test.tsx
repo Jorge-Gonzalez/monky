@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup } from '@testing-library/preact'
 import { describe, it, expect, vi, Mock, beforeEach } from 'vitest'
 import { t } from '../../lib/i18n'
 import Options from './Options' // Import the actual component

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/preact';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { FuzzySearchField, FuzzySearchFieldProps } from './FuzzySearchField';
 

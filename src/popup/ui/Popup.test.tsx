@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/preact'
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest'
 import { Macro, ThemeMode } from '../../types'
 import { PopupManager } from '../managers/createPopupManager' // Assuming this type definition exists
@@ -35,7 +35,18 @@ vi.mock('./ThemeSwitcher', () => ({
   default: () => <div data-testid="theme-switcher-mock" />,
 }));
 
-vi.mock('../../lib/i18n');
+vi.mock('../../lib/i18n', () => ({
+  t: vi.fn((key: string) => key),
+}));
+vi.mock('../../store/useMacroStore', () => {
+  const state = { macros: [], config: { theme: 'system', language: 'en' } };
+  return {
+    useMacroStore: Object.assign(
+      vi.fn(() => ({ theme: 'system', macros: [] })),
+      { getState: vi.fn(() => state) }
+    ),
+  };
+});
 
 // Mock the manager hook, which is the new way the component gets its manager.
 vi.mock('../managers/usePopupManager', () => ({

@@ -5,7 +5,7 @@
  * Can be used for any command-style inputs (macros, shortcuts, CLI commands, etc.)
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 /**
  * Validation result
@@ -115,6 +115,11 @@ export function CommandInput({
   const validationResult = validate(value);
   const showError = showValidation && value.trim() !== '' && !validationResult.isValid;
 
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (autoFocus) inputRef.current?.focus();
+  }, []);
+
   // ============================================================================
   // HANDLERS
   // ============================================================================
@@ -143,6 +148,7 @@ export function CommandInput({
       )}
 
       <input
+        ref={inputRef}
         id="command-input"
         type="text"
         className={`command-input ${showError ? 'command-input-error' : ''}`}
@@ -152,7 +158,6 @@ export function CommandInput({
         onBlur={onBlur}
         placeholder={placeholder}
         maxLength={maxLength}
-        autoFocus={autoFocus}
         disabled={disabled}
         aria-invalid={showError}
         aria-describedby={showError ? 'command-input-error' : undefined}

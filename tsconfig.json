@@ -3,6 +3,15 @@
     "esModuleInterop": true,
     "lib": ["dom", "es2021"],
     "types": ["chrome", "vitest/globals"],
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "baseUrl": ".",
+    "paths": {
+      "react": ["./node_modules/preact/compat/"],
+      "react-dom": ["./node_modules/preact/compat/"],
+      "react-dom/client": ["./node_modules/preact/compat/"],
+      "react/jsx-runtime": ["./node_modules/preact/jsx-runtime/"],
+      "react/jsx-dev-runtime": ["./node_modules/preact/jsx-runtime/"]
+    }
   }
 }

@@ -1,10 +1,10 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { createElement } from 'react';
+import { createRoot, type Root } from 'react-dom/client';
 
 export function createReactRenderer(containerId: string, useShadowDOM = true) {
   let container: HTMLDivElement | null = null;
   let shadowRoot: ShadowRoot | null = null;
-  let root: ReactDOM.Root | null = null;
+  let root: Root | null = null;
 
   const initialize = (): void => {
     if (container) return;
@@ -19,19 +19,19 @@ export function createReactRenderer(containerId: string, useShadowDOM = true) {
       const shadowContainer = document.createElement('div');
       shadowContainer.id = `${containerId}-shadow-root`;
       shadowRoot.appendChild(shadowContainer);
-      root = ReactDOM.createRoot(shadowContainer);
+      root = createRoot(shadowContainer);
     } else {
-      root = ReactDOM.createRoot(container);
+      root = createRoot(container);
     }
   };
 
-  const render = (element: React.ReactElement): void => {
+  const render = (element: ReturnType<typeof createElement>): void => {
     if (!root) initialize();
     root?.render(element);
   };
 
   const clear = (): void => {
-    root?.render(React.createElement('div'));
+    root?.render(createElement('div'));
   };
 
   const destroy = (): void => {

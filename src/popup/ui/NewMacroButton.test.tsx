@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/preact';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import NewMacroButton from './NewMacroButton';
 

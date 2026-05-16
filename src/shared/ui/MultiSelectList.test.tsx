@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/preact';
 import { describe, it, expect, vi } from 'vitest';
 import { MultiSelectList, MultiSelectListProps } from './MultiSelectList';
 
@@ -166,8 +166,8 @@ describe('MultiSelectList', () => {
       const onActivate = vi.fn();
       render(<MultiSelectList {...defaultProps} onActivate={onActivate} />);
 
-      const firstItem = screen.getByTestId('item-1');
-      fireEvent.doubleClick(firstItem);
+      const firstItem = screen.getAllByRole('option')[0];
+      fireEvent.dblClick(firstItem);
 
       expect(onActivate).toHaveBeenCalledWith(mockItems[0]);
     });

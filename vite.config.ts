@@ -1,5 +1,5 @@
 import { defineConfig, type ConfigEnv, type UserConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import preact from '@preact/preset-vite'
 import { crx } from '@crxjs/vite-plugin'
 import manifest from './manifest.config'
 import type { TerserOptions } from 'terser'
@@ -16,7 +16,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   
   return {
     plugins: [
-      react(),
+      preact(),
       crx({ manifest }),
       ...(process.env.NODE_ENV !== 'production' ? [devtoolsJson()] : []),
     ],
@@ -52,6 +52,15 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
         },
       },
     },
+    resolve: {
+      alias: {
+        'react': 'preact/compat',
+        'react-dom/client': 'preact/compat/client',
+        'react-dom': 'preact/compat',
+        'react/jsx-runtime': 'preact/jsx-runtime',
+        'react/jsx-dev-runtime': 'preact/jsx-runtime',
+      },
+    },
     server: {
       port: 5173, // Try a different port like 3000
       host: true,
@@ -65,10 +74,14 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
     test: {
       globals: true,
       environment: 'jsdom',
-      // Add this line to your config
       setupFiles: './vitest.setup.ts',
       deps: {
         interopDefault: true,
+      },
+      server: {
+        deps: {
+          inline: ['zustand', 'use-sync-external-store'],
+        },
       },
     },
   }

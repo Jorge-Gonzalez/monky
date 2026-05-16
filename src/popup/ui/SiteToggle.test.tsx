@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/preact'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import SiteToggle from './SiteToggle'
 import { useMacroStore } from '../../store/useMacroStore'

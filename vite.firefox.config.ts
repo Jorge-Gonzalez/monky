@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import preact from '@preact/preset-vite';
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import type { Plugin } from 'vite';
@@ -16,7 +16,16 @@ function firefoxManifestPlugin(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), firefoxManifestPlugin()],
+  plugins: [preact(), firefoxManifestPlugin()],
+  resolve: {
+    alias: {
+      'react': 'preact/compat',
+      'react-dom/client': 'preact/compat/client',
+      'react-dom': 'preact/compat',
+      'react/jsx-runtime': 'preact/jsx-runtime',
+      'react/jsx-dev-runtime': 'preact/jsx-runtime',
+    },
+  },
   build: {
     outDir: 'dist-firefox',
     rollupOptions: {

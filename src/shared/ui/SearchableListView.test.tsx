@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/preact';
 import { describe, it, expect, vi } from 'vitest';
 import { SearchableListView, SearchableListViewProps } from './SearchableListView';
 
@@ -540,8 +540,8 @@ describe('SearchableListView', () => {
       const onActivate = vi.fn();
       render(<SearchableListView {...defaultProps} onActivate={onActivate} />);
 
-      const firstItem = screen.getByTestId('item-1');
-      fireEvent.doubleClick(firstItem);
+      const firstItem = screen.getAllByRole('option')[0];
+      fireEvent.dblClick(firstItem);
 
       expect(onActivate).toHaveBeenCalledWith(mockItems[0]);
     });

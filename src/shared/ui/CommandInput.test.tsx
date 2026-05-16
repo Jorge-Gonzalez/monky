@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/preact';
 import { CommandInput } from './CommandInput';
 
 describe('CommandInput', () => {
@@ -218,7 +218,8 @@ describe('CommandInput', () => {
       render(<CommandInput {...defaultProps} onBlur={onBlur} />);
 
       const input = screen.getByRole('textbox');
-      fireEvent.blur(input);
+      // Preact compat maps onBlur → focusout; dispatch the real event
+      fireEvent(input, new FocusEvent('focusout', { bubbles: true }));
 
       expect(onBlur).toHaveBeenCalled();
     });

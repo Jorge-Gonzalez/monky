@@ -3,9 +3,9 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/preact';
+import { createRef } from 'react';
 import { RichTextEditor, RichTextEditorRef } from './RichTextEditor';
-import React from 'react';
 
 // Mock Medium Editor
 const mockSubscribe = vi.fn();
@@ -119,7 +119,7 @@ describe('RichTextEditor', () => {
     });
 
     it('should pass containerRef for modal support', () => {
-      const containerRef = React.createRef<HTMLDivElement>();
+      const containerRef = createRef<HTMLDivElement>();
 
       render(
         <div ref={containerRef}>
@@ -179,14 +179,14 @@ describe('RichTextEditor', () => {
 
   describe('Ref API', () => {
     it('should expose getHTML method', () => {
-      const ref = React.createRef<RichTextEditorRef>();
+      const ref = createRef<RichTextEditorRef>();
       const { container } = render(<RichTextEditor ref={ref} value="<p>Test</p>" />);
 
       expect(ref.current?.getHTML()).toBe('<p>Test</p>');
     });
 
     it('should expose setHTML method', () => {
-      const ref = React.createRef<RichTextEditorRef>();
+      const ref = createRef<RichTextEditorRef>();
       const { container } = render(<RichTextEditor ref={ref} />);
 
       ref.current?.setHTML('<p>New content</p>');
@@ -196,7 +196,7 @@ describe('RichTextEditor', () => {
     });
 
     it('should expose clear method', () => {
-      const ref = React.createRef<RichTextEditorRef>();
+      const ref = createRef<RichTextEditorRef>();
       const { container } = render(<RichTextEditor ref={ref} value="<p>Test</p>" />);
 
       ref.current?.clear();
@@ -206,7 +206,7 @@ describe('RichTextEditor', () => {
     });
 
     it('should expose focus method', () => {
-      const ref = React.createRef<RichTextEditorRef>();
+      const ref = createRef<RichTextEditorRef>();
       const { container } = render(<RichTextEditor ref={ref} />);
 
       ref.current?.focus();
@@ -216,7 +216,7 @@ describe('RichTextEditor', () => {
     });
 
     it('should expose getEditor method', () => {
-      const ref = React.createRef<RichTextEditorRef>();
+      const ref = createRef<RichTextEditorRef>();
       render(<RichTextEditor ref={ref} />);
 
       const editor = ref.current?.getEditor();
@@ -226,7 +226,7 @@ describe('RichTextEditor', () => {
     });
 
     it('should handle methods when editor is not initialized', () => {
-      const ref = React.createRef<RichTextEditorRef>();
+      const ref = createRef<RichTextEditorRef>();
       const { container } = render(<RichTextEditor ref={ref} />);
 
       // Clear the innerHTML to simulate uninitialized state

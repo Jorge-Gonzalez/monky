@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/preact';
 import '@testing-library/jest-dom';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { MacroSuggestions } from './MacroSuggestions';
@@ -10,8 +10,12 @@ vi.mock('../../../../theme/hooks/useThemeColors', () => ({
   useThemeColors: vi.fn(),
 }));
 
+const storeState = { config: { theme: 'default', language: 'en' } };
 vi.mock('../../../../store/useMacroStore', () => ({
-  useMacroStore: vi.fn(() => ({ config: { theme: 'default' } })),
+  useMacroStore: Object.assign(
+    vi.fn(() => storeState),
+    { getState: vi.fn(() => storeState) }
+  ),
 }));
 
 // Mock the popup positioning hook

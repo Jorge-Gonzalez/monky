@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { renderHook } from '@testing-library/react';
+import { renderHook } from '@testing-library/preact';
 import { describe, it, expect, vi } from 'vitest';
 import { useScrollIntoView } from './useScrollIntoView';
 

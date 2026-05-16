@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { render, act } from '@testing-library/react'
+import { render, act } from '@testing-library/preact'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useMacroStore } from '../../store/useMacroStore'
 

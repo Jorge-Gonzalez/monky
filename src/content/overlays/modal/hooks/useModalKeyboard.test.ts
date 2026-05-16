@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { renderHook, fireEvent } from '@testing-library/react';
+import { renderHook, fireEvent } from '@testing-library/preact';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useModalKeyboard } from './useModalKeyboard';
 import type { ModalView } from '../types';
