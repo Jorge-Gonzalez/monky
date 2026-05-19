@@ -52,7 +52,7 @@
 
   /* Custom scrollbar styles */
   scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-color: var(---bg-tertiary) var(--bg-secondary);
 }
 
 /* ===== Global Animations ===== */
@@ -106,18 +106,18 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--scrollbar-track) !important;
+  background: var(--bg-secondary) !important;
   border-radius: var(--radius-sm) !important;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb) !important;
+  background: var(--bg-tertiary) !important;
   border-radius: var(--radius-sm) !important;
-  border: 1px solid var(--scrollbar-track) !important;
+  border: 1px solid var(--bg-secondary) !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover) !important;
+  background: var(--accent-secondary) !important;
 }
 
 /* ===== STRUCTURE: Layout Patterns ===== */

@@ -20,7 +20,7 @@ export const lightThemeColors = {
 export const darkThemeColors = {
   '--bg-primary': '#0f131b',
   '--bg-secondary': '#121720',
-  '--bg-tertiary': 'rgba(59, 130, 246, 0.2)',
+  '--bg-tertiary': '#162e48',
   '--text-primary': '#d3eaf8',
   '--text-secondary': '#6f8fa4',
   '--accent': '#4cbef2',
