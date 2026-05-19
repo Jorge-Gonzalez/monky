@@ -37,6 +37,10 @@ vi.mock('../store/useMacroStore', () => ({
 describe('sync', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    ;(useMacroStore.getState as vi.Mock).mockReturnValue({
+      macros: [],
+      setMacros: vi.fn()
+    })
   })
 
   describe('createMacroLocalFirst', () => {
@@ -70,6 +74,48 @@ describe('sync', () => {
       expect(apiFetch).toHaveBeenCalledWith('/macros', expect.objectContaining({
         method: 'POST',
         body: JSON.stringify(macro)
+      }))
+    })
+
+    it('preserves current store macros when local storage is stale during create', async () => {
+      const macro = { id: 2, command: '/super', text: 'Something cool' }
+      const storeMacros = [
+        { id: 'uma', command: '/uma', text: 'Imported macro' }
+      ]
+      const staleLocalMacros = [
+        { id: 'old-uno', command: '/uno', text: 'Stale local macro' }
+      ]
+
+      // Store already contains imported macros that are not present in local storage.
+      ;(useMacroStore.getState as vi.Mock).mockReturnValue({
+        macros: storeMacros,
+        setMacros: vi.fn()
+      })
+
+      mockGet.mockImplementation(async (keys) => {
+        if (keys === 'macros') return { macros: staleLocalMacros };
+        if (keys === 'pendingOps') return { pendingOps: [] };
+        return {};
+      });
+
+      ;(apiFetch as vi.Mock)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: vi.fn().mockResolvedValue({ success: true })
+        })
+
+      await sync.createMacroLocalFirst(macro)
+
+      expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({
+        macros: expect.arrayContaining([
+          expect.objectContaining(storeMacros[0]),
+          expect.objectContaining(macro)
+        ])
+      }))
+      expect(mockSet).not.toHaveBeenCalledWith(expect.objectContaining({
+        macros: expect.arrayContaining([
+          expect.objectContaining({ text: 'Stale local macro' })
+        ])
       }))
     })
 
@@ -114,14 +160,19 @@ describe('sync', () => {
     it('updates macro locally and attempts remote sync', async () => {
       const macro = { id: 1, command: '/updated', text: 'updated text' }
       const existingMacros = [{ id: 1, command: '/test', text: 'test text' }]
-      
+
+      ;(useMacroStore.getState as vi.Mock).mockReturnValue({
+        macros: existingMacros,
+        setMacros: vi.fn()
+      })
+
       // Mock local storage
       mockGet.mockImplementation(async (keys) => {
         if (keys === 'macros') return { macros: existingMacros };
         if (keys === 'pendingOps') return { pendingOps: [] };
         return {};
       });
-      
+
       // Mock successful API response
       ;(apiFetch as vi.Mock)
         .mockResolvedValueOnce({
@@ -151,7 +202,12 @@ describe('sync', () => {
         { id: 1, command: '/test', text: 'test text' },
         { id: 2, command: '/another', text: 'another text' }
       ]
-      
+
+      ;(useMacroStore.getState as vi.Mock).mockReturnValue({
+        macros: existingMacros,
+        setMacros: vi.fn()
+      })
+
       // Mock local storage
       mockGet.mockImplementation(async (keys) => {
         if (keys === 'macros') return { macros: existingMacros };
@@ -209,6 +265,7 @@ describe('sync', () => {
       // Mock store update
       const mockSetMacros = vi.fn()
       ;(useMacroStore.getState as vi.Mock).mockReturnValue({
+        macros: localMacros,
         setMacros: mockSetMacros
       })
       

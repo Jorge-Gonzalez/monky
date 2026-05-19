@@ -76,6 +76,9 @@ function manageMacroState() {
       if (macros.length > 0) {
         macroEngine.setMacros(macros)
       }
+    } else {
+      // Keep the macro engine and coordinators in sync when macros change.
+      updateMacros(useMacroStore.getState().macros)
     }
 
     // Wire the coordinators to use macro engine's functions for proper undo tracking
@@ -116,10 +119,7 @@ async function main() {
 
   // Initialize macros in the store if needed
   if (initialMacros.length > 0) {
-    const currentMacros = useMacroStore.getState().macros
-    if (currentMacros.length === 0) {
-      useMacroStore.setState({ macros: initialMacros })
-    }
+    useMacroStore.setState({ macros: initialMacros })
   }
 
   // Run the initial check to activate or deactivate the macro system and coordinator.
