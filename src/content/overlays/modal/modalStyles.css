@@ -46,7 +46,7 @@
 
 .modal-nav-branding {
   margin-right: 1rem;
-  color: var(--text-accent);
+  color: var(--accent);
 }
 
 .modal-nav-branding svg {
@@ -71,8 +71,8 @@
 }
 
 .modal-nav-tab.active {
-  color: var(--text-accent);
-  border-bottom-color: var(--text-accent);
+  color: var(--accent);
+  border-bottom-color: var(--accent);
   background-color: var(--bg-secondary);
 }
 

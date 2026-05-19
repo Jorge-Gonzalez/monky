@@ -62,7 +62,7 @@
 
 .macro-suggestions-item.selected {
   background-color: var(--bg-tertiary);
-  border-left: 1px solid var(--text-accent);
+  border-left: 1px solid var(--accent);
 }
 
 .macro-suggestions-item-content {
@@ -103,8 +103,8 @@
 
 .macro-suggestions-command-item.selected {
   background-color: var(--bg-tertiary);
-  color: var(--text-accent);
-  border-color: var(--text-accent);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .macro-suggestions-item-text {
@@ -118,7 +118,7 @@
 .macro-suggestions-item-indicator {
   margin-left: 8px;
   font-size: 11px;
-  color: var(--text-accent);
+  color: var(--accent);
 }
 
 .macro-suggestions-text-preview {

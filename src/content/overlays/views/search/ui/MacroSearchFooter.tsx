@@ -18,16 +18,16 @@ export function MacroSearchFooter({ count, isCommandMode }: MacroSearchFooterPro
       <div>
         {isCommandMode ? (
           <>
-            <kbd className="macro-search-kbd">↑↓</kbd> {t('modalSearch.footer.navigate')}
-            <kbd className="macro-search-kbd">&#8239;↵&#8239;</kbd> {t('modalSearch.footer.run')}
-            <kbd className="macro-search-kbd">Esc</kbd> {t('modalSearch.footer.close')}
+            <span className='macro-search-shortcut'><kbd className="macro-search-kbd">↑</kbd><kbd className="macro-search-kbd">↓</kbd> {t('modalSearch.footer.navigate')}</span>
+            <span className='macro-search-shortcut'><kbd className="macro-search-kbd">&#8239;↵&#8239;</kbd> {t('modalSearch.footer.run')}</span>
+            <span className='macro-search-shortcut'><kbd className="macro-search-kbd">Esc</kbd> {t('modalSearch.footer.close')}</span>
           </>
         ) : (
           <>
-            <kbd className="macro-search-kbd">:</kbd> {t('modalSearch.footer.commandsLabel')}
-            <kbd className="macro-search-kbd">↑↓</kbd> {t('modalSearch.footer.navigate')}
-            <kbd className="macro-search-kbd">&#8239;↵&#8239;</kbd> {t('modalSearch.footer.select')}
-            <kbd className="macro-search-kbd">Esc</kbd> {t('modalSearch.footer.close')}
+            <span className='macro-search-shortcut'><kbd className="macro-search-kbd">:</kbd> {t('modalSearch.footer.commandsLabel')}</span>
+            <span className='macro-search-shortcut'><kbd className="macro-search-kbd">↑</kbd><kbd className="macro-search-kbd">↓</kbd> {t('modalSearch.footer.navigate')}</span>
+            <span className='macro-search-shortcut'><kbd className="macro-search-kbd">&#8239;↵&#8239;</kbd> {t('modalSearch.footer.select')}</span>
+            <span className='macro-search-shortcut'><kbd className="macro-search-kbd">Esc</kbd> {t('modalSearch.footer.close')}</span>
           </>
         )}
       </div>
