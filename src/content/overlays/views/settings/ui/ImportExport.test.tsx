@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/preact'
+import userEvent from '@testing-library/user-event'
 
 const mockUseMacroStore = vi.hoisted(() => vi.fn())
 const mockAddMacro = vi.fn()
@@ -22,6 +23,13 @@ import { ImportExport } from './ImportExport'
 describe('ImportExport', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+
+    // jsdom's FileReader doesn't reliably fire onload; stub it to call onload asynchronously
+    vi.stubGlobal('FileReader', vi.fn(() => {
+      const reader: any = { result: '[]', onload: null }
+      reader.readAsText = () => { Promise.resolve().then(() => reader.onload?.()) }
+      return reader
+    }))
 
     mockAddMacro.mockReturnValue({ success: true })
     mockUseMacroStore.mockImplementation((selector: any) =>
@@ -47,7 +55,7 @@ describe('ImportExport', () => {
       ]),
     ], 'macros.json', { type: 'application/json' })
 
-    fireEvent.change(fileInput, { target: { files: [file] } })
+    await userEvent.upload(fileInput, file)
 
     await waitFor(() => {
       expect(mockParseMacroImport).toHaveBeenCalledWith(expect.any(String))
