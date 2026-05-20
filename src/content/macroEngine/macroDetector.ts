@@ -8,6 +8,8 @@ import { defaultMacroConfig } from "../../config/defaults"
 import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro, parseParametricBuffer, handleParametricSystemCommand } from "../systemMacros/systemMacros"
 import { DetectorActions } from "../actions/detectorActions"
 import { createMacroReplacement } from "./replacement/macroReplacement"
+import { createPlaceholderSession, PlaceholderSession } from "./placeholderSession"
+import { hasPlaceholders } from "./replacement/placeholders"
 
 const COMMIT_KEYS = new Set([" ", "Enter"])
 const CONFIRM_DELAY_MS = 1850
@@ -19,6 +21,7 @@ const CONFIRM_DELAY_MS = 1850
 export function createMacroDetector(actions: DetectorActions) {
   // Create replacement manager
   const replacement = createMacroReplacement()
+  let placeholderSession: PlaceholderSession | null = null
   let macros: Macro[] = []
   let activeEl: EditableEl = null
   let state: CoreState = { active: false, buffer: "" }
@@ -56,8 +59,8 @@ export function createMacroDetector(actions: DetectorActions) {
     }
 
     // Calculate positions
-    let commandStart: number
-    let endPos: number
+    let commandStart = 0
+    let endPos = 0
 
     if (selectionOnSchedule && !isImmediate) {
       endPos = selectionOnSchedule.end + 1
@@ -132,6 +135,7 @@ export function createMacroDetector(actions: DetectorActions) {
     replacement.performReplacement(activeEl, commandStart, endPos, macro.text, macro, originalCommandStart, originalEndPos)
     actions.onMacroCommitted(String(macro.id))
     cancelDetection()
+    if (macro.contentType !== 'text/html') startPlaceholderSession(activeEl, macro.text)
   }
 
   // Returns true when the buffer is a valid parametric system command or continuation.
@@ -222,7 +226,24 @@ export function createMacroDetector(actions: DetectorActions) {
     }
   }
 
+  function startPlaceholderSession(el: EditableEl, text: string): void {
+    if (!hasPlaceholders(text)) return
+    placeholderSession = createPlaceholderSession(el, () => { placeholderSession = null })
+  }
+
   function onKeyDown(e: KeyboardEvent) {
+    // Placeholder mode owns the keydown — macro detection suppressed while active
+    if (placeholderSession) {
+      if (e.key === 'Tab') {
+        e.preventDefault()
+        e.stopPropagation()
+        placeholderSession.advance()
+      } else if (e.key === 'Escape') {
+        placeholderSession.exit()
+      }
+      return
+    }
+
     // Handle Ctrl+Z / Cmd+Z for undo
     if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
       const editable = getActiveEditable(e.target)
@@ -506,6 +527,8 @@ export function createMacroDetector(actions: DetectorActions) {
     window.removeEventListener("blur", onBlur, true)
     listenersAttached = false
     clearBlurTimer()
+    placeholderSession?.exit()
+    placeholderSession = null
     cancelDetection()
     replacement.clearUndoHistory()
   }
@@ -563,6 +586,7 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Clean up detection state
     cancelDetection()
+    if (macro.contentType !== 'text/html') startPlaceholderSession(targetEl, macro.text)
   }
 
   /**
@@ -587,6 +611,7 @@ export function createMacroDetector(actions: DetectorActions) {
     replacement.performReplacement(element, cursorPos, cursorPos, macro.text, macro)
 
     actions.onMacroCommitted(String(macro.id))
+    if (macro.contentType !== 'text/html') startPlaceholderSession(element, macro.text)
   }
 
   return {
