@@ -39,10 +39,10 @@ vi.mock('../../lib/i18n', () => ({
   t: vi.fn((key: string) => key),
 }));
 vi.mock('../../store/useMacroStore', () => {
-  const state = { macros: [], config: { theme: 'system', language: 'en' } };
+  const state = { macros: mockMacros, config: { theme: 'system', language: 'en' } };
   return {
     useMacroStore: Object.assign(
-      vi.fn(() => ({ theme: 'system', macros: [] })),
+      vi.fn((selector: (s: typeof state) => unknown) => selector(state)),
       { getState: vi.fn(() => state) }
     ),
   };
@@ -61,6 +61,8 @@ const createMockPopupManager = (): PopupManager => {
     hostname: 'example.com',
     isSiteEnabled: true,
     macros: mockMacros,
+    disabledSites: [],
+    pending: 0,
   };
 
   return {

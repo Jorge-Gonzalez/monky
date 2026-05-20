@@ -10,10 +10,8 @@ import { useThemeColors } from '../../theme/hooks/useThemeColors';
 export default function Popup() {
   // Get all necessary state directly from the store.
   // This ensures the component re-renders whenever theme or macros change.
-  const { theme, macros } = useMacroStore(state => ({
-    theme: state.config.theme,
-    macros: state.macros,
-  }));
+  const theme = useMacroStore(state => state.config.theme)
+  const macros = useMacroStore(state => state.macros);
 
   const popupRef = useRef<HTMLDivElement>(null);
   // Apply theme colors using the reactive theme value from the store.

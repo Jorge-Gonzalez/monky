@@ -5,10 +5,8 @@ import { useMacroStore } from '../../store/useMacroStore';
 export default function SiteToggle() {
   const [hostname, setHostname] = useState<string | null>(null);
 
-  const { disabledSites, toggleSiteDisabled } = useMacroStore(state => ({
-    disabledSites: state.config.disabledSites || [],
-    toggleSiteDisabled: state.toggleSiteDisabled,
-  }));
+  const disabledSites = useMacroStore(state => state.config.disabledSites || [])
+  const toggleSiteDisabled = useMacroStore(state => state.toggleSiteDisabled);
 
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {

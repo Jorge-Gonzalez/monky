@@ -9,6 +9,12 @@ function isProdBuild(mode: string) {
   return mode === 'production' || mode === 'production-terser'
 }
 
+// Chrome extension pages block scripts/links with crossorigin attribute
+const removeCrossorigin = {
+  name: 'remove-crossorigin',
+  transformIndexHtml: (html: string) => html.replace(/ crossorigin/g, ''),
+}
+
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 
   const prod = isProdBuild(mode)
@@ -16,7 +22,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   
   return {
     plugins: [
-      preact(),
+      preact({ prefreshEnabled: false }),
+      removeCrossorigin,
       crx({ manifest }),
       ...(process.env.NODE_ENV !== 'production' ? [devtoolsJson()] : []),
     ],
