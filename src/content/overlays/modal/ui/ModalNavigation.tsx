@@ -56,7 +56,7 @@ export function ModalNavigation({ currentView, onViewChange, theme }: ModalNavig
   const Logo = isDarkMode ? MonkyLogoDark : MonkyLogoLight;
 
   return (
-    <nav className="modal-nav-container horizontal align-center justify-between" style={{ borderBottom: '1px solid var(--border-primary)', padding: '0 1rem' }}>
+    <nav className="modal-nav-container horizontal align-center justify-between" style={{ borderBottom: '1px solid var(--harmonic)', padding: '0 1rem' }}>
       <div className="modal-nav-branding horizontal align-center gap-2">
         <Logo />
         <MonkyLogoWord />

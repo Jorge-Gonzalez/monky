@@ -67,7 +67,7 @@ export default function SiteToggle() {
             borderRadius: '9999px',
             backgroundColor: 'white',
             transition: 'left 0.15s',
-            border: '1px solid var(--border-primary)'
+            border: '1px solid var(--harmonic)'
           }} />
         </div>
       </label>

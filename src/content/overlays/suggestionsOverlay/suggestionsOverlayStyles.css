@@ -10,10 +10,10 @@
 }
 
 .macro-suggestions-container {
-  background-color: var(--bg-primary);
+  background-color: var(--base-tone);
   border-radius: 8px;
   box-shadow: 0 10px 25px -5px var(--shadow-color);
-  border: 1px solid var(--border-primary);
+  border: 1px solid var(--harmonic);
   min-width: 200px;
   max-width: 360px;
   font-size: 14px;
@@ -32,14 +32,14 @@
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  border-top-color: var(--bg-primary);
+  border-top-color: var(--base-tone);
 }
 
 .macro-suggestions-arrow.bottom {
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
-  border-bottom-color: var(--bg-primary);
+  border-bottom-color: var(--base-tone);
 }
 
 .macro-suggestions-item {
@@ -49,7 +49,7 @@
   align-items: center;
   justify-content: space-between;
   transition: background-color 0.15s;
-  border-bottom: 1px solid var(--border-secondary);
+  border-bottom: 1px solid var(--harmonic-minor);
 }
 
 .macro-suggestions-item:last-of-type {
@@ -57,11 +57,11 @@
 }
 
 .macro-suggestions-item:hover {
-  background-color: var(--bg-secondary);
+  background-color: var(--tone-dim);
 }
 
 .macro-suggestions-item.selected {
-  background-color: var(--bg-tertiary);
+  background-color: var(--tone);
   border-left: 1px solid var(--accent);
 }
 
@@ -74,7 +74,7 @@
   display: flex;
   padding: 4px;
   gap: 4px;
-  border-bottom: 1px solid var(--border-secondary);
+  border-bottom: 1px solid var(--harmonic-minor);
 }
 
 .macro-suggestions-command-item {
@@ -84,8 +84,8 @@
   padding: 3px 6px;
   border: 1px solid transparent;
   border-radius: 6px;
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
+  background-color: var(--tone-dim);
+  color: var(--ink);
   font-size: 13px;
   font-family: monospace;
   cursor: pointer;
@@ -97,19 +97,19 @@
 }
 
 .macro-suggestions-command-item:hover {
-  background-color: var(--bg-tertiary);
-  border-color: var(--border-primary);
+  background-color: var(--tone);
+  border-color: var(--harmonic);
 }
 
 .macro-suggestions-command-item.selected {
-  background-color: var(--bg-tertiary);
+  background-color: var(--tone);
   color: var(--accent);
   border-color: var(--accent);
 }
 
 .macro-suggestions-item-text {
   font-size: 11px;
-  color: var(--text-secondary);
+  color: var(--ink-soft);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -124,7 +124,7 @@
 .macro-suggestions-text-preview {
   padding: 8px 12px;
   font-size: 12px;
-  color: var(--text-secondary);
+  color: var(--ink-soft);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -133,10 +133,10 @@
 
 .macro-suggestions-footer {
   padding: 6px 12px;
-  border-top: 1px solid var(--border-primary);
+  border-top: 1px solid var(--harmonic);
   font-size: 11px;
-  color: var(--text-secondary);
-  background-color: var(--bg-primary);
+  color: var(--ink-soft);
+  background-color: var(--base-tone);
   display: flex;
   gap: 12px;
   justify-content: flex-end;
@@ -148,6 +148,6 @@
   font-family: monospace;
   background-color: var(--kbd-bg);
   border: 1px solid var(--kbd-border);
-  color: var(--text-primary);
+  color: var(--ink);
   font-size: 10px;
 }

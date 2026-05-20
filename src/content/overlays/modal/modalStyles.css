@@ -28,10 +28,10 @@
 
 /* Dialog - the modal container */
 .modal-dialog {
-  background-color: var(--bg-primary);
+  background-color: var(--base-tone);
   border-radius: var(--radius-lg);
   box-shadow: 0 25px 50px -12px var(--shadow-color);
-  border: 1px solid var(--border-primary);
+  border: 1px solid var(--harmonic);
   width: min(600px, calc(100vw - 2rem));
   height: min(560px, 85vh);
   overflow: hidden;
@@ -61,19 +61,19 @@
 
 /* Navigation tabs - appearance only, all layout/behavior handled by semantic classes */
 .modal-nav-tab {
-  color: var(--text-secondary);
+  color: var(--ink-soft);
   border-bottom: 2px solid transparent;
 }
 
 .modal-nav-tab:hover {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
+  background-color: var(--tone-dim);
+  color: var(--ink);
 }
 
 .modal-nav-tab.active {
   color: var(--accent);
   border-bottom-color: var(--accent);
-  background-color: var(--bg-secondary);
+  background-color: var(--tone-dim);
 }
 
 .modal-nav-icon {

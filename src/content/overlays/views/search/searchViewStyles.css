@@ -14,18 +14,18 @@
 /* Input container */
 .macro-search-input-container {
   padding: var(--spacing-lg);
-  border-bottom: 1px solid var(--border-primary);
+  border-bottom: 1px solid var(--harmonic);
 }
 
 /* Search uses shared .input pattern from modalStyles */
 .macro-search-input {
   width: 100%;
   padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--accent-secondary);
+  border: 1px solid var(--accent-dim);
   border-radius: var(--radius-md);
   font-size: var(--text-md);
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
+  background-color: var(--tone-dim);
+  color: var(--ink);
   outline: none;
   box-sizing: border-box;
   transition: border-color var(--transition-fast);
@@ -33,7 +33,7 @@
 
 .macro-search-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--bg-tertiary);
+  box-shadow: 0 0 0 2px var(--tone);
 }
 
 /* Results container - extends .scrollable pattern */
@@ -50,7 +50,7 @@
 .macro-search-empty {
   grid-column: 1 / -1;
   padding: var(--spacing-lg);
-  color: var(--text-secondary);
+  color: var(--ink-soft);
   text-align: center;
   font-size: var(--text-md);
 }
@@ -65,8 +65,8 @@
 .macro-search-item-command,
 .macro-search-item-text {
   padding: var(--spacing-md);
-  border-bottom: 1px solid var(--border-secondary);
-  color: var(--text-primary);
+  border-bottom: 1px solid var(--harmonic-minor);
+  color: var(--ink);
   cursor: pointer;
   transition: background-color var(--transition-fast);
   overflow: hidden;
@@ -83,18 +83,18 @@
 
 .macro-search-item-text {
   font-size: var(--text-base);
-  color: var(--text-secondary);
+  color: var(--ink-soft);
   /* margin-top is no longer needed as items are aligned in the grid */
 }
 
 .macro-search-item:hover .macro-search-item-command,
 .macro-search-item:hover .macro-search-item-text {
-  background-color: var(--bg-secondary);
+  background-color: var(--tone-dim);
 }
 
 .macro-search-item.selected .macro-search-item-command,
 .macro-search-item.selected .macro-search-item-text {
-  background-color: var(--bg-tertiary);
+  background-color: var(--tone);
 }
 
 .macro-search-item.selected .macro-search-item-text {
@@ -106,16 +106,16 @@
 /* Footer */
 .macro-search-footer {
   padding: var(--spacing-sm);
-  border-top: 1px solid var(--border-primary);
+  border-top: 1px solid var(--harmonic);
   font-size: var(--text-sm);
-  color: var(--text-secondary);
+  color: var(--ink-soft);
   display: flex;
   justify-content: space-between;
-  background-color: var(--bg-primary);
+  background-color: var(--base-tone);
 }
 
 .macro-search-count {
-  color: var(--text-secondary);
+  color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
 }
 
@@ -126,7 +126,7 @@
 }
 
 .modal-command-item .modal-command-description {
-  color: var(--text-secondary);
+  color: var(--ink-soft);
   font-style: italic;
 }
 
@@ -137,7 +137,7 @@
   font-family: monospace;
   background-color: var(--kbd-bg);
   border: 1px solid var(--kbd-border);
-  color: var(--text-primary);
+  color: var(--ink);
   margin-left: var(--spacing-md);
   margin-right: var(--spacing-xs);
 } */
@@ -159,9 +159,9 @@
   line-height: 1;
   padding: 3px 6px 6px;
   min-width: 26px;
-  background: var(--bg-primary);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-secondary);
+  background: var(--base-tone);
+  color: var(--ink-soft);
+  border: 1px solid var(--harmonic-minor);
   border-radius: 4px;
   z-index: 0;
 }
@@ -169,9 +169,9 @@
 .macro-search-kbd::after {
   content: '';
   position: absolute;
-  background: var(--bg-secondary);
+  background: var(--tone-dim);
   inset: 0px 2px 4px;
-  border: 1px solid var(--border-secondary);
+  border: 1px solid var(--harmonic-minor);
   border-radius: 2px;
   pointer-events: none;
   z-index: -1;

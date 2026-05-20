@@ -1,13 +1,13 @@
 /* Apply base colors and text to the main popup container */
 .popup-container {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background-color: var(--base-tone);
+  color: var(--ink);
 }
 
 /* Primary button style (e.g., "New Macro") */
 .popup-button-primary {
   background-color: var(--button-bg);
-  color: var(--button-text);
+  color: var(--ink-alt);
 }
 .popup-button-primary:hover {
   background-color: var(--button-bg-hover);
@@ -15,22 +15,22 @@
 
 /* Secondary button style (e.g., Theme Switcher) */
 .popup-button-secondary:hover {
-  background-color: var(--bg-secondary);
+  background-color: var(--tone-dim);
 }
 
 /* Site Toggle section styles */
 .popup-section {
   background-color: var(--bg-input);
-  border-color: var(--border-primary);
+  border-color: var(--harmonic);
 }
 
 .popup-text-secondary {
-  color: var(--text-secondary);
+  color: var(--ink-soft);
 }
 
 /* Toggle switch styles */
 .popup-toggle-bg {
-  background-color: var(--bg-secondary);
+  background-color: var(--tone-dim);
   border-color: var(--border-input);
 }
 .popup-toggle-bg:focus-within {
@@ -59,9 +59,9 @@
 .popup-input {
   background-color: var(--bg-input);
   border-color: var(--border-input);
-  color: var(--text-primary);
+  color: var(--ink);
 }
 
 .popup-list-item {
-  border-color: var(--border-secondary);
+  border-color: var(--harmonic-minor);
 }

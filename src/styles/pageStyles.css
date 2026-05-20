@@ -18,12 +18,12 @@
   font-size: var(--text-2xl);
   font-weight: 200;
   font-family: 'IBM Plex Condensed Light', sans-serif;
-  color: var(--text-primary);
+  color: var(--ink);
   margin: 0 0 var(--spacing-lg) 0;
 }
 
 .page-description {
   font-size: var(--text-md);
-  color: var(--text-secondary);
+  color: var(--ink-soft);
   margin: 0 0 var(--spacing-2xl) 0;
 }

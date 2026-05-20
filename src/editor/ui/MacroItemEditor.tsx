@@ -14,7 +14,7 @@ export default function MacroItemEditor({ macro, onEdit, coordinator }:{ macro:a
     <div className="card">
       <div>
         <span className="text-mono font-semibold">{macro.command}</span>
-        <span style={{ marginLeft: '8px', fontSize: 'var(--text-sm)', color: 'var(--text-secondary)' }}>{macro.text.slice(0,80)}{macro.text.length>80?'…':''}</span>
+        <span style={{ marginLeft: '8px', fontSize: 'var(--text-sm)', color: 'var(--ink-soft)' }}>{macro.text.slice(0,80)}{macro.text.length>80?'…':''}</span>
       </div>
       <div className="button-group" style={{ marginTop: 'var(--spacing-md)' }}>
         <button className="btn-link" onClick={()=>onEdit(macro)}>{t('macroItemEditor.edit')}</button>
