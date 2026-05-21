@@ -42,7 +42,7 @@
   max-height: 400px;
   overflow-y: auto;
   display: grid;
-  grid-template-columns: minmax(0, 0.33fr) 1fr;
+  grid-template-columns: fit-content(140px) 1fr;
   align-content: start;
 }
 
@@ -78,13 +78,13 @@
   font-weight: 500;
   color: var(--accent);
   font-size: var(--text-md);
-  /* text-align: right; */
+  padding-right: var(--spacing-xs);
 }
 
 .macro-search-item-text {
   font-size: var(--text-base);
   color: var(--ink-soft);
-  /* margin-top is no longer needed as items are aligned in the grid */
+  padding-left: var(--spacing-xs);
 }
 
 .macro-search-item:hover .macro-search-item-command,
@@ -101,6 +101,16 @@
   white-space: normal;
   overflow: visible;
   text-overflow: clip;
+}
+
+.macro-search-item-text mark {
+  background: transparent;
+  color: inherit;
+  font-style: normal;
+}
+
+.macro-search-item-text mark span {
+  opacity: 0.35;
 }
 
 /* Footer */

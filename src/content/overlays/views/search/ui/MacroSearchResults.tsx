@@ -1,6 +1,7 @@
 import React from 'react';
 import { Macro } from '../../../../../types';
 import { t } from '../../../../../lib/i18n';
+import { hasPlaceholders } from '../../../../macroEngine/replacement/placeholders';
 
 interface MacroSearchResultsProps {
   macros: Macro[];
@@ -46,7 +47,15 @@ function MacroSearchItem({ macro, isSelected, onClick }: MacroSearchItemProps) {
   return (
     <div className={`macro-search-item ${isSelected ? 'selected' : ''}`} onClick={onClick}>
       <div className="macro-search-item-command">{macro.command}</div>
-      <div className="macro-search-item-text">{macro.text}</div>
+      <div className="macro-search-item-text">
+        {!hasPlaceholders(macro.text)
+          ? macro.text
+          : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>
+              part.startsWith('{{')
+                ? <mark key={i}><span>{'{{'}</span>{part.slice(2, -2)}<span>{'}}'}</span></mark>
+                : part
+            )}
+      </div>
     </div>
   );
 }
