@@ -5,7 +5,7 @@ interface MacroCommandResultsProps {
   commands: ModalCommand[];
   selectedIndex: number;
   onSelect: (command: ModalCommand) => void;
-  resultsRef: React.RefObject<HTMLDivElement | null>;
+  resultsRef: React.RefObject<HTMLDivElement>;
 }
 
 export function MacroCommandResults({ commands, selectedIndex, onSelect, resultsRef }: MacroCommandResultsProps) {

@@ -180,7 +180,7 @@
   content: '';
   position: absolute;
   background: var(--tone-dim);
-  inset: 0px 2px 4px;
+  inset: 0 2px 4px;
   border: 1px solid var(--harmonic-minor);
   border-radius: 2px;
   pointer-events: none;

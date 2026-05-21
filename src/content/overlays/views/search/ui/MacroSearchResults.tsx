@@ -8,7 +8,7 @@ interface MacroSearchResultsProps {
   selectedIndex: number;
   searchQuery: string;
   onSelect: (macro: Macro) => void;
-  resultsRef: React.RefObject<HTMLDivElement | null>;
+  resultsRef: React.RefObject<HTMLDivElement>;
 }
 
 export function MacroSearchResults({
