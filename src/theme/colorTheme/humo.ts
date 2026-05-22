@@ -1,3 +1,5 @@
+// Humo
+
 export const lightThemeColors = {
   '--base-tone': '#ededed',
   '--tone-dim': '#e8e9e9',
@@ -9,40 +11,17 @@ export const lightThemeColors = {
   '--accent-dim': '#c3c7cb',
   '--harmonic': '#d6d8dc',
   '--harmonic-minor': '#e1e2e4',
-  '--charged': '#f9699a',
-  '--active': '#f4c762',
-  '--calm': '#9ed999',
-  '--still': '#9c81ec',
+  '--charged':   '#d1431f',
+  '--active':    '#df8e01',
+  '--calm':      '#00ad54',
+  '--still':     '#2d5ae1',
   '--charged-wash': 'color-mix(in oklch, var(--charged) 15%, var(--base-tone))',
   '--active-wash': 'color-mix(in oklch, var(--active)  15%, var(--base-tone))',
   '--calm-wash': 'color-mix(in oklch, var(--calm)    15%, var(--base-tone))',
   '--still-wash': 'color-mix(in oklch, var(--still)   15%, var(--base-tone))',
-  '--shadow-color': 'rgba(0, 0, 0, 0.25)',
 };
 
 export const darkThemeColors = {
-  '--base-tone': '#0f131b',
-  '--tone-dim': '#121720',
-  '--tone': '#162e48',
-  '--ink': '#d3eaf8',
-  '--ink-soft': '#6f8fa4',
-  '--ink-alt': '#ffffff',
-  '--accent': '#4cbef2',
-  '--accent-dim': '#3d6178',
-  '--harmonic': '#203d5d',
-  '--harmonic-minor': '#162738',
-  '--charged': '#f9699a',
-  '--active': '#f4c762',
-  '--calm': '#9ed999',
-  '--still': '#9c81ec',
-  '--charged-wash': 'color-mix(in oklch, var(--charged) 15%, var(--base-tone))',
-  '--active-wash': 'color-mix(in oklch, var(--active)  15%, var(--base-tone))',
-  '--calm-wash': 'color-mix(in oklch, var(--calm)    15%, var(--base-tone))',
-  '--still-wash': 'color-mix(in oklch, var(--still)   15%, var(--base-tone))',
-  '--shadow-color': 'rgba(0, 0, 0, 0.4)',
-};
-
-export const darkThemeColorsB = {
   '--base-tone': '#1f2937',
   '--tone-dim': '#374151',
   '--tone': 'rgba(59, 130, 246, 0.2)',
@@ -51,8 +30,8 @@ export const darkThemeColorsB = {
   '--ink-alt': '#ffffff',
   '--accent': '#60a5fa',
   '--accent-dim': '#4b5563',
-  '--harmonic': 'blue',
-  '--harmonic-minor': 'red',
+  '--harmonic': '#374151',
+  '--harmonic-minor': '#28303b',
   '--shadow-color': 'rgba(0, 0, 0, 0.4)',
   '--charged': '#f9699a',
   '--active': '#f4c762',

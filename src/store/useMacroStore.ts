@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware'
 import { defaultMacroConfig } from '../config/defaults'
 import { dummyMacros } from '../config/defaults'
-import { Macro, ThemeMode, Lang, Config, verticalPlacement } from '../types'
+import { Macro, ThemeMode, Lang, Config, verticalPlacement, ColorTheme } from '../types'
 
 type StoreOpResult = { success: boolean; error?: string }
 
@@ -20,6 +20,7 @@ type MacroStore = {
   setUseCommitKeys: (useCommitKeys: boolean) => void
   toggleSiteDisabled: (hostname: string) => void
   setTheme: (theme: ThemeMode) => void
+  setColorTheme: (colorTheme: ColorTheme) => void
   setLanguage: (language: Lang) => void
 }
 
@@ -94,6 +95,8 @@ export const useMacroStore = create<MacroStore>()(
         set(s => ({ config: { ...s.config, useCommitKeys } })),
       setTheme: (theme: ThemeMode) =>
         set(s => ({ config: { ...s.config, theme } })),
+      setColorTheme: (colorTheme: ColorTheme) =>
+        set(s => ({ config: { ...s.config, colorTheme } })),
       setLanguage: (language: Lang) =>
         set(s => ({ config: { ...s.config, language } })),
       setSuggestionsPlacement: (placement: verticalPlacement) =>

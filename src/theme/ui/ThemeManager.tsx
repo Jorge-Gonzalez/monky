@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useMacroStore } from '../../store/useMacroStore';
 import { ThemeMode } from '../../types';
-import { lightThemeColors, darkThemeColors } from '../theme';
+import { getColorThemeColors } from '../colorTheme';
 
 const MQL = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -12,6 +12,7 @@ const MQL = window.matchMedia('(prefers-color-scheme: dark)');
  */
 export function ThemeManager() {
   const theme = useMacroStore(s => s.config.theme);
+  const colorTheme = useMacroStore(s => s.config.colorTheme ?? 'humo');
 
   useEffect(() => {
     const htmlElement = document.documentElement;
@@ -22,9 +23,8 @@ export function ThemeManager() {
       htmlElement.classList.toggle('dark', isDark);
       bodyElement.classList.toggle('dark', isDark);
 
-      // Apply CSS variables to the document root
-      const themeColors = isDark ? darkThemeColors : lightThemeColors;
-      Object.entries(themeColors).forEach(([key, value]) => {
+      const colors = getColorThemeColors(colorTheme, isDark);
+      Object.entries(colors).forEach(([key, value]) => {
         htmlElement.style.setProperty(key, value);
       });
     }
@@ -32,13 +32,12 @@ export function ThemeManager() {
     applyTheme(theme);
 
     const handleChange = () => {
-      // Only re-apply if the theme is 'system'
       if (theme === 'system') applyTheme('system');
     };
 
     MQL.addEventListener('change', handleChange);
     return () => MQL.removeEventListener('change', handleChange);
-  }, [theme]);
+  }, [theme, colorTheme]);
 
   return null;
 }

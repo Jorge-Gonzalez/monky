@@ -4,6 +4,7 @@ export const defaultMacroConfig: Config = {
   disabledSites: [],
   prefixes: ["/", ";"],
   theme: "light",
+  colorTheme: "humo",
   useCommitKeys: false, // Default to auto-commit
   language: "en",
   suggestionsPopupPlacement: "bottom",

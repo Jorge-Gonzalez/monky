@@ -30,7 +30,8 @@
 .modal-dialog {
   background-color: var(--base-tone);
   border-radius: var(--radius-lg);
-  box-shadow: 0 25px 50px -12px var(--shadow-color);
+  box-shadow: rgba(31, 32, 34, 0.3) 0px 1px 2px 0px, rgba(31, 32, 34, 0.15) 0px 2px 6px 2px;
+  mix-blend-mode: multiply;
   border: 1px solid var(--harmonic);
   width: min(600px, calc(100vw - 2rem));
   height: min(560px, 85vh);

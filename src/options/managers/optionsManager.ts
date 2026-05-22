@@ -1,10 +1,11 @@
 import { useMacroStore } from '../../store/useMacroStore';
-import { Lang } from '../../types';
+import { Lang, ColorTheme } from '../../types';
 
 export interface OptionsState {
   prefixes: string[];
   useCommitKeys: boolean;
   language: Lang;
+  colorTheme: ColorTheme;
 }
 
 export interface OptionsManager {
@@ -13,6 +14,7 @@ export interface OptionsManager {
   setPrefixes(prefixes: string[]): void;
   setUseCommitKeys(useCommitKeys: boolean): void;
   setLanguage(lang: Lang): void;
+  setColorTheme(colorTheme: ColorTheme): void;
   validate(state: Partial<OptionsState>): boolean;
   syncToStore(): void;
   syncFromStore(): void;
@@ -43,6 +45,7 @@ export function createOptionsManager(): OptionsManager {
       prefixes: storeState.config.prefixes || [],
       useCommitKeys: storeState.config.useCommitKeys || false,
       language: storeState.config.language ?? 'en',
+      colorTheme: storeState.config.colorTheme ?? 'humo',
     };
   }
 
@@ -109,6 +112,10 @@ export function createOptionsManager(): OptionsManager {
     setState({ language });
   };
 
+  const setColorTheme = (colorTheme: ColorTheme): void => {
+    setState({ colorTheme });
+  };
+
   /**
    * Validate options state
    */
@@ -147,6 +154,7 @@ export function createOptionsManager(): OptionsManager {
       store.setPrefixes(currentState.prefixes);
       store.setUseCommitKeys(currentState.useCommitKeys);
       store.setLanguage(currentState.language);
+      store.setColorTheme(currentState.colorTheme);
     } finally {
       // Always clear the flag, even if there's an error
       isUpdating = false;
@@ -191,6 +199,7 @@ export function createOptionsManager(): OptionsManager {
     setPrefixes,
     setUseCommitKeys,
     setLanguage,
+    setColorTheme,
     validate,
     syncToStore,
     syncFromStore,

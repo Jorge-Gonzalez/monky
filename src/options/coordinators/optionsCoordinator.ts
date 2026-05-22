@@ -1,5 +1,5 @@
 import { OptionsManager, OptionsState } from '../managers/optionsManager';
-import { Lang } from '../../types';
+import { Lang, ColorTheme } from '../../types';
 
 /**
  * OptionsCoordinator: Public API for the options system
@@ -16,6 +16,7 @@ export interface OptionsCoordinator {
   setPrefixes(prefixes: string[]): void;
   setUseCommitKeys(enabled: boolean): void;
   setLanguage(lang: Lang): void;
+  setColorTheme(colorTheme: ColorTheme): void;
   resetToDefaults(): void;
 
   // Subscriptions
@@ -37,6 +38,7 @@ const DEFAULT_OPTIONS: OptionsState = {
   prefixes: ['::'],
   useCommitKeys: false,
   language: 'en',
+  colorTheme: 'humo',
 };
 
 /**
@@ -73,6 +75,11 @@ export function createOptionsCoordinator(
   const setLanguage = (lang: Lang): void => {
     if (!isEnabled) return;
     manager.setLanguage(lang);
+  };
+
+  const setColorTheme = (colorTheme: ColorTheme): void => {
+    if (!isEnabled) return;
+    manager.setColorTheme(colorTheme);
   };
 
   /**
@@ -139,6 +146,7 @@ export function createOptionsCoordinator(
     setPrefixes,
     setUseCommitKeys,
     setLanguage,
+    setColorTheme,
     resetToDefaults,
     subscribe,
     attach,

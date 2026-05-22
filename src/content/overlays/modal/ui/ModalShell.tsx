@@ -24,14 +24,11 @@ export function ModalShell({
 }: ModalShellProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Get theme from store
   const theme = useMacroStore(state => state.config.theme);
+  const colorTheme = useMacroStore(state => state.config.colorTheme ?? 'humo');
 
-  // Apply global modal keyboard handlers
   useModalKeyboard(isVisible, onClose, currentView, onViewChange);
-
-  // Apply theme colors to modal
-  useThemeColors(modalRef, theme, isVisible);
+  useThemeColors(modalRef, theme, isVisible, colorTheme);
 
   if (!isVisible) return null;
 

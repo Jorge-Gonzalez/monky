@@ -13,6 +13,8 @@ export type Macro = {
 
 export type ThemeMode = 'light' | 'dark' | 'system'
 
+export type ColorTheme = 'humo' | 'acera' | 'mar'
+
 export type Lang = 'es' | 'en'
 
 // Used to define the placement of the suggestions poupup
@@ -23,6 +25,7 @@ export type Config = {
   prefixes: string[]
   useCommitKeys?: boolean
   theme: ThemeMode
+  colorTheme?: ColorTheme
   language?: Lang
   suggestionsPopupPlacement?: verticalPlacement
 }

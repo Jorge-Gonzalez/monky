@@ -2,6 +2,7 @@
 import { render, act } from '@testing-library/preact'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useMacroStore } from '../../store/useMacroStore'
+import { getColorThemeColors } from '../colorTheme'
 
 // Mock the zustand store
 vi.mock('../../store/useMacroStore')
@@ -33,63 +34,86 @@ describe('ThemeManager component', () => {
     MOCK_MATCH_MEDIA.matches = false
   })
 
+  const mockConfig = (overrides: object) => ({
+    config: { disabledSites: [], prefixes: ['/'], theme: 'light', colorTheme: 'humo', ...overrides }
+  } as any)
+
   it('should not apply dark class for light theme', () => {
-    mockedUseMacroStore.mockImplementation(selector => selector({ config: { theme: 'light' } }) as any)
-
+    mockedUseMacroStore.mockImplementation(selector => selector(mockConfig({ theme: 'light' })) as any)
     render(<ThemeManager />)
-
     expect(document.documentElement.classList.contains('dark')).toBe(false)
   })
 
   it('should apply dark class for dark theme', () => {
-    mockedUseMacroStore.mockImplementation(selector => selector({ config: { theme: 'dark' } }) as any)
-
+    mockedUseMacroStore.mockImplementation(selector => selector(mockConfig({ theme: 'dark' })) as any)
     render(<ThemeManager />)
-
     expect(document.documentElement.classList.contains('dark')).toBe(true)
   })
 
   describe('system theme', () => {
     it('should use light mode when system preference is light', () => {
       MOCK_MATCH_MEDIA.matches = false
-      mockedUseMacroStore.mockImplementation(selector => selector({ config: { theme: 'system' } }) as any)
-
+      mockedUseMacroStore.mockImplementation(selector => selector(mockConfig({ theme: 'system' })) as any)
       render(<ThemeManager />)
-
       expect(document.documentElement.classList.contains('dark')).toBe(false)
     })
 
     it('should use dark mode when system preference is dark', () => {
       MOCK_MATCH_MEDIA.matches = true
-      mockedUseMacroStore.mockImplementation(selector => selector({ config: { theme: 'system' } }) as any)
-
+      mockedUseMacroStore.mockImplementation(selector => selector(mockConfig({ theme: 'system' })) as any)
       render(<ThemeManager />)
-
       expect(document.documentElement.classList.contains('dark')).toBe(true)
     })
 
     it('should react to system preference changes', () => {
       MOCK_MATCH_MEDIA.matches = false
-      mockedUseMacroStore.mockImplementation(selector => selector({ config: { theme: 'system' } }) as any)
-
+      mockedUseMacroStore.mockImplementation(selector => selector(mockConfig({ theme: 'system' })) as any)
       render(<ThemeManager />)
       expect(document.documentElement.classList.contains('dark')).toBe(false)
 
-      // Find the change handler the hook registered
       const changeHandler = MOCK_MATCH_MEDIA.addEventListener.mock.calls.find(
         (call) => call[0] === 'change',
       )?.[1]
-
-      // The handler should exist
       expect(changeHandler).toBeDefined()
 
-      // Simulate the system theme changing to dark
       act(() => {
         MOCK_MATCH_MEDIA.matches = true
-        // The event object is passed to the handler
         changeHandler({ matches: true })
       })
       expect(document.documentElement.classList.contains('dark')).toBe(true)
+    })
+  })
+
+  describe('color theme CSS variables', () => {
+    it('applies the correct accent color for each color theme in light mode', () => {
+      for (const colorTheme of ['humo', 'acera', 'mar'] as const) {
+        mockedUseMacroStore.mockImplementation(selector =>
+          selector(mockConfig({ theme: 'light', colorTheme })) as any
+        )
+        render(<ThemeManager />)
+        const expected = getColorThemeColors(colorTheme, false)['--accent']
+        expect(document.documentElement.style.getPropertyValue('--accent')).toBe(expected)
+      }
+    })
+
+    it('applies the correct accent color for each color theme in dark mode', () => {
+      for (const colorTheme of ['humo', 'acera', 'mar'] as const) {
+        mockedUseMacroStore.mockImplementation(selector =>
+          selector(mockConfig({ theme: 'dark', colorTheme })) as any
+        )
+        render(<ThemeManager />)
+        const expected = getColorThemeColors(colorTheme, true)['--accent']
+        expect(document.documentElement.style.getPropertyValue('--accent')).toBe(expected)
+      }
+    })
+
+    it('defaults to humo when colorTheme is not set', () => {
+      mockedUseMacroStore.mockImplementation(selector =>
+        selector({ config: { disabledSites: [], prefixes: ['/'], theme: 'light' } }) as any
+      )
+      render(<ThemeManager />)
+      const expected = getColorThemeColors('humo', false)['--accent']
+      expect(document.documentElement.style.getPropertyValue('--accent')).toBe(expected)
     })
   })
 })

@@ -35,7 +35,8 @@ export function MacroSuggestions({
   const prevFilteredRef = useRef<Macro[] | null>(null);
 
   const theme = useMacroStore(state => state.config.theme);
-  useThemeColors(containerRef, theme, isVisible);
+  const colorTheme = useMacroStore(state => state.config.colorTheme ?? 'humo');
+  useThemeColors(containerRef, theme, isVisible, colorTheme);
 
   const filteredMacros = useMemo(() => {
     if (!macros || macros.length === 0) {

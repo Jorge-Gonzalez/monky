@@ -1,12 +1,6 @@
 import { useEffect } from 'react';
-import { ThemeMode } from '../../types';
-import { lightThemeColors, darkThemeColors } from '../theme';
-
-function applyThemeStyles(element: HTMLElement, colors: Record<string, string>) {
-  for (const [property, value] of Object.entries(colors)) {
-    element.style.setProperty(property, value);
-  }
-}
+import { ThemeMode, ColorTheme } from '../../types';
+import { getColorThemeColors } from '../colorTheme';
 
 function isSystemDark(): boolean {
   return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -15,17 +9,20 @@ function isSystemDark(): boolean {
 export function useThemeColors(
   ref: React.RefObject<HTMLElement | null>,
   theme: ThemeMode,
-  isEnabled: boolean
+  isEnabled: boolean,
+  colorTheme: ColorTheme = 'humo'
 ) {
   useEffect(() => {
     if (!isEnabled || !ref.current) return;
 
     const element = ref.current;
     const isDark = theme === 'dark' || (theme === 'system' && isSystemDark());
-    const themeColors = isDark ? darkThemeColors : lightThemeColors;
-    
-    applyThemeStyles(element, themeColors);
+    const colors = getColorThemeColors(colorTheme, isDark);
+
+    for (const [property, value] of Object.entries(colors)) {
+      element.style.setProperty(property, value);
+    }
     element.classList.toggle('dark', isDark);
     element.classList.toggle('light', !isDark);
-  }, [ref, theme, isEnabled]);
+  }, [ref, theme, isEnabled, colorTheme]);
 }
