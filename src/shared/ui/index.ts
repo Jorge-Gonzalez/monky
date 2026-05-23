@@ -63,6 +63,12 @@ export type {
   ToggleFieldProps
 } from './ToggleField';
 
+export { SegmentedControl } from './SegmentedControl';
+export type {
+  SegmentedControlProps,
+  SegmentedOption
+} from './SegmentedControl';
+
 export { MacroEditorView } from './MacroEditorView';
 export type {
   MacroEditorViewProps,

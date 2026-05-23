@@ -27,10 +27,11 @@ export function ImportExport() {
     URL.revokeObjectURL(url);
   }
 
-  function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+  function handleImport(e: Event) {
+    const input = e.currentTarget as HTMLInputElement;
+    const file = input.files?.[0];
     if (!file) return;
-    e.target.value = '';
+    input.value = '';
 
     const reader = new FileReader();
     reader.onload = () => {

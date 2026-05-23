@@ -711,6 +711,11 @@
   text-decoration: underline;
 }
 
+.btn:active {
+  background-color: var(--accent);
+  color: white;
+}
+
 .btn:disabled {
   background-color: var(--tone-dim);
   color: var(--ink-soft);

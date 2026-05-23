@@ -23,8 +23,8 @@ export const lightThemeColors = {
 
 export const darkThemeColors = {
   '--base-tone': '#1f2937',
-  '--tone-dim': '#374151',
-  '--tone': 'rgba(59, 130, 246, 0.2)',
+  '--tone-dim': '#242c3c',
+  '--tone': '#3b4a61',
   '--ink': '#f3f4f6',
   '--ink-soft': '#9ca3af',
   '--ink-alt': '#ffffff',

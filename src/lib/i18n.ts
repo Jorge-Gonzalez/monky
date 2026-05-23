@@ -27,6 +27,12 @@ const translations = {
     settings: {
       title: 'Settings',
       language: 'Language',
+      colorTheme: 'Color theme',
+      sections: {
+        general: 'General',
+        appearance: 'Appearance',
+        data: 'Data',
+      },
       importExport: {
         title: 'Import / Export',
         description: 'Export your macros as JSON to back them up or move them to another device. Importing merges macros — duplicates (same command) are skipped.',
@@ -124,7 +130,9 @@ const translations = {
     replacementMode: {
       title: 'Replacement Mode',
       auto: 'Automatic (on match)',
+      autoShort: 'Automatic',
       manual: 'Manual (with Space, Enter, or Tab)',
+      manualShort: 'Manual',
       description: 'In automatic mode, text replaces on match, but if a longer macro starts the same way it waits briefly before replacing.',
     },
   },
@@ -153,6 +161,12 @@ const translations = {
     settings: {
       title: 'Configuración',
       language: 'Idioma',
+      colorTheme: 'Tema de color',
+      sections: {
+        general: 'General',
+        appearance: 'Apariencia',
+        data: 'Datos',
+      },
       importExport: {
         title: 'Importar / Exportar',
         description: 'Exporta tus macros como JSON para respaldarlas o moverlas a otro dispositivo. La importación combina macros: los duplicados (mismo comando) se omiten.',
@@ -250,7 +264,9 @@ const translations = {
     replacementMode: {
       title: 'Modo de Sustitución',
       auto: 'Automático (al coincidir)',
+      autoShort: 'Automático',
       manual: 'Manual (con Espacio, Enter, o Tab)',
+      manualShort: 'Manual',
       description: 'En modo automático, el texto se reemplaza al coincidir, pero si existe un macro más largo que empieza igual, espera un instante antes de reemplazar.',
     },
   },
