@@ -53,58 +53,6 @@ export function createModalCoordinator(
     manager.setOnMacroSelected(callback);
   };
 
-  /**
-   * Debug logger for text selection events
-   */
-  const logDebug = (event: string, details: any) => {
-    console.log(`[ModalCoordinator] ${event}:`, details);
-  };
-
-  /**
-   * Track mousedown events for debugging
-   */
-  const handleMouseDown = (e: MouseEvent): void => {
-    if (!manager.isVisible()) return;
-
-    const target = e.target as Element;
-    const modalElement = document.getElementById('monky-modal');
-    const isInsideModal = modalElement && modalElement.contains(target);
-    const isToolbar = !!target.closest('.ce-toolbar');
-
-    logDebug('mousedown', {
-      target: target.tagName,
-      className: target.className,
-      isInsideModal,
-      isToolbar,
-      timestamp: Date.now()
-    });
-  };
-
-  /**
-   * Track mouseup events for debugging
-   */
-  const handleMouseUp = (e: MouseEvent): void => {
-    if (!manager.isVisible()) return;
-
-    const target = e.target as Element;
-    const modalElement = document.getElementById('monky-modal');
-    const isInsideModal = modalElement && modalElement.contains(target);
-    const selection = window.getSelection();
-
-    logDebug('mouseup', {
-      target: target.tagName,
-      className: target.className,
-      isInsideModal,
-      hasSelection: selection ? !selection.isCollapsed : false,
-      selectionText: selection ? selection.toString().substring(0, 50) : '',
-      anchorNode: selection?.anchorNode?.nodeName,
-      timestamp: Date.now()
-    });
-  };
-
-  /**
-   * Handle click outside to close the modal
-   */
   const handleClickOutside = (e: MouseEvent): void => {
     if (!manager.isVisible()) return;
 
@@ -112,33 +60,9 @@ export function createModalCoordinator(
     const modalElement = document.getElementById('monky-modal');
     const isInsideModal = modalElement && modalElement.contains(target);
     const isToolbar = !!target.closest('.ce-toolbar');
-    const selection = window.getSelection();
 
-    logDebug('click', {
-      target: target.tagName,
-      className: target.className,
-      isInsideModal,
-      isToolbar,
-      hasSelection: selection ? !selection.isCollapsed : false,
-      selectionText: selection ? selection.toString().substring(0, 50) : '',
-      anchorNode: selection?.anchorNode?.nodeName,
-      focusNode: selection?.focusNode?.nodeName,
-      timestamp: Date.now()
-    });
+    if (isInsideModal || isToolbar) return;
 
-    // Check if click was inside the modal
-    if (isInsideModal) {
-      logDebug('click-decision', { action: 'ignore', reason: 'inside modal' });
-      return;
-    }
-
-    // Check if click was on Medium Editor toolbar or its children
-    if (isToolbar) {
-      logDebug('click-decision', { action: 'ignore', reason: 'toolbar click' });
-      return;
-    }
-
-    logDebug('click-decision', { action: 'CLOSING MODAL', reason: 'outside click' });
     manager.hide();
   };
 
@@ -172,20 +96,14 @@ export function createModalCoordinator(
     setOnMacroSelected,
 
     attach: (): void => {
-      document.addEventListener('mousedown', handleMouseDown, true);
-      document.addEventListener('mouseup', handleMouseUp, true);
       document.addEventListener('click', handleClickOutside, true);
       document.addEventListener('keydown', handleEscapeKey, true);
-      logDebug('coordinator-attached', { timestamp: Date.now() });
     },
 
     detach: (): void => {
-      document.removeEventListener('mousedown', handleMouseDown, true);
-      document.removeEventListener('mouseup', handleMouseUp, true);
       document.removeEventListener('click', handleClickOutside, true);
       document.removeEventListener('keydown', handleEscapeKey, true);
       manager.hide();
-      logDebug('coordinator-detached', { timestamp: Date.now() });
     },
 
     enable: (): void => {
