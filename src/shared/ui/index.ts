@@ -45,13 +45,6 @@ export type {
   NavigationMode
 } from './useSearchListCoordination';
 
-export { RichTextEditor } from './RichTextEditor';
-export type {
-  RichTextEditorProps,
-  RichTextEditorRef,
-  EditorToolbarButton
-} from './RichTextEditor';
-
 export { CommandInput } from './CommandInput';
 export type {
   CommandInputProps,
@@ -68,12 +61,6 @@ export type {
   SegmentedControlProps,
   SegmentedOption
 } from './SegmentedControl';
-
-export { MacroEditorView } from './MacroEditorView';
-export type {
-  MacroEditorViewProps,
-  MacroEditorConfig
-} from './MacroEditorView';
 
 export { useMacroEditorCoordination } from './useMacroEditorCoordination';
 export type {

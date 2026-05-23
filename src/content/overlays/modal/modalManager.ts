@@ -14,8 +14,6 @@ import MODAL_STYLES from './modalStyles.css?raw';
 import SEARCH_VIEW_STYLES from '../views/search/searchViewStyles.css?raw';
 import SETTINGS_VIEW_STYLES from '../views/settings/settingsViewStyles.css?raw';
 import EDITOR_VIEW_STYLES from '../views/macroEditor/editorViewStyles.css?raw';
-import MEDIUM_EDITOR_STYLES from 'medium-editor/dist/css/medium-editor.css?raw';
-import MEDIUM_EDITOR_THEME from 'medium-editor/dist/css/themes/default.css?raw';
 
 export function createModalManager() {
   const renderer = createReactRenderer('monky-modal', true);
@@ -37,8 +35,6 @@ export function createModalManager() {
     SEARCH_VIEW_STYLES,
     SETTINGS_VIEW_STYLES,
     EDITOR_VIEW_STYLES,
-    MEDIUM_EDITOR_STYLES,
-    MEDIUM_EDITOR_THEME,
   ].join('\n');
 
   let globalFontInjector: ReturnType<typeof createStyleInjector>;

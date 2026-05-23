@@ -69,7 +69,7 @@ export function createModalCoordinator(
     const target = e.target as Element;
     const modalElement = document.getElementById('monky-modal');
     const isInsideModal = modalElement && modalElement.contains(target);
-    const isToolbar = !!target.closest('.medium-editor-toolbar');
+    const isToolbar = !!target.closest('.ce-toolbar');
 
     logDebug('mousedown', {
       target: target.tagName,
@@ -111,7 +111,7 @@ export function createModalCoordinator(
     const target = e.target as Element;
     const modalElement = document.getElementById('monky-modal');
     const isInsideModal = modalElement && modalElement.contains(target);
-    const isToolbar = !!target.closest('.medium-editor-toolbar');
+    const isToolbar = !!target.closest('.ce-toolbar');
     const selection = window.getSelection();
 
     logDebug('click', {

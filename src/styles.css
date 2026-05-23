@@ -4,210 +4,6 @@
 @import './styles/pageStyles.css';
 @import './styles/utilities.css';
 
-/* Medium Editor Styles */
-.medium-editor-element {
-  outline: none !important;
-  min-height: 150px;
-}
-
-.medium-editor-element:focus {
-  outline: none !important;
-}
-
-/* Dark theme support for medium-editor */
-.dark .medium-editor-element {
-  color: #f3f4f6;
-}
-
-.dark .medium-editor-toolbar {
-  background: #374151 !important;
-  border-color: #4b5563 !important;
-}
-
-.dark .medium-editor-toolbar li button {
-  background: #374151 !important;
-  color: #f3f4f6 !important;
-  border-color: #4b5563 !important;
-}
-
-.dark .medium-editor-toolbar li button:hover {
-  background: #4b5563 !important;
-}
-
-.dark .medium-editor-toolbar li .medium-editor-button-active {
-  background: #3b82f6 !important;
-  color: white !important;
-}
-
-/* Custom medium-editor toolbar positioning */
-.medium-editor-toolbar {
-  z-index: 2147483648 !important; /* Above modal (2147483647) */
-}
-
-/* Essential typography styles for medium-editor */
-.medium-editor-element {
-  line-height: 1.6;
-  font-size: 16px;
-}
-
-.medium-editor-element p {
-  margin-bottom: 1em;
-}
-
-.medium-editor-element p:last-child {
-  margin-bottom: 0;
-}
-
-.medium-editor-element h1,
-.medium-editor-element h2,
-.medium-editor-element h3,
-.medium-editor-element h4,
-.medium-editor-element h5,
-.medium-editor-element h6 {
-  margin-bottom: 0.5em;
-  margin-top: 1em;
-  font-weight: bold;
-  line-height: 1.2;
-}
-
-.medium-editor-element h1:first-child,
-.medium-editor-element h2:first-child,
-.medium-editor-element h3:first-child,
-.medium-editor-element h4:first-child,
-.medium-editor-element h5:first-child,
-.medium-editor-element h6:first-child {
-  margin-top: 0;
-}
-
-.medium-editor-element h1 { font-size: 2.25em; }
-.medium-editor-element h2 { font-size: 1.875em; }
-.medium-editor-element h3 { font-size: 1.5em; }
-.medium-editor-element h4 { font-size: 1.25em; }
-.medium-editor-element h5 { font-size: 1.125em; }
-.medium-editor-element h6 { font-size: 1em; }
-
-.medium-editor-element strong,
-.medium-editor-element b {
-  font-weight: bold;
-}
-
-.medium-editor-element em,
-.medium-editor-element i {
-  font-style: italic;
-}
-
-.medium-editor-element u {
-  text-decoration: underline;
-}
-
-/* Ensure lists look good */
-.medium-editor-element ul,
-.medium-editor-element ol {
-  padding-left: 1.5em;
-  margin-bottom: 1em;
-}
-
-.medium-editor-element ul {
-  list-style-type: disc;
-}
-
-.medium-editor-element ol {
-  list-style-type: decimal;
-}
-
-.medium-editor-element li {
-  margin-bottom: 0.25em;
-  display: list-item;
-}
-
-.medium-editor-element blockquote {
-  border-left: 4px solid #e5e7eb;
-  padding-left: 1em;
-  margin: 1em 0;
-  font-style: italic;
-  color: #6b7280;
-}
-
-.dark .medium-editor-element blockquote {
-  border-left-color: #4b5563;
-  color: #9ca3af;
-}
-
-.medium-editor-element a {
-  color: #3b82f6;
-  text-decoration: underline;
-}
-
-.medium-editor-element a:hover {
-  color: #1d4ed8;
-}
-
-.dark .medium-editor-element a {
-  color: #60a5fa;
-}
-
-.dark .medium-editor-element a:hover {
-  color: #93c5fd;
-}
-
-/* Theme-aware scrollbars for overlays */
-.macro-search-results,
-.medium-editor-element {
-  /* Modern scrollbar styling for WebKit browsers */
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 #f1f5f9;
-}
-
-.macro-search-results::-webkit-scrollbar,
-.medium-editor-element::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.macro-search-results::-webkit-scrollbar-track,
-.medium-editor-element::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 4px;
-}
-
-.macro-search-results::-webkit-scrollbar-thumb,
-.medium-editor-element::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-  border: 1px solid #f1f5f9;
-}
-
-.macro-search-results::-webkit-scrollbar-thumb:hover,
-.medium-editor-element::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-/* Dark theme scrollbars */
-.dark .macro-search-results,
-.dark .medium-editor-element {
-  scrollbar-color: #4b5563 #1f2937;
-}
-
-.dark .macro-search-results::-webkit-scrollbar-track,
-.dark .medium-editor-element::-webkit-scrollbar-track {
-  background: #1f2937;
-}
-
-.dark .macro-search-results::-webkit-scrollbar-thumb,
-.dark .medium-editor-element::-webkit-scrollbar-thumb {
-  background: #4b5563;
-  border: 1px solid #1f2937;
-}
-
-.dark .macro-search-results::-webkit-scrollbar-thumb:hover,
-.dark .medium-editor-element::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
-}
-
-.medium-editor-element li {
-  margin: 0.25em 0;
-}
-
 /* Macro Search Overlay Styles */
 .macro-search-backdrop {
   position: fixed;
@@ -259,6 +55,45 @@
   max-height: 300px;
   overflow-y: auto;
   padding: 0.5rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.macro-search-results::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.macro-search-results::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.macro-search-results::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+  border: 1px solid #f1f5f9;
+}
+
+.macro-search-results::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark .macro-search-results {
+  scrollbar-color: #4b5563 #1f2937;
+}
+
+.dark .macro-search-results::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+.dark .macro-search-results::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border: 1px solid #1f2937;
+}
+
+.dark .macro-search-results::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
 }
 
 .macro-search-empty {
@@ -316,6 +151,7 @@
 
 /* small helper */
 .popup-container { width: 320px; }
+
 body {
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   background-color: var(--base-tone);

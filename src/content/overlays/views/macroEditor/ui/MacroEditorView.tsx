@@ -38,7 +38,6 @@ export function MacroEditorView({ containerRef, initialMacro, onViewChange }: Ma
           editing={state.editingMacro}
           onDone={handleDone}
           coordinator={coordinator}
-          containerRef={containerRef}
         />
       </div>
     </div>

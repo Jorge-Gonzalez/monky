@@ -601,10 +601,21 @@
   outline-offset: 2px;
 }
 
-.editor-content {
+.editor-wrapper {
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--border-input);
   border-radius: var(--radius-md);
   background-color: var(--bg-input);
+  overflow: hidden;
+}
+
+.editor-wrapper:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--tone);
+}
+
+.editor-content {
   color: var(--ink);
   padding: var(--spacing-md);
   min-height: 150px;
@@ -612,9 +623,307 @@
   overflow: auto;
 }
 
-.editor-content:focus-within {
+/* ===== COMPONENT PATTERNS: ContentEditor ===== */
+
+.content-editor {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--harmonic);
+  border-radius: var(--radius-md);
+  background-color: var(--tone-dim);
+  overflow: hidden;
+}
+
+.content-editor:focus-within {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--tone);
+}
+
+/* Toolbar row */
+.ce-toolbar {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-bottom: 1px solid var(--harmonic);
+  background-color: var(--base-tone);
+  flex-shrink: 0;
+}
+
+.ce-toolbar-sep {
+  width: 1px;
+  height: 16px;
+  background-color: var(--harmonic);
+  margin: 0 var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+.ce-toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  padding: 0;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.ce-toolbar-btn:hover {
+  background-color: var(--tone);
+  color: var(--ink);
+}
+
+.ce-toolbar-btn.is-active {
+  background-color: var(--tone);
+  color: var(--accent);
+}
+
+.ce-toolbar-btn svg {
+  display: block;
+}
+
+.ce-toolbar-icon {
+  display: flex;
+  align-items: center;
+  color: var(--ink-soft);
+  padding: 0 var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+/* Style menu (¶▾ dropdown) */
+.ce-style-menu {
+  position: relative;
+}
+
+.ce-style-trigger {
+  width: auto;
+  min-width: 36px;
+  padding: 0 var(--spacing-xs);
+  gap: 2px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.ce-style-caret {
+  display: flex;
+  align-items: center;
+  opacity: 0.6;
+}
+
+.ce-style-caret svg {
+  display: block;
+}
+
+.ce-style-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 10;
+  background-color: var(--base-tone);
+  border: 1px solid var(--harmonic);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+  min-width: 140px;
+  padding: var(--spacing-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ce-style-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  font-size: var(--text-sm);
+  transition: background var(--transition-fast);
+}
+
+.ce-style-option:hover {
+  background-color: var(--tone);
+}
+
+.ce-style-option.is-active {
+  color: var(--accent);
+  background-color: var(--tone);
+}
+
+.ce-style-option-short {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--ink-soft);
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.ce-style-option.is-active .ce-style-option-short {
+  color: var(--accent);
+}
+
+.ce-style-option-label {
+  flex: 1;
+}
+
+/* Link field */
+.ce-link-field {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex: 1;
+}
+
+.ce-link-input {
+  flex: 1;
+  height: 28px;
+  padding: 0 var(--spacing-sm);
+  border: 1px solid var(--harmonic);
+  border-radius: var(--radius-sm);
+  background-color: var(--tone-dim);
+  color: var(--ink);
+  font-size: var(--text-sm);
+  outline: none;
+}
+
+.ce-link-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--tone);
+}
+
+/* Editor body */
+.content-editor-body {
+  padding: var(--spacing-md);
+  min-height: 150px;
+  outline: none;
+  overflow: auto;
+  color: var(--ink);
+  font-size: var(--text-md);
+  line-height: 1.6;
+}
+
+.content-editor-body:empty::before {
+  content: attr(data-placeholder);
+  color: var(--ink-soft);
+  pointer-events: none;
+}
+
+/* Rich text typography inside editor body */
+.content-editor-body p {
+  margin-bottom: 0.75em;
+}
+
+.content-editor-body p:last-child {
+  margin-bottom: 0;
+}
+
+.content-editor-body h1 {
+  font-size: 1.75em;
+  font-weight: 700;
+  margin: 0.75em 0 0.4em;
+}
+
+.content-editor-body h2 {
+  font-size: 1.4em;
+  font-weight: 700;
+  margin: 0.75em 0 0.4em;
+}
+
+.content-editor-body h3 {
+  font-size: 1.15em;
+  font-weight: 700;
+  margin: 0.75em 0 0.4em;
+}
+
+.content-editor-body h1:first-child,
+.content-editor-body h2:first-child,
+.content-editor-body h3:first-child {
+  margin-top: 0;
+}
+
+.content-editor-body strong,
+.content-editor-body b {
+  font-weight: 700;
+}
+
+.content-editor-body em,
+.content-editor-body i {
+  font-style: italic;
+}
+
+.content-editor-body u {
+  text-decoration: underline;
+}
+
+.content-editor-body s {
+  text-decoration: line-through;
+}
+
+.content-editor-body code {
+  font-family: 'IBM Plex Mono', 'Fira Code', monospace;
+  font-size: 0.88em;
+  background-color: var(--tone);
+  color: var(--ink);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
+}
+
+.content-editor-body pre {
+  font-family: 'IBM Plex Mono', 'Fira Code', monospace;
+  font-size: 0.88em;
+  background-color: var(--tone);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  margin: 0.75em 0;
+}
+
+.content-editor-body blockquote {
+  border-left: 3px solid var(--accent-dim);
+  padding-left: var(--spacing-md);
+  margin: 0.75em 0;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.content-editor .content-editor-body ul,
+.content-editor .content-editor-body ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.content-editor .content-editor-body ul {
+  list-style-type: disc;
+}
+
+.content-editor .content-editor-body ol {
+  list-style-type: decimal;
+}
+
+.content-editor-body li {
+  display: list-item;
+  margin-bottom: 0.2em;
+}
+
+.content-editor-body a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.content-editor-body a:hover {
+  opacity: 0.8;
 }
 
 /* ===== COMPONENT PATTERNS: Buttons ===== */
