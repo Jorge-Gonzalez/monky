@@ -11,6 +11,7 @@ import {
   toggleBulletList, toggleOrderedList, undo, redo, setBlockType,
   insertLink, removeLink, toggleInlineCode,
 } from './editorCommands'
+import { normalizeEditorHTML } from './normalizeHTML'
 import type { BlockType } from './types'
 
 const execCommandSpy = vi.fn(() => false)
@@ -568,5 +569,55 @@ describe('ContentEditorLinkField', () => {
     renderLinkField({ onClose })
     fireEvent.mouseDown(screen.getByRole('button', { name: 'Cancel' }))
     expect(onClose).toHaveBeenCalled()
+  })
+})
+
+// ─── normalizeEditorHTML ──────────────────────────────────────────────────────
+
+describe('normalizeEditorHTML', () => {
+  it.each<[string, string, string]>([
+    ['<b>',      '<p><b>text</b></p>',      '<p><strong>text</strong></p>'],
+    ['<i>',      '<p><i>text</i></p>',      '<p><em>text</em></p>'],
+    ['<strike>', '<p><strike>text</strike></p>', '<p><s>text</s></p>'],
+  ])('replaces %s with semantic equivalent', (_tag, input, expected) => {
+    expect(normalizeEditorHTML(input)).toBe(expected)
+  })
+
+  it.each<[string, string, string]>([
+    ['font-weight:bold',              '<p><span style="font-weight: bold">text</span></p>',              '<p><strong>text</strong></p>'],
+    ['font-style:italic',             '<p><span style="font-style: italic">text</span></p>',             '<p><em>text</em></p>'],
+    ['text-decoration:underline',     '<p><span style="text-decoration: underline">text</span></p>',     '<p><u>text</u></p>'],
+    ['text-decoration:line-through',  '<p><span style="text-decoration: line-through">text</span></p>', '<p><s>text</s></p>'],
+  ])('converts span with %s to semantic tag', (_style, input, expected) => {
+    expect(normalizeEditorHTML(input)).toBe(expected)
+  })
+
+  it('unwraps <font> tags', () => {
+    expect(normalizeEditorHTML('<p><font color="red">text</font></p>')).toBe('<p>text</p>')
+  })
+
+  it('unwraps bare <span> with no attributes', () => {
+    expect(normalizeEditorHTML('<p><span>text</span></p>')).toBe('<p>text</p>')
+  })
+
+  it('unwraps <span> with empty style attribute', () => {
+    expect(normalizeEditorHTML('<p><span style="">text</span></p>')).toBe('<p>text</p>')
+  })
+
+  it('removes empty style attributes from other elements', () => {
+    expect(normalizeEditorHTML('<p style="">text</p>')).toBe('<p>text</p>')
+  })
+
+  it('handles nested replacements', () => {
+    expect(normalizeEditorHTML('<p><b><i>text</i></b></p>')).toBe('<p><strong><em>text</em></strong></p>')
+  })
+
+  it('returns empty string unchanged', () => {
+    expect(normalizeEditorHTML('')).toBe('')
+  })
+
+  it('leaves already-semantic HTML unchanged', () => {
+    const html = '<p><strong>bold</strong> and <em>italic</em></p>'
+    expect(normalizeEditorHTML(html)).toBe(html)
   })
 })

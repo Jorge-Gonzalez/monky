@@ -2,6 +2,7 @@ import { forwardRef, useRef, useState, useImperativeHandle, useEffect } from 're
 import { useEditorState } from './useEditorState'
 import { useEditorShortcuts } from './useEditorShortcuts'
 import { ContentEditorToolbar } from './ContentEditorToolbar'
+import { normalizeEditorHTML } from './normalizeHTML'
 
 export interface ContentEditorProps {
   value?: string
@@ -33,7 +34,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
   const formatState = useEditorState(editorRef)
 
   useImperativeHandle(ref, () => ({
-    getHTML: () => editorRef.current?.innerHTML ?? '',
+    getHTML: () => normalizeEditorHTML(editorRef.current?.innerHTML ?? ''),
     setHTML: (html) => { if (editorRef.current) editorRef.current.innerHTML = html },
     clear: () => { if (editorRef.current) editorRef.current.innerHTML = '' },
     focus: () => editorRef.current?.focus(),
@@ -86,7 +87,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
         className="content-editor-body"
         data-placeholder={placeholder}
         onInput={() => {
-          if (editorRef.current && onChange) onChange(editorRef.current.innerHTML)
+          if (editorRef.current && onChange) onChange(normalizeEditorHTML(editorRef.current.innerHTML))
         }}
       />
     </div>
