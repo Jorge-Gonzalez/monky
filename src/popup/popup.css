@@ -20,7 +20,7 @@
 
 /* Site Toggle section styles */
 .popup-section {
-  background-color: var(--bg-input);
+  background-color: var(--tone-dim);
   border-color: var(--harmonic);
 }
 
@@ -31,7 +31,7 @@
 /* Toggle switch styles */
 .popup-toggle-bg {
   background-color: var(--tone-dim);
-  border-color: var(--border-input);
+  border-color: var(--harmonic);
 }
 .popup-toggle-bg:focus-within {
   --tw-ring-color: rgba(59, 130, 246, 0.5); /* blue-300 with opacity */
@@ -57,8 +57,8 @@
 
 /* Search input styles */
 .popup-input {
-  background-color: var(--bg-input);
-  border-color: var(--border-input);
+  background-color: var(--tone-dim);
+  border-color: var(--harmonic);
   color: var(--ink);
 }
 

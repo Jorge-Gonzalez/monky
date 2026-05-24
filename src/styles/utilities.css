@@ -212,7 +212,7 @@
 
 .border-primary { border-color: var(--harmonic); }
 .border-secondary { border-color: var(--harmonic-minor); }
-.border-input { border-color: var(--border-input); }
+.border-input { border-color: var(--harmonic); }
 .border-transparent { border-color: transparent; }
 
 .rounded { border-radius: 6px; }

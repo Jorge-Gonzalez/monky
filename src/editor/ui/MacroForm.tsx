@@ -181,39 +181,41 @@ export default function MacroForm({ editing, onDone, coordinator }: {
         />
       </div>
 
-      <label className="inline-flex items-center gap-sm">
-        <input
-          type="checkbox"
-          checked={isSensitive}
-          onChange={e => setSensitive(e.currentTarget.checked)}
-          className="checkbox"
-        />
-        <span className="label" style={{ marginBottom: 0 }}>{t('macroForm.sensitiveLabel')}</span>
-      </label>
-
       {error && (
         <div className="alert alert-error">
           <p className="font-medium">{error}</p>
         </div>
       )}
 
-      <div className="button-group">
-        <button
-          type="submit"
-          disabled={!isFormValid}
-          className="btn btn-success"
-        >
-          {editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}
-        </button>
-        {editing && (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
+          <input
+            type="checkbox"
+            checked={isSensitive}
+            onChange={e => setSensitive(e.currentTarget.checked)}
+            className="checkbox"
+          />
+          <span className="label" style={{ marginBottom: 0 }}>{t('macroForm.sensitiveLabel')}</span>
+        </label>
+
+        <div className="button-group">
           <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={onDone}
+            type="submit"
+            disabled={!isFormValid}
+            className="btn btn-outlined btn-success"
           >
-            {t('macroForm.cancelButton')}
+            {editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}
           </button>
-        )}
+          {editing && (
+            <button
+              type="button"
+              className="btn btn-outlined btn-secondary"
+              onClick={onDone}
+            >
+              {t('macroForm.cancelButton')}
+            </button>
+          )}
+        </div>
       </div>
     </form>
   )

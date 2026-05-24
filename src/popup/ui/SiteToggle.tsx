@@ -51,7 +51,7 @@ export default function SiteToggle() {
           width: '44px',
           height: '24px',
           borderRadius: '9999px',
-          backgroundColor: isEnabled ? 'var(--accent)' : 'var(--border-input)',
+          backgroundColor: isEnabled ? 'var(--accent)' : 'var(--harmonic)',
           position: 'relative',
           transition: 'background-color 0.15s'
         }}>
