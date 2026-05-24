@@ -18,6 +18,10 @@ function getIframe(): HTMLIFrameElement | null {
   return document.querySelector(IFRAME_SELECTOR)
 }
 
+export function isGoogleDocsIframeElement(el: Element): boolean {
+  return el === document.querySelector(IFRAME_SELECTOR)
+}
+
 /**
  * Attaches keydown/blur listeners to the Google Docs input capture iframe.
  * Returns a cleanup function, or null if the iframe is not accessible.

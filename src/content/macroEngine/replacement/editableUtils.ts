@@ -1,5 +1,5 @@
 import type { EditableEl } from '../../../types'
-import { isGoogleDocs } from '../googledocs/googleDocsAdapter'
+import { isGoogleDocs, isGoogleDocsIframeElement } from '../googledocs/googleDocsAdapter'
 
 /**
  * Sentinel element returned by getActiveEditable when the keydown event
@@ -22,13 +22,18 @@ export function getActiveEditable(target: EventTarget | null): EditableEl {
   // against parent-window constructors all return false. Detect this case by
   // checking ownerDocument and return our sentinel so downstream code can
   // route to the Google Docs replacement path.
-  if (
-    isGoogleDocs() &&
-    target !== null &&
-    typeof (target as any).ownerDocument !== 'undefined' &&
-    (target as any).ownerDocument !== document
-  ) {
-    return GOOGLE_DOCS_SENTINEL
+  if (isGoogleDocs() && target !== null) {
+    // Cross-realm: events from inside the iframe (different JS realm)
+    if (
+      typeof (target as any).ownerDocument !== 'undefined' &&
+      (target as any).ownerDocument !== document
+    ) {
+      return GOOGLE_DOCS_SENTINEL
+    }
+    // Same-realm: document.activeElement is the iframe element itself
+    if (target instanceof Element && isGoogleDocsIframeElement(target)) {
+      return GOOGLE_DOCS_SENTINEL
+    }
   }
 
   if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
