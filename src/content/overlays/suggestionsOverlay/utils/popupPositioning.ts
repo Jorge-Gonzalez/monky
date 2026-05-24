@@ -76,13 +76,5 @@ export function calculateOptimalPosition(
   if (finalViewportX + popupDimensions.width > windowSize.width - margin) {
     finalViewportX = windowSize.width - popupDimensions.width - margin;
   }
-  console.log(`Viewport position: (${viewportX}, ${viewportY})`);
-  console.log(`Page position: (${cursorPosition.x}, ${cursorPosition.y})`);
-  console.log(`Popup dimensions: (${popupDimensions.width}, ${popupDimensions.height})`);
-  console.log(`Window scroll: (${window.scrollX}, ${window.scrollY})`);
-  console.log(`Popup positioned at (${finalViewportX}, ${finalViewportY}) with placement: ${placement}`);
-
-  // For `position: fixed`, coordinates are relative to the viewport.
-  // We've already calculated these as finalViewportX and finalViewportY.
   return { x: finalViewportX, y: finalViewportY, placement };
 }
