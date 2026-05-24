@@ -1,6 +1,6 @@
 import { useMacroStore } from "../../store/useMacroStore"
 import { updateStateOnKey, isExact, getExact } from "./detector-core"
-import { getActiveEditable, getSelection, getCursorCoordinates } from "./replacement/editableUtils"
+import { getActiveEditable, getSelection, getCursorCoordinates, isGoogleDocsSentinel } from "./replacement/editableUtils"
 import { replaceText } from './replacement/macroReplacement'
 import { Macro, CoreState, EditableEl } from "../../types"
 import { isPrintableKey, UNSUPPORTED_KEYS } from "./keyUtils"
@@ -10,6 +10,7 @@ import { DetectorActions } from "../actions/detectorActions"
 import { createMacroReplacement } from "./replacement/macroReplacement"
 import { createPlaceholderSession, PlaceholderSession } from "./placeholderSession"
 import { hasPlaceholders } from "./replacement/placeholders"
+import { isGoogleDocs, attachToGoogleDocsIframe, replaceInGoogleDocs } from "./googledocs/googleDocsAdapter"
 
 const COMMIT_KEYS = new Set([" ", "Enter"])
 const CONFIRM_DELAY_MS = 1850
@@ -28,6 +29,7 @@ export function createMacroDetector(actions: DetectorActions) {
   let timer: number = 0
   let selectionOnSchedule: { start: number; end: number } | null = null
   let listenersAttached = false
+  let gdCleanup: (() => void) | null = null
   let config = {
     useCommitKeys: false,
     prefixes: defaultMacroConfig.prefixes,
@@ -55,6 +57,22 @@ export function createMacroDetector(actions: DetectorActions) {
 
   function commitReplace(macro: Macro, sel: { start: number; end: number } | null, isImmediate: boolean) {
     if (!activeEl) {
+      return
+    }
+
+    // Google Docs: deferred replacement via replaceInGoogleDocs (setTimeout 0).
+    // We do NOT prevent the trigger character, so Google Docs inserts it first.
+    // By the time the timeout fires, the full buffer.length chars are in the document
+    // and we delete them all before inserting the expansion.
+    if (isGoogleDocsSentinel(activeEl)) {
+      if (isSystemMacro(macro)) {
+        replaceInGoogleDocs(state.buffer.length, '')
+        handleSystemMacro(macro)
+      } else {
+        replaceInGoogleDocs(state.buffer.length, macro.text)
+      }
+      actions.onMacroCommitted(String(macro.id))
+      cancelDetection()
       return
     }
 
@@ -232,6 +250,11 @@ export function createMacroDetector(actions: DetectorActions) {
   }
 
   function onKeyDown(e: KeyboardEvent) {
+    // Synthetic events dispatched by our own replaceInGoogleDocs (e.g. Backspace
+    // events for deletion) must not re-enter detection. Real user input is always
+    // trusted; our synthetic dispatches never are.
+    if (!e.isTrusted && isGoogleDocs()) return
+
     // Placeholder mode owns the keydown — macro detection suppressed while active
     if (placeholderSession) {
       if (e.key === 'Tab') {
@@ -446,9 +469,10 @@ export function createMacroDetector(actions: DetectorActions) {
       if (!config.useCommitKeys) {
         if (state.active) {
           const committedImmediately = scheduleConfirmIfExact(sel)
-          if (committedImmediately) {
-            // In immediate mode, prevent the character from being added to avoid duplication
-            // The macro replacement will handle the full command that includes the triggering character
+          if (committedImmediately && !isGoogleDocsSentinel(activeEl)) {
+            // In immediate mode, prevent the character from being added to avoid duplication.
+            // Skip for Google Docs: replaceInGoogleDocs defers to setTimeout(0) and
+            // needs the trigger char to have been inserted before it deletes the full buffer.
             e.preventDefault()
           }
           
@@ -518,6 +542,9 @@ export function createMacroDetector(actions: DetectorActions) {
     if (listenersAttached) return
     window.addEventListener("keydown", onKeyDown, true)
     window.addEventListener("blur", onBlur, true)
+    if (isGoogleDocs()) {
+      gdCleanup = attachToGoogleDocsIframe(onKeyDown, onBlur)
+    }
     listenersAttached = true
   }
 
@@ -525,6 +552,8 @@ export function createMacroDetector(actions: DetectorActions) {
     if (!listenersAttached) return
     window.removeEventListener("keydown", onKeyDown, true)
     window.removeEventListener("blur", onBlur, true)
+    gdCleanup?.()
+    gdCleanup = null
     listenersAttached = false
     clearBlurTimer()
     placeholderSession?.exit()
@@ -593,7 +622,7 @@ export function createMacroDetector(actions: DetectorActions) {
    * Handle macro selection from search overlay (inserts at cursor position)
    */
   function handleMacroSelectedFromSearchOverlay(macro: Macro, element: EditableEl): void {
-    if (!element) {
+    if (!element || isGoogleDocsSentinel(element)) {
       return
     }
 

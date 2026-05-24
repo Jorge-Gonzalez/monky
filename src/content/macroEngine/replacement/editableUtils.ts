@@ -1,6 +1,36 @@
 import type { EditableEl } from '../../../types'
+import { isGoogleDocs } from '../googledocs/googleDocsAdapter'
+
+/**
+ * Sentinel element returned by getActiveEditable when the keydown event
+ * originates from the Google Docs input iframe (a different JS realm).
+ * Callers that detect this sentinel must use Google Docs-specific replacement.
+ */
+export const GOOGLE_DOCS_SENTINEL: HTMLElement = (() => {
+  const el = document.createElement('div')
+  el.dataset.monkyGdocs = 'true'
+  return el
+})()
+
+export function isGoogleDocsSentinel(el: EditableEl): boolean {
+  return el === GOOGLE_DOCS_SENTINEL
+}
 
 export function getActiveEditable(target: EventTarget | null): EditableEl {
+  // Events from the Google Docs input iframe originate in a different JS realm.
+  // Their ownerDocument differs from the main document, so instanceof checks
+  // against parent-window constructors all return false. Detect this case by
+  // checking ownerDocument and return our sentinel so downstream code can
+  // route to the Google Docs replacement path.
+  if (
+    isGoogleDocs() &&
+    target !== null &&
+    typeof (target as any).ownerDocument !== 'undefined' &&
+    (target as any).ownerDocument !== document
+  ) {
+    return GOOGLE_DOCS_SENTINEL
+  }
+
   if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
     if (target.type === "password") return null
     return target
@@ -32,6 +62,7 @@ export function getActiveEditable(target: EventTarget | null): EditableEl {
  */
 export function getTextContent(element: EditableEl): string {
   if (!element) return ''
+  if (isGoogleDocsSentinel(element)) return ''
 
   if ('value' in element) {
     return element.value
@@ -83,6 +114,9 @@ function getAbsoluteOffset(root: Node, container: Node, offsetInContainer: numbe
 
 export function getSelection(el: EditableEl): { start: number; end: number } | null {
   if (!el) return null
+  // Sentinel: return a virtual position so macro detection state machine runs normally.
+  // The actual delete count is derived from state.buffer in the Google Docs commit path.
+  if (isGoogleDocsSentinel(el)) return { start: 0, end: 0 }
   if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
     return { start: el.selectionStart ?? 0, end: el.selectionEnd ?? 0 }
   }
