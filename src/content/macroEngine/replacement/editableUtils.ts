@@ -136,6 +136,20 @@ export function getSelection(el: EditableEl): { start: number; end: number } | n
  * @returns An object with x and y coordinates, or null if not determinable.
  */
 export function getCursorCoordinates(): { x: number; y: number } | null {
+  if (window.location.hostname === 'docs.google.com') {
+    const caret = document.querySelector('.kix-cursor-caret') as HTMLElement | null
+    if (caret) {
+      const rect = caret.getBoundingClientRect()
+      if (rect.height > 0) return { x: rect.left, y: rect.bottom }
+    }
+    const editor = document.querySelector('.kix-appview-editor') as HTMLElement | null
+    if (editor) {
+      const rect = editor.getBoundingClientRect()
+      return { x: rect.left + 20, y: rect.top + 80 }
+    }
+    return null
+  }
+
   const sel = window.getSelection();
   if (!sel || sel.rangeCount === 0) return null;
 

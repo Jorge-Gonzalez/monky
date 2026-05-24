@@ -10,7 +10,7 @@ import { DetectorActions } from "../actions/detectorActions"
 import { createMacroReplacement } from "./replacement/macroReplacement"
 import { createPlaceholderSession, PlaceholderSession } from "./placeholderSession"
 import { hasPlaceholders } from "./replacement/placeholders"
-import { isGoogleDocs, attachToGoogleDocsIframe, replaceInGoogleDocs } from "./googledocs/googleDocsAdapter"
+import { isGoogleDocs, attachToGoogleDocsIframe, replaceInGoogleDocs, focusGoogleDocsEditor } from "./googledocs/googleDocsAdapter"
 
 const COMMIT_KEYS = new Set([" ", "Enter"])
 const CONFIRM_DELAY_MS = 1850
@@ -591,6 +591,14 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
+    // Google Docs: delete the typed buffer then insert the expansion
+    if (isGoogleDocsSentinel(targetEl)) {
+      replaceInGoogleDocs(buffer.length, macro.text)
+      actions.onMacroCommitted(String(macro.id))
+      cancelDetection()
+      return
+    }
+
     const textContent = replacement.getTextContent(targetEl)
     const cursorPos = replacement.getCursorPosition(targetEl)
 
@@ -622,7 +630,15 @@ export function createMacroDetector(actions: DetectorActions) {
    * Handle macro selection from search overlay (inserts at cursor position)
    */
   function handleMacroSelectedFromSearchOverlay(macro: Macro, element: EditableEl): void {
-    if (!element || isGoogleDocsSentinel(element)) {
+    if (!element) {
+      return
+    }
+
+    // Google Docs: refocus the editor iframe and insert at current cursor position
+    if (isGoogleDocsSentinel(element)) {
+      focusGoogleDocsEditor()
+      replaceInGoogleDocs(0, macro.text)
+      actions.onMacroCommitted(String(macro.id))
       return
     }
 

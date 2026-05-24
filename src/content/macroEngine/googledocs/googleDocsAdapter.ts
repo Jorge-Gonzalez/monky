@@ -38,6 +38,10 @@ export function attachToGoogleDocsIframe(
   }
 }
 
+export function focusGoogleDocsEditor(): void {
+  getIframe()?.contentWindow?.focus()
+}
+
 /**
  * Replaces text in Google Docs.
  *

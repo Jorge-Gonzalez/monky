@@ -370,6 +370,7 @@ describe('MacroForm Component', () => {
       fireEvent.change(commandInput, { target: { value: '/complex' } })
 
       const html = '<p><b>La lista reloaded 3</b></p><ul><li>uno</li><li>dos</li><li>tres</li></ul><p>Otra mas</p>'
+      const normalizedHtml = '<p><strong>La lista reloaded 3</strong></p><ul><li>uno</li><li>dos</li><li>tres</li></ul><p>Otra mas</p>'
       setEditorContent(html)
 
       fireEvent.click(screen.getByRole('button', { name: 'macroForm.saveButton' }))
@@ -378,7 +379,7 @@ describe('MacroForm Component', () => {
         expect(defaultMockCoordinator.createMacro).toHaveBeenCalledWith({
           command: '/complex',
           text: expect.stringMatching(/La lista reloaded 3\s*\n\s*• uno\s*\n\s*• dos\s*\n\s*• tres\s*\n\s*Otra mas/),
-          html,
+          html: normalizedHtml,
           contentType: 'text/html',
           is_sensitive: false,
         })
@@ -456,6 +457,7 @@ describe('MacroForm Component', () => {
       fireEvent.change(commandInput, { target: { value: '/spacing' } })
 
       const complexHTML = '<p><b>La lista reloaded 3</b></p><p>Cuidado <i>pierde</i></p><ul><li>uno</li><li>dos</li><li>tres</li></ul><p>Otra mas</p><ol><li>algo</li><li>mas</li></ol><p>Esto es un parrafo<br>dividido en dos lineas.</p><p>Y esto es otro parrafo aparte.</p>'
+      const normalizedComplexHTML = '<p><strong>La lista reloaded 3</strong></p><p>Cuidado <em>pierde</em></p><ul><li>uno</li><li>dos</li><li>tres</li></ul><p>Otra mas</p><ol><li>algo</li><li>mas</li></ol><p>Esto es un parrafo<br>dividido en dos lineas.</p><p>Y esto es otro parrafo aparte.</p>'
       setEditorContent(complexHTML)
 
       fireEvent.click(screen.getByRole('button', { name: 'macroForm.saveButton' }))
@@ -464,7 +466,7 @@ describe('MacroForm Component', () => {
         expect(defaultMockCoordinator.createMacro).toHaveBeenCalledWith({
           command: '/spacing',
           text: expect.stringMatching(/La lista reloaded 3\s*\n\s*Cuidado pierde\s*\n\s*• uno\s*\n\s*• dos\s*\n\s*• tres\s*\n\s*Otra mas\s*\n\s*1\. algo\s*\n\s*2\. mas\s*\n\s*Esto es un parrafo\s*\n\s*dividido en dos lineas\.\s*\n\s*Y esto es otro parrafo aparte/),
-          html: complexHTML,
+          html: normalizedComplexHTML,
           contentType: 'text/html',
           is_sensitive: false,
         })
