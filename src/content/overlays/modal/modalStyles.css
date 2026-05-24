@@ -94,7 +94,8 @@
   flex-direction: column;
 }
 
-/* ===== Root Container (for non-Shadow DOM environments) ===== */
+/* ===== Root Container ===== */
+:host,
 #monky-modal {
   position: fixed !important;
   top: 0 !important;
