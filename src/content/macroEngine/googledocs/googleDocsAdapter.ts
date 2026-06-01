@@ -42,8 +42,46 @@ export function attachToGoogleDocsIframe(
   }
 }
 
+let focusGuard: HTMLElement | null = null
+
+// True for the synchronous duration of any intentional focus move between the
+// guard element and the iframe. Both .focus() calls fire blur synchronously, so
+// this flag is set before and cleared after each call to suppress the resulting
+// onBlur in macroDetector without relying on document.activeElement timing.
+let intentionalFocusMove = false
+
 export function focusGoogleDocsEditor(): void {
+  intentionalFocusMove = true
   getIframe()?.contentWindow?.focus()
+  intentionalFocusMove = false
+}
+
+/**
+ * Moves browser focus to a hidden element in the main document so that
+ * subsequent keystrokes fire in the main document context rather than inside
+ * the Google Docs iframe. This prevents navigation keys (Tab, Arrow, Enter)
+ * from reaching Google Docs' event handlers while the suggestions overlay is
+ * open in showAll mode.
+ */
+export function stealFocusFromGoogleDocs(): void {
+  if (!focusGuard) {
+    focusGuard = document.createElement('div')
+    focusGuard.setAttribute('tabindex', '-1')
+    focusGuard.style.cssText = 'position:fixed;opacity:0;pointer-events:none;width:1px;height:1px;top:-9999px;left:-9999px'
+    document.body.appendChild(focusGuard)
+  }
+  intentionalFocusMove = true
+  focusGuard.focus()
+  intentionalFocusMove = false
+}
+
+/**
+ * Returns true when a blur event was triggered by one of our own intentional
+ * focus moves (steal to guard, or restore to iframe). macroDetector uses this
+ * to skip the blur → cancelDetection path.
+ */
+export function isIntentionalFocusMove(): boolean {
+  return intentionalFocusMove || (focusGuard !== null && document.activeElement === focusGuard)
 }
 
 /**

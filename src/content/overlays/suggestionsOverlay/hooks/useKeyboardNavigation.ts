@@ -51,16 +51,12 @@ export function useKeyboardNavigation({
       }
     };
 
-    const targets: EventTarget[] = [document];
-
-    if (window.location.hostname === 'docs.google.com') {
-      const iframe = document.querySelector('.docs-texteventtarget-iframe') as HTMLIFrameElement | null
-      if (iframe?.contentDocument) targets.push(iframe.contentDocument)
-    }
-
-    for (const t of targets) t.addEventListener('keydown', handleKeyDown, true)
+    // Listen on the main document only. On Google Docs, showAll mode steals focus
+    // from the iframe to a guard element in the main document, so events arrive
+    // here naturally and never reach Google Docs' iframe handlers.
+    document.addEventListener('keydown', handleKeyDown, true)
     return () => {
-      for (const t of targets) t.removeEventListener('keydown', handleKeyDown, true)
+      document.removeEventListener('keydown', handleKeyDown, true)
     }
   }, [isActive, onSelect, onClose, onNavigateLeft, onNavigateRight, preventTabHandling]);
 }

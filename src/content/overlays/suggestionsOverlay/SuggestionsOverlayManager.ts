@@ -8,6 +8,7 @@ import { getActiveEditable, getSelection } from '../../macroEngine/replacement/e
 import { replaceText } from '../../macroEngine/replacement/macroReplacement';
 import { getCaretCoordinates } from './utils/caretPosition';
 import { calculateOptimalPosition } from './utils/popupPositioning';
+import { isGoogleDocs, focusGoogleDocsEditor, stealFocusFromGoogleDocs } from '../../macroEngine/googledocs/googleDocsAdapter';
 
 interface SavedState {
   element: EditableEl | null;
@@ -205,6 +206,11 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
     // In showAll mode, save the buffer as the trigger so we know what to replace
     // The buffer (e.g., "/si") is what should be replaced when a macro is selected
     savedState = { element: activeElement, trigger: buffer || '' };
+
+    // On Google Docs, steal focus from the iframe so navigation keys (Tab, Arrow,
+    // Enter) fire in the main document and never reach Google Docs' handlers.
+    if (isGoogleDocs()) stealFocusFromGoogleDocs();
+
     renderSuggestions();
   };
 
@@ -254,10 +260,12 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
       filterBuffer: '',
     };
     renderer.clear();
-    
-    // Only restore focus if we're not in showAll mode to avoid interfering
-    // with ongoing macro detection
-    if (!wasShowAllMode) {
+
+    if (isGoogleDocs()) {
+      // Return focus to the iframe so Google Docs resumes normal keyboard input
+      // and replaceInGoogleDocs can dispatch events to the correct active element.
+      focusGoogleDocsEditor();
+    } else if (!wasShowAllMode) {
       restoreFocus(elementToFocus);
     }
     savedState = null;

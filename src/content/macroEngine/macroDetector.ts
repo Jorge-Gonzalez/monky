@@ -10,7 +10,7 @@ import { DetectorActions } from "../actions/detectorActions"
 import { createMacroReplacement } from "./replacement/macroReplacement"
 import { createPlaceholderSession, PlaceholderSession } from "./placeholderSession"
 import { hasPlaceholders } from "./replacement/placeholders"
-import { isGoogleDocs, attachToGoogleDocsIframe, replaceInGoogleDocs, focusGoogleDocsEditor } from "./googledocs/googleDocsAdapter"
+import { isGoogleDocs, attachToGoogleDocsIframe, replaceInGoogleDocs, focusGoogleDocsEditor, isIntentionalFocusMove } from "./googledocs/googleDocsAdapter"
 
 const COMMIT_KEYS = new Set([" ", "Enter"])
 const CONFIRM_DELAY_MS = 1850
@@ -254,6 +254,10 @@ export function createMacroDetector(actions: DetectorActions) {
     // events for deletion) must not re-enter detection. Real user input is always
     // trusted; our synthetic dispatches never are.
     if (!e.isTrusted && isGoogleDocs()) return
+
+    // The suggestions overlay has stolen focus to the guard element — it owns the
+    // keyboard via useKeyboardNavigation. Don't interfere or cancel detection.
+    if (isIntentionalFocusMove()) return
 
     // Placeholder mode owns the keydown — macro detection suppressed while active
     if (placeholderSession) {
@@ -524,6 +528,9 @@ export function createMacroDetector(actions: DetectorActions) {
 
   function onBlur() {
     clearBlurTimer()
+    // Blur was caused by our own intentional focus move (stealing focus for the
+    // overlay, or restoring it back) — don't cancel detection.
+    if (isIntentionalFocusMove()) return
     blurTimer = window.setTimeout(() => {
       cancelDetection()
     }, 100)
