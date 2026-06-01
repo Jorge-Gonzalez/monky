@@ -84,6 +84,30 @@ export function isIntentionalFocusMove(): boolean {
   return intentionalFocusMove || (focusGuard !== null && document.activeElement === focusGuard)
 }
 
+type NavOp = { key: 'ArrowLeft' | 'ArrowRight'; shift: boolean; count: number }
+
+/**
+ * Dispatches cursor-movement / selection keydown events to the Google Docs
+ * input iframe. Used by the placeholder session to navigate between labels.
+ */
+export function navigateInGoogleDocs(ops: NavOp[]): void {
+  const doc = getIframe()?.contentDocument
+  if (!doc) return
+  const target = doc.activeElement ?? doc.body
+  for (const op of ops) {
+    for (let i = 0; i < op.count; i++) {
+      target.dispatchEvent(new KeyboardEvent('keydown', {
+        key: op.key,
+        code: op.key,
+        keyCode: op.key === 'ArrowLeft' ? 37 : 39,
+        shiftKey: op.shift,
+        bubbles: true,
+        cancelable: true,
+      }))
+    }
+  }
+}
+
 /**
  * Replaces text in Google Docs.
  *

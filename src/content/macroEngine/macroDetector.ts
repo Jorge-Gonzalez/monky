@@ -9,7 +9,8 @@ import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro, parseParametricBuffer,
 import { DetectorActions } from "../actions/detectorActions"
 import { createMacroReplacement } from "./replacement/macroReplacement"
 import { createPlaceholderSession, PlaceholderSession } from "./placeholderSession"
-import { hasPlaceholders } from "./replacement/placeholders"
+import { hasPlaceholders, stripPlaceholders } from "./replacement/placeholders"
+import { createGoogleDocsPlaceholderSession } from "./googledocs/googleDocsPlaceholderSession"
 import { isGoogleDocs, attachToGoogleDocsIframe, replaceInGoogleDocs, focusGoogleDocsEditor, isIntentionalFocusMove } from "./googledocs/googleDocsAdapter"
 
 const COMMIT_KEYS = new Set([" ", "Enter"])
@@ -69,10 +70,14 @@ export function createMacroDetector(actions: DetectorActions) {
         replaceInGoogleDocs(state.buffer.length, '')
         handleSystemMacro(macro)
       } else {
-        replaceInGoogleDocs(state.buffer.length, macro.text)
+        const gdText = hasPlaceholders(macro.text) ? stripPlaceholders(macro.text) : macro.text
+        replaceInGoogleDocs(state.buffer.length, gdText)
       }
       actions.onMacroCommitted(String(macro.id))
       cancelDetection()
+      if (!isSystemMacro(macro) && macro.contentType !== 'text/html') {
+        startPlaceholderSession(activeEl, macro.text)
+      }
       return
     }
 
@@ -246,7 +251,11 @@ export function createMacroDetector(actions: DetectorActions) {
 
   function startPlaceholderSession(el: EditableEl, text: string): void {
     if (!hasPlaceholders(text)) return
-    placeholderSession = createPlaceholderSession(el, () => { placeholderSession = null })
+    if (isGoogleDocsSentinel(el)) {
+      placeholderSession = createGoogleDocsPlaceholderSession(text, () => { placeholderSession = null })
+    } else {
+      placeholderSession = createPlaceholderSession(el, () => { placeholderSession = null })
+    }
   }
 
   function onKeyDown(e: KeyboardEvent) {
@@ -600,9 +609,11 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Google Docs: delete the typed buffer then insert the expansion
     if (isGoogleDocsSentinel(targetEl)) {
-      replaceInGoogleDocs(buffer.length, macro.text)
+      const gdText = hasPlaceholders(macro.text) ? stripPlaceholders(macro.text) : macro.text
+      replaceInGoogleDocs(buffer.length, gdText)
       actions.onMacroCommitted(String(macro.id))
       cancelDetection()
+      if (macro.contentType !== 'text/html') startPlaceholderSession(targetEl, macro.text)
       return
     }
 
@@ -644,8 +655,10 @@ export function createMacroDetector(actions: DetectorActions) {
     // Google Docs: refocus the editor iframe and insert at current cursor position
     if (isGoogleDocsSentinel(element)) {
       focusGoogleDocsEditor()
-      replaceInGoogleDocs(0, macro.text)
+      const gdText = hasPlaceholders(macro.text) ? stripPlaceholders(macro.text) : macro.text
+      replaceInGoogleDocs(0, gdText)
       actions.onMacroCommitted(String(macro.id))
+      if (macro.contentType !== 'text/html') startPlaceholderSession(element, macro.text)
       return
     }
 
