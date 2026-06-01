@@ -180,6 +180,15 @@ export function createMacroDetector(actions: DetectorActions) {
     sel: { start: number; end: number } | null
   ): void {
     if (!activeEl) return
+
+    if (isGoogleDocsSentinel(activeEl)) {
+      replaceInGoogleDocs(state.buffer.length, '')
+      handleParametricSystemCommand(systemMacroId, param)
+      actions.onMacroCommitted(systemMacroId)
+      cancelDetection()
+      return
+    }
+
     const currentSel = sel || getSelection(activeEl)
     if (!currentSel) { cancelDetection(); return }
     const endPos = currentSel.end

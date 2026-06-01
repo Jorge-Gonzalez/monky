@@ -91,8 +91,8 @@ export function handleParametricSystemCommand(commandId: string, param: string):
   switch (commandId) {
     case 'system-edit-macro':
       if (target) {
-        modalCoordinator.show('editor')
         modalCoordinator.navigateToEditor(target)
+        modalCoordinator.show('editor')
       }
       return true
 
