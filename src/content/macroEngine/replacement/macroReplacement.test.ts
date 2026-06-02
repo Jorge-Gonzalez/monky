@@ -1,7 +1,19 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeEach, afterEach } from "vitest"
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import { replaceText } from './macroReplacement'
 import type { Macro } from "../../../types"
+import { GOOGLE_DOCS_SENTINEL } from './editableUtils'
+import { replaceInGoogleDocs } from '../googledocs/googleDocsAdapter'
+
+vi.mock('../googledocs/googleDocsAdapter', () => ({
+  replaceInGoogleDocs: vi.fn(),
+  isGoogleDocs: () => false,
+  isGoogleDocsIframeElement: () => false,
+  attachToGoogleDocsIframe: () => null,
+  focusGoogleDocsEditor: vi.fn(),
+  isIntentionalFocusMove: () => false,
+  navigateInGoogleDocs: vi.fn(),
+}))
 
 describe("replaceText", () => {
   describe("in contenteditable element", () => {
@@ -147,6 +159,24 @@ describe("replaceText", () => {
       replaceText(textarea, macro, 6, 12)
 
       expect(textarea.value).toBe("Hello world!")
+    })
+  })
+
+  describe("in Google Docs sentinel", () => {
+    beforeEach(() => {
+      vi.mocked(replaceInGoogleDocs).mockClear()
+    })
+
+    it("calls replaceInGoogleDocs with delete count = endPos - startPos", () => {
+      const macro: Macro = { id: 1, command: ":sig", text: "Jorge", contentType: "text/plain" }
+      replaceText(GOOGLE_DOCS_SENTINEL, macro, 0, 4) // ":sig".length === 4
+      expect(replaceInGoogleDocs).toHaveBeenCalledWith(4, "Jorge")
+    })
+
+    it("calls replaceInGoogleDocs with delete count 0 for pure insertion", () => {
+      const macro: Macro = { id: 1, command: ":sig", text: "Jorge", contentType: "text/plain" }
+      replaceText(GOOGLE_DOCS_SENTINEL, macro, 5, 5)
+      expect(replaceInGoogleDocs).toHaveBeenCalledWith(0, "Jorge")
     })
   })
 })

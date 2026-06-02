@@ -30,14 +30,8 @@ describe('MacroDetector - Undo Integration Tests', () => {
       onNavigationRequested: vi.fn(),
       onCancelRequested: vi.fn(),
       onCommitRequested: vi.fn((macroId) => {
-        // Find the macro and check if it's an exact match
-        console.log('[TEST] onCommitRequested called with macroId:', macroId, typeof macroId)
-        const macro = testMacros.find(m => {
-          console.log('[TEST] checking macro:', m.id, typeof m.id, 'against', macroId, 'equals:', m.id === macroId)
-          return m.id === macroId
-        })
-        console.log('[TEST] found macro:', macro, 'returning:', !!macro)
-        return !!macro  // Return true if macro exists
+        const macro = testMacros.find(m => m.id === macroId)
+        return !!macro
       }),
       onShowAllRequested: vi.fn()
     }
@@ -176,6 +170,30 @@ describe('MacroDetector - Undo Integration Tests', () => {
       }))
 
       expect(inputElement.value).toBe('')
+    })
+  })
+
+  describe('Leading-space preservation', () => {
+    it('preserves the space before a macro command in an input element', () => {
+      inputElement.value = 'hello '
+      inputElement.setSelectionRange(6, 6)
+      typeIn(inputElement, '/brb ')
+      expect(inputElement.value).toBe('hello Be right back!')
+    })
+
+    it('handles macro at start of field without negative commandStart', () => {
+      typeIn(inputElement, '/brb ')
+      expect(inputElement.value).toBe('Be right back!')
+    })
+
+    it('preserves the space before a macro command in a textarea', () => {
+      const textarea = document.createElement('textarea')
+      document.body.appendChild(textarea)
+      textarea.value = 'hello '
+      textarea.setSelectionRange(6, 6)
+      typeIn(textarea, '/brb ')
+      expect(textarea.value).toBe('hello Be right back!')
+      document.body.removeChild(textarea)
     })
   })
 
