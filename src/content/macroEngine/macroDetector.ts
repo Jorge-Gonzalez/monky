@@ -63,67 +63,30 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    // Calculate positions
-    let commandStart = 0
-    let endPos = 0
-
-    if (isGoogleDocsSentinel(activeEl)) {
-      // Sentinel has no real cursor position; derive the delete range from buffer length.
-      // GDocs defers via setTimeout(0) so the trigger char is already inserted by the time
-      // replaceInGoogleDocs fires — buffer.length covers the full typed sequence.
-      endPos = state.buffer.length
-    } else if (selectionOnSchedule && !isImmediate) {
-      endPos = selectionOnSchedule.end + 1
-      commandStart = Math.max(0, endPos - state.buffer.length)
-    } else if (sel) {
-      endPos = sel.end
-      commandStart = Math.max(0, endPos - state.buffer.length)
-    }
-
-    // Store original range for undo tracking (before space adjustment)
-    const originalCommandStart = commandStart
-    const originalEndPos = endPos
-
-    // Find the actual start of the macro (the prefix character) to avoid including preceding spaces
-    const text = replacement.getTextContent(activeEl)
-    const macroText = text.substring(commandStart, endPos)
-
-    // Find the last occurrence of any configured prefix
-    let prefixIndex = -1
-    for (const prefix of config.prefixes) {
-      const idx = macroText.lastIndexOf(prefix)
-      if (idx > prefixIndex) {
-        prefixIndex = idx
-      }
-    }
-
-    if (prefixIndex !== -1) {
-      // Adjust commandStart to point to the prefix character, not any preceding space
-      commandStart = commandStart + prefixIndex
-    }
-
-    // Debug: Uncomment for range calculation debugging
-    // console.log('[COMMIT-REPLACE] Final range:', {
-    //   mode: isImmediate ? 'immediate' : 'scheduled',
-    //   buffer: state.buffer,
-    //   bufferLength: state.buffer.length,
-    //   originalCommandStart: Math.max(0, endPos - state.buffer.length),
-    //   adjustedCommandStart: commandStart,
-    //   endPos,
-    //   textContent: text,
-    //   textToReplace: text.substring(commandStart, endPos),
-    //   macroText: macro.text
-    // })
-
+    // Precondition about detection state (not range geometry): with neither a
+    // live selection nor a scheduled one there is nothing to commit against.
+    // Stays here rather than in the backend because it concerns detector state.
     if (!sel && !selectionOnSchedule) {
       cancelDetection()
       return
     }
 
-    if (commandStart < 0) {
+    const range = getBackend(activeEl).commitRange(activeEl, {
+      buffer: state.buffer,
+      sel,
+      selectionOnSchedule,
+      isImmediate,
+      prefixes: config.prefixes,
+      textContent: replacement.getTextContent(activeEl),
+    })
+
+    // Invalid range (e.g. commandStart < 0) → cancel.
+    if (!range) {
       cancelDetection()
       return
     }
+
+    const { start: commandStart, end: endPos, undoStart, undoEnd } = range
 
     if (isGoogleDocsSentinel(activeEl)) shadow.reset()
 
@@ -147,7 +110,7 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Regular macro replacement with undo tracking
     // Use adjusted range for replacement, but original range for undo tracking
-    replacement.performReplacement(activeEl, commandStart, endPos, replacementText, macro, originalCommandStart, originalEndPos)
+    replacement.performReplacement(activeEl, commandStart, endPos, replacementText, macro, undoStart, undoEnd)
     actions.onMacroCommitted(String(macro.id))
     cancelDetection()
     if (macro.contentType !== 'text/html') startPlaceholderSession(activeEl, macro.text)
@@ -177,8 +140,8 @@ export function createMacroDetector(actions: DetectorActions) {
 
     const currentSel = sel || getSelection(activeEl)
     if (!currentSel) { cancelDetection(); return }
-    const endPos = isGoogleDocsSentinel(activeEl) ? state.buffer.length : currentSel.end
-    const commandStart = isGoogleDocsSentinel(activeEl) ? 0 : Math.max(0, endPos - state.buffer.length)
+    const { start: commandStart, end: endPos } =
+      getBackend(activeEl).parametricRange(activeEl, state.buffer, currentSel)
     const deleteMacro: Macro = { id: 'temp-delete', command: '', text: '', contentType: 'text/plain' }
     replaceText(activeEl, deleteMacro, commandStart, endPos)
     handleParametricSystemCommand(systemMacroId, param)
@@ -636,17 +599,9 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    // Range source differs for sentinel: text content is always empty, so use buffer.length
-    let triggerIndex: number
-    let endPos: number
-    if (isGoogleDocsSentinel(targetEl)) {
-      triggerIndex = 0
-      endPos = buffer.length
-    } else {
-      triggerIndex = textContent.lastIndexOf(buffer, cursorPos)
-      if (triggerIndex === -1) return
-      endPos = triggerIndex + buffer.length
-    }
+    const range = getBackend(targetEl).overlayRange(targetEl, buffer, textContent, cursorPos)
+    if (!range) return
+    const { start: triggerIndex, end: endPos } = range
 
     // Backend selects insert text: GDocs strips placeholders, DOM uses raw text.
     const replacementText = getBackend(targetEl).replacementTextFor(macro)
@@ -681,7 +636,8 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    replacement.performReplacement(element, cursorPos, cursorPos, replacementText, macro)
+    const { start, end } = backend.insertionRange(element, cursorPos)
+    replacement.performReplacement(element, start, end, replacementText, macro)
 
     actions.onMacroCommitted(String(macro.id))
     if (macro.contentType !== 'text/html') startPlaceholderSession(element, macro.text)
