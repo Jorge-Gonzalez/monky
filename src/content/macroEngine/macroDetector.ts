@@ -11,7 +11,7 @@ import { createMacroReplacement } from "./replacement/macroReplacement"
 import { createPlaceholderSession, PlaceholderSession } from "./placeholderSession"
 import { hasPlaceholders, stripPlaceholders } from "./replacement/placeholders"
 import { createGoogleDocsPlaceholderSession } from "./googledocs/googleDocsPlaceholderSession"
-import { isGoogleDocs, attachToGoogleDocsIframe, replaceInGoogleDocs, focusGoogleDocsEditor, isIntentionalFocusMove } from "./googledocs/googleDocsAdapter"
+import { isGoogleDocs, attachToGoogleDocsIframe, focusGoogleDocsEditor, isIntentionalFocusMove } from "./googledocs/googleDocsAdapter"
 
 const COMMIT_KEYS = new Set([" ", "Enter"])
 const CONFIRM_DELAY_MS = 1850
@@ -65,32 +65,16 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    // Google Docs: deferred replacement via replaceInGoogleDocs (setTimeout 0).
-    // We do NOT prevent the trigger character, so Google Docs inserts it first.
-    // By the time the timeout fires, the full buffer.length chars are in the document
-    // and we delete them all before inserting the expansion.
-    if (isGoogleDocsSentinel(activeEl)) {
-      gdShadowBuffer = ''
-      if (isSystemMacro(macro)) {
-        replaceInGoogleDocs(state.buffer.length, '')
-        handleSystemMacro(macro)
-      } else {
-        const gdText = hasPlaceholders(macro.text) ? stripPlaceholders(macro.text) : macro.text
-        replaceInGoogleDocs(state.buffer.length, gdText)
-      }
-      actions.onMacroCommitted(String(macro.id))
-      cancelDetection()
-      if (!isSystemMacro(macro) && macro.contentType !== 'text/html') {
-        startPlaceholderSession(activeEl, macro.text)
-      }
-      return
-    }
-
     // Calculate positions
     let commandStart = 0
     let endPos = 0
 
-    if (selectionOnSchedule && !isImmediate) {
+    if (isGoogleDocsSentinel(activeEl)) {
+      // Sentinel has no real cursor position; derive the delete range from buffer length.
+      // GDocs defers via setTimeout(0) so the trigger char is already inserted by the time
+      // replaceInGoogleDocs fires — buffer.length covers the full typed sequence.
+      endPos = state.buffer.length
+    } else if (selectionOnSchedule && !isImmediate) {
       endPos = selectionOnSchedule.end + 1
       commandStart = Math.max(0, endPos - state.buffer.length)
     } else if (sel) {
@@ -143,6 +127,8 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
+    if (isGoogleDocsSentinel(activeEl)) gdShadowBuffer = ''
+
     // Handle system macros (without undo tracking)
     if (isSystemMacro(macro)) {
       const deleteMacro: Macro = {
@@ -158,9 +144,14 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
+    // GDocs inserts stripped placeholder text; DOM inserts raw text. Resolves in step 3.
+    const replacementText = (isGoogleDocsSentinel(activeEl) && hasPlaceholders(macro.text))
+      ? stripPlaceholders(macro.text)
+      : macro.text
+
     // Regular macro replacement with undo tracking
     // Use adjusted range for replacement, but original range for undo tracking
-    replacement.performReplacement(activeEl, commandStart, endPos, macro.text, macro, originalCommandStart, originalEndPos)
+    replacement.performReplacement(activeEl, commandStart, endPos, replacementText, macro, originalCommandStart, originalEndPos)
     actions.onMacroCommitted(String(macro.id))
     cancelDetection()
     if (macro.contentType !== 'text/html') startPlaceholderSession(activeEl, macro.text)
@@ -186,19 +177,12 @@ export function createMacroDetector(actions: DetectorActions) {
   ): void {
     if (!activeEl) return
 
-    if (isGoogleDocsSentinel(activeEl)) {
-      gdShadowBuffer = ''
-      replaceInGoogleDocs(state.buffer.length, '')
-      handleParametricSystemCommand(systemMacroId, param)
-      actions.onMacroCommitted(systemMacroId)
-      cancelDetection()
-      return
-    }
+    if (isGoogleDocsSentinel(activeEl)) gdShadowBuffer = ''
 
     const currentSel = sel || getSelection(activeEl)
     if (!currentSel) { cancelDetection(); return }
-    const endPos = currentSel.end
-    const commandStart = Math.max(0, endPos - state.buffer.length)
+    const endPos = isGoogleDocsSentinel(activeEl) ? state.buffer.length : currentSel.end
+    const commandStart = isGoogleDocsSentinel(activeEl) ? 0 : Math.max(0, endPos - state.buffer.length)
     const deleteMacro: Macro = { id: 'temp-delete', command: '', text: '', contentType: 'text/plain' }
     replaceText(activeEl, deleteMacro, commandStart, endPos)
     handleParametricSystemCommand(systemMacroId, param)
@@ -647,15 +631,8 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    // Google Docs: delete the typed buffer then insert the expansion
     if (isGoogleDocsSentinel(targetEl)) {
       gdShadowBuffer = ''
-      const gdText = hasPlaceholders(macro.text) ? stripPlaceholders(macro.text) : macro.text
-      replaceInGoogleDocs(buffer.length, gdText)
-      actions.onMacroCommitted(String(macro.id))
-      cancelDetection()
-      if (macro.contentType !== 'text/html') startPlaceholderSession(targetEl, macro.text)
-      return
     }
 
     const textContent = replacement.getTextContent(targetEl)
@@ -665,22 +642,26 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    // Find the buffer text before the cursor
-    const triggerIndex = textContent.lastIndexOf(buffer, cursorPos)
-
-    if (triggerIndex === -1) {
-      return
+    // Range source differs for sentinel: text content is always empty, so use buffer.length
+    let triggerIndex: number
+    let endPos: number
+    if (isGoogleDocsSentinel(targetEl)) {
+      triggerIndex = 0
+      endPos = buffer.length
+    } else {
+      triggerIndex = textContent.lastIndexOf(buffer, cursorPos)
+      if (triggerIndex === -1) return
+      endPos = triggerIndex + buffer.length
     }
 
-    const endPos = triggerIndex + buffer.length
+    // GDocs inserts stripped placeholder text; DOM inserts raw text. Resolves in step 3.
+    const replacementText = (isGoogleDocsSentinel(targetEl) && hasPlaceholders(macro.text))
+      ? stripPlaceholders(macro.text)
+      : macro.text
 
-    // Use performReplacement to ensure proper undo tracking
-    replacement.performReplacement(targetEl, triggerIndex, endPos, macro.text, macro)
+    replacement.performReplacement(targetEl, triggerIndex, endPos, replacementText, macro)
 
-    // Notify that macro was committed
     actions.onMacroCommitted(String(macro.id))
-
-    // Clean up detection state
     cancelDetection()
     if (macro.contentType !== 'text/html') startPlaceholderSession(targetEl, macro.text)
   }
@@ -693,19 +674,17 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    // Google Docs: refocus the editor iframe and insert at current cursor position
     if (isGoogleDocsSentinel(element)) {
       gdShadowBuffer = ''
       focusGoogleDocsEditor()
-      const gdText = hasPlaceholders(macro.text) ? stripPlaceholders(macro.text) : macro.text
-      replaceInGoogleDocs(0, gdText)
-      actions.onMacroCommitted(String(macro.id))
-      if (macro.contentType !== 'text/html') startPlaceholderSession(element, macro.text)
-      return
+    } else {
+      element.focus()
     }
 
-    // Restore focus to the element first
-    element.focus()
+    // GDocs inserts stripped placeholder text; DOM inserts raw text. Resolves in step 3.
+    const replacementText = (isGoogleDocsSentinel(element) && hasPlaceholders(macro.text))
+      ? stripPlaceholders(macro.text)
+      : macro.text
 
     const cursorPos = replacement.getCursorPosition(element)
 
@@ -713,9 +692,7 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    // Insert at current cursor position (no text to replace)
-    // Use performReplacement to ensure proper undo tracking
-    replacement.performReplacement(element, cursorPos, cursorPos, macro.text, macro)
+    replacement.performReplacement(element, cursorPos, cursorPos, replacementText, macro)
 
     actions.onMacroCommitted(String(macro.id))
     if (macro.contentType !== 'text/html') startPlaceholderSession(element, macro.text)

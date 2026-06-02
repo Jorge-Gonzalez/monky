@@ -1,5 +1,6 @@
 import { Macro, EditableEl } from "../../../types"
-import { getTextContent, getSelection, normalizeForInputElement } from "./editableUtils"
+import { getTextContent, getSelection, normalizeForInputElement, isGoogleDocsSentinel } from "./editableUtils"
+import { replaceInGoogleDocs } from "../googledocs/googleDocsAdapter"
 import { replaceInInput } from "./inputTextReplacement"
 import { replacePlainText } from "./plainTextReplacement"
 import { createReplacementHistory } from "./replacementHistory"
@@ -10,6 +11,10 @@ import { replaceWithMarker } from "./richTextReplacement"
  * It handles <input>, <textarea>, and contenteditable elements.
  */
 export function replaceText(el: EditableEl, macro: Macro, startPos: number, endPos: number) {
+  if (isGoogleDocsSentinel(el)) {
+    replaceInGoogleDocs(endPos - startPos, macro.text)
+    return
+  }
   if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
     return replaceInInput(el, startPos, endPos, macro.text)
   }
@@ -48,6 +53,10 @@ export function createMacroReplacement() {
     undoEndPos?: number
   ): void {
     if (!element) return
+    if (isGoogleDocsSentinel(element)) {
+      replaceText(element, { ...macro, text: replacementText }, startPos, endPos)
+      return
+    }
 
     // For undo, we store empty string so that undo simply deletes the replacement
     // without restoring the typed command, allowing users to immediately type again
