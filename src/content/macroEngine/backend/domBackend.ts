@@ -16,6 +16,22 @@ export const domBackend: EditableBackend = {
     return false
   },
 
+  // DOM reads the live element directly for reconstruction.
+  reconstructionSource(el, sel) {
+    const text = el && 'value' in el ? el.value : el?.textContent || ''
+    return { text, cursorPos: sel.start }
+  },
+
+  // No per-element input state; the live element is the source of truth.
+  handleKey(): void {},
+
+  reset(): void {},
+
+  // DOM replaces synchronously; prevent the duplicate trigger char.
+  defersTriggerChar(): boolean {
+    return false
+  },
+
   commitRange(_el: EditableEl, args: CommitRangeArgs): ReplacementRange | null {
     const { buffer, sel, selectionOnSchedule, isImmediate, prefixes, textContent } = args
 

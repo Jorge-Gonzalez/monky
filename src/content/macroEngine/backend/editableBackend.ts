@@ -14,13 +14,10 @@ import { googleDocsBackend } from './googleDocsBackend'
  * (is THIS the Docs sentinel), not page-level (are we on docs.google.com),
  * because a Docs page can still host ordinary inputs that need the DOM backend.
  *
- * STAGING. The shadow buffer (Google Docs' typed-word mirror) is still owned by
- * the detector and mutated per-key there. To avoid splitting that single object's
- * ownership across two modules, every shadow-coupled method —
- * reconstructionSource, reset, and the unified handleKey — is deferred to stage 3,
- * where the shadow moves wholesale into googleDocsBackend. Stage 1 carried the
- * shadow-INDEPENDENT behavior; stage 2 (this change) adds range computation
- * (commitRange / parametricRange / overlayRange / insertionRange).
+ * The shadow buffer (Google Docs' typed-word mirror, needed because the sentinel
+ * exposes no readable text) is owned entirely by googleDocsBackend. The detector
+ * holds no Google Docs state and does not branch on the sentinel; it feeds every
+ * keystroke to handleKey and reads reconstruction state through the backend.
  */
 /** A replacement range. undoStart/undoEnd carry the pre-trim range that
  *  commitReplace tracks separately for undo; the other range methods omit them. */
@@ -51,6 +48,39 @@ export interface EditableBackend {
    * DOM ignores nothing.
    */
   shouldIgnoreEvent(e: KeyboardEvent): boolean
+
+  /**
+   * Source text + cursor position for buffer reconstruction when the user
+   * backspaces into a previously-typed word. DOM reads the element's value /
+   * textContent and the live caret offset; GDocs reads its shadow buffer (the
+   * sentinel exposes no readable text). Called BEFORE handleKey so the read
+   * reflects the pre-keystroke state.
+   */
+  reconstructionSource(
+    el: EditableEl,
+    sel: { start: number; end: number }
+  ): { text: string; cursorPos: number }
+
+  /**
+   * Update per-backend input state for a keystroke. DOM is a no-op (it reads
+   * the live element). GDocs drives its shadow buffer: word-boundary keys
+   * (space, tab, Enter) reset it, Backspace trims it, other printable keys
+   * append. Called at the END of the printable / backspace handling so the
+   * shadow reflects the post-keystroke state (paired with reconstructionSource,
+   * which must run first).
+   */
+  handleKey(e: KeyboardEvent): void
+
+  /** Clear per-backend input state (shadow buffer). No-op for DOM. */
+  reset(): void
+
+  /**
+   * True when the backend defers macro replacement past the current keydown
+   * (so the trigger char must NOT be preventDefault'd in immediate-commit mode).
+   * Google Docs replaces in setTimeout(0) and needs the trigger char inserted
+   * first; DOM replaces synchronously and prevents the duplicate char.
+   */
+  defersTriggerChar(): boolean
 
   /**
    * Range for a regular/system macro commit (the commitReplace path).
@@ -116,4 +146,15 @@ export interface EditableBackend {
  */
 export function getBackend(el: EditableEl): EditableBackend {
   return isGoogleDocsSentinel(el) ? googleDocsBackend : domBackend
+}
+
+/**
+ * Reset input state across all backends, for teardown where no element is in
+ * scope. googleDocsBackend is a module singleton that outlives detector
+ * instances, so its shadow buffer must be cleared explicitly on detach;
+ * otherwise a re-initialized detector would inherit a stale buffer.
+ */
+export function resetAllBackends(): void {
+  domBackend.reset()
+  googleDocsBackend.reset()
 }

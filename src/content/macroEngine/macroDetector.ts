@@ -1,6 +1,6 @@
 import { useMacroStore } from "../../store/useMacroStore"
 import { updateStateOnKey, isExact, getExact } from "./detector-core"
-import { getActiveEditable, getSelection, getCursorCoordinates, isGoogleDocsSentinel } from "./replacement/editableUtils"
+import { getActiveEditable, getSelection, getCursorCoordinates } from "./replacement/editableUtils"
 import { replaceText } from './replacement/macroReplacement'
 import { Macro, CoreState, EditableEl } from "../../types"
 import { isPrintableKey, UNSUPPORTED_KEYS } from "./keyUtils"
@@ -11,8 +11,7 @@ import { createMacroReplacement } from "./replacement/macroReplacement"
 import { PlaceholderSession } from "./placeholderSession"
 import { hasPlaceholders } from "./replacement/placeholders"
 import { isGoogleDocs, attachToGoogleDocsIframe, isIntentionalFocusMove } from "./googledocs/googleDocsAdapter"
-import { createShadowBuffer } from "./googledocs/shadowBuffer"
-import { getBackend } from "./backend/editableBackend"
+import { getBackend, resetAllBackends } from "./backend/editableBackend"
 
 const COMMIT_KEYS = new Set([" ", "Enter"])
 const CONFIRM_DELAY_MS = 1850
@@ -32,7 +31,6 @@ export function createMacroDetector(actions: DetectorActions) {
   let selectionOnSchedule: { start: number; end: number } | null = null
   let listenersAttached = false
   let gdCleanup: (() => void) | null = null
-  const shadow = createShadowBuffer()
   let config = {
     useCommitKeys: false,
     prefixes: defaultMacroConfig.prefixes,
@@ -88,7 +86,7 @@ export function createMacroDetector(actions: DetectorActions) {
 
     const { start: commandStart, end: endPos, undoStart, undoEnd } = range
 
-    if (isGoogleDocsSentinel(activeEl)) shadow.reset()
+    getBackend(activeEl).reset()
 
     // Handle system macros (without undo tracking)
     if (isSystemMacro(macro)) {
@@ -136,7 +134,7 @@ export function createMacroDetector(actions: DetectorActions) {
   ): void {
     if (!activeEl) return
 
-    if (isGoogleDocsSentinel(activeEl)) shadow.reset()
+    getBackend(activeEl).reset()
 
     const currentSel = sel || getSelection(activeEl)
     if (!currentSel) { cancelDetection(); return }
@@ -377,12 +375,11 @@ export function createMacroDetector(actions: DetectorActions) {
 
       let currentState = state
       if (!state.active && !state.buffer) {
-        // Google Docs: use shadow buffer because the sentinel element has no readable text.
-        // Regular elements: read directly from the DOM as before.
-        const textToSearch = isGoogleDocsSentinel(activeEl)
-          ? shadow.read()
-          : (activeEl && 'value' in activeEl ? activeEl.value : activeEl?.textContent || '')
-        const cursorPos = isGoogleDocsSentinel(activeEl) ? shadow.length : sel.start
+        // Backend supplies the reconstruction source: DOM reads the live element,
+        // Google Docs reads its shadow buffer (the sentinel has no readable text).
+        // Read happens BEFORE handleKey below, so it reflects the pre-keystroke state.
+        const { text: textToSearch, cursorPos } =
+          getBackend(activeEl).reconstructionSource(activeEl, sel)
 
         let reconstructedBuffer = ''
         for (let i = cursorPos - 1; i >= 0; i--) {
@@ -403,9 +400,7 @@ export function createMacroDetector(actions: DetectorActions) {
         state = { active: true, buffer: state.buffer }
       }
 
-      if (isGoogleDocsSentinel(activeEl)) {
-        shadow.backspace()
-      }
+      getBackend(activeEl).handleKey(e)
 
       if (state.active) {
         actions.onDetectionUpdated(state.buffer)
@@ -415,10 +410,11 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    // Google Docs: Enter is a word boundary. Reset shadow buffer so that reconstruction
-    // on a later backspace doesn't reach back across line breaks.
-    if (isGoogleDocsSentinel(activeEl) && e.key === 'Enter') {
-      shadow.reset()
+    // Word-boundary keys (Enter here; space/tab/backspace handled in their own
+    // branches) update backend input state. Fires before the parametric-commit
+    // return below, matching the original reset-before-return ordering.
+    if (e.key === 'Enter') {
+      getBackend(activeEl).handleKey(e)
     }
 
     // Auto mode: Enter commits parametric system commands.
@@ -456,10 +452,11 @@ export function createMacroDetector(actions: DetectorActions) {
       if (!config.useCommitKeys) {
         if (state.active) {
           const committedImmediately = scheduleConfirmIfExact(sel)
-          if (committedImmediately && !isGoogleDocsSentinel(activeEl)) {
+          if (committedImmediately && !getBackend(activeEl).defersTriggerChar()) {
             // In immediate mode, prevent the character from being added to avoid duplication.
-            // Skip for Google Docs: replaceInGoogleDocs defers to setTimeout(0) and
-            // needs the trigger char to have been inserted before it deletes the full buffer.
+            // Skip when the backend defers the trigger char: Google Docs' replacement
+            // runs in setTimeout(0) and needs the trigger char already inserted so the
+            // deferred deletion covers the full buffer.
             e.preventDefault()
           }
           
@@ -492,15 +489,16 @@ export function createMacroDetector(actions: DetectorActions) {
         }
       }
 
-      if (isGoogleDocsSentinel(activeEl)) {
-        shadow.handlePrintable(e.key)
-      }
+      // Backend updates input state for this printable key. Stays LAST in the
+      // branch (post-detection-logic) so reconstruction reads see the pre-key
+      // state — the read/write ordering preserved across the refactor.
+      getBackend(activeEl).handleKey(e)
       return
     }
 
     // Other keys cancel detection
     if (UNSUPPORTED_KEYS.includes(e.key)) {
-      if (isGoogleDocsSentinel(activeEl)) shadow.reset()
+      getBackend(activeEl).reset()
       cancelDetection()
     }
   }
@@ -519,7 +517,7 @@ export function createMacroDetector(actions: DetectorActions) {
     // Blur was caused by our own intentional focus move (stealing focus for the
     // overlay, or restoring it back) — don't cancel detection.
     if (isIntentionalFocusMove()) return
-    shadow.reset()
+    getBackend(activeEl).reset()
     blurTimer = window.setTimeout(() => {
       cancelDetection()
     }, 100)
@@ -554,7 +552,7 @@ export function createMacroDetector(actions: DetectorActions) {
     clearBlurTimer()
     placeholderSession?.exit()
     placeholderSession = null
-    shadow.reset()
+    resetAllBackends()
     cancelDetection()
     replacement.clearUndoHistory()
   }
@@ -588,9 +586,7 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    if (isGoogleDocsSentinel(targetEl)) {
-      shadow.reset()
-    }
+    getBackend(targetEl).reset()
 
     const textContent = replacement.getTextContent(targetEl)
     const cursorPos = replacement.getCursorPosition(targetEl)
@@ -622,9 +618,7 @@ export function createMacroDetector(actions: DetectorActions) {
     }
 
     const backend = getBackend(element)
-    if (isGoogleDocsSentinel(element)) {
-      shadow.reset()
-    }
+    backend.reset()
     backend.focusForInsertion(element)
 
     // Backend selects insert text: GDocs strips placeholders, DOM uses raw text.
