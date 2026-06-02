@@ -8,11 +8,11 @@ import { defaultMacroConfig } from "../../config/defaults"
 import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro, parseParametricBuffer, handleParametricSystemCommand } from "../systemMacros/systemMacros"
 import { DetectorActions } from "../actions/detectorActions"
 import { createMacroReplacement } from "./replacement/macroReplacement"
-import { createPlaceholderSession, PlaceholderSession } from "./placeholderSession"
-import { hasPlaceholders, stripPlaceholders } from "./replacement/placeholders"
-import { createGoogleDocsPlaceholderSession } from "./googledocs/googleDocsPlaceholderSession"
-import { isGoogleDocs, attachToGoogleDocsIframe, focusGoogleDocsEditor, isIntentionalFocusMove } from "./googledocs/googleDocsAdapter"
+import { PlaceholderSession } from "./placeholderSession"
+import { hasPlaceholders } from "./replacement/placeholders"
+import { isGoogleDocs, attachToGoogleDocsIframe, isIntentionalFocusMove } from "./googledocs/googleDocsAdapter"
 import { createShadowBuffer } from "./googledocs/shadowBuffer"
+import { getBackend } from "./backend/editableBackend"
 
 const COMMIT_KEYS = new Set([" ", "Enter"])
 const CONFIRM_DELAY_MS = 1850
@@ -142,10 +142,8 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    // GDocs inserts stripped placeholder text; DOM inserts raw text. Resolves in step 3.
-    const replacementText = (isGoogleDocsSentinel(activeEl) && hasPlaceholders(macro.text))
-      ? stripPlaceholders(macro.text)
-      : macro.text
+    // Backend selects insert text: GDocs strips placeholders, DOM uses raw text.
+    const replacementText = getBackend(activeEl).replacementTextFor(macro)
 
     // Regular macro replacement with undo tracking
     // Use adjusted range for replacement, but original range for undo tracking
@@ -248,17 +246,21 @@ export function createMacroDetector(actions: DetectorActions) {
 
   function startPlaceholderSession(el: EditableEl, text: string): void {
     if (!hasPlaceholders(text)) return
-    if (isGoogleDocsSentinel(el)) {
-      placeholderSession = createGoogleDocsPlaceholderSession(text, () => { placeholderSession = null })
-    } else {
-      placeholderSession = createPlaceholderSession(el, () => { placeholderSession = null })
-    }
+    placeholderSession = getBackend(el).createPlaceholderSession(
+      el,
+      text,
+      () => { placeholderSession = null }
+    )
   }
 
   function onKeyDown(e: KeyboardEvent) {
     // Synthetic events dispatched by our own replaceInGoogleDocs (e.g. Backspace
     // events for deletion) must not re-enter detection. Real user input is always
-    // trusted; our synthetic dispatches never are.
+    // trusted; our synthetic dispatches never are. Stays inline (not backend-
+    // dispatched) because activeEl is not resolved at this point — there is no
+    // element to call getBackend(el) on yet. The page-level isGoogleDocs() check
+    // is the correct guard here; googleDocsBackend.shouldIgnoreEvent encodes the
+    // identical rule for the element-resolved call sites.
     if (!e.isTrusted && isGoogleDocs()) return
 
     // The suggestions overlay has stolen focus to the guard element — it owns the
@@ -646,10 +648,8 @@ export function createMacroDetector(actions: DetectorActions) {
       endPos = triggerIndex + buffer.length
     }
 
-    // GDocs inserts stripped placeholder text; DOM inserts raw text. Resolves in step 3.
-    const replacementText = (isGoogleDocsSentinel(targetEl) && hasPlaceholders(macro.text))
-      ? stripPlaceholders(macro.text)
-      : macro.text
+    // Backend selects insert text: GDocs strips placeholders, DOM uses raw text.
+    const replacementText = getBackend(targetEl).replacementTextFor(macro)
 
     replacement.performReplacement(targetEl, triggerIndex, endPos, replacementText, macro)
 
@@ -666,17 +666,14 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
+    const backend = getBackend(element)
     if (isGoogleDocsSentinel(element)) {
       shadow.reset()
-      focusGoogleDocsEditor()
-    } else {
-      element.focus()
     }
+    backend.focusForInsertion(element)
 
-    // GDocs inserts stripped placeholder text; DOM inserts raw text. Resolves in step 3.
-    const replacementText = (isGoogleDocsSentinel(element) && hasPlaceholders(macro.text))
-      ? stripPlaceholders(macro.text)
-      : macro.text
+    // Backend selects insert text: GDocs strips placeholders, DOM uses raw text.
+    const replacementText = backend.replacementTextFor(macro)
 
     const cursorPos = replacement.getCursorPosition(element)
 
