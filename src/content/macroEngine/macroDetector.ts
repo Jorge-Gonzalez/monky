@@ -12,6 +12,7 @@ import { PlaceholderSession } from "./placeholderSession"
 import { hasPlaceholders } from "./replacement/placeholders"
 import { isGoogleDocs, attachToGoogleDocsIframe, isIntentionalFocusMove } from "./googledocs/googleDocsAdapter"
 import { getBackend, resetAllBackends } from "./backend/editableBackend"
+import type { ReplacementRange } from "./backend/editableBackend"
 
 const COMMIT_KEYS = new Set([" ", "Enter"])
 const CONFIRM_DELAY_MS = 1850
@@ -84,7 +85,9 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    const { start: commandStart, end: endPos, undoStart, undoEnd } = range
+    // commandStart/endPos used by the system-macro delete below; the regular
+    // path passes the full range (incl. undo fields) to finishCommit.
+    const { start: commandStart, end: endPos } = range
 
     getBackend(activeEl).reset()
 
@@ -103,15 +106,8 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    // Backend selects insert text: GDocs strips placeholders, DOM uses raw text.
-    const replacementText = getBackend(activeEl).replacementTextFor(macro)
-
-    // Regular macro replacement with undo tracking
-    // Use adjusted range for replacement, but original range for undo tracking
-    replacement.performReplacement(activeEl, commandStart, endPos, replacementText, macro, undoStart, undoEnd)
-    actions.onMacroCommitted(String(macro.id))
-    cancelDetection()
-    if (macro.contentType !== 'text/html') startPlaceholderSession(activeEl, macro.text)
+    // Regular macro: insert backend-selected text, commit, start placeholder session.
+    finishCommit(activeEl, range, macro)
   }
 
   // Returns true when the buffer is a valid parametric system command or continuation.
@@ -212,6 +208,28 @@ export function createMacroDetector(actions: DetectorActions) {
       text,
       () => { placeholderSession = null }
     )
+  }
+
+  /**
+   * Shared tail for the two "replace a typed trigger with macro text" commits:
+   * commitReplace's regular-macro path and handleMacroSelectedFromOverlay. Both
+   * insert the backend-selected text over `range`, commit, cancel detection, and
+   * start a placeholder session for non-HTML macros. The range's undoStart/undoEnd
+   * (present for commitReplace, absent for the overlay) flow through to
+   * performReplacement's undo tracking.
+   *
+   * NOT used by commitParametricSystem (different op: replaceText + system action,
+   * no undo) or handleMacroSelectedFromSearchOverlay (insert-at-cursor, no
+   * cancelDetection — nothing was detecting).
+   */
+  function finishCommit(el: EditableEl, range: ReplacementRange, macro: Macro): void {
+    const replacementText = getBackend(el).replacementTextFor(macro)
+    replacement.performReplacement(
+      el, range.start, range.end, replacementText, macro, range.undoStart, range.undoEnd
+    )
+    actions.onMacroCommitted(String(macro.id))
+    cancelDetection()
+    if (macro.contentType !== 'text/html') startPlaceholderSession(el, macro.text)
   }
 
   function onKeyDown(e: KeyboardEvent) {
@@ -597,16 +615,8 @@ export function createMacroDetector(actions: DetectorActions) {
 
     const range = getBackend(targetEl).overlayRange(targetEl, buffer, textContent, cursorPos)
     if (!range) return
-    const { start: triggerIndex, end: endPos } = range
 
-    // Backend selects insert text: GDocs strips placeholders, DOM uses raw text.
-    const replacementText = getBackend(targetEl).replacementTextFor(macro)
-
-    replacement.performReplacement(targetEl, triggerIndex, endPos, replacementText, macro)
-
-    actions.onMacroCommitted(String(macro.id))
-    cancelDetection()
-    if (macro.contentType !== 'text/html') startPlaceholderSession(targetEl, macro.text)
+    finishCommit(targetEl, range, macro)
   }
 
   /**
