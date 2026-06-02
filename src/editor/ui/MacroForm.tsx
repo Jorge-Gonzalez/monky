@@ -16,6 +16,7 @@ export default function MacroForm({ editing, onDone, coordinator }: {
   const [isSensitive, setSensitive] = useState(!!editing?.is_sensitive)
   const [error, setError] = useState<string | null>(null)
 
+  const commandInputRef = useRef<HTMLInputElement>(null)
   const contentEditorRef = useRef<ContentEditorRef>(null)
 
   useEffect(() => {
@@ -34,6 +35,10 @@ export default function MacroForm({ editing, onDone, coordinator }: {
   useEffect(() => {
     if (error) setError(null)
   }, [command, text])
+
+  useEffect(() => {
+    commandInputRef.current?.focus()
+  }, [editing?.id])
 
   const isCommandValid = command.trim() !== '' && prefixes.some(prefix => command.startsWith(prefix))
   const isTextValid = text.trim() !== ''
@@ -156,6 +161,7 @@ export default function MacroForm({ editing, onDone, coordinator }: {
         </label>
         <input
           id="macro-command"
+          ref={commandInputRef}
           className={`input ${command && !isCommandValid ? 'input-error' : ''}`}
           value={command}
           onChange={e => setCommand(e.currentTarget.value)}

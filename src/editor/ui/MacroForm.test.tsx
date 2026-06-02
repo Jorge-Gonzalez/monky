@@ -108,6 +108,14 @@ describe('MacroForm Component', () => {
     expect(screen.getByLabelText('macroForm.triggerLabel')).toBeInTheDocument()
   })
 
+  it('focuses the command input when the form opens', async () => {
+    render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('macroForm.triggerLabel')).toHaveFocus()
+    })
+  })
+
   it('renders form fields correctly', () => {
     render(<MacroForm editing={null} onDone={mockOnDone} coordinator={defaultMockCoordinator} />)
 
@@ -166,6 +174,26 @@ describe('MacroForm Component', () => {
     expect(screen.getByRole('button', { name: 'macroForm.cancelButton' })).toBeInTheDocument()
     expect(screen.getByDisplayValue('/old')).toBeInTheDocument()
     expect(screen.getByRole('checkbox')).toBeChecked()
+  })
+
+  it('re-focuses the command input when switching to a different macro', async () => {
+    const firstMacro = { id: 1, command: '/old', text: 'Old text' }
+    const secondMacro = { id: 2, command: '/new', text: 'New text' }
+    const { rerender } = render(
+      <MacroForm editing={firstMacro} onDone={mockOnDone} coordinator={createMockCoordinator()} />
+    )
+
+    const commandInput = screen.getByLabelText('macroForm.triggerLabel')
+    commandInput.blur()
+    expect(commandInput).not.toHaveFocus()
+
+    rerender(
+      <MacroForm editing={secondMacro} onDone={mockOnDone} coordinator={createMockCoordinator()} />
+    )
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('/new')).toHaveFocus()
+    })
   })
 
   it('calls updateMacro on submit when editing', async () => {
