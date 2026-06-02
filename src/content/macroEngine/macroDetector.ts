@@ -12,6 +12,7 @@ import { createPlaceholderSession, PlaceholderSession } from "./placeholderSessi
 import { hasPlaceholders, stripPlaceholders } from "./replacement/placeholders"
 import { createGoogleDocsPlaceholderSession } from "./googledocs/googleDocsPlaceholderSession"
 import { isGoogleDocs, attachToGoogleDocsIframe, focusGoogleDocsEditor, isIntentionalFocusMove } from "./googledocs/googleDocsAdapter"
+import { createShadowBuffer } from "./googledocs/shadowBuffer"
 
 const COMMIT_KEYS = new Set([" ", "Enter"])
 const CONFIRM_DELAY_MS = 1850
@@ -31,10 +32,7 @@ export function createMacroDetector(actions: DetectorActions) {
   let selectionOnSchedule: { start: number; end: number } | null = null
   let listenersAttached = false
   let gdCleanup: (() => void) | null = null
-  // Tracks characters typed in Google Docs since the last word boundary.
-  // Used for buffer reconstruction on backspace, since the sentinel element
-  // has no readable text content (unlike real input/contenteditable elements).
-  let gdShadowBuffer: string = ''
+  const shadow = createShadowBuffer()
   let config = {
     useCommitKeys: false,
     prefixes: defaultMacroConfig.prefixes,
@@ -127,7 +125,7 @@ export function createMacroDetector(actions: DetectorActions) {
       return
     }
 
-    if (isGoogleDocsSentinel(activeEl)) gdShadowBuffer = ''
+    if (isGoogleDocsSentinel(activeEl)) shadow.reset()
 
     // Handle system macros (without undo tracking)
     if (isSystemMacro(macro)) {
@@ -177,7 +175,7 @@ export function createMacroDetector(actions: DetectorActions) {
   ): void {
     if (!activeEl) return
 
-    if (isGoogleDocsSentinel(activeEl)) gdShadowBuffer = ''
+    if (isGoogleDocsSentinel(activeEl)) shadow.reset()
 
     const currentSel = sel || getSelection(activeEl)
     if (!currentSel) { cancelDetection(); return }
@@ -417,9 +415,9 @@ export function createMacroDetector(actions: DetectorActions) {
         // Google Docs: use shadow buffer because the sentinel element has no readable text.
         // Regular elements: read directly from the DOM as before.
         const textToSearch = isGoogleDocsSentinel(activeEl)
-          ? gdShadowBuffer
+          ? shadow.read()
           : (activeEl && 'value' in activeEl ? activeEl.value : activeEl?.textContent || '')
-        const cursorPos = isGoogleDocsSentinel(activeEl) ? gdShadowBuffer.length : sel.start
+        const cursorPos = isGoogleDocsSentinel(activeEl) ? shadow.length : sel.start
 
         let reconstructedBuffer = ''
         for (let i = cursorPos - 1; i >= 0; i--) {
@@ -441,7 +439,7 @@ export function createMacroDetector(actions: DetectorActions) {
       }
 
       if (isGoogleDocsSentinel(activeEl)) {
-        gdShadowBuffer = gdShadowBuffer.slice(0, -1)
+        shadow.backspace()
       }
 
       if (state.active) {
@@ -455,7 +453,7 @@ export function createMacroDetector(actions: DetectorActions) {
     // Google Docs: Enter is a word boundary. Reset shadow buffer so that reconstruction
     // on a later backspace doesn't reach back across line breaks.
     if (isGoogleDocsSentinel(activeEl) && e.key === 'Enter') {
-      gdShadowBuffer = ''
+      shadow.reset()
     }
 
     // Auto mode: Enter commits parametric system commands.
@@ -529,21 +527,15 @@ export function createMacroDetector(actions: DetectorActions) {
         }
       }
 
-      // Google Docs: maintain shadow buffer so backspace can reconstruct the typed word.
-      // Space/tab reset it (word boundary); all other printable chars are appended.
       if (isGoogleDocsSentinel(activeEl)) {
-        if (e.key === ' ' || e.key === '\t') {
-          gdShadowBuffer = ''
-        } else {
-          gdShadowBuffer += e.key
-        }
+        shadow.handlePrintable(e.key)
       }
       return
     }
 
     // Other keys cancel detection
     if (UNSUPPORTED_KEYS.includes(e.key)) {
-      if (isGoogleDocsSentinel(activeEl)) gdShadowBuffer = ''
+      if (isGoogleDocsSentinel(activeEl)) shadow.reset()
       cancelDetection()
     }
   }
@@ -562,7 +554,7 @@ export function createMacroDetector(actions: DetectorActions) {
     // Blur was caused by our own intentional focus move (stealing focus for the
     // overlay, or restoring it back) — don't cancel detection.
     if (isIntentionalFocusMove()) return
-    gdShadowBuffer = ''
+    shadow.reset()
     blurTimer = window.setTimeout(() => {
       cancelDetection()
     }, 100)
@@ -597,7 +589,7 @@ export function createMacroDetector(actions: DetectorActions) {
     clearBlurTimer()
     placeholderSession?.exit()
     placeholderSession = null
-    gdShadowBuffer = ''
+    shadow.reset()
     cancelDetection()
     replacement.clearUndoHistory()
   }
@@ -632,7 +624,7 @@ export function createMacroDetector(actions: DetectorActions) {
     }
 
     if (isGoogleDocsSentinel(targetEl)) {
-      gdShadowBuffer = ''
+      shadow.reset()
     }
 
     const textContent = replacement.getTextContent(targetEl)
@@ -675,7 +667,7 @@ export function createMacroDetector(actions: DetectorActions) {
     }
 
     if (isGoogleDocsSentinel(element)) {
-      gdShadowBuffer = ''
+      shadow.reset()
       focusGoogleDocsEditor()
     } else {
       element.focus()
