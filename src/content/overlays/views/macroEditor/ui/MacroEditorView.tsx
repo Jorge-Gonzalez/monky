@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Macro } from '../../../../../types';
 import { t } from '../../../../../lib/i18n';
 import { MacroEditorViewProps } from '../../../modal/types';
 import { useEditorCoordinator } from '../../../../../editor/hooks/useEditorCoordinator';
-import MacroForm from '../../../../../editor/ui/MacroForm';
+import { ModalMacroForm } from './ModalMacroForm';
 
 export function MacroEditorView({ containerRef, initialMacro, onViewChange }: MacroEditorViewProps) {
   const coordinator = useEditorCoordinator();
@@ -26,6 +27,10 @@ export function MacroEditorView({ containerRef, initialMacro, onViewChange }: Ma
     onViewChange('search');
   };
 
+  const handleLoadMacro = (macro: Macro) => {
+    coordinator.setEditingMacro(macro);
+  };
+
   const title = state.editingMacro
     ? t('macroEditor.title.edit', { command: state.editingMacro.command })
     : t('macroEditor.title.new');
@@ -34,9 +39,10 @@ export function MacroEditorView({ containerRef, initialMacro, onViewChange }: Ma
     <div className="macro-editor-view">
       <div className="editor-container">
         <h1 className="view-title">{title}</h1>
-        <MacroForm
+        <ModalMacroForm
           editing={state.editingMacro}
           onDone={handleDone}
+          onLoadMacro={handleLoadMacro}
           coordinator={coordinator}
         />
       </div>

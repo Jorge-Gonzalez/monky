@@ -86,6 +86,7 @@ const translations = {
         new: 'New Macro',
         edit: 'Edit: {{command}}',
       },
+      commandSuggestionsLabel: 'Existing macros',
     },
 
     // Popup
@@ -220,6 +221,7 @@ const translations = {
         new: 'Nuevo macro',
         edit: 'Editar: {{command}}',
       },
+      commandSuggestionsLabel: 'Macros existentes',
     },
 
     // Popup
