@@ -1,14 +1,6 @@
 import { useEffect } from 'react';
-import { ModalView } from '../types';
 
-const VIEWS: ModalView[] = ['search', 'editor', 'settings'];
-
-export function useModalKeyboard(
-  isActive: boolean,
-  onClose: () => void,
-  currentView: ModalView,
-  onViewChange: (view: ModalView) => void
-): void {
+export function useModalKeyboard(isActive: boolean, onClose: () => void): void {
   useEffect(() => {
     if (!isActive) return;
 
@@ -17,22 +9,6 @@ export function useModalKeyboard(
         event.preventDefault();
         event.stopPropagation();
         onClose();
-        return;
-      }
-
-      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-        const target = event.target as HTMLElement;
-        const isEditing =
-          target.tagName === 'INPUT' ||
-          target.tagName === 'TEXTAREA' ||
-          target.isContentEditable;
-        if (isEditing) return;
-
-        event.preventDefault();
-        event.stopPropagation();
-        const current = VIEWS.indexOf(currentView);
-        const delta = event.key === 'ArrowRight' ? 1 : -1;
-        onViewChange(VIEWS[(current + delta + VIEWS.length) % VIEWS.length]);
       }
     };
 
@@ -40,5 +16,5 @@ export function useModalKeyboard(
     return () => {
       document.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, [isActive, onClose, currentView, onViewChange]);
+  }, [isActive, onClose]);
 }
