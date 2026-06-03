@@ -9,6 +9,18 @@ const themes: Record<ColorTheme, { light: Record<string, string>; dark: Record<s
   mar:   { light: marLight,   dark: marDark   },
 }
 
+const statusAliases = {
+  '--status-error':        'var(--charged)',
+  '--status-warning':      'var(--active)',
+  '--status-success':      'var(--calm)',
+  '--status-info':         'var(--still)',
+  '--status-error-wash':   'var(--charged-wash)',
+  '--status-warning-wash': 'var(--active-wash)',
+  '--status-success-wash': 'var(--calm-wash)',
+  '--status-info-wash':    'var(--still-wash)',
+} as const
+
 export function getColorThemeColors(colorTheme: ColorTheme, isDark: boolean): Record<string, string> {
-  return isDark ? themes[colorTheme].dark : themes[colorTheme].light
+  const base = isDark ? themes[colorTheme].dark : themes[colorTheme].light
+  return { ...base, ...statusAliases }
 }
