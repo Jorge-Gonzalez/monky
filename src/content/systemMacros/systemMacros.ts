@@ -62,8 +62,8 @@ export function handleSystemMacro(macro: Macro): boolean {
       return true
 
     case 'system-new-macro':
-      modalCoordinator.show('editor')
       modalCoordinator.navigateToEditor(undefined)
+      modalCoordinator.show('editor')
       return true
 
     case 'system-settings':

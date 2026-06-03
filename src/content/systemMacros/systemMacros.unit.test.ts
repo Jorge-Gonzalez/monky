@@ -180,6 +180,12 @@ describe('handleSystemMacro', () => {
     expect(handleSystemMacro(notaMacro)).toBe(false)
     expect(modalCoordinator.show).not.toHaveBeenCalled()
   })
+  it('navigates before showing for :new (so the editor mounts once, preserving focus)', () => {
+    handleSystemMacro(SYSTEM_MACROS.find(m => m.command === ':new')!)
+    const navOrder = (modalCoordinator.navigateToEditor as any).mock.invocationCallOrder[0]
+    const showOrder = (modalCoordinator.show as any).mock.invocationCallOrder[0]
+    expect(navOrder).toBeLessThan(showOrder)
+  })
 })
 
 // ─── handleParametricSystemCommand ───────────────────────────────────────────
@@ -200,6 +206,13 @@ describe('handleParametricSystemCommand — :edit', () => {
   it('returns true regardless of whether a target was found', () => {
     expect(handleParametricSystemCommand('system-edit-macro', '/nota')).toBe(true)
     expect(handleParametricSystemCommand('system-edit-macro', '/unknown')).toBe(true)
+  })
+
+  it('navigates before showing for :edit (mounts once, preserving focus)', () => {
+    handleParametricSystemCommand('system-edit-macro', '/nota')
+    const navOrder = (modalCoordinator.navigateToEditor as any).mock.invocationCallOrder[0]
+    const showOrder = (modalCoordinator.show as any).mock.invocationCallOrder[0]
+    expect(navOrder).toBeLessThan(showOrder)
   })
 })
 
