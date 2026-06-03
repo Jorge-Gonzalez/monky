@@ -561,12 +561,12 @@
 }
 
 .input-error {
-  border-color: #dc2626;
+  border-color: var(--status-error);
 }
 
 .input-error:focus {
-  border-color: #dc2626;
-  box-shadow: 0 0 0 2px rgb(220 38 38 / 20%);
+  border-color: var(--status-error);
+  box-shadow: 0 0 0 2px var(--status-error-wash);
 }
 
 .radio {
@@ -973,21 +973,21 @@
 }
 
 .btn-success {
-  background-color: #16a34a;
-  color: white;
+  background-color: var(--status-success);
+  color: var(--ink-alt);
 }
 
 .btn-success:hover {
-  background-color: #15803d;
+  background-color: color-mix(in oklch, var(--status-success) 82%, black);
 }
 
 .btn-danger {
-  background-color: #dc2626;
-  color: white;
+  background-color: var(--status-error);
+  color: var(--ink-alt);
 }
 
 .btn-danger:hover {
-  background-color: #b91c1c;
+  background-color: color-mix(in oklch, var(--status-error) 82%, black);
 }
 
 .btn-link {
@@ -1008,7 +1008,7 @@
 .btn-link-danger {
   background: none;
   border: none;
-  color: #dc2626;
+  color: var(--status-error);
   text-decoration: none;
   font-size: var(--text-sm);
   padding: 0;
@@ -1084,37 +1084,37 @@
 }
 
 .alert-error {
-  background-color: rgb(220 38 38 / 10%);
-  border-color: #dc2626;
-  color: #dc2626;
+  background-color: var(--status-error-wash);
+  border-color: var(--status-error);
+  color: var(--status-error);
 }
 
 .alert-warning {
-  background-color: rgb(245 158 11 / 10%);
-  border-color: #f59e0b;
-  color: #d97706;
+  background-color: var(--status-warning-wash);
+  border-color: var(--status-warning);
+  color: var(--status-warning);
 }
 
 .alert-info {
-  background-color: rgb(59 130 246 / 10%);
-  border-color: #3b82f6;
-  color: #2563eb;
+  background-color: var(--status-info-wash);
+  border-color: var(--status-info);
+  color: var(--status-info);
 }
 
 .alert-success {
-  background-color: rgb(22 163 74 / 10%);
-  border-color: #16a34a;
-  color: #15803d;
+  background-color: var(--status-success-wash);
+  border-color: var(--status-success);
+  color: var(--status-success);
 }
 
 .validation-error {
-  color: #dc2626;
+  color: var(--status-error);
   font-size: var(--text-xs);
   margin-top: var(--spacing-xs);
 }
 
 .validation-success {
-  color: #16a34a;
+  color: var(--status-success);
   font-size: var(--text-xs);
   margin-top: var(--spacing-xs);
 }
