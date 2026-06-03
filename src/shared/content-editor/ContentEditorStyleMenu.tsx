@@ -26,10 +26,14 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
   useEffect(() => {
     if (!open) return
     const close = (e: MouseEvent) => {
-      if (!wrapperRef.current?.contains(e.target as Node)) setOpen(false)
+      if (wrapperRef.current && !e.composedPath().includes(wrapperRef.current)) {
+        setOpen(false)
+      }
     }
-    document.addEventListener('mousedown', close)
-    return () => document.removeEventListener('mousedown', close)
+    // Use capture phase so the modal-dialog's bubble-phase stopPropagation
+    // doesn't block this listener from ever firing.
+    document.addEventListener('mousedown', close, true)
+    return () => document.removeEventListener('mousedown', close, true)
   }, [open])
 
   const handleSelect = (type: BlockType) => {
