@@ -12,9 +12,9 @@ export function useModalKeyboard(isActive: boolean, onClose: () => void): void {
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown, true);
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.removeEventListener('keydown', handleKeyDown, true);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isActive, onClose]);
 }

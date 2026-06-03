@@ -516,6 +516,27 @@ describe('ContentEditorStyleMenu', () => {
     expect(screen.queryByRole('listbox')).toBeInTheDocument()
   })
 
+  it('closes on Escape and stops propagation so the modal does not also close', () => {
+    render(<ContentEditorStyleMenu blockType="paragraph" editorRef={editorRef} />)
+
+    fireEvent.mouseDown(screen.getByRole('button', { name: 'Text style' }))
+    expect(screen.getByRole('listbox')).toBeInTheDocument()
+
+    // Register a bubble-phase listener on document — this is where useModalKeyboard
+    // lives. It must NOT fire when Escape closes the dropdown.
+    const modalHandler = vi.fn()
+    document.addEventListener('keydown', modalHandler)
+
+    // The capture-phase listener intercepts Escape at document level before
+    // anything else (including the bubble-phase modal handler) fires.
+    fireEvent.keyDown(document, { key: 'Escape' })
+
+    expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
+    expect(modalHandler).not.toHaveBeenCalled()
+
+    document.removeEventListener('keydown', modalHandler)
+  })
+
   // Note: the shadow DOM case (e.target retargeted to shadow host) is not
   // testable in jsdom because composed events don't propagate from shadow DOM
   // to the outer document in jsdom. The fix — using e.composedPath() instead

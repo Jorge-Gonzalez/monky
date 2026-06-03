@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef, RefObject } from 'react'
+import { useState, useRef, RefObject } from 'react'
 import { BlockType } from './types'
 import { setBlockType } from './editorCommands'
 import { icons } from './icons'
+import { useOverlayDismiss } from './useOverlayDismiss'
 
 type StyleOption = { type: BlockType; label: string; shortLabel: string }
 
@@ -23,18 +24,7 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
   const [open, setOpen] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (!open) return
-    const close = (e: MouseEvent) => {
-      if (wrapperRef.current && !e.composedPath().includes(wrapperRef.current)) {
-        setOpen(false)
-      }
-    }
-    // Use capture phase so the modal-dialog's bubble-phase stopPropagation
-    // doesn't block this listener from ever firing.
-    document.addEventListener('mousedown', close, true)
-    return () => document.removeEventListener('mousedown', close, true)
-  }, [open])
+  useOverlayDismiss(wrapperRef, open, () => setOpen(false))
 
   const handleSelect = (type: BlockType) => {
     editorRef.current?.focus()
