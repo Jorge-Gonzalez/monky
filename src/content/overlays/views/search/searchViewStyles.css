@@ -60,6 +60,7 @@
   display: grid;
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
+  position: relative;
 }
 
 .macro-search-item-command,
@@ -101,6 +102,34 @@
   white-space: normal;
   overflow: visible;
   text-overflow: clip;
+}
+
+.macro-search-item-edit {
+  position: absolute;
+  right: var(--spacing-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.macro-search-item-edit:hover {
+  background-color: var(--tone);
+  color: var(--accent);
+}
+
+.macro-search-item:hover .macro-search-item-edit,
+.macro-search-item.selected .macro-search-item-edit {
+  opacity: 1;
 }
 
 .macro-search-item-text mark {

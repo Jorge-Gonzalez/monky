@@ -60,6 +60,7 @@ const translations = {
       noMatchingCommands: 'No matching commands',
       noMacrosFound: 'No macros found',
       startTypingHint: 'Start typing to search macros...',
+      editMacro: 'Edit macro',
       footer: {
         macro: '{{count}} macro',
         macros: '{{count}} macros',
@@ -69,6 +70,7 @@ const translations = {
         navigate: 'navigate',
         run: 'run',
         select: 'select',
+        edit: 'edit',
         close: 'close',
       },
     },
@@ -195,6 +197,7 @@ const translations = {
       noMatchingCommands: 'No hay comandos coincidentes',
       noMacrosFound: 'No se encontraron macros',
       startTypingHint: 'Empieza a escribir para buscar macros...',
+      editMacro: 'Editar macro',
       footer: {
         macro: '{{count}} macro',
         macros: '{{count}} macros',
@@ -204,6 +207,7 @@ const translations = {
         navigate: 'navegar',
         run: 'ejecutar',
         select: 'seleccionar',
+        edit: 'editar',
         close: 'cerrar',
       },
     },

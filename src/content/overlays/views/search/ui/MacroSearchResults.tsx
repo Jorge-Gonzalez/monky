@@ -3,11 +3,18 @@ import { Macro } from '../../../../../types';
 import { t } from '../../../../../lib/i18n';
 import { hasPlaceholders } from '../../../../macroEngine/replacement/placeholders';
 
+const EditIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24">
+    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m15.5 5.5 2.828 2.83M3 21l.047-.332c.168-1.175.252-1.763.443-2.311.17-.487.401-.95.69-1.378.323-.482.743-.902 1.583-1.741L17.41 3.59a2 2 0 0 1 2.828 2.828L8.377 18.28c-.761.761-1.142 1.142-1.576 1.445-.385.269-.8.492-1.237.664-.492.193-1.02.3-2.076.513L3 21Z"/>
+  </svg>
+);
+
 interface MacroSearchResultsProps {
   macros: Macro[];
   selectedIndex: number;
   searchQuery: string;
   onSelect: (macro: Macro) => void;
+  onEdit?: (macro: Macro) => void;
   resultsRef: React.RefObject<HTMLDivElement>;
 }
 
@@ -16,6 +23,7 @@ export function MacroSearchResults({
   selectedIndex,
   searchQuery,
   onSelect,
+  onEdit,
   resultsRef,
 }: MacroSearchResultsProps) {
   if (macros.length === 0) {
@@ -31,7 +39,13 @@ export function MacroSearchResults({
   return (
     <div ref={resultsRef} className="macro-search-results">
       {macros.map((macro, index) => (
-        <MacroSearchItem key={macro.id} macro={macro} isSelected={index === selectedIndex} onClick={() => onSelect(macro)} />
+        <MacroSearchItem
+          key={macro.id}
+          macro={macro}
+          isSelected={index === selectedIndex}
+          onClick={() => onSelect(macro)}
+          onEdit={onEdit ? () => onEdit(macro) : undefined}
+        />
       ))}
     </div>
   );
@@ -41,9 +55,10 @@ interface MacroSearchItemProps {
   macro: Macro;
   isSelected: boolean;
   onClick: () => void;
+  onEdit?: () => void;
 }
 
-function MacroSearchItem({ macro, isSelected, onClick }: MacroSearchItemProps) {
+function MacroSearchItem({ macro, isSelected, onClick, onEdit }: MacroSearchItemProps) {
   return (
     <div className={`macro-search-item ${isSelected ? 'selected' : ''}`} onClick={onClick}>
       <div className="macro-search-item-command">{macro.command}</div>
@@ -56,6 +71,16 @@ function MacroSearchItem({ macro, isSelected, onClick }: MacroSearchItemProps) {
                 : part
             )}
       </div>
+      {onEdit && (
+        <button
+          className="macro-search-item-edit"
+          onClick={e => { e.stopPropagation(); onEdit(); }}
+          aria-label={t('modalSearch.editMacro')}
+          tabIndex={-1}
+        >
+          <EditIcon />
+        </button>
+      )}
     </div>
   );
 }

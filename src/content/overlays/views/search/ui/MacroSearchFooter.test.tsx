@@ -53,6 +53,27 @@ describe('MacroSearchFooter — keyboard hints', () => {
     expect(container.textContent).toContain('run');
   });
 
+  it('shows "Tab" and "edit" hint in macro mode when hasSelection is true', () => {
+    const { container } = render(<MacroSearchFooter count={2} isCommandMode={false} hasSelection={true} />);
+    expect(screen.getByText('Tab')).toBeTruthy();
+    expect(container.textContent).toContain('edit');
+  });
+
+  it('does not show "Tab" hint when hasSelection is false', () => {
+    render(<MacroSearchFooter count={2} isCommandMode={false} hasSelection={false} />);
+    expect(screen.queryByText('Tab')).toBeNull();
+  });
+
+  it('does not show "Tab" hint when hasSelection is omitted', () => {
+    render(<MacroSearchFooter count={2} isCommandMode={false} />);
+    expect(screen.queryByText('Tab')).toBeNull();
+  });
+
+  it('does not show "Tab" hint in command mode even when hasSelection is true', () => {
+    render(<MacroSearchFooter count={2} isCommandMode={true} hasSelection={true} />);
+    expect(screen.queryByText('Tab')).toBeNull();
+  });
+
   it('shows "close" hint in both modes', () => {
     const { container, unmount } = render(<MacroSearchFooter count={1} isCommandMode={false} />);
     expect(container.textContent).toContain('close');

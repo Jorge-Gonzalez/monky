@@ -3,9 +3,10 @@ import { t } from '../../../../../lib/i18n';
 interface MacroSearchFooterProps {
   count: number;
   isCommandMode: boolean;
+  hasSelection?: boolean;
 }
 
-export function MacroSearchFooter({ count, isCommandMode }: MacroSearchFooterProps) {
+export function MacroSearchFooter({ count, isCommandMode, hasSelection }: MacroSearchFooterProps) {
   const countText = isCommandMode
     ? t(count === 1 ? 'modalSearch.footer.command' : 'modalSearch.footer.commands', { count })
     : t(count === 1 ? 'modalSearch.footer.macro' : 'modalSearch.footer.macros', { count });
@@ -27,6 +28,9 @@ export function MacroSearchFooter({ count, isCommandMode }: MacroSearchFooterPro
             <span className='macro-search-shortcut'><kbd className="macro-search-kbd">:</kbd> {t('modalSearch.footer.commandsLabel')}</span>
             <span className='macro-search-shortcut'><kbd className="macro-search-kbd">↑</kbd><kbd className="macro-search-kbd">↓</kbd> {t('modalSearch.footer.navigate')}</span>
             <span className='macro-search-shortcut'><kbd className="macro-search-kbd">&#8239;↵&#8239;</kbd> {t('modalSearch.footer.select')}</span>
+            {hasSelection && (
+              <span className='macro-search-shortcut'><kbd className="macro-search-kbd">Tab</kbd> {t('modalSearch.footer.edit')}</span>
+            )}
             <span className='macro-search-shortcut'><kbd className="macro-search-kbd">Esc</kbd> {t('modalSearch.footer.close')}</span>
           </>
         )}

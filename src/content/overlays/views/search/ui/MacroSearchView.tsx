@@ -88,6 +88,12 @@ export function MacroSearchView({
     }
   }, [onNavigateToEditor, onViewChange]);
 
+  const handleEdit = useCallback(() => {
+    if (!showMacros) return;
+    const macro = filteredMacros[navigation.selectedIndex];
+    if (macro) onNavigateToEditor(macro);
+  }, [showMacros, filteredMacros, navigation.selectedIndex, onNavigateToEditor]);
+
   const handleSelect = useCallback(() => {
     if (parsed.mode === 'instant') {
       handleCommandSelect(parsed.command);
@@ -114,6 +120,7 @@ export function MacroSearchView({
     onClose,
     onNavigateUp: navigation.navigateUp,
     onNavigateDown: navigation.navigateDown,
+    onEdit: showMacros ? handleEdit : undefined,
   });
 
   // --- Render helpers ---
@@ -157,6 +164,7 @@ export function MacroSearchView({
         onSelect={parsed.mode === 'parametric'
           ? (m) => handleParametricSelect(m, parsed.command)
           : handleMacroSelect}
+        onEdit={parsed.mode === 'search' ? onNavigateToEditor : undefined}
         resultsRef={resultsRef}
       />
     );
@@ -164,6 +172,7 @@ export function MacroSearchView({
 
   const footerCount = showCommands ? visibleCommands.length : filteredMacros.length;
   const isCommandMode = parsed.mode !== 'search';
+  const hasSelection = showMacros && navigation.selectedIndex >= 0;
 
   return (
     <div className="macro-search-view">
@@ -176,6 +185,7 @@ export function MacroSearchView({
       <MacroSearchFooter
         count={footerCount}
         isCommandMode={isCommandMode}
+        hasSelection={hasSelection}
       />
     </div>
   );
