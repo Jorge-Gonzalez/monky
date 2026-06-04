@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/preact'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import ReplacementMode from './ReplacementMode'
 import { OptionsCoordinator } from '../coordinators/optionsCoordinator'
+import { OptionsState } from '../managers/optionsManager'
 
 // Mock the i18n function
 vi.mock('../../lib/i18n', () => ({
@@ -13,7 +14,9 @@ vi.mock('../../lib/i18n', () => ({
 const createMockCoordinator = (): OptionsCoordinator => ({
   setUseCommitKeys: vi.fn(),
   setPrefixes: vi.fn(),
-  getState: vi.fn(() => ({ prefixes: [], useCommitKeys: false })),
+  setLanguage: vi.fn(),
+  setColorTheme: vi.fn(),
+  getState: vi.fn((): OptionsState => ({ prefixes: [], useCommitKeys: false, language: 'en', colorTheme: 'humo' })),
   subscribe: vi.fn(() => () => {}),
   resetToDefaults: vi.fn(),
   attach: vi.fn(),

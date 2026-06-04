@@ -5,6 +5,7 @@ import { t } from '../../lib/i18n'
 import Options from './Options' // Import the actual component
 import { useOptionsCoordinator } from '../hooks/useOptionsCoordinator'
 import { OptionsCoordinator } from '../coordinators/optionsCoordinator'
+import { OptionsState } from '../managers/optionsManager'
 
 // Mock the i18n function
 vi.mock('../../lib/i18n', () => ({
@@ -30,10 +31,12 @@ vi.mock('../hooks/useOptionsCoordinator', () => ({
 const createMockCoordinator = (): OptionsCoordinator => {
   const unsubscribe = vi.fn();
   return {
-    getState: vi.fn(() => ({ prefixes: ['/'], useCommitKeys: false })),
+    getState: vi.fn((): OptionsState => ({ prefixes: ['/'], useCommitKeys: false, language: 'en', colorTheme: 'humo' })),
     subscribe: vi.fn(() => unsubscribe), // Return the mock unsubscribe function
     setPrefixes: vi.fn(),
     setUseCommitKeys: vi.fn(),
+    setLanguage: vi.fn(),
+    setColorTheme: vi.fn(),
     resetToDefaults: vi.fn(),
     attach: vi.fn(),
     detach: vi.fn(),
