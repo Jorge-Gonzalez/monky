@@ -5,17 +5,13 @@ import SiteToggle from './SiteToggle';
 import { useMacroStore } from '../../store/useMacroStore';
 import ThemeSwitcher from './ThemeSwitcher';
 import NewMacroButton from './NewMacroButton';
-import { useThemeColors } from '../../theme/hooks/useThemeColors';
+import { useAppliedTheme } from '../../theme/hooks/useAppliedTheme';
 
 export default function Popup() {
-  // Get all necessary state directly from the store.
-  // This ensures the component re-renders whenever theme or macros change.
-  const theme = useMacroStore(state => state.config.theme);
-  const colorTheme = useMacroStore(state => state.config.colorTheme ?? 'humo');
   const macros = useMacroStore(state => state.macros);
 
   const popupRef = useRef<HTMLDivElement>(null);
-  useThemeColors(popupRef, theme, true, colorTheme);
+  useAppliedTheme(popupRef);
 
   return (
     <div ref={popupRef} className="p-2 popup-container">

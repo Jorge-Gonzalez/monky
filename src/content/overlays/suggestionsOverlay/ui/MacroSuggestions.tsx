@@ -2,8 +2,7 @@ import { useRef, useCallback, useMemo, useEffect, useState, useLayoutEffect } fr
 import fuzzysort from 'fuzzysort';
 import { Macro } from '../../../../types';
 import { t } from '../../../../lib/i18n';
-import { useThemeColors } from '../../../../theme/hooks/useThemeColors';
-import { useMacroStore } from '../../../../store/useMacroStore';
+import { useAppliedTheme } from '../../../../theme/hooks/useAppliedTheme';
 import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
 import { useListNavigation } from '../hooks/useListNavigation';
 
@@ -34,9 +33,7 @@ export function MacroSuggestions({
   const [visibleCount, setVisibleCount] = useState(5);
   const prevFilteredRef = useRef<Macro[] | null>(null);
 
-  const theme = useMacroStore(state => state.config.theme);
-  const colorTheme = useMacroStore(state => state.config.colorTheme ?? 'humo');
-  useThemeColors(containerRef, theme, isVisible, colorTheme);
+  useAppliedTheme(containerRef, isVisible);
 
   const filteredMacros = useMemo(() => {
     if (!macros || macros.length === 0) {

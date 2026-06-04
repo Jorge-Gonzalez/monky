@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { ModalShellProps } from '../types';
 import { useModalKeyboard } from '../hooks/useModalKeyboard';
-import { useThemeColors } from '../../../../theme/hooks/useThemeColors';
+import { useAppliedTheme } from '../../../../theme/hooks/useAppliedTheme';
 import { useMacroStore } from '../../../../store/useMacroStore';
 import { ModalNavigation } from './ModalNavigation';
 
@@ -24,11 +24,10 @@ export function ModalShell({
 }: ModalShellProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  const theme = useMacroStore(state => state.config.theme);
-  const colorTheme = useMacroStore(state => state.config.colorTheme ?? 'humo');
+  const theme = useMacroStore(state => state.config.theme); // for the nav logo variant
 
   useModalKeyboard(isVisible, onClose);
-  useThemeColors(modalRef, theme, isVisible, colorTheme);
+  useAppliedTheme(modalRef, isVisible);
 
   if (!isVisible) return null;
 
