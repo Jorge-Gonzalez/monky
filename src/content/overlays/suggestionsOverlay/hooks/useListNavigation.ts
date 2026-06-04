@@ -26,12 +26,6 @@ export function useListNavigation(itemCount: number) {
     setSelectedIndex(0);
   }, []);
 
-  const selectIndex = useCallback((index: number) => {
-    if (index >= 0 && index < itemCount) {
-      setSelectedIndex(index);
-    }
-  }, [itemCount]);
-
   return {
     selectedIndex,
     navigateLeft,
