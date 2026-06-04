@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Macro } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
 import { createMacro, updateMacro } from '../../../../../store/macroCrud'
@@ -6,8 +6,8 @@ import { ContentEditor, ContentEditorRef } from '../../../../../shared/content-e
 import { useMacroStore } from '../../../../../store/useMacroStore'
 import { validateCommand, isCommandValid } from '../../../../../shared/macroValidation'
 import { hasRichFormatting, extractPlainText } from '../../../../../shared/macroContent'
-
-const MAX_SUGGESTIONS = 5
+import { useCommandSuggestions } from '../useCommandSuggestions'
+import { CommandSuggestions } from './CommandSuggestions'
 
 interface ModalMacroFormProps {
   editing: Macro | null
@@ -17,25 +17,15 @@ interface ModalMacroFormProps {
 
 export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormProps) {
   const prefixes = useMacroStore(s => s.config?.prefixes || ['/'])
-  const macros = useMacroStore(s => s.macros)
   const [command, setCommand] = useState(editing?.command || '')
   const [text, setText] = useState(editing?.html || editing?.text || '')
   const [isSensitive, setSensitive] = useState(!!editing?.is_sensitive)
   const [error, setError] = useState<string | null>(null)
-  const [commandFocused, setCommandFocused] = useState(false)
-  const [suggestionsDismissed, setSuggestionsDismissed] = useState(false)
-  const [selectedSuggestion, setSelectedSuggestion] = useState(-1)
 
   const commandInputRef = useRef<HTMLInputElement>(null)
   const contentEditorRef = useRef<ContentEditorRef>(null)
 
-  const suggestions = useMemo(() => {
-    if (editing || !command.trim()) return []
-    const q = command.toLowerCase()
-    return macros.filter(m => m.command.toLowerCase().includes(q)).slice(0, MAX_SUGGESTIONS)
-  }, [macros, command, editing])
-
-  const showSuggestions = commandFocused && !suggestionsDismissed && suggestions.length > 0
+  const suggest = useCommandSuggestions(command, !editing, onLoadMacro)
 
   useEffect(() => {
     if (editing) {
@@ -58,11 +48,6 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
     commandInputRef.current?.focus()
   }, [editing?.id])
 
-  useEffect(() => {
-    setSuggestionsDismissed(false)
-    setSelectedSuggestion(-1)
-  }, [command])
-
   const commandValid = isCommandValid(command, prefixes)
   const isTextValid = text.trim() !== ''
   const isDirty = !editing ||
@@ -70,35 +55,6 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
     text !== (editing.html || editing.text) ||
     isSensitive !== !!editing.is_sensitive
   const isFormValid = commandValid && isTextValid && isDirty
-
-  function handleCommandKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Escape' && showSuggestions) {
-      e.stopPropagation()
-      setSuggestionsDismissed(true)
-      return
-    }
-    if (!showSuggestions) return
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      setSelectedSuggestion(i => Math.min(i + 1, suggestions.length - 1))
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      setSelectedSuggestion(i => Math.max(i - 1, -1))
-    } else if (e.key === 'Enter') {
-      if (selectedSuggestion >= 0) {
-        e.preventDefault()
-        onLoadMacro(suggestions[selectedSuggestion])
-      } else {
-        const exactMatch = suggestions.find(m => m.command.toLowerCase() === command.toLowerCase())
-        if (exactMatch) {
-          e.preventDefault()
-          onLoadMacro(exactMatch)
-        } else {
-          setSuggestionsDismissed(true)
-        }
-      }
-    }
-  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -143,32 +99,20 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           <input
             id="modal-macro-command"
             ref={commandInputRef}
-            className={`input ${command && !commandValid ? 'input-error' : ''} ${showSuggestions ? 'input-suggestions-open' : ''}`}
+            className={`input ${command && !commandValid ? 'input-error' : ''} ${suggest.visible ? 'input-suggestions-open' : ''}`}
             value={command}
             onChange={e => setCommand(e.currentTarget.value)}
-            onKeyDown={handleCommandKeyDown}
-            onFocus={() => setCommandFocused(true)}
-            onBlur={() => setCommandFocused(false)}
             placeholder={`e.g., ${prefixes[0]}sig`}
             maxLength={50}
             autoComplete="off"
+            {...suggest.inputProps}
           />
-          {showSuggestions && (
-            <div className="command-suggestions">
-              <div className="command-suggestions-label">
-                {t('macroEditor.commandSuggestionsLabel')}
-              </div>
-              {suggestions.map((macro, i) => (
-                <div
-                  key={macro.id}
-                  className={`command-suggestion-item ${i === selectedSuggestion ? 'selected' : ''}`}
-                  onMouseDown={e => { e.preventDefault(); onLoadMacro(macro) }}
-                >
-                  <span className="command-suggestion-command">{macro.command}</span>
-                  <span className="command-suggestion-text">{macro.text}</span>
-                </div>
-              ))}
-            </div>
+          {suggest.visible && (
+            <CommandSuggestions
+              suggestions={suggest.suggestions}
+              selectedIndex={suggest.selectedIndex}
+              onSelect={suggest.select}
+            />
           )}
         </div>
         {command && !commandValid && (
