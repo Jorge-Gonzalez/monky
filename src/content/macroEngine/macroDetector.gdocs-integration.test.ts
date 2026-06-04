@@ -14,6 +14,11 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
  *
  * Then drive real keydown events and assert the commit reaches
  * replaceInGoogleDocs with the correct delete count.
+ *
+ * Coverage ledger: GDocs commit / reconstruction / overlay paths AND the trust
+ * guard (untrusted synthetic events dropped on a real Docs page) are now all
+ * integration-tested end-to-end through onKeyDown — the unit-level
+ * googleDocsBackend.shouldIgnoreEvent test is no longer the only guard coverage.
  */
 
 const replaceInGoogleDocs = vi.fn()
@@ -117,5 +122,18 @@ describe('macroDetector — Google Docs integration', () => {
     detector.handleMacroSelectedFromOverlay(sigMacro, '/sig', GOOGLE_DOCS_SENTINEL)
     expect(replaceInGoogleDocs).toHaveBeenCalledWith(4, 'Signature')
     expect(actions.onMacroCommitted).toHaveBeenCalledWith('1')
+  })
+
+  it('drops untrusted synthetic events on a real Docs page (trust guard, end-to-end via onKeyDown)', () => {
+    // The mirror of the commit test: isGoogleDocs() stays true (the beforeEach
+    // default). jsdom keydowns are untrusted, so the top-of-onKeyDown guard
+    // `!isTrusted && isGoogleDocs()` must drop them. The exact "/sig" sequence that
+    // commits when isGoogleDocs() is false reaches nothing here — proving the guard
+    // end-to-end, with isGoogleDocs() as the only variable.
+    for (const c of '/sig') typeKey(c)
+
+    expect(actions.onDetectionStarted).not.toHaveBeenCalled()
+    expect(replaceInGoogleDocs).not.toHaveBeenCalled()
+    expect(actions.onMacroCommitted).not.toHaveBeenCalled()
   })
 })
