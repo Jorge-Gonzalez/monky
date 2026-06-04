@@ -1,14 +1,20 @@
 import { apiFetch } from './api'
 import { useMacroStore } from '../store/useMacroStore'
 
-const LOCAL_KEY = 'macros'
+// The Zustand store (persisted to chrome.storage under 'macro-storage') is the
+// single source of truth for macros. This module's only job is to reconcile that
+// truth with the remote backend: push local changes, pull/merge on sync, and hold
+// an offline queue for changes that couldn't reach the network.
+
 const QUEUE_KEY = 'pendingOps'
 
-async function setLocalMacros(list){ await chrome.storage.local.set({ [LOCAL_KEY]: list }) }
 async function getQueue(){ const o = await chrome.storage.local.get(QUEUE_KEY); return o[QUEUE_KEY]||[] }
 async function setQueue(q){ await chrome.storage.local.set({ [QUEUE_KEY]: q }) }
 
-function nowIso(){ return new Date().toISOString() }
+async function enqueue(op){
+  const q = await getQueue(); q.push(op); await setQueue(q)
+  chrome.runtime.sendMessage({ type:'pendingCount', count: q.length }).catch(()=>{})
+}
 
 function mergeByUpdated(local, remote){
   const map = new Map()
@@ -57,60 +63,40 @@ export async function syncMacros(){
   } catch {}
   const local = useMacroStore.getState().macros
   const merged = mergeByUpdated(local, remote)
-  await setLocalMacros(merged)
   useMacroStore.getState().setMacros(merged)
   await flushQueue()
   chrome.runtime.sendMessage({ type:'macros-updated' }).catch(()=>{})
 }
 
-export async function createMacroLocalFirst(macro){
-  const localItem = { ...macro, updated_at: nowIso() }
-  const list = useMacroStore.getState().macros.map(m =>
-    String(m.id) === String(macro.id) ? localItem : m
-  )
-  const hasExisting = list.some(m => String(m.id) === String(macro.id))
-  const next = hasExisting ? list : [...list, localItem]
-  await setLocalMacros(next);
-  useMacroStore.getState().setMacros(next)
+// --- Remote push helpers ---
+// The caller updates the store first (the local source of truth); these only push
+// the change to the backend, queueing it for later if the network is unavailable.
+
+export async function pushCreate(macro){
   try {
     const res = await apiFetch('/macros', { method:'POST', body: JSON.stringify(macro) })
     if (!res.ok) throw new Error('net')
     const js = await res.json(); if (!js.success) throw new Error('server')
-    await syncMacros()
   } catch {
-    const q = await getQueue(); q.push({ op:'create', macro, ts: Date.now() }); await setQueue(q)
-    chrome.runtime.sendMessage({ type:'pendingCount', count: (await getQueue()).length }).catch(()=>{})
+    await enqueue({ op:'create', macro, ts: Date.now() })
   }
 }
 
-export async function updateMacroLocalFirst(macro){
-  const next = useMacroStore.getState().macros.map(m =>
-    String(m.id) === String(macro.id) ? { ...m, ...macro, updated_at: nowIso() } : m
-  )
-  if (next.some(m => String(m.id) === String(macro.id))) {
-    await setLocalMacros(next);
-    useMacroStore.getState().setMacros(next)
-  }
+export async function pushUpdate(macro){
   try {
     const res = await apiFetch(`/macros/${macro.id}`, { method:'PUT', body: JSON.stringify(macro) })
     if (!res.ok) throw new Error('net')
     const js = await res.json(); if (!js.success) throw new Error('server')
-    await syncMacros()
   } catch {
-    const q = await getQueue(); q.push({ op:'update', macro, ts: Date.now() }); await setQueue(q)
-    chrome.runtime.sendMessage({ type:'pendingCount', count: (await getQueue()).length }).catch(()=>{})
+    await enqueue({ op:'update', macro, ts: Date.now() })
   }
 }
 
-export async function deleteMacroLocalFirst(id){
-  const next = useMacroStore.getState().macros.filter(m => String(m.id)!==String(id))
-  await setLocalMacros(next);
-  useMacroStore.getState().setMacros(next)
+export async function pushDelete(id){
   try {
     const res = await apiFetch(`/macros/${id}`, { method:'DELETE' })
     if (!res.ok) throw new Error('net')
   } catch {
-    const q = await getQueue(); q.push({ op:'delete', id, ts: Date.now() }); await setQueue(q)
-    chrome.runtime.sendMessage({ type:'pendingCount', count: (await getQueue()).length }).catch(()=>{})
+    await enqueue({ op:'delete', id, ts: Date.now() })
   }
 }

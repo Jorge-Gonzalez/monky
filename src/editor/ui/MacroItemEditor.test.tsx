@@ -10,7 +10,7 @@ vi.mock('../../store/useMacroStore', () => ({
 }))
 
 vi.mock('../../lib/sync', () => ({
-  deleteMacroLocalFirst: vi.fn()
+  pushDelete: vi.fn()
 }))
 
 vi.mock('../../lib/i18n', () => ({

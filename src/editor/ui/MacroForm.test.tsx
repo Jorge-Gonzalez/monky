@@ -14,8 +14,8 @@ vi.mock('../../lib/i18n', () => ({
 
 // Mock the sync functions
 vi.mock('../../lib/sync', () => ({
-  createMacroLocalFirst: vi.fn(() => Promise.resolve()),
-  updateMacroLocalFirst: vi.fn(() => Promise.resolve()),
+  pushCreate: vi.fn(() => Promise.resolve()),
+  pushUpdate: vi.fn(() => Promise.resolve()),
 }))
 
 // Mock the store to be self-contained, avoiding the need for dynamic imports.

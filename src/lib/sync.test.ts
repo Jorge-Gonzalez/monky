@@ -37,209 +37,106 @@ vi.mock('../store/useMacroStore', () => ({
 describe('sync', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    ;(useMacroStore.getState as vi.Mock).mockReturnValue({
+    vi.mocked(useMacroStore.getState).mockReturnValue({
       macros: [],
       setMacros: vi.fn()
-    })
+    } as any)
+    // Default: empty offline queue
+    mockGet.mockResolvedValue({ pendingOps: [] })
   })
 
-  describe('createMacroLocalFirst', () => {
-    it('creates macro locally and attempts remote sync', async () => {
-      const macro = { id: 1, command: '/test', text: 'test text' };
-      
-      // Mock local storage
-      mockGet.mockImplementation(async (keys) => {
-        if (keys === 'macros') return { macros: [] };
-        if (keys === 'pendingOps') return { pendingOps: [] };
-        return {};
-      });
-      
-      // Mock successful API response
-      ;(apiFetch as vi.Mock)
-        .mockResolvedValueOnce({
-          ok: true,
-          json: vi.fn().mockResolvedValue({ success: true })
-        })
-      
-      await sync.createMacroLocalFirst(macro)
-      
-      // Should have saved to local storage
-      expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({
-        macros: expect.arrayContaining([
-          expect.objectContaining(macro)
-        ])
-      }))
-      
-      // Should have attempted API call
+  // The store is the local source of truth; these helpers only push to the
+  // backend (and queue on failure). They must NOT write macros to storage.
+
+  describe('pushCreate', () => {
+    it('pushes the create to the backend and does not touch storage on success', async () => {
+      const macro = { id: 1, command: '/test', text: 'test text' }
+      vi.mocked(apiFetch).mockResolvedValueOnce({
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true })
+      })
+
+      await sync.pushCreate(macro)
+
       expect(apiFetch).toHaveBeenCalledWith('/macros', expect.objectContaining({
         method: 'POST',
         body: JSON.stringify(macro)
       }))
+      expect(mockSet).not.toHaveBeenCalled()
     })
 
-    it('preserves current store macros when local storage is stale during create', async () => {
-      const macro = { id: 2, command: '/super', text: 'Something cool' }
-      const storeMacros = [
-        { id: 'uma', command: '/uma', text: 'Imported macro' }
-      ]
-      const staleLocalMacros = [
-        { id: 'old-uno', command: '/uno', text: 'Stale local macro' }
-      ]
-
-      // Store already contains imported macros that are not present in local storage.
-      ;(useMacroStore.getState as vi.Mock).mockReturnValue({
-        macros: storeMacros,
-        setMacros: vi.fn()
-      })
-
-      mockGet.mockImplementation(async (keys) => {
-        if (keys === 'macros') return { macros: staleLocalMacros };
-        if (keys === 'pendingOps') return { pendingOps: [] };
-        return {};
-      });
-
-      ;(apiFetch as vi.Mock)
-        .mockResolvedValueOnce({
-          ok: true,
-          json: vi.fn().mockResolvedValue({ success: true })
-        })
-
-      await sync.createMacroLocalFirst(macro)
-
-      expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({
-        macros: expect.arrayContaining([
-          expect.objectContaining(storeMacros[0]),
-          expect.objectContaining(macro)
-        ])
-      }))
-      expect(mockSet).not.toHaveBeenCalledWith(expect.objectContaining({
-        macros: expect.arrayContaining([
-          expect.objectContaining({ text: 'Stale local macro' })
-        ])
-      }))
-    })
-
-    it('queues operation when remote sync fails', async () => {
+    it('queues the operation when the remote push fails', async () => {
       const macro = { id: 1, command: '/test', text: 'test text' }
-      
-      // Mock local storage
-      mockGet.mockImplementation(async (keys) => {
-        if (keys === 'macros') return { macros: [] };
-        if (keys === 'pendingOps') return { pendingOps: [] };
-        return {};
-      });
-      
-      // Mock failed API response
-      ;(apiFetch as vi.Mock)
-        .mockResolvedValueOnce({
-          ok: false // Network error
-        })
-      
-      await sync.createMacroLocalFirst(macro)
-      
-      // Should still have saved locally
-      expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({
-        macros: expect.arrayContaining([
-          expect.objectContaining(macro)
-        ])
-      }))
-      
-      // Should have queued the operation
+      vi.mocked(apiFetch).mockResolvedValueOnce({ ok: false })
+
+      await sync.pushCreate(macro)
+
       expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({
         pendingOps: expect.arrayContaining([
-          expect.objectContaining({
-            op: 'create',
-            macro: macro
-          })
+          expect.objectContaining({ op: 'create', macro })
         ])
       }))
     })
   })
 
-  describe('updateMacroLocalFirst', () => {
-    it('updates macro locally and attempts remote sync', async () => {
+  describe('pushUpdate', () => {
+    it('pushes the update to the backend on success', async () => {
       const macro = { id: 1, command: '/updated', text: 'updated text' }
-      const existingMacros = [{ id: 1, command: '/test', text: 'test text' }]
-
-      ;(useMacroStore.getState as vi.Mock).mockReturnValue({
-        macros: existingMacros,
-        setMacros: vi.fn()
+      vi.mocked(apiFetch).mockResolvedValueOnce({
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true })
       })
 
-      // Mock local storage
-      mockGet.mockImplementation(async (keys) => {
-        if (keys === 'macros') return { macros: existingMacros };
-        if (keys === 'pendingOps') return { pendingOps: [] };
-        return {};
-      });
+      await sync.pushUpdate(macro)
 
-      // Mock successful API response
-      ;(apiFetch as vi.Mock)
-        .mockResolvedValueOnce({
-          ok: true,
-          json: vi.fn().mockResolvedValue({ success: true })
-        })
-      
-      await sync.updateMacroLocalFirst(macro)
-      
-      // Should have updated local storage
-      expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({
-        macros: [expect.objectContaining(macro)]
-      }))
-      
-      // Should have attempted API call
       expect(apiFetch).toHaveBeenCalledWith('/macros/1', expect.objectContaining({
         method: 'PUT',
         body: JSON.stringify(macro)
       }))
+      expect(mockSet).not.toHaveBeenCalled()
+    })
+
+    it('queues the operation when the remote push fails', async () => {
+      const macro = { id: 1, command: '/updated', text: 'updated text' }
+      vi.mocked(apiFetch).mockResolvedValueOnce({ ok: false })
+
+      await sync.pushUpdate(macro)
+
+      expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({
+        pendingOps: expect.arrayContaining([
+          expect.objectContaining({ op: 'update', macro })
+        ])
+      }))
     })
   })
 
-  describe('deleteMacroLocalFirst', () => {
-    it('deletes macro locally and attempts remote sync', async () => {
-      const macroId = 1
-      const existingMacros = [
-        { id: 1, command: '/test', text: 'test text' },
-        { id: 2, command: '/another', text: 'another text' }
-      ]
+  describe('pushDelete', () => {
+    it('pushes the delete to the backend on success', async () => {
+      vi.mocked(apiFetch).mockResolvedValueOnce({ ok: true })
 
-      ;(useMacroStore.getState as vi.Mock).mockReturnValue({
-        macros: existingMacros,
-        setMacros: vi.fn()
-      })
+      await sync.pushDelete(1)
 
-      // Mock local storage
-      mockGet.mockImplementation(async (keys) => {
-        if (keys === 'macros') return { macros: existingMacros };
-        if (keys === 'pendingOps') return { pendingOps: [] };
-        return {};
-      });
-      
-      // Mock successful API response
-      ;(apiFetch as vi.Mock)
-        .mockResolvedValueOnce({
-          ok: true
-        })
-      
-      await sync.deleteMacroLocalFirst(macroId)
-      
-      // Should have removed from local storage
-      expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({
-        macros: [expect.objectContaining({ id: 2 })]
-      }))
-      expect(mockSet).not.toHaveBeenCalledWith(expect.objectContaining({
-        macros: expect.arrayContaining([expect.objectContaining({ id: 1 })])
-      }))
-      
-      // Should have attempted API call
       expect(apiFetch).toHaveBeenCalledWith('/macros/1', expect.objectContaining({
         method: 'DELETE'
+      }))
+      expect(mockSet).not.toHaveBeenCalled()
+    })
+
+    it('queues the operation when the remote push fails', async () => {
+      vi.mocked(apiFetch).mockResolvedValueOnce({ ok: false })
+
+      await sync.pushDelete(1)
+
+      expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({
+        pendingOps: expect.arrayContaining([
+          expect.objectContaining({ op: 'delete', id: 1 })
+        ])
       }))
     })
   })
 
   describe('syncMacros', () => {
-    it('syncs macros from remote and merges with local data', async () => {
+    it('pulls remote, merges with the store, and writes the merge to the store', async () => {
       const remoteMacros = [
         { id: 1, command: '/remote', text: 'remote text', updated_at: '2023-01-01T00:00:00Z' }
       ]
@@ -247,42 +144,23 @@ describe('sync', () => {
         { id: 1, command: '/local', text: 'local text', updated_at: '2023-01-02T00:00:00Z' },
         { id: 2, command: '/local-only', text: 'local only text', updated_at: '2023-01-01T00:00:00Z' }
       ]
-      
-      // Mock API response
-      ;(apiFetch as vi.Mock)
-        .mockResolvedValueOnce({
-          ok: true,
-          json: vi.fn().mockResolvedValue({ success: true, data: remoteMacros })
-        })
-      
-      // Mock local storage
-      mockGet.mockImplementation(async (keys) => {
-        if (keys === 'macros') return { macros: localMacros };
-        if (keys === 'pendingOps') return { pendingOps: [] };
-        return {};
-      });
-      
-      // Mock store update
+      vi.mocked(apiFetch).mockResolvedValueOnce({
+        ok: true,
+        json: vi.fn().mockResolvedValue({ success: true, data: remoteMacros })
+      })
+
       const mockSetMacros = vi.fn()
-      ;(useMacroStore.getState as vi.Mock).mockReturnValue({
+      vi.mocked(useMacroStore.getState).mockReturnValue({
         macros: localMacros,
         setMacros: mockSetMacros
-      })
-      
+      } as any)
+
       await sync.syncMacros()
-      
-      // Should have merged macros correctly (newer local version should win)
+
+      // Newer local version wins; the store is the only thing written.
       expect(mockSetMacros).toHaveBeenCalledWith([
-        expect.objectContaining({ 
-          id: 1, 
-          command: '/local', 
-          text: 'local text' 
-        }),
-        expect.objectContaining({ 
-          id: 2, 
-          command: '/local-only',
-          text: 'local only text'
-        })
+        expect.objectContaining({ id: 1, command: '/local', text: 'local text' }),
+        expect.objectContaining({ id: 2, command: '/local-only', text: 'local only text' })
       ])
     })
   })
@@ -293,24 +171,13 @@ describe('sync', () => {
         { op: 'create', macro: { id: 1, command: '/test', text: 'test' }, ts: Date.now() },
         { op: 'update', macro: { id: 2, command: '/update', text: 'update' }, ts: Date.now() }
       ]
-      
-      // Mock queue retrieval
       mockGet.mockResolvedValue({ pendingOps })
-      
-      // Mock successful API responses
-      ;(apiFetch as vi.Mock)
-        .mockResolvedValueOnce({ // First create
-          ok: true,
-          json: vi.fn().mockResolvedValue({ success: true })
-        })
-        .mockResolvedValueOnce({ // Then update
-          ok: true,
-          json: vi.fn().mockResolvedValue({ success: true })
-        })
-      
+      vi.mocked(apiFetch)
+        .mockResolvedValueOnce({ ok: true, json: vi.fn().mockResolvedValue({ success: true }) })
+        .mockResolvedValueOnce({ ok: true, json: vi.fn().mockResolvedValue({ success: true }) })
+
       await sync.flushQueue()
-      
-      // Should have cleared the queue
+
       expect(mockSet).toHaveBeenCalledWith({ pendingOps: [] })
     })
 
@@ -318,25 +185,14 @@ describe('sync', () => {
       const pendingOps = [
         { op: 'create', macro: { id: 1, command: '/test', text: 'test' }, ts: Date.now() }
       ]
-      
-      // Mock queue retrieval
       mockGet.mockResolvedValue({ pendingOps })
-      
-      // Mock failed API response
-      ;(apiFetch as vi.Mock)
-        .mockResolvedValueOnce({
-          ok: false // Failed operation
-        })
-      
+      vi.mocked(apiFetch).mockResolvedValueOnce({ ok: false })
+
       await sync.flushQueue()
-      
-      // Should keep the failed operation in the queue
-      expect(mockSet).toHaveBeenCalledWith({ 
+
+      expect(mockSet).toHaveBeenCalledWith({
         pendingOps: expect.arrayContaining([
-          expect.objectContaining({
-            op: 'create',
-            macro: { id: 1, command: '/test', text: 'test' }
-          })
+          expect.objectContaining({ op: 'create', macro: { id: 1, command: '/test', text: 'test' } })
         ])
       })
     })
