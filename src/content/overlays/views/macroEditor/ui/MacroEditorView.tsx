@@ -1,38 +1,18 @@
-import { useState, useEffect } from 'react';
-import { Macro } from '../../../../../types';
 import { t } from '../../../../../lib/i18n';
 import { MacroEditorViewProps } from '../../../modal/types';
-import { useEditorCoordinator } from '../../../../../editor/hooks/useEditorCoordinator';
+import { useMacroEditor } from '../../../../../editor/useMacroEditor';
 import { ModalMacroForm } from './ModalMacroForm';
 
-export function MacroEditorView({ containerRef, initialMacro, onViewChange }: MacroEditorViewProps) {
-  const coordinator = useEditorCoordinator();
-  const [state, setState] = useState(coordinator.getState());
-
-  useEffect(() => {
-    const unsubscribe = coordinator.subscribe(setState);
-    return unsubscribe;
-  }, [coordinator]);
-
-  useEffect(() => {
-    if (initialMacro) {
-      coordinator.setEditingMacro(initialMacro);
-    } else {
-      coordinator.resetForm();
-    }
-  }, []);
+export function MacroEditorView({ initialMacro, onViewChange }: MacroEditorViewProps) {
+  const { editingMacro, setEditingMacro, resetForm } = useMacroEditor(initialMacro ?? null);
 
   const handleDone = () => {
-    coordinator.resetForm();
+    resetForm();
     onViewChange('search');
   };
 
-  const handleLoadMacro = (macro: Macro) => {
-    coordinator.setEditingMacro(macro);
-  };
-
-  const title = state.editingMacro
-    ? t('macroEditor.title.edit', { command: state.editingMacro.command })
+  const title = editingMacro
+    ? t('macroEditor.title.edit', { command: editingMacro.command })
     : t('macroEditor.title.new');
 
   return (
@@ -40,10 +20,9 @@ export function MacroEditorView({ containerRef, initialMacro, onViewChange }: Ma
       <div className="editor-container">
         <h1 className="view-title">{title}</h1>
         <ModalMacroForm
-          editing={state.editingMacro}
+          editing={editingMacro}
           onDone={handleDone}
-          onLoadMacro={handleLoadMacro}
-          coordinator={coordinator}
+          onLoadMacro={setEditingMacro}
         />
       </div>
     </div>

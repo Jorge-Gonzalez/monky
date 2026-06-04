@@ -61,13 +61,3 @@ export type {
   SegmentedControlProps,
   SegmentedOption
 } from './SegmentedControl';
-
-export { useMacroEditorCoordination } from './useMacroEditorCoordination';
-export type {
-  EditorCoordinationState,
-  EditorCoordinationConfig,
-  EditorCoordinationAPI,
-  EditorMode,
-  MacroData,
-  ValidationErrors
-} from './useMacroEditorCoordination';

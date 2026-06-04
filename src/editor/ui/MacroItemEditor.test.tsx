@@ -1,73 +1,35 @@
+// @vitest-environment jsdom
 import { render, screen, fireEvent } from '@testing-library/preact'
 import { describe, it, expect, vi } from 'vitest'
 import MacroItemEditor from './MacroItemEditor'
 
-// Simple mock - just make sure the component renders without errors
-vi.mock('../../store/useMacroStore', () => ({
-  useMacroStore: vi.fn(() => ({
-    deleteMacro: vi.fn()
-  }))
-}))
+vi.mock('../../lib/i18n', () => ({ t: (key: string) => key }))
 
-vi.mock('../../lib/sync', () => ({
-  pushDelete: vi.fn()
-}))
+describe('MacroItemEditor', () => {
+  const mockMacro = { id: 1, command: '/test', text: 'Test text' } as any
+  const onEdit = vi.fn()
+  const onDelete = vi.fn()
 
-vi.mock('../../lib/i18n', () => ({
-  t: vi.fn((key) => key)
-}))
-
-describe('MacroItemEditor Component', () => {
-  const mockMacro = {
-    id: 1,
-    command: '/test',
-    text: 'Test text'
-  }
-
-  const mockOnEdit = vi.fn()
-
-  const mockCoordinator = {
-    createMacro: vi.fn(),
-    updateMacro: vi.fn(),
-    deleteMacro: vi.fn(),
-    getEditingMacro: vi.fn(() => null),
-    setEditingMacro: vi.fn(),
-    resetForm: vi.fn(),
-    updateSettings: vi.fn(),
-    getState: vi.fn(() => ({
-      macros: [],
-      editingMacro: null,
-      settings: {},
-      error: null,
-    })),
-    subscribe: vi.fn(() => () => {}),
-    attach: vi.fn(),
-    detach: vi.fn(),
-    enable: vi.fn(),
-    disable: vi.fn(),
-    isEnabled: vi.fn(() => true),
-    destroy: vi.fn(),
-  }
-
-  it('renders without crashing', () => {
-    render(<MacroItemEditor macro={mockMacro} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
+  it('renders the command', () => {
+    render(<MacroItemEditor macro={mockMacro} onEdit={onEdit} onDelete={onDelete} />)
     expect(screen.getByText('/test')).toBeInTheDocument()
   })
 
-  it('displays truncated text for long macros', () => {
-    const longTextMacro = {
-      ...mockMacro,
-      text: 'A'.repeat(100)
-    }
-
-    render(<MacroItemEditor macro={longTextMacro} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
+  it('truncates long text', () => {
+    const longTextMacro = { ...mockMacro, text: 'A'.repeat(100) }
+    render(<MacroItemEditor macro={longTextMacro} onEdit={onEdit} onDelete={onDelete} />)
     expect(screen.getByText('A'.repeat(80) + '…')).toBeInTheDocument()
   })
 
-  it('calls onEdit when edit button is clicked', () => {
-    render(<MacroItemEditor macro={mockMacro} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
-
+  it('calls onEdit with the macro', () => {
+    render(<MacroItemEditor macro={mockMacro} onEdit={onEdit} onDelete={onDelete} />)
     fireEvent.click(screen.getByText('macroItemEditor.edit'))
-    expect(mockOnEdit).toHaveBeenCalledWith(mockMacro)
+    expect(onEdit).toHaveBeenCalledWith(mockMacro)
+  })
+
+  it('calls onDelete with the macro id', () => {
+    render(<MacroItemEditor macro={mockMacro} onEdit={onEdit} onDelete={onDelete} />)
+    fireEvent.click(screen.getByText('macroItemEditor.delete'))
+    expect(onDelete).toHaveBeenCalledWith('1')
   })
 })

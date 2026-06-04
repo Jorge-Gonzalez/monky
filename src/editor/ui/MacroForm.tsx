@@ -1,16 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { useMacroStore } from '../../store/useMacroStore'
+import { createMacro, updateMacro } from '../../store/macroCrud'
 import { t } from '../../lib/i18n'
-import { EditorCoordinator } from '../coordinators/editorCoordinator'
 import { Macro } from '../../types'
 import { ContentEditor, ContentEditorRef } from '../../shared/content-editor'
 import { validateCommand, isCommandValid } from '../../shared/macroValidation'
 import { hasRichFormatting, extractPlainText } from '../../shared/macroContent'
 
-export default function MacroForm({ editing, onDone, coordinator }: {
+export default function MacroForm({ editing, onDone }: {
   editing: Macro | null,
   onDone: () => void,
-  coordinator: EditorCoordinator,
 }) {
   const prefixes = useMacroStore(s => s.config?.prefixes || ['/'])
   const [command, setCommand] = useState(editing?.command || '')
@@ -71,10 +70,10 @@ export default function MacroForm({ editing, onDone, coordinator }: {
 
     let result
     if (editing && editing.id) {
-      result = await coordinator.updateMacro(String(editing.id), macroData)
+      result = await updateMacro(String(editing.id), macroData)
       if (result.success) onDone()
     } else {
-      result = await coordinator.createMacro(macroData)
+      result = await createMacro(macroData)
       if (result.success) {
         setCommand('')
         setText('')

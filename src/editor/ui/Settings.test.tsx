@@ -1,74 +1,35 @@
 // @vitest-environment jsdom
 import { render, screen, fireEvent } from '@testing-library/preact'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest'
 import Settings from './Settings'
-import { EditorCoordinator } from '../coordinators/editorCoordinator'
+import { useOptions } from '../../options'
 
-// Mock the i18n function
-vi.mock('../../lib/i18n', () => ({
-  t: (key: string) => key,
-}))
+vi.mock('../../lib/i18n', () => ({ t: (key: string) => key }))
+vi.mock('../../options', () => ({ useOptions: vi.fn() }))
 
-// Helper to create a mock coordinator
-const createMockCoordinator = (initialLanguage: 'en' | 'es' = 'en'): EditorCoordinator => {
-  const state = {
-    macros: [],
-    editingMacro: null,
-    settings: { language: initialLanguage },
-    error: null,
-  }
-  return {
-    getState: vi.fn(() => state),
-    updateSettings: vi.fn(),
-    // Add other coordinator methods as mocks if needed for more complex tests
-    createMacro: vi.fn(),
-    updateMacro: vi.fn(),
-    deleteMacro: vi.fn(),
-    getEditingMacro: vi.fn(),
-    setEditingMacro: vi.fn(),
-    resetForm: vi.fn(),
-    subscribe: vi.fn(() => () => {}),
-    attach: vi.fn(),
-    detach: vi.fn(),
-    enable: vi.fn(),
-    disable: vi.fn(),
-    isEnabled: vi.fn(() => true),
-    destroy: vi.fn(),
-  }
-}
-
-describe('Settings Component', () => {
-  let mockCoordinator: EditorCoordinator;
+describe('Settings (editor page)', () => {
+  const setLanguage = vi.fn()
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    mockCoordinator = createMockCoordinator('en');
-  });
-
-  it('renders without crashing', () => {
-    render(<Settings coordinator={mockCoordinator} language="en" />)
-    expect(screen.getByText('settings.title')).toBeInTheDocument()
+    vi.clearAllMocks()
+    ;(useOptions as Mock).mockReturnValue({ language: 'en', setLanguage })
   })
 
-  it('renders language settings section', () => {
-    render(<Settings coordinator={mockCoordinator} language="en" />)
-    
+  it('renders the language selector', () => {
+    render(<Settings />)
+    expect(screen.getByText('settings.title')).toBeInTheDocument()
     expect(screen.getByText('settings.language')).toBeInTheDocument()
     expect(screen.getByRole('combobox')).toBeInTheDocument()
   })
 
-  it('displays the correct initial language from the manager', () => {
-    render(<Settings coordinator={mockCoordinator} language="en" />)
-    const select = screen.getByRole('combobox') as HTMLSelectElement;
-    expect(select.value).toBe('en');
-  });
+  it('shows the current language', () => {
+    render(<Settings />)
+    expect((screen.getByRole('combobox') as HTMLSelectElement).value).toBe('en')
+  })
 
-  it('calls manager.updateSettings when the language is changed', () => {
-    render(<Settings coordinator={mockCoordinator} language="en" />)
-    const select = screen.getByRole('combobox');
-
-    fireEvent.change(select, { target: { value: 'es' } });
-
-    expect(mockCoordinator.updateSettings).toHaveBeenCalledWith({ language: 'es' });
-  });
+  it('calls setLanguage when the language changes', () => {
+    render(<Settings />)
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'es' } })
+    expect(setLanguage).toHaveBeenCalledWith('es')
+  })
 })

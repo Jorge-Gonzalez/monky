@@ -28,21 +28,13 @@ vi.mock('../../../../../store/useMacroStore', () => ({
   ),
 }))
 
-function createMockCoordinator() {
-  return {
-    createMacro: vi.fn(() => Promise.resolve({ success: true })),
-    updateMacro: vi.fn(() => Promise.resolve({ success: true })),
-    deleteMacro: vi.fn(),
-    getEditingMacro: vi.fn(() => null),
-    setEditingMacro: vi.fn(),
-    resetForm: vi.fn(),
-    updateSettings: vi.fn(),
-    getState: vi.fn(() => ({ macros: [], editingMacro: null, settings: {}, error: null })),
-    subscribe: vi.fn(() => () => {}),
-    attach: vi.fn(), detach: vi.fn(), enable: vi.fn(), disable: vi.fn(),
-    isEnabled: vi.fn(() => true), destroy: vi.fn(),
-  }
-}
+type CrudResult = { success: boolean; error?: string }
+const mockCreate = vi.fn((..._args: any[]): Promise<CrudResult> => Promise.resolve({ success: true }))
+const mockUpdate = vi.fn((..._args: any[]): Promise<CrudResult> => Promise.resolve({ success: true }))
+vi.mock('../../../../../store/macroCrud', () => ({
+  createMacro: (data: any) => mockCreate(data),
+  updateMacro: (id: any, data: any) => mockUpdate(id, data),
+}))
 
 function setEditorContent(html: string) {
   const el = document.querySelector('.content-editor-body') as HTMLElement
@@ -59,13 +51,13 @@ function focusAndType(input: HTMLElement, value: string) {
 }
 
 describe('ModalMacroForm', () => {
-  let coordinator: ReturnType<typeof createMockCoordinator>
   const onDone = vi.fn()
   const onLoadMacro = vi.fn()
 
   beforeEach(() => {
     vi.clearAllMocks()
-    coordinator = createMockCoordinator()
+    mockCreate.mockResolvedValue({ success: true })
+    mockUpdate.mockResolvedValue({ success: true })
   })
 
   // ---------------------------------------------------------------------------
@@ -74,7 +66,7 @@ describe('ModalMacroForm', () => {
 
   describe('rendering', () => {
     it('renders the command input, content editor, checkbox and save button', () => {
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       expect(screen.getByLabelText('macroForm.triggerLabel')).toBeInTheDocument()
       expect(document.querySelector('.content-editor-body')).toBeInTheDocument()
@@ -83,13 +75,13 @@ describe('ModalMacroForm', () => {
     })
 
     it('focuses the command input on mount', async () => {
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
       await waitFor(() => expect(getCommandInput()).toHaveFocus())
     })
 
     it('pre-fills fields and shows Update/Cancel buttons when editing', () => {
       const editing = { id: 1, command: '/sig', text: 'My signature', is_sensitive: true }
-      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       expect(screen.getByDisplayValue('/sig')).toBeInTheDocument()
       expect(screen.getByRole('checkbox')).toBeChecked()
@@ -104,7 +96,7 @@ describe('ModalMacroForm', () => {
 
   describe('suggestion dropdown', () => {
     it('shows suggestions matching the typed command prefix', () => {
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       focusAndType(getCommandInput(), '/si')
 
@@ -114,7 +106,7 @@ describe('ModalMacroForm', () => {
     })
 
     it('matches only the command field, not the text content', () => {
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       // 'signature' is in the text of /sig but not in the command of any macro
       focusAndType(getCommandInput(), '/signature')
@@ -123,7 +115,7 @@ describe('ModalMacroForm', () => {
     })
 
     it('shows at most 5 suggestions', () => {
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       // '/' matches all 6 macros, but we cap at 5
       focusAndType(getCommandInput(), '/')
@@ -134,7 +126,7 @@ describe('ModalMacroForm', () => {
 
     it('does not show suggestions when editing an existing macro', () => {
       const editing = { id: 1, command: '/sig', text: 'My signature', is_sensitive: false }
-      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       focusAndType(getCommandInput(), '/si')
 
@@ -146,7 +138,7 @@ describe('ModalMacroForm', () => {
     // every other suggestion test via focusAndType.
 
     it('calls onLoadMacro when a suggestion is clicked', () => {
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       focusAndType(getCommandInput(), '/si')
       fireEvent.mouseDown(screen.getByText('/sig'))
@@ -155,7 +147,7 @@ describe('ModalMacroForm', () => {
     })
 
     it('navigates suggestions with arrow keys and selects with Enter', () => {
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
       const input = getCommandInput()
 
       focusAndType(input, '/si')
@@ -166,7 +158,7 @@ describe('ModalMacroForm', () => {
     })
 
     it('loads macro on Enter when the typed command is an exact match', () => {
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
       const input = getCommandInput()
 
       focusAndType(input, '/sig')
@@ -176,7 +168,7 @@ describe('ModalMacroForm', () => {
     })
 
     it('dismisses suggestions on Enter when there is no exact match', async () => {
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
       const input = getCommandInput()
 
       focusAndType(input, '/si')
@@ -189,7 +181,7 @@ describe('ModalMacroForm', () => {
     })
 
     it('closes suggestions on Escape without propagating the event', () => {
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
       const input = getCommandInput()
       focusAndType(input, '/si')
 
@@ -205,7 +197,7 @@ describe('ModalMacroForm', () => {
     })
 
     it('resets dismissed state when the command changes', () => {
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
       const input = getCommandInput()
 
       focusAndType(input, '/si')
@@ -226,24 +218,24 @@ describe('ModalMacroForm', () => {
     const editing = { id: 1, command: '/sig', text: 'My signature', is_sensitive: false }
 
     it('keeps Update disabled when no changes have been made', () => {
-      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} />)
       expect(screen.getByRole('button', { name: 'macroForm.updateButton' })).toBeDisabled()
     })
 
     it('enables Update after the command is changed', () => {
-      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} />)
       fireEvent.change(getCommandInput(), { target: { value: '/sigv2' } })
       expect(screen.getByRole('button', { name: 'macroForm.updateButton' })).not.toBeDisabled()
     })
 
     it('enables Update after the text content is changed', () => {
-      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} />)
       setEditorContent('<p>Updated text</p>')
       expect(screen.getByRole('button', { name: 'macroForm.updateButton' })).not.toBeDisabled()
     })
 
     it('enables Update after the sensitive flag is toggled', () => {
-      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} />)
       fireEvent.click(screen.getByRole('checkbox'))
       expect(screen.getByRole('button', { name: 'macroForm.updateButton' })).not.toBeDisabled()
     })
@@ -255,42 +247,42 @@ describe('ModalMacroForm', () => {
 
   describe('form submission', () => {
     it('calls createMacro and clears the form on successful save', async () => {
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       fireEvent.change(getCommandInput(), { target: { value: '/new' } })
       setEditorContent('<p>Some text</p>')
       fireEvent.click(screen.getByRole('button', { name: 'macroForm.saveButton' }))
 
       await waitFor(() => {
-        expect(coordinator.createMacro).toHaveBeenCalledWith(expect.objectContaining({ command: '/new' }))
+        expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({ command: '/new' }))
       })
       expect(getCommandInput()).toHaveValue('')
     })
 
     it('calls updateMacro and onDone on successful update', async () => {
       const editing = { id: 1, command: '/sig', text: 'My signature', is_sensitive: false }
-      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       fireEvent.change(getCommandInput(), { target: { value: '/sig2' } })
       fireEvent.click(screen.getByRole('button', { name: 'macroForm.updateButton' }))
 
       await waitFor(() => {
-        expect(coordinator.updateMacro).toHaveBeenCalledWith('1', expect.objectContaining({ command: '/sig2' }))
+        expect(mockUpdate).toHaveBeenCalledWith('1', expect.objectContaining({ command: '/sig2' }))
         expect(onDone).toHaveBeenCalled()
       })
     })
 
     it('calls onDone when Cancel is clicked', () => {
       const editing = { id: 1, command: '/sig', text: 'My signature', is_sensitive: false }
-      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       fireEvent.click(screen.getByRole('button', { name: 'macroForm.cancelButton' }))
       expect(onDone).toHaveBeenCalled()
     })
 
     it('shows error message when coordinator returns a failure', async () => {
-      coordinator.createMacro.mockResolvedValue({ success: false, error: 'Duplicate command' })
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      mockCreate.mockResolvedValue({ success: false, error: 'Duplicate command' })
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       fireEvent.change(getCommandInput(), { target: { value: '/dup' } })
       setEditorContent('<p>Some text</p>')
@@ -300,7 +292,7 @@ describe('ModalMacroForm', () => {
     })
 
     it('keeps Save disabled when command has invalid prefix', () => {
-      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} coordinator={coordinator} />)
+      render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
       fireEvent.change(getCommandInput(), { target: { value: 'nosig' } })
       setEditorContent('<p>Some text</p>')
       expect(screen.getByRole('button', { name: 'macroForm.saveButton' })).toBeDisabled()

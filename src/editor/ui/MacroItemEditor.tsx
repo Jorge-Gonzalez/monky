@@ -1,15 +1,11 @@
-import React from 'react'
-import { EditorCoordinator } from '../coordinators/editorCoordinator'
 import { t } from '../../lib/i18n'
+import { Macro } from '../../types'
 
-
-export default function MacroItemEditor({ macro, onEdit, coordinator }:{ macro:any, onEdit:(m:any)=>void, coordinator: EditorCoordinator }){
-  async function onDelete(){
-    if (coordinator) {
-      await coordinator.deleteMacro(String(macro.id));
-    }
-  }
-
+export default function MacroItemEditor({ macro, onEdit, onDelete }: {
+  macro: Macro,
+  onEdit: (m: Macro) => void,
+  onDelete: (id: string) => void,
+}) {
   return (
     <div className="card">
       <div>
@@ -17,8 +13,8 @@ export default function MacroItemEditor({ macro, onEdit, coordinator }:{ macro:a
         <span style={{ marginLeft: '8px', fontSize: 'var(--text-sm)', color: 'var(--ink-soft)' }}>{macro.text.slice(0,80)}{macro.text.length>80?'…':''}</span>
       </div>
       <div className="button-group" style={{ marginTop: 'var(--spacing-md)' }}>
-        <button className="btn-link" onClick={()=>onEdit(macro)}>{t('macroItemEditor.edit')}</button>
-        <button className="btn-link-danger" onClick={onDelete}>{t('macroItemEditor.delete')}</button>
+        <button className="btn-link" onClick={() => onEdit(macro)}>{t('macroItemEditor.edit')}</button>
+        <button className="btn-link-danger" onClick={() => onDelete(String(macro.id))}>{t('macroItemEditor.delete')}</button>
       </div>
     </div>
   )

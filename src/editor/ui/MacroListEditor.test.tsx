@@ -20,60 +20,28 @@ vi.mock('./MacroItemEditor', () => ({
 
 describe('MacroListEditor Component', () => {
   const mockOnEdit = vi.fn()
+  const mockOnDelete = vi.fn()
   const mockMacros = [
     { id: 1, command: '/test1', text: 'Test text 1' },
     { id: 2, command: '/test2', text: 'Test text 2' },
-  ]
+  ] as any
 
-  const mockCoordinator = {
-    createMacro: vi.fn(),
-    updateMacro: vi.fn(),
-    deleteMacro: vi.fn(),
-    getEditingMacro: vi.fn(() => null),
-    setEditingMacro: vi.fn(),
-    resetForm: vi.fn(),
-    updateSettings: vi.fn(),
-    getState: vi.fn(() => ({
-      macros: [],
-      editingMacro: null,
-      settings: {},
-      error: null,
-    })),
-    subscribe: vi.fn(() => () => {}),
-    attach: vi.fn(),
-    detach: vi.fn(),
-    enable: vi.fn(),
-    disable: vi.fn(),
-    isEnabled: vi.fn(() => true),
-    destroy: vi.fn(),
-  }
-
-  it('renders without crashing', () => {
-    render(<MacroListEditor macros={mockMacros} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
+  it('renders a MacroItemEditor per macro', () => {
+    render(<MacroListEditor macros={mockMacros} onEdit={mockOnEdit} onDelete={mockOnDelete} />)
     expect(screen.getAllByTestId('macro-item-editor')).toHaveLength(2)
-  })
-
-  it('displays message when no macros exist', () => {
-    render(<MacroListEditor macros={[]} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
-    expect(screen.getByText('macroListEditor.noMacros')).toBeInTheDocument()
-  })
-
-  it('renders a MacroItemEditor for each macro', () => {
-    render(<MacroListEditor macros={mockMacros} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
-    
-    mockMacros.forEach(macro => {
+    mockMacros.forEach((macro: any) => {
       expect(screen.getByText(macro.command)).toBeInTheDocument()
     })
   })
 
-  it('calls onEdit with the correct macro when an item is edited', () => {
-    render(<MacroListEditor macros={mockMacros} onEdit={mockOnEdit} coordinator={mockCoordinator} />)
+  it('displays a message when no macros exist', () => {
+    render(<MacroListEditor macros={[]} onEdit={mockOnEdit} onDelete={mockOnDelete} />)
+    expect(screen.getByText('macroListEditor.noMacros')).toBeInTheDocument()
+  })
 
-    // Find all the "Edit" buttons rendered by our mock components
-    const editButtons = screen.getAllByRole('button', { name: 'Edit' })
-    // Click the first one
-    fireEvent.click(editButtons[0])
-
+  it('calls onEdit with the correct macro', () => {
+    render(<MacroListEditor macros={mockMacros} onEdit={mockOnEdit} onDelete={mockOnDelete} />)
+    fireEvent.click(screen.getAllByRole('button', { name: 'Edit' })[0])
     expect(mockOnEdit).toHaveBeenCalledWith(mockMacros[0])
   })
 })
