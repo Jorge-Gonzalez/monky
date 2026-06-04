@@ -1,80 +1,46 @@
 // @vitest-environment jsdom
-import { render, screen, cleanup } from '@testing-library/preact'
+import { render, screen } from '@testing-library/preact'
 import { describe, it, expect, vi, Mock, beforeEach } from 'vitest'
-import { t } from '../../lib/i18n'
-import Options from './Options' // Import the actual component
-import { useOptionsCoordinator } from '../hooks/useOptionsCoordinator'
-import { OptionsCoordinator } from '../coordinators/optionsCoordinator'
-import { OptionsState } from '../managers/optionsManager'
+import Options from './Options'
+import { useOptions } from '../useOptions'
 
-// Mock the i18n function
-vi.mock('../../lib/i18n', () => ({
-  t: (key: string) => key,
-}))
+vi.mock('../../lib/i18n', () => ({ t: (key: string) => key }))
 
-// Mock the PrefixEditor and ReplacementMode components
-vi.mock('./PrefixEditor', () => ({ // Use default export
-  __esModule: true, // Handle default export
+vi.mock('./PrefixEditor', () => ({
+  __esModule: true,
   default: () => <div data-testid="prefix-editor">PrefixEditor</div>,
-}));
-
-vi.mock('./ReplacementMode', () => ({ // Use default export
-  __esModule: true, // Handle default export
-  default: () => <div data-testid="replacement-mode">ReplacementMode</div>,
-}));
-
-// Mock the coordinator hook
-vi.mock('../hooks/useOptionsCoordinator', () => ({
-  useOptionsCoordinator: vi.fn(),
 }))
 
-const createMockCoordinator = (): OptionsCoordinator => {
-  const unsubscribe = vi.fn();
-  return {
-    getState: vi.fn((): OptionsState => ({ prefixes: ['/'], useCommitKeys: false, language: 'en', colorTheme: 'humo' })),
-    subscribe: vi.fn(() => unsubscribe), // Return the mock unsubscribe function
-    setPrefixes: vi.fn(),
-    setUseCommitKeys: vi.fn(),
-    setLanguage: vi.fn(),
-    setColorTheme: vi.fn(),
-    resetToDefaults: vi.fn(),
-    attach: vi.fn(),
-    detach: vi.fn(),
-    enable: vi.fn(),
-    disable: vi.fn(),
-    isEnabled: vi.fn(() => true),
-    destroy: vi.fn(),
-  };
-}
+vi.mock('./ReplacementMode', () => ({
+  __esModule: true,
+  default: () => <div data-testid="replacement-mode">ReplacementMode</div>,
+}))
 
-describe('Options Component', () => {
-  let mockCoordinator: OptionsCoordinator;
+vi.mock('../useOptions', () => ({ useOptions: vi.fn() }))
 
+describe('Options page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockCoordinator = createMockCoordinator()
-    ;(useOptionsCoordinator as Mock).mockReturnValue(mockCoordinator)
+    ;(useOptions as Mock).mockReturnValue({
+      prefixes: ['/'],
+      useCommitKeys: false,
+      language: 'en',
+      colorTheme: 'humo',
+      setUseCommitKeys: vi.fn(),
+      setLanguage: vi.fn(),
+      setColorTheme: vi.fn(),
+      togglePrefix: vi.fn(() => true),
+    })
   })
 
-  it('renders without crashing', () => {
+  it('renders the title', () => {
     render(<Options />)
     expect(screen.getByText('options.title')).toBeInTheDocument()
   })
 
-  it('renders PrefixEditor and ReplacementMode components', () => {
+  it('renders PrefixEditor and ReplacementMode', () => {
     render(<Options />)
     expect(screen.getByTestId('prefix-editor')).toBeInTheDocument()
     expect(screen.getByTestId('replacement-mode')).toBeInTheDocument()
-  })
-
-  it('subscribes to the coordinator on mount and unsubscribes on unmount', () => {
-    const { unmount } = render(<Options />)
-    expect(mockCoordinator.subscribe).toHaveBeenCalledTimes(1)
-
-    // Get the unsubscribe function that was returned
-    const unsubscribeFn = (mockCoordinator.subscribe as any).mock.results[0].value
-
-    unmount()
-    expect(unsubscribeFn).toHaveBeenCalledTimes(1)
   })
 })

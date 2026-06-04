@@ -1,30 +1,26 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { t } from '../../lib/i18n';
-import { OptionsCoordinator } from '../coordinators/optionsCoordinator';
 
 const ALL_PREFIXES = ['/', ';', ':', '#', '!'];
 
 interface PrefixEditorProps {
-  coordinator: OptionsCoordinator;
   prefixes: string[];
+  /** Toggle a prefix; returns false if the change was rejected (last one). */
+  onToggle: (prefix: string) => boolean;
 }
 
 /**
- * PrefixEditor - Configure macro trigger prefixes
- * Uses semantic CSS classes compatible with modal system
+ * PrefixEditor - Configure macro trigger prefixes. Presentational: owns only the
+ * shake feedback; the toggle rule lives in the caller.
  */
-export default function PrefixEditor({ coordinator, prefixes }: PrefixEditorProps) {
+export default function PrefixEditor({ prefixes, onToggle }: PrefixEditorProps) {
   const [shake, setShake] = useState<string | null>(null);
 
   const handlePrefixClick = (prefix: string) => {
-    const isSelected = prefixes.includes(prefix);
-    if (isSelected && prefixes.length === 1) {
+    if (!onToggle(prefix)) {
       setShake(prefix);
       setTimeout(() => setShake(null), 400);
-      return;
     }
-    const newPrefixes = isSelected ? prefixes.filter(p => p !== prefix) : [...prefixes, prefix];
-    coordinator.setPrefixes(newPrefixes);
   };
 
   return (

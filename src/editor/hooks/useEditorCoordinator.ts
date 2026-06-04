@@ -4,10 +4,7 @@ import { createEditorCoordinator, EditorCoordinator } from '../coordinators/edit
 import { createDefaultEditorActions } from '../actions/createDefaultEditorActions';
 
 /**
- * Hook to get the editor coordinator instance
- *
- * This hook follows the same pattern as useOptionsCoordinator,
- * providing a consistent API across the application.
+ * Hook to get the editor coordinator instance.
  */
 export function useEditorCoordinator(): EditorCoordinator {
   const [coordinator] = useState(() => {

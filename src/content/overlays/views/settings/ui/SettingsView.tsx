@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { BaseModalViewProps } from '../../../modal/types';
-import { useOptionsCoordinator, OptionsState } from '../../../../../options';
+import { useOptions } from '../../../../../options';
 import { useMacroStore } from '../../../../../store/useMacroStore';
 import { serializeMacros, parseMacroImport, mergeImport } from '../../../../../lib/macroIO';
 import { ColorTheme, Lang } from '../../../../../types';
@@ -28,29 +28,18 @@ const LANGUAGE_OPTIONS: { value: Lang; label: string }[] = [
 type ImportStatus = { ok: boolean; message: string } | null;
 
 export function SettingsView(_props: BaseModalViewProps) {
-  const coordinator = useOptionsCoordinator();
-  const [state, setState] = useState<OptionsState>(coordinator.getState());
+  const { prefixes, useCommitKeys, colorTheme, language, togglePrefix, setUseCommitKeys, setColorTheme, setLanguage } = useOptions();
   const [shake, setShake] = useState<string | null>(null);
   const [importStatus, setImportStatus] = useState<ImportStatus>(null);
   const macros = useMacroStore(s => s.macros);
   const addMacro = useMacroStore(s => s.addMacro);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    const unsubscribe = coordinator.subscribe(setState);
-    return unsubscribe;
-  }, [coordinator]);
-
   const handlePrefixClick = (prefix: string) => {
-    const isSelected = state.prefixes.includes(prefix);
-    if (isSelected && state.prefixes.length === 1) {
+    if (!togglePrefix(prefix)) {
       setShake(prefix);
       setTimeout(() => setShake(null), 400);
-      return;
     }
-    coordinator.setPrefixes(
-      isSelected ? state.prefixes.filter(p => p !== prefix) : [...state.prefixes, prefix]
-    );
   };
 
   const handleExport = () => {
@@ -95,7 +84,7 @@ export function SettingsView(_props: BaseModalViewProps) {
     setTimeout(() => setImportStatus(null), 4000);
   };
 
-  const replacementValue = state.useCommitKeys ? 'manual' : 'auto';
+  const replacementValue = useCommitKeys ? 'manual' : 'auto';
 
   return (
     <div className="settings-view">
@@ -108,7 +97,7 @@ export function SettingsView(_props: BaseModalViewProps) {
               <span className="settings-row-label">{t('options.prefixEditor.title')}</span>
               <div className="horizontal items snug selectable-group">
                 {ALL_PREFIXES.map(prefix => {
-                  const isSelected = state.prefixes.includes(prefix);
+                  const isSelected = prefixes.includes(prefix);
                   return (
                     <button
                       key={prefix}
@@ -129,7 +118,7 @@ export function SettingsView(_props: BaseModalViewProps) {
               <SegmentedControl
                 options={REPLACEMENT_OPTIONS.map(o => ({ value: o.value, label: o.label() }))}
                 value={replacementValue}
-                onChange={v => coordinator.setUseCommitKeys(v === 'manual')}
+                onChange={v => setUseCommitKeys(v === 'manual')}
               />
             </div>
           </div>
@@ -144,16 +133,16 @@ export function SettingsView(_props: BaseModalViewProps) {
               <span className="settings-row-label">{t('settings.colorTheme')}</span>
               <SegmentedControl
                 options={THEME_OPTIONS}
-                value={state.colorTheme}
-                onChange={v => coordinator.setColorTheme(v)}
+                value={colorTheme}
+                onChange={v => setColorTheme(v)}
               />
             </div>
             <div className="settings-row">
               <span className="settings-row-label">{t('settings.language')}</span>
               <SegmentedControl
                 options={LANGUAGE_OPTIONS}
-                value={state.language}
-                onChange={v => coordinator.setLanguage(v)}
+                value={language}
+                onChange={v => setLanguage(v)}
               />
             </div>
           </div>

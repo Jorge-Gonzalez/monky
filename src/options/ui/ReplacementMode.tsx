@@ -1,16 +1,14 @@
 import { t } from '../../lib/i18n';
-import { OptionsCoordinator } from '../coordinators/optionsCoordinator';
 
 interface ReplacementModeProps {
-  coordinator: OptionsCoordinator;
   useCommitKeys: boolean;
+  onChange: (useCommitKeys: boolean) => void;
 }
 
 /**
- * ReplacementMode - Configure macro replacement behavior
- * Uses semantic CSS classes compatible with modal system
+ * ReplacementMode - Configure macro replacement behavior. Presentational.
  */
-export default function ReplacementMode({ coordinator, useCommitKeys }: ReplacementModeProps) {
+export default function ReplacementMode({ useCommitKeys, onChange }: ReplacementModeProps) {
   return (
     <div className="section">
       <h3 className="section-title">{t('replacementMode.title')}</h3>
@@ -20,7 +18,7 @@ export default function ReplacementMode({ coordinator, useCommitKeys }: Replacem
             type="radio"
             name="behavior"
             checked={!useCommitKeys}
-            onChange={() => coordinator.setUseCommitKeys(false)}
+            onChange={() => onChange(false)}
             className="radio"
           />
           <span className="radio-label">{t('replacementMode.auto')}</span>
@@ -30,7 +28,7 @@ export default function ReplacementMode({ coordinator, useCommitKeys }: Replacem
             type="radio"
             name="behavior"
             checked={useCommitKeys}
-            onChange={() => coordinator.setUseCommitKeys(true)}
+            onChange={() => onChange(true)}
             className="radio"
           />
           <span className="radio-label">{t('replacementMode.manual')}</span>

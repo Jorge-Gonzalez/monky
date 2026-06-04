@@ -2,88 +2,40 @@
 import { render, screen, fireEvent } from '@testing-library/preact'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import ReplacementMode from './ReplacementMode'
-import { OptionsCoordinator } from '../coordinators/optionsCoordinator'
-import { OptionsState } from '../managers/optionsManager'
 
-// Mock the i18n function
-vi.mock('../../lib/i18n', () => ({
-  t: (key: string) => key,
-}))
+vi.mock('../../lib/i18n', () => ({ t: (key: string) => key }))
 
-// Helper to create a mock coordinator
-const createMockCoordinator = (): OptionsCoordinator => ({
-  setUseCommitKeys: vi.fn(),
-  setPrefixes: vi.fn(),
-  setLanguage: vi.fn(),
-  setColorTheme: vi.fn(),
-  getState: vi.fn((): OptionsState => ({ prefixes: [], useCommitKeys: false, language: 'en', colorTheme: 'humo' })),
-  subscribe: vi.fn(() => () => {}),
-  resetToDefaults: vi.fn(),
-  attach: vi.fn(),
-  detach: vi.fn(),
-  enable: vi.fn(),
-  disable: vi.fn(),
-  isEnabled: vi.fn(() => true),
-  destroy: vi.fn(),
-})
+describe('ReplacementMode', () => {
+  beforeEach(() => vi.clearAllMocks())
 
-describe('ReplacementMode Component', () => {
-  let mockCoordinator: OptionsCoordinator
-
-  beforeEach(() => {
-    vi.clearAllMocks()
-    mockCoordinator = createMockCoordinator()
-  })
-
-  it('renders without crashing', () => {
-    render(<ReplacementMode coordinator={mockCoordinator} useCommitKeys={false} />)
+  it('renders both options', () => {
+    render(<ReplacementMode useCommitKeys={false} onChange={vi.fn()} />)
     expect(screen.getByText('replacementMode.title')).toBeInTheDocument()
     expect(screen.getByLabelText('replacementMode.auto')).toBeInTheDocument()
     expect(screen.getByLabelText('replacementMode.manual')).toBeInTheDocument()
   })
 
-  it('selects "auto" by default when useCommitKeys is false', () => {
-    render(<ReplacementMode coordinator={mockCoordinator} useCommitKeys={false} />)
-    const autoRadio = screen.getByLabelText('replacementMode.auto')
-    const manualRadio = screen.getByLabelText('replacementMode.manual')
-
-    expect(autoRadio).toBeChecked()
-    expect(manualRadio).not.toBeChecked()
-  })
-
-  it('selects "auto" by default when useCommitKeys is undefined', () => {
-    // Arrange: Pass undefined for useCommitKeys
-    render(<ReplacementMode coordinator={mockCoordinator} useCommitKeys={undefined as any} />)
-
-    // Assert: The component should default to 'auto'
+  it('selects auto when useCommitKeys is false', () => {
+    render(<ReplacementMode useCommitKeys={false} onChange={vi.fn()} />)
     expect(screen.getByLabelText('replacementMode.auto')).toBeChecked()
+    expect(screen.getByLabelText('replacementMode.manual')).not.toBeChecked()
   })
 
-  it('selects "manual" when useCommitKeys is true', () => {
-    // Arrange: Pass true for useCommitKeys
-    render(<ReplacementMode coordinator={mockCoordinator} useCommitKeys={true} />)
-
-    // Assert
+  it('selects manual when useCommitKeys is true', () => {
+    render(<ReplacementMode useCommitKeys={true} onChange={vi.fn()} />)
     expect(screen.getByLabelText('replacementMode.manual')).toBeChecked()
     expect(screen.getByLabelText('replacementMode.auto')).not.toBeChecked()
   })
 
-  it('calls coordinator.setUseCommitKeys with correct values when radio buttons are clicked', () => {
-    // Destructure rerender from the initial render
-    const { rerender } = render(<ReplacementMode coordinator={mockCoordinator} useCommitKeys={false} />)
+  it('calls onChange with the chosen mode', () => {
+    const onChange = vi.fn()
+    const { rerender } = render(<ReplacementMode useCommitKeys={false} onChange={onChange} />)
 
-    // 1. Click 'manual'
-    const manualRadio = screen.getByLabelText('replacementMode.manual')
-    fireEvent.click(manualRadio)
-    expect(mockCoordinator.setUseCommitKeys).toHaveBeenCalledWith(true)
+    fireEvent.click(screen.getByLabelText('replacementMode.manual'))
+    expect(onChange).toHaveBeenCalledWith(true)
 
-    // 2. Rerender the component with the new prop value to simulate the state update
-    rerender(<ReplacementMode coordinator={mockCoordinator} useCommitKeys={true} />)
-
-    // 2. Click 'auto'
-    const autoRadio = screen.getByLabelText('replacementMode.auto')
-    fireEvent.click(autoRadio)
-    expect(mockCoordinator.setUseCommitKeys).toHaveBeenCalledWith(false)
-    expect(mockCoordinator.setUseCommitKeys).toHaveBeenCalledTimes(2)
+    rerender(<ReplacementMode useCommitKeys={true} onChange={onChange} />)
+    fireEvent.click(screen.getByLabelText('replacementMode.auto'))
+    expect(onChange).toHaveBeenCalledWith(false)
   })
 })
