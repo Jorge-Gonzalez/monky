@@ -80,17 +80,25 @@
   position: relative;
 }
 
+/* Slide-only pill: hidden unless a selection change is animating. The selected
+   button owns the resting background (see .seg-option.is-selected). */
 .seg-control::before {
   content: '';
   position: absolute;
   top: 0;
   bottom: 0;
   left: var(--pill-left, 0);
-  width: var(--pill-width, 50%);
+  width: var(--pill-width, 0);
   background: var(--accent);
+  opacity: 0;
   transition: left 0.1s ease, width 0.1s ease;
   pointer-events: none;
 }
+
+.seg-control.is-sliding::before { opacity: 1; }
+
+/* Jump the pill onto the origin button without animating, before the slide. */
+.seg-control.seg-snap::before { transition: none; }
 
 .seg-option {
   flex: 1;
@@ -118,7 +126,14 @@
 
 .seg-option.is-selected {
   color: var(--ink-alt);
+  background: var(--accent);
   border-right-color: transparent;
+}
+
+/* While the pill is sliding in, it is the only fill — suppress the destination
+   button's background so the two don't double up, then swap back on landing. */
+.seg-control.is-sliding .seg-option.is-selected {
+  background: transparent;
 }
 
 /* Tone-dim background for all controls within settings view */
