@@ -1,9 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { createMacroDetector, MacroDetector } from './macroDetector'
 import { useMacroStore } from '../../store/useMacroStore'
-// import { updateStateOnKey, isExact } from './detector-core'
-// import { getActiveEditable, getSelection, replaceText, getCursorCoordinates } from './editableUtils'
-// import { isPrintableKey, UNSUPPORTED_KEYS } from './keyUtils'
 import { defaultMacroConfig } from '../../config/defaults'
 import { DetectorActions } from '../actions/detectorActions'
 
@@ -20,19 +17,6 @@ vi.mock('./detector-core', () => ({
   updateStateOnKey: vi.fn(),
   isExact: vi.fn()
 }));
-
-vi.mock('./editableUtils', () => ({
-  getActiveEditable: vi.fn(),
-  getSelection: vi.fn(),
-  replaceText: vi.fn(),
-  getCursorCoordinates: vi.fn(),
-  getTextContent: vi.fn(),
-}))
-
-vi.mock('../keyUtils', () => ({
-  isPrintableKey: vi.fn(),
-  UNSUPPORTED_KEYS: ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown', 'Escape', 'Delete']
-}))
 
 vi.mock('../../config/defaults', () => ({
   defaultMacroConfig: {
