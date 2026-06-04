@@ -37,9 +37,11 @@ vi.mock('../store/useMacroStore', () => ({
 describe('sync', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // syncEnabled: true so the network path runs; the disabled case is tested separately.
     vi.mocked(useMacroStore.getState).mockReturnValue({
       macros: [],
-      setMacros: vi.fn()
+      setMacros: vi.fn(),
+      config: { syncEnabled: true }
     } as any)
     // Default: empty offline queue
     mockGet.mockResolvedValue({ pendingOps: [] })
@@ -47,6 +49,25 @@ describe('sync', () => {
 
   // The store is the local source of truth; these helpers only push to the
   // backend (and queue on failure). They must NOT write macros to storage.
+
+  describe('sync disabled (default)', () => {
+    it('makes no network calls when config.syncEnabled is not true', async () => {
+      vi.mocked(useMacroStore.getState).mockReturnValue({
+        macros: [],
+        setMacros: vi.fn(),
+        config: { syncEnabled: false }
+      } as any)
+
+      await sync.pushCreate({ id: 1, command: '/test', text: 'x' })
+      await sync.pushUpdate({ id: 1, command: '/test', text: 'x' })
+      await sync.pushDelete(1)
+      await sync.syncMacros()
+      await sync.flushQueue()
+
+      expect(apiFetch).not.toHaveBeenCalled()
+      expect(mockSet).not.toHaveBeenCalled()
+    })
+  })
 
   describe('pushCreate', () => {
     it('pushes the create to the backend and does not touch storage on success', async () => {
@@ -152,7 +173,8 @@ describe('sync', () => {
       const mockSetMacros = vi.fn()
       vi.mocked(useMacroStore.getState).mockReturnValue({
         macros: localMacros,
-        setMacros: mockSetMacros
+        setMacros: mockSetMacros,
+        config: { syncEnabled: true }
       } as any)
 
       await sync.syncMacros()

@@ -8,6 +8,12 @@ import { useMacroStore } from '../store/useMacroStore'
 
 const QUEUE_KEY = 'pendingOps'
 
+// Hosted-backend sync is opt-in. Until it's enabled, these functions are no-ops —
+// macros still persist locally and via chrome.storage browser-sync.
+function syncEnabled(): boolean {
+  return useMacroStore.getState().config.syncEnabled === true
+}
+
 async function getQueue(){ const o = await chrome.storage.local.get(QUEUE_KEY); return o[QUEUE_KEY]||[] }
 async function setQueue(q){ await chrome.storage.local.set({ [QUEUE_KEY]: q }) }
 
@@ -31,6 +37,7 @@ function mergeByUpdated(local, remote){
 }
 
 export async function flushQueue(){
+  if (!syncEnabled()) return
   let q = await getQueue(); if (!q.length) return
   const remain = []
   for (const item of q){
@@ -54,6 +61,7 @@ export async function flushQueue(){
 }
 
 export async function syncMacros(){
+  if (!syncEnabled()) return
   let remote = []
   try {
     const res = await apiFetch('/macros')
@@ -73,6 +81,7 @@ export async function syncMacros(){
 // the change to the backend, queueing it for later if the network is unavailable.
 
 export async function pushCreate(macro){
+  if (!syncEnabled()) return
   try {
     const res = await apiFetch('/macros', { method:'POST', body: JSON.stringify(macro) })
     if (!res.ok) throw new Error('net')
@@ -83,6 +92,7 @@ export async function pushCreate(macro){
 }
 
 export async function pushUpdate(macro){
+  if (!syncEnabled()) return
   try {
     const res = await apiFetch(`/macros/${macro.id}`, { method:'PUT', body: JSON.stringify(macro) })
     if (!res.ok) throw new Error('net')
@@ -93,6 +103,7 @@ export async function pushUpdate(macro){
 }
 
 export async function pushDelete(id){
+  if (!syncEnabled()) return
   try {
     const res = await apiFetch(`/macros/${id}`, { method:'DELETE' })
     if (!res.ok) throw new Error('net')
