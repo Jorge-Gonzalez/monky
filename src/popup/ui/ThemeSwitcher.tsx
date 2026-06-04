@@ -1,11 +1,11 @@
-import { usePopupManager } from '../managers/usePopupManager';
+import { useMacroStore } from '../../store/useMacroStore';
 import { ThemeMode } from '../../types';
 
 export default function ThemeSwitcher() {
-  const manager = usePopupManager();
+  const setTheme = useMacroStore(s => s.setTheme);
 
   const handleThemeChange = (theme: ThemeMode) => {
-    manager.setTheme(theme);
+    setTheme(theme);
   };
 
   return (
