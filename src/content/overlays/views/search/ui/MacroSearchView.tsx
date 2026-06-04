@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { Macro } from '../../../../../types';
 import { t } from '../../../../../lib/i18n';
 import { useMacroStore } from '../../../../../store/useMacroStore';
+import { deleteMacro } from '../../../../../store/macroCrud';
 import { useMacroSearch } from '../hooks/useMacroSearch';
 import { useListNavigation } from '../hooks/useListNavigation';
 import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
@@ -30,7 +31,6 @@ export function MacroSearchView({
 
   const macros = useMacroStore(state => state.macros);
   const prefixes = useMacroStore(state => state.config.prefixes);
-  const deleteMacro = useMacroStore(state => state.deleteMacro);
 
   const parsed = parseModalQuery(searchQuery, prefixes);
 
@@ -71,9 +71,9 @@ export function MacroSearchView({
     if (command.id === 'edit') {
       onNavigateToEditor(macro);
     } else if (command.id === 'delete') {
-      deleteMacro(macro.id);
+      deleteMacro(String(macro.id));
     }
-  }, [onNavigateToEditor, deleteMacro]);
+  }, [onNavigateToEditor]);
 
   const handleCommandSelect = useCallback((command: ModalCommand) => {
     setSearchQuery('');
