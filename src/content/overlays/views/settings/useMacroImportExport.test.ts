@@ -1,0 +1,61 @@
+// @vitest-environment jsdom
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { renderHook, act, waitFor } from '@testing-library/preact'
+
+const mockAddMacro = vi.fn()
+const mockParseMacroImport = vi.fn()
+const mockMergeImport = vi.fn()
+
+vi.mock('../../../../store/useMacroStore', () => ({
+  useMacroStore: (selector: any) => selector({ macros: [], addMacro: mockAddMacro }),
+}))
+vi.mock('../../../../lib/macroIO', () => ({
+  serializeMacros: vi.fn(() => '[]'),
+  parseMacroImport: (...args: any[]) => mockParseMacroImport(...args),
+  mergeImport: (...args: any[]) => mockMergeImport(...args),
+}))
+vi.mock('../../../../lib/i18n', () => ({ t: (key: string) => key }))
+
+import { useMacroImportExport } from './useMacroImportExport'
+
+describe('useMacroImportExport', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    // jsdom's FileReader doesn't reliably fire onload; stub it to fire asynchronously.
+    vi.stubGlobal('FileReader', vi.fn(() => {
+      const reader: any = { result: '[]', onload: null }
+      reader.readAsText = () => { Promise.resolve().then(() => reader.onload?.()) }
+      return reader
+    }))
+    mockAddMacro.mockReturnValue({ success: true })
+    mockParseMacroImport.mockReturnValue([{ command: '/uno', text: 'Uno', contentType: 'text/plain' }])
+    mockMergeImport.mockImplementation((parsed: any[], _existing: any, addFn: (m: any) => any) => {
+      parsed.forEach(m => addFn(m))
+      return { added: parsed.length, skipped: 0 }
+    })
+  })
+
+  it('imports a file: parses, merges, adds, and reports a success status', async () => {
+    const { result } = renderHook(() => useMacroImportExport())
+    act(() => { result.current.importFromFile(new File(['[]'], 'macros.json', { type: 'application/json' })) })
+
+    await waitFor(() => expect(mockParseMacroImport).toHaveBeenCalledWith(expect.any(String)))
+    expect(mockMergeImport).toHaveBeenCalledWith(
+      expect.arrayContaining([expect.objectContaining({ command: '/uno' })]),
+      expect.any(Set),
+      expect.any(Function),
+    )
+    expect(mockAddMacro).toHaveBeenCalled()
+    await waitFor(() => expect(result.current.status?.ok).toBe(true))
+  })
+
+  it('reports an error status when the file is invalid', async () => {
+    mockParseMacroImport.mockImplementation(() => { throw new Error('bad json') })
+    const { result } = renderHook(() => useMacroImportExport())
+    act(() => { result.current.importFromFile(new File(['x'], 'x.json')) })
+
+    await waitFor(() => {
+      expect(result.current.status).toEqual({ ok: false, message: 'settings.importExport.status.invalidFile' })
+    })
+  })
+})

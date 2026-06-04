@@ -1,8 +1,7 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { BaseModalViewProps } from '../../../modal/types';
 import { useOptions } from '../../../../../options';
-import { useMacroStore } from '../../../../../store/useMacroStore';
-import { serializeMacros, parseMacroImport, mergeImport } from '../../../../../lib/macroIO';
+import { useMacroImportExport } from '../useMacroImportExport';
 import { ColorTheme, Lang } from '../../../../../types';
 import { SegmentedControl } from '../../../../../shared/ui/SegmentedControl';
 import { SelectableGroup } from '../../../../../shared/ui/SelectableGroup';
@@ -26,56 +25,10 @@ const LANGUAGE_OPTIONS: { value: Lang; label: string }[] = [
   { value: 'es', label: 'Español' },
 ];
 
-type ImportStatus = { ok: boolean; message: string } | null;
-
 export function SettingsView(_props: BaseModalViewProps) {
   const { prefixes, useCommitKeys, colorTheme, language, setPrefixes, setUseCommitKeys, setColorTheme, setLanguage } = useOptions();
-  const [importStatus, setImportStatus] = useState<ImportStatus>(null);
-  const macros = useMacroStore(s => s.macros);
-  const addMacro = useMacroStore(s => s.addMacro);
+  const { status: importStatus, exportMacros, importFromFile } = useMacroImportExport();
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleExport = () => {
-    const json = serializeMacros(macros);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'monky-macros.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const handleImport = (e: Event) => {
-    const input = e.currentTarget as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-    input.value = '';
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const parsed = parseMacroImport(reader.result as string);
-        if (parsed.length === 0) {
-          showImportStatus(false, t('settings.importExport.status.noValidMacros'));
-          return;
-        }
-        const existing = new Set(macros.map(m => m.command));
-        const { added, skipped } = mergeImport(parsed, existing, addMacro);
-        const message = skipped > 0
-          ? t('settings.importExport.status.addedWithSkipped', { added, skipped })
-          : t('settings.importExport.status.added', { count: added });
-        showImportStatus(true, message);
-      } catch {
-        showImportStatus(false, t('settings.importExport.status.invalidFile'));
-      }
-    };
-    reader.readAsText(file);
-  };
-
-  const showImportStatus = (ok: boolean, message: string) => {
-    setImportStatus({ ok, message });
-    setTimeout(() => setImportStatus(null), 4000);
-  };
 
   const replacementValue = useCommitKeys ? 'manual' : 'auto';
 
@@ -139,7 +92,7 @@ export function SettingsView(_props: BaseModalViewProps) {
             <div className="settings-row">
               <span className="settings-row-label">{t('settings.importExport.title')}</span>
               <div className="horizontal items snug">
-                <button className="btn btn-outlined" type="button" onClick={handleExport}>
+                <button className="btn btn-outlined" type="button" onClick={exportMacros}>
                   {t('settings.importExport.exportButton')}
                 </button>
                 <button className="btn btn-outlined" type="button" onClick={() => fileInputRef.current?.click()}>
@@ -150,7 +103,12 @@ export function SettingsView(_props: BaseModalViewProps) {
                   type="file"
                   accept=".json,application/json"
                   style={{ display: 'none' }}
-                  onChange={handleImport}
+                  onChange={e => {
+                    const input = e.currentTarget as HTMLInputElement;
+                    const file = input.files?.[0];
+                    input.value = '';
+                    if (file) importFromFile(file);
+                  }}
                 />
               </div>
             </div>
