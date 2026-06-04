@@ -26,10 +26,10 @@ describe('Options page', () => {
       useCommitKeys: false,
       language: 'en',
       colorTheme: 'humo',
+      setPrefixes: vi.fn(),
       setUseCommitKeys: vi.fn(),
       setLanguage: vi.fn(),
       setColorTheme: vi.fn(),
-      togglePrefix: vi.fn(() => true),
     })
   })
 

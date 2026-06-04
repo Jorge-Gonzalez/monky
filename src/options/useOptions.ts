@@ -8,11 +8,10 @@ export interface OptionsApi {
   useCommitKeys: boolean;
   language: Lang;
   colorTheme: ColorTheme;
+  setPrefixes(prefixes: string[]): void;
   setUseCommitKeys(enabled: boolean): void;
   setLanguage(language: Lang): void;
   setColorTheme(colorTheme: ColorTheme): void;
-  /** Toggle a prefix on/off. Returns false (no change) if it would remove the last one. */
-  togglePrefix(prefix: string): boolean;
 }
 
 export function useOptions(): OptionsApi {
@@ -22,23 +21,14 @@ export function useOptions(): OptionsApi {
   const setLanguage = useMacroStore(s => s.setLanguage);
   const setColorTheme = useMacroStore(s => s.setColorTheme);
 
-  const prefixes = config.prefixes ?? [];
-
-  const togglePrefix = (prefix: string): boolean => {
-    const isSelected = prefixes.includes(prefix);
-    if (isSelected && prefixes.length === 1) return false; // keep at least one prefix
-    setPrefixes(isSelected ? prefixes.filter(p => p !== prefix) : [...prefixes, prefix]);
-    return true;
-  };
-
   return {
-    prefixes,
+    prefixes: config.prefixes ?? [],
     useCommitKeys: config.useCommitKeys ?? false,
     language: config.language ?? 'en',
     colorTheme: config.colorTheme ?? 'humo',
+    setPrefixes,
     setUseCommitKeys,
     setLanguage,
     setColorTheme,
-    togglePrefix,
   };
 }

@@ -5,6 +5,7 @@ import { useMacroStore } from '../../../../../store/useMacroStore';
 import { serializeMacros, parseMacroImport, mergeImport } from '../../../../../lib/macroIO';
 import { ColorTheme, Lang } from '../../../../../types';
 import { SegmentedControl } from '../../../../../shared/ui/SegmentedControl';
+import { SelectableGroup } from '../../../../../shared/ui/SelectableGroup';
 import { t } from '../../../../../lib/i18n';
 
 const ALL_PREFIXES = ['/', ';', ':', '#', '!'];
@@ -28,19 +29,11 @@ const LANGUAGE_OPTIONS: { value: Lang; label: string }[] = [
 type ImportStatus = { ok: boolean; message: string } | null;
 
 export function SettingsView(_props: BaseModalViewProps) {
-  const { prefixes, useCommitKeys, colorTheme, language, togglePrefix, setUseCommitKeys, setColorTheme, setLanguage } = useOptions();
-  const [shake, setShake] = useState<string | null>(null);
+  const { prefixes, useCommitKeys, colorTheme, language, setPrefixes, setUseCommitKeys, setColorTheme, setLanguage } = useOptions();
   const [importStatus, setImportStatus] = useState<ImportStatus>(null);
   const macros = useMacroStore(s => s.macros);
   const addMacro = useMacroStore(s => s.addMacro);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handlePrefixClick = (prefix: string) => {
-    if (!togglePrefix(prefix)) {
-      setShake(prefix);
-      setTimeout(() => setShake(null), 400);
-    }
-  };
 
   const handleExport = () => {
     const json = serializeMacros(macros);
@@ -95,23 +88,13 @@ export function SettingsView(_props: BaseModalViewProps) {
           <div className="settings-rows">
             <div className="settings-row">
               <span className="settings-row-label">{t('options.prefixEditor.title')}</span>
-              <div className="horizontal items snug selectable-group">
-                {ALL_PREFIXES.map(prefix => {
-                  const isSelected = prefixes.includes(prefix);
-                  return (
-                    <button
-                      key={prefix}
-                      type="button"
-                      role="switch"
-                      aria-checked={isSelected}
-                      onClick={() => handlePrefixClick(prefix)}
-                      className={`btn btn-outlined text-mono settings-prefix-btn ${isSelected ? 'is-selected' : ''} ${shake === prefix ? 'shake' : ''}`}
-                    >
-                      {prefix}
-                    </button>
-                  );
-                })}
-              </div>
+              <SelectableGroup
+                options={ALL_PREFIXES}
+                selected={prefixes}
+                onChange={setPrefixes}
+                className="horizontal items snug"
+                buttonClassName="btn btn-outlined text-mono settings-prefix-btn"
+              />
             </div>
             <div className="settings-row">
               <span className="settings-row-label">{t('replacementMode.title')}</span>

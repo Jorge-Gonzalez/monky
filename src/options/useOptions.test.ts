@@ -21,31 +21,10 @@ describe('useOptions', () => {
     expect(result.current.colorTheme).toBe('humo')
   })
 
-  it('togglePrefix adds a prefix', () => {
-    const { result } = renderHook(() => useOptions())
-    let ret = false
-    act(() => { ret = result.current.togglePrefix('#') })
-    expect(ret).toBe(true)
-    expect(useMacroStore.getState().config.prefixes).toEqual(['/', ';', '#'])
-  })
-
-  it('togglePrefix removes a prefix', () => {
-    const { result } = renderHook(() => useOptions())
-    act(() => { result.current.togglePrefix(';') })
-    expect(useMacroStore.getState().config.prefixes).toEqual(['/'])
-  })
-
-  it('togglePrefix refuses to remove the last prefix', () => {
-    useMacroStore.getState().setPrefixes(['/'])
-    const { result } = renderHook(() => useOptions())
-    let ret = true
-    act(() => { ret = result.current.togglePrefix('/') })
-    expect(ret).toBe(false)
-    expect(useMacroStore.getState().config.prefixes).toEqual(['/'])
-  })
-
   it('setters write through to the store', () => {
     const { result } = renderHook(() => useOptions())
+    act(() => result.current.setPrefixes(['/']))
+    expect(useMacroStore.getState().config.prefixes).toEqual(['/'])
     act(() => result.current.setColorTheme('mar'))
     expect(useMacroStore.getState().config.colorTheme).toBe('mar')
     act(() => result.current.setUseCommitKeys(true))
