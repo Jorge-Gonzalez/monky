@@ -66,14 +66,9 @@ export const useMacroStore = create<MacroStore>()(
       macros: dummyMacros,
       user: null,
       syncStatus: 'idle',
-      config: {
-        disabledSites: defaultMacroConfig.disabledSites,
-        prefixes: defaultMacroConfig.prefixes,
-        theme: defaultMacroConfig.theme,
-        useCommitKeys: defaultMacroConfig.useCommitKeys,
-        language: defaultMacroConfig.language,
-        suggestionsPopupPlacement: defaultMacroConfig.suggestionsPopupPlacement,
-      },
+      // Seed the full defaults so config is always complete (the persist merge
+      // backfills any field missing from older persisted state).
+      config: { ...defaultMacroConfig },
 
       // --- Actions ---
       setUser: (user)=> set({ user }),

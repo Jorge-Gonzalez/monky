@@ -23,10 +23,10 @@ export type verticalPlacement = 'top' | 'bottom'
 export type Config = {
   disabledSites: string[]
   prefixes: string[]
-  useCommitKeys?: boolean
+  useCommitKeys: boolean
   theme: ThemeMode
-  colorTheme?: ColorTheme
-  language?: Lang
+  colorTheme: ColorTheme
+  language: Lang
   suggestionsPopupPlacement?: verticalPlacement
   // Opt-in sync to the hosted backend (lib/sync). Off until a backend exists;
   // local persistence and chrome.storage browser-sync work regardless.

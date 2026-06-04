@@ -22,10 +22,10 @@ export function useOptions(): OptionsApi {
   const setColorTheme = useMacroStore(s => s.setColorTheme);
 
   return {
-    prefixes: config.prefixes ?? [],
-    useCommitKeys: config.useCommitKeys ?? false,
-    language: config.language ?? 'en',
-    colorTheme: config.colorTheme ?? 'humo',
+    prefixes: config.prefixes,
+    useCommitKeys: config.useCommitKeys,
+    language: config.language,
+    colorTheme: config.colorTheme,
     setPrefixes,
     setUseCommitKeys,
     setLanguage,

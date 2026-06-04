@@ -108,8 +108,9 @@ describe('ThemeManager component', () => {
     })
 
     it('defaults to humo when colorTheme is not set', () => {
+      // Deliberately omit colorTheme to exercise ThemeManager's runtime fallback.
       mockedUseMacroStore.mockImplementation(selector =>
-        selector({ config: { disabledSites: [], prefixes: ['/'], theme: 'light' } }) as any
+        selector({ config: { disabledSites: [], prefixes: ['/'], theme: 'light' } } as any) as any
       )
       render(<ThemeManager />)
       const expected = getColorThemeColors('humo', false)['--accent']
