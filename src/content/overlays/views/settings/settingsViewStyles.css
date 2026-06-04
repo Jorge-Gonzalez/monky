@@ -77,9 +77,23 @@
   border: 1px solid var(--harmonic);
   border-radius: var(--radius-md);
   overflow: hidden;
+  position: relative;
+}
+
+.seg-control::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pill-left, 0);
+  width: var(--pill-width, 50%);
+  background: var(--accent);
+  transition: left 0.1s ease, width 0.1s ease;
+  pointer-events: none;
 }
 
 .seg-option {
+  flex: 1;
   padding: var(--spacing-xs) var(--spacing-md);
   font-size: var(--text-sm);
   color: var(--ink-soft);
@@ -88,7 +102,9 @@
   border-right: 1px solid var(--harmonic);
   cursor: pointer;
   white-space: nowrap;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  position: relative;
+  z-index: 1;
+  transition: color var(--transition-fast);
 }
 
 .seg-option:last-child {
@@ -101,8 +117,8 @@
 }
 
 .seg-option.is-selected {
-  background: var(--accent);
-  color: white;
+  color: var(--ink-alt);
+  border-right-color: transparent;
 }
 
 /* Tone-dim background for all controls within settings view */
