@@ -1,4 +1,5 @@
 import { OptionsManager, OptionsState, DEFAULT_OPTIONS } from '../managers/optionsManager';
+import { OptionsActions } from '../actions/optionsActions';
 import { useMacroStore } from '../../store/useMacroStore';
 import { Lang, ColorTheme } from '../../types';
 
@@ -41,7 +42,10 @@ function readOptionsFromStore(): OptionsState {
   };
 }
 
-export function createOptionsCoordinator(manager: OptionsManager): OptionsCoordinator {
+export function createOptionsCoordinator(
+  manager: OptionsManager,
+  actions: OptionsActions,
+): OptionsCoordinator {
   let isEnabled = true;
   // Guards the synchronous store-subscription echo of our own writes, so a local
   // edit doesn't bounce back into the manager. (The async storage.onChanged echo
@@ -56,17 +60,14 @@ export function createOptionsCoordinator(manager: OptionsManager): OptionsCoordi
     manager.setState(readOptionsFromStore());
   });
 
-  // Apply a change locally (optimistic UI via the manager) and persist just the
-  // changed field to the store.
-  const apply = (
-    update: Partial<OptionsState>,
-    persist: (store: ReturnType<typeof useMacroStore.getState>) => void,
-  ): void => {
+  // Apply a change: optimistic UI via the manager, then persist through the
+  // actions seam (the single place option changes are written).
+  const apply = (update: Partial<OptionsState>, persist: () => void): void => {
     if (!isEnabled) return;
     manager.setState(update);
     isWritingLocally = true;
     try {
-      persist(useMacroStore.getState());
+      persist();
     } finally {
       isWritingLocally = false;
     }
@@ -75,16 +76,16 @@ export function createOptionsCoordinator(manager: OptionsManager): OptionsCoordi
   const getState = (): OptionsState => manager.getState();
 
   const setPrefixes = (prefixes: string[]): void =>
-    apply({ prefixes }, store => store.setPrefixes(prefixes));
+    apply({ prefixes }, () => actions.onPrefixesChanged(prefixes));
 
   const setUseCommitKeys = (enabled: boolean): void =>
-    apply({ useCommitKeys: enabled }, store => store.setUseCommitKeys(enabled));
+    apply({ useCommitKeys: enabled }, () => actions.onUseCommitKeysChanged(enabled));
 
   const setLanguage = (language: Lang): void =>
-    apply({ language }, store => store.setLanguage(language));
+    apply({ language }, () => actions.onLanguageChanged(language));
 
   const setColorTheme = (colorTheme: ColorTheme): void =>
-    apply({ colorTheme }, store => store.setColorTheme(colorTheme));
+    apply({ colorTheme }, () => actions.onColorThemeChanged(colorTheme));
 
   const resetToDefaults = (): void => {
     setPrefixes(DEFAULT_OPTIONS.prefixes);

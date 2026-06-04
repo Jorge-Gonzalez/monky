@@ -1,5 +1,6 @@
 import { createOptionsManager } from '../managers/optionsManager';
 import { createOptionsCoordinator, OptionsCoordinator } from '../coordinators/optionsCoordinator';
+import { createDefaultOptionsActions } from '../actions/createDefaultOptionsActions';
 
 /**
  * Singleton instance of the options coordinator
@@ -14,7 +15,8 @@ let coordinatorInstance: OptionsCoordinator | null = null;
 export function useOptionsCoordinator(): OptionsCoordinator {
   if (!coordinatorInstance) {
     const manager = createOptionsManager();
-    coordinatorInstance = createOptionsCoordinator(manager);
+    const actions = createDefaultOptionsActions();
+    coordinatorInstance = createOptionsCoordinator(manager, actions);
   }
 
   return coordinatorInstance;

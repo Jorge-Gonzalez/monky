@@ -2,6 +2,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createOptionsManager } from '../managers/optionsManager';
 import { createOptionsCoordinator, OptionsCoordinator } from './optionsCoordinator';
+import { createDefaultOptionsActions } from '../actions/createDefaultOptionsActions';
+import { OptionsActions } from '../actions/optionsActions';
 import { useMacroStore } from '../../store/useMacroStore';
 
 function resetStoreConfig() {
@@ -17,7 +19,7 @@ describe('OptionsCoordinator (store bridge)', () => {
 
   beforeEach(() => {
     resetStoreConfig();
-    coordinator = createOptionsCoordinator(createOptionsManager());
+    coordinator = createOptionsCoordinator(createOptionsManager(), createDefaultOptionsActions());
   });
 
   afterEach(() => {
@@ -29,7 +31,7 @@ describe('OptionsCoordinator (store bridge)', () => {
       useMacroStore.getState().setColorTheme('mar');
       useMacroStore.getState().setUseCommitKeys(true);
 
-      const fresh = createOptionsCoordinator(createOptionsManager());
+      const fresh = createOptionsCoordinator(createOptionsManager(), createDefaultOptionsActions());
       const state = fresh.getState();
       expect(state.colorTheme).toBe('mar');
       expect(state.useCommitKeys).toBe(true);
@@ -73,6 +75,30 @@ describe('OptionsCoordinator (store bridge)', () => {
       coordinator.setColorTheme('acera');
       expect(useMacroStore.getState().config.colorTheme).toBe('humo');
       expect(coordinator.getState().colorTheme).toBe('humo');
+    });
+
+    it('persists through the injected actions seam, not the store directly', () => {
+      const actions: OptionsActions = {
+        onPrefixesChanged: vi.fn(),
+        onUseCommitKeysChanged: vi.fn(),
+        onLanguageChanged: vi.fn(),
+        onColorThemeChanged: vi.fn(),
+      };
+      const c = createOptionsCoordinator(createOptionsManager(), actions);
+
+      c.setColorTheme('mar');
+      c.setUseCommitKeys(true);
+      c.setLanguage('es');
+      c.setPrefixes(['/']);
+
+      expect(actions.onColorThemeChanged).toHaveBeenCalledWith('mar');
+      expect(actions.onUseCommitKeysChanged).toHaveBeenCalledWith(true);
+      expect(actions.onLanguageChanged).toHaveBeenCalledWith('es');
+      expect(actions.onPrefixesChanged).toHaveBeenCalledWith(['/']);
+      // Coordinator state reflects the change even though the (mock) action
+      // never touched the store.
+      expect(c.getState().colorTheme).toBe('mar');
+      c.destroy();
     });
   });
 
