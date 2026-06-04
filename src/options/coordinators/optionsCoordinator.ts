@@ -1,17 +1,19 @@
-import { OptionsManager, OptionsState } from '../managers/optionsManager';
+import { OptionsManager, OptionsState, DEFAULT_OPTIONS } from '../managers/optionsManager';
+import { useMacroStore } from '../../store/useMacroStore';
 import { Lang, ColorTheme } from '../../types';
 
 /**
- * OptionsCoordinator: Public API for the options system
+ * OptionsCoordinator: bridges the in-memory OptionsManager with the persistent
+ * Zustand store.
  *
  * Responsibilities:
- * - Provide clean public API for options
- * - Handle lifecycle management (attach/detach, enable/disable)
- * - Wrapper around OptionsManager
- * - Integration point with the rest of the application
+ * - Seed the manager from the store and keep it in sync with external changes
+ *   (popup, another device).
+ * - Persist user changes to the store — writing only the field that changed, so
+ *   a single edit is a single storage write (not a full-config rewrite).
+ * - Provide the public API and lifecycle management for the options system.
  */
 export interface OptionsCoordinator {
-  // State management
   getState(): OptionsState;
   setPrefixes(prefixes: string[]): void;
   setUseCommitKeys(enabled: boolean): void;
@@ -19,10 +21,8 @@ export interface OptionsCoordinator {
   setColorTheme(colorTheme: ColorTheme): void;
   resetToDefaults(): void;
 
-  // Subscriptions
   subscribe(callback: (state: OptionsState) => void): () => void;
 
-  // Lifecycle
   attach(): void;
   detach(): void;
   enable(): void;
@@ -31,117 +31,83 @@ export interface OptionsCoordinator {
   destroy(): void;
 }
 
-/**
- * Default options values
- */
-const DEFAULT_OPTIONS: OptionsState = {
-  prefixes: ['::'],
-  useCommitKeys: false,
-  language: 'en',
-  colorTheme: 'humo',
-};
+function readOptionsFromStore(): OptionsState {
+  const { config } = useMacroStore.getState();
+  return {
+    prefixes: config.prefixes ?? DEFAULT_OPTIONS.prefixes,
+    useCommitKeys: config.useCommitKeys ?? DEFAULT_OPTIONS.useCommitKeys,
+    language: config.language ?? DEFAULT_OPTIONS.language,
+    colorTheme: config.colorTheme ?? DEFAULT_OPTIONS.colorTheme,
+  };
+}
 
-/**
- * Create an options coordinator
- */
-export function createOptionsCoordinator(
-  manager: OptionsManager
-): OptionsCoordinator {
+export function createOptionsCoordinator(manager: OptionsManager): OptionsCoordinator {
   let isEnabled = true;
+  // Guards the synchronous store-subscription echo of our own writes, so a local
+  // edit doesn't bounce back into the manager. (The async storage.onChanged echo
+  // is handled separately by the store's own last-write guard.)
+  let isWritingLocally = false;
 
-  /**
-   * Get the current options state
-   */
-  const getState = (): OptionsState => {
-    return manager.getState();
-  };
+  // Seed the manager with the persisted state, then keep it synced with external
+  // store changes (cross-context edits, late hydration, cross-device sync).
+  manager.setState(readOptionsFromStore());
+  const unsubscribeStore = useMacroStore.subscribe(() => {
+    if (isWritingLocally) return;
+    manager.setState(readOptionsFromStore());
+  });
 
-  /**
-   * Set prefixes configuration
-   */
-  const setPrefixes = (prefixes: string[]): void => {
+  // Apply a change locally (optimistic UI via the manager) and persist just the
+  // changed field to the store.
+  const apply = (
+    update: Partial<OptionsState>,
+    persist: (store: ReturnType<typeof useMacroStore.getState>) => void,
+  ): void => {
     if (!isEnabled) return;
-    manager.setPrefixes(prefixes);
+    manager.setState(update);
+    isWritingLocally = true;
+    try {
+      persist(useMacroStore.getState());
+    } finally {
+      isWritingLocally = false;
+    }
   };
 
-  /**
-   * Set useCommitKeys configuration
-   */
-  const setUseCommitKeys = (enabled: boolean): void => {
-    if (!isEnabled) return;
-    manager.setUseCommitKeys(enabled);
-  };
+  const getState = (): OptionsState => manager.getState();
 
-  const setLanguage = (lang: Lang): void => {
-    if (!isEnabled) return;
-    manager.setLanguage(lang);
-  };
+  const setPrefixes = (prefixes: string[]): void =>
+    apply({ prefixes }, store => store.setPrefixes(prefixes));
 
-  const setColorTheme = (colorTheme: ColorTheme): void => {
-    if (!isEnabled) return;
-    manager.setColorTheme(colorTheme);
-  };
+  const setUseCommitKeys = (enabled: boolean): void =>
+    apply({ useCommitKeys: enabled }, store => store.setUseCommitKeys(enabled));
 
-  /**
-   * Reset options to default values
-   */
+  const setLanguage = (language: Lang): void =>
+    apply({ language }, store => store.setLanguage(language));
+
+  const setColorTheme = (colorTheme: ColorTheme): void =>
+    apply({ colorTheme }, store => store.setColorTheme(colorTheme));
+
   const resetToDefaults = (): void => {
-    if (!isEnabled) return;
-    manager.setState(DEFAULT_OPTIONS);
+    setPrefixes(DEFAULT_OPTIONS.prefixes);
+    setUseCommitKeys(DEFAULT_OPTIONS.useCommitKeys);
+    setLanguage(DEFAULT_OPTIONS.language);
+    setColorTheme(DEFAULT_OPTIONS.colorTheme);
   };
 
-  /**
-   * Subscribe to options state changes
-   */
-  const subscribe = (callback: (state: OptionsState) => void): (() => void) => {
-    return manager.subscribe(callback);
-  };
+  const subscribe = (callback: (state: OptionsState) => void): (() => void) =>
+    manager.subscribe(callback);
 
-  /**
-   * Attach any event listeners or initialize resources
-   * (Currently no-op, but provides extension point for future features)
-   */
-  const attach = (): void => {
-    // Future: Could attach keyboard shortcuts, message listeners, etc.
-  };
+  const attach = (): void => {};
+  const detach = (): void => {};
+  const enable = (): void => { isEnabled = true; };
+  const disable = (): void => { isEnabled = false; };
+  const isEnabledFn = (): boolean => isEnabled;
 
-  /**
-   * Detach event listeners and clean up
-   */
-  const detach = (): void => {
-    // Future: Clean up any attached listeners
-  };
-
-  /**
-   * Enable the options coordinator
-   */
-  const enable = (): void => {
-    isEnabled = true;
-  };
-
-  /**
-   * Disable the options coordinator
-   */
-  const disable = (): void => {
-    isEnabled = false;
-  };
-
-  /**
-   * Check if the coordinator is enabled
-   */
-  const isEnabledFn = (): boolean => {
-    return isEnabled;
-  };
-
-  /**
-   * Destroy the coordinator and clean up all resources
-   */
   const destroy = (): void => {
-    detach();
+    unsubscribeStore();
     manager.destroy();
   };
 
-  const coordinator: OptionsCoordinator = {
+  return {
     getState,
     setPrefixes,
     setUseCommitKeys,
@@ -156,6 +122,4 @@ export function createOptionsCoordinator(
     isEnabled: isEnabledFn,
     destroy,
   };
-
-  return coordinator;
 }

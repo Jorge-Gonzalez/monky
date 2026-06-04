@@ -1,4 +1,3 @@
-import { useMacroStore } from '../../store/useMacroStore';
 import { Lang, ColorTheme } from '../../types';
 
 export interface OptionsState {
@@ -16,184 +15,78 @@ export interface OptionsManager {
   setLanguage(lang: Lang): void;
   setColorTheme(colorTheme: ColorTheme): void;
   validate(state: Partial<OptionsState>): boolean;
-  syncToStore(): void;
-  syncFromStore(): void;
   subscribe(callback: (state: OptionsState) => void): () => void;
   destroy(): void;
 }
 
+export const DEFAULT_OPTIONS: OptionsState = {
+  prefixes: ['::'],
+  useCommitKeys: false,
+  language: 'en',
+  colorTheme: 'humo',
+};
+
 /**
- * OptionsManager: Core state management logic for extension options
+ * OptionsManager: in-memory state model for extension options.
  *
  * Responsibilities:
- * - Manage options state internally
+ * - Own the options state
  * - Validate option values
- * - Sync with macro store
  * - Notify subscribers of state changes
+ *
+ * It is intentionally store-agnostic: persistence and cross-context sync are
+ * the coordinator's job. This keeps the manager a pure, easily-testable unit.
  */
-export function createOptionsManager(): OptionsManager {
+export function createOptionsManager(
+  initialState: OptionsState = DEFAULT_OPTIONS
+): OptionsManager {
   let subscribers: Array<(state: OptionsState) => void> = [];
-  let currentState: OptionsState = getStateFromStore();
-  let isUpdating = false; // Flag to prevent subscription feedback loop
+  let currentState: OptionsState = { ...initialState };
 
-  /**
-   * Get current state from the macro store
-   */
-  function getStateFromStore(): OptionsState {
-    const storeState = useMacroStore.getState();
-    return {
-      prefixes: storeState.config.prefixes || [],
-      useCommitKeys: storeState.config.useCommitKeys || false,
-      language: storeState.config.language ?? 'en',
-      colorTheme: storeState.config.colorTheme ?? 'humo',
-    };
-  }
-
-  /**
-   * Notify all subscribers of state changes
-   */
-  const notifySubscribers = () => {
+  const notifySubscribers = (): void => {
     subscribers.forEach(callback => callback({ ...currentState }));
   };
 
-  /**
-   * Subscribe to macro store changes to keep in sync
-   */
-  const unsubscribeStore = useMacroStore.subscribe(() => {
-    // Ignore store changes that we triggered ourselves
-    if (isUpdating) {
-      return;
-    }
+  const getState = (): OptionsState => ({ ...currentState });
 
-    currentState = getStateFromStore();
-    notifySubscribers();
-  });
-
-  /**
-   * Get the current options state
-   */
-  const getState = (): OptionsState => {
-    return { ...currentState };
-  };
-
-  /**
-   * Update the state with partial values
-   */
   const setState = (newState: Partial<OptionsState>): void => {
     if (!validate(newState)) {
       console.warn('Invalid options state:', newState);
       return;
     }
-
-    currentState = {
-      ...currentState,
-      ...newState,
-    };
-
-    syncToStore();
+    currentState = { ...currentState, ...newState };
     notifySubscribers();
   };
 
-  /**
-   * Set prefixes configuration
-   */
-  const setPrefixes = (prefixes: string[]): void => {
-    setState({ prefixes });
-  };
+  const setPrefixes = (prefixes: string[]): void => setState({ prefixes });
+  const setUseCommitKeys = (useCommitKeys: boolean): void => setState({ useCommitKeys });
+  const setLanguage = (language: Lang): void => setState({ language });
+  const setColorTheme = (colorTheme: ColorTheme): void => setState({ colorTheme });
 
-  /**
-   * Set useCommitKeys configuration
-   */
-  const setUseCommitKeys = (useCommitKeys: boolean): void => {
-    setState({ useCommitKeys });
-  };
-
-  const setLanguage = (language: Lang): void => {
-    setState({ language });
-  };
-
-  const setColorTheme = (colorTheme: ColorTheme): void => {
-    setState({ colorTheme });
-  };
-
-  /**
-   * Validate options state
-   */
   const validate = (state: Partial<OptionsState>): boolean => {
     if (state.prefixes !== undefined) {
-      // Ensure prefixes is an array
-      if (!Array.isArray(state.prefixes)) {
-        return false;
-      }
-      // Ensure all prefixes are non-empty strings
-      if (state.prefixes.some(p => typeof p !== 'string' || p.trim() === '')) {
-        return false;
-      }
+      if (!Array.isArray(state.prefixes)) return false;
+      if (state.prefixes.some(p => typeof p !== 'string' || p.trim() === '')) return false;
     }
-
-    if (state.useCommitKeys !== undefined) {
-      // Ensure useCommitKeys is a boolean
-      if (typeof state.useCommitKeys !== 'boolean') {
-        return false;
-      }
+    if (state.useCommitKeys !== undefined && typeof state.useCommitKeys !== 'boolean') {
+      return false;
     }
-
     return true;
   };
 
-  /**
-   * Sync current state to the macro store
-   */
-  const syncToStore = (): void => {
-    // Set flag to prevent subscription feedback loop
-    isUpdating = true;
-
-    try {
-      const store = useMacroStore.getState();
-      // Call individual setters instead of setConfig
-      store.setPrefixes(currentState.prefixes);
-      store.setUseCommitKeys(currentState.useCommitKeys);
-      store.setLanguage(currentState.language);
-      store.setColorTheme(currentState.colorTheme);
-    } finally {
-      // Always clear the flag, even if there's an error
-      isUpdating = false;
-    }
-  };
-
-  /**
-   * Sync state from the macro store (useful after external changes)
-   */
-  const syncFromStore = (): void => {
-    currentState = getStateFromStore();
-    notifySubscribers();
-  };
-
-  /**
-   * Subscribe to state changes
-   */
   const subscribe = (callback: (state: OptionsState) => void): (() => void) => {
     subscribers.push(callback);
-    // Immediately call with current state
     callback(getState());
-
-    // Return unsubscribe function
     return () => {
       subscribers = subscribers.filter(sub => sub !== callback);
     };
   };
 
-  /**
-   * Clean up resources
-   */
   const destroy = (): void => {
-    if (unsubscribeStore) {
-      unsubscribeStore();
-    }
     subscribers = [];
   };
 
-  const manager: OptionsManager = {
+  return {
     getState,
     setState,
     setPrefixes,
@@ -201,11 +94,7 @@ export function createOptionsManager(): OptionsManager {
     setLanguage,
     setColorTheme,
     validate,
-    syncToStore,
-    syncFromStore,
     subscribe,
     destroy,
   };
-
-  return manager;
 }

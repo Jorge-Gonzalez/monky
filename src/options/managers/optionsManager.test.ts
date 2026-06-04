@@ -1,287 +1,147 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { createOptionsManager, OptionsManager } from './optionsManager';
-import { useMacroStore } from '../../store/useMacroStore';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { createOptionsManager, OptionsManager, DEFAULT_OPTIONS } from './optionsManager';
 
-describe('OptionsManager', () => {
+describe('OptionsManager (pure in-memory model)', () => {
   let manager: OptionsManager;
 
   beforeEach(() => {
-    // Reset the store to default state before each test
-    const store = useMacroStore.getState();
-    store.setPrefixes(['::']);
-    store.setUseCommitKeys(false);
-
-    // Create a fresh manager instance
     manager = createOptionsManager();
   });
 
-  afterEach(() => {
-    // Clean up
-    manager.destroy();
-  });
-
   describe('initialization', () => {
-    it('should initialize with state from the store', () => {
-      const state = manager.getState();
-      expect(state.prefixes).toEqual(['::']);
-      expect(state.useCommitKeys).toBe(false);
-    });
-  });
-
-  describe('setPrefixes', () => {
-    it('should update prefixes in manager state', () => {
-      manager.setPrefixes(['/', '::', ';']);
-      const state = manager.getState();
-      expect(state.prefixes).toEqual(['/', '::', ';']);
+    it('initializes with DEFAULT_OPTIONS when no initial state is given', () => {
+      expect(manager.getState()).toEqual(DEFAULT_OPTIONS);
     });
 
-    it('should sync prefixes to the Zustand store', () => {
-      manager.setPrefixes(['/', '::', ';']);
-      const storeState = useMacroStore.getState();
-      expect(storeState.config.prefixes).toEqual(['/', '::', ';']);
-    });
-
-    it('should notify subscribers of prefix changes', () => {
-      const callback = vi.fn();
-      manager.subscribe(callback);
-
-      // Clear the initial call
-      callback.mockClear();
-
-      manager.setPrefixes(['/', '::', ';']);
-
-      expect(callback).toHaveBeenCalledWith(expect.objectContaining({
-        prefixes: ['/', '::', ';'],
-        useCommitKeys: false,
-      }));
-    });
-
-    it('should reject invalid prefixes', () => {
-      // Try to set non-array value
-      const callback = vi.fn();
-      manager.subscribe(callback);
-      callback.mockClear();
-
-      manager.setState({ prefixes: 'invalid' as any });
-
-      // Callback should not be called because validation failed
-      expect(callback).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('setUseCommitKeys', () => {
-    it('should update useCommitKeys in manager state', () => {
-      manager.setUseCommitKeys(true);
-      const state = manager.getState();
-      expect(state.useCommitKeys).toBe(true);
-    });
-
-    it('should sync useCommitKeys to the Zustand store', () => {
-      manager.setUseCommitKeys(true);
-      const storeState = useMacroStore.getState();
-      expect(storeState.config.useCommitKeys).toBe(true);
-    });
-
-    it('should notify subscribers of useCommitKeys changes', () => {
-      const callback = vi.fn();
-      manager.subscribe(callback);
-
-      // Clear the initial call
-      callback.mockClear();
-
-      manager.setUseCommitKeys(true);
-
-      expect(callback).toHaveBeenCalledWith(expect.objectContaining({
-        prefixes: ['::'],
+    it('initializes with a provided initial state', () => {
+      const m = createOptionsManager({
+        prefixes: ['/', ';'],
         useCommitKeys: true,
-      }));
-    });
-
-    it('should toggle useCommitKeys multiple times correctly', () => {
-      // Toggle to true
-      manager.setUseCommitKeys(true);
-      expect(manager.getState().useCommitKeys).toBe(true);
-      expect(useMacroStore.getState().config.useCommitKeys).toBe(true);
-
-      // Toggle to false
-      manager.setUseCommitKeys(false);
-      expect(manager.getState().useCommitKeys).toBe(false);
-      expect(useMacroStore.getState().config.useCommitKeys).toBe(false);
-
-      // Toggle to true again
-      manager.setUseCommitKeys(true);
-      expect(manager.getState().useCommitKeys).toBe(true);
-      expect(useMacroStore.getState().config.useCommitKeys).toBe(true);
-    });
-  });
-
-  describe('combined updates', () => {
-    it('should handle multiple rapid updates correctly', () => {
-      manager.setPrefixes(['/', ';']);
-      manager.setUseCommitKeys(true);
-      manager.setPrefixes(['/']);
-      manager.setUseCommitKeys(false);
-
-      const state = manager.getState();
-      const storeState = useMacroStore.getState();
-
-      expect(state.prefixes).toEqual(['/']);
-      expect(state.useCommitKeys).toBe(false);
-      expect(storeState.config.prefixes).toEqual(['/']);
-      expect(storeState.config.useCommitKeys).toBe(false);
-    });
-
-    it('should update both prefixes and useCommitKeys via setState', () => {
-      manager.setState({
-        prefixes: ['/', '::', ';'],
-        useCommitKeys: true,
+        language: 'es',
+        colorTheme: 'mar',
       });
+      expect(m.getState()).toEqual({
+        prefixes: ['/', ';'],
+        useCommitKeys: true,
+        language: 'es',
+        colorTheme: 'mar',
+      });
+    });
 
-      const state = manager.getState();
-      const storeState = useMacroStore.getState();
-
-      expect(state.prefixes).toEqual(['/', '::', ';']);
-      expect(state.useCommitKeys).toBe(true);
-      expect(storeState.config.prefixes).toEqual(['/', '::', ';']);
-      expect(storeState.config.useCommitKeys).toBe(true);
+    it('does not share state between instances', () => {
+      const a = createOptionsManager();
+      const b = createOptionsManager();
+      a.setUseCommitKeys(true);
+      expect(b.getState().useCommitKeys).toBe(false);
     });
   });
 
-  describe('external store changes', () => {
-    it('should sync from store when changed externally', () => {
-      // Simulate external change (e.g., from popup)
-      const store = useMacroStore.getState();
-      store.setPrefixes(['#', '!']);
-      store.setUseCommitKeys(true);
+  describe('setters', () => {
+    it('updates prefixes', () => {
+      manager.setPrefixes(['/', '::', ';']);
+      expect(manager.getState().prefixes).toEqual(['/', '::', ';']);
+    });
 
-      // Manager should have synced
+    it('updates useCommitKeys', () => {
+      manager.setUseCommitKeys(true);
+      expect(manager.getState().useCommitKeys).toBe(true);
+    });
+
+    it('updates language', () => {
+      manager.setLanguage('es');
+      expect(manager.getState().language).toBe('es');
+    });
+
+    it('updates colorTheme', () => {
+      manager.setColorTheme('acera');
+      expect(manager.getState().colorTheme).toBe('acera');
+    });
+
+    it('merges partial updates via setState', () => {
+      manager.setState({ prefixes: ['/'], useCommitKeys: true });
       const state = manager.getState();
-      expect(state.prefixes).toEqual(['#', '!']);
+      expect(state.prefixes).toEqual(['/']);
       expect(state.useCommitKeys).toBe(true);
-    });
-
-    it('should notify subscribers when store changes externally', () => {
-      const callback = vi.fn();
-      manager.subscribe(callback);
-
-      // Clear initial call
-      callback.mockClear();
-
-      // Simulate external change (both calls will trigger subscription)
-      const store = useMacroStore.getState();
-      store.setPrefixes(['#', '!']);
-      store.setUseCommitKeys(true);
-
-      // Should have been called twice (once for each store update)
-      expect(callback).toHaveBeenCalled();
-
-      // Last call should have the final state
-      const lastCall = callback.mock.calls[callback.mock.calls.length - 1][0];
-      expect(lastCall.prefixes).toEqual(['#', '!']);
-      expect(lastCall.useCommitKeys).toBe(true);
-    });
-  });
-
-  describe('subscription management', () => {
-    it('should call subscriber immediately with current state', () => {
-      const callback = vi.fn();
-      manager.subscribe(callback);
-
-      expect(callback).toHaveBeenCalledTimes(1);
-      expect(callback).toHaveBeenCalledWith(expect.objectContaining({
-        prefixes: ['::'],
-        useCommitKeys: false,
-      }));
-    });
-
-    it('should support multiple subscribers', () => {
-      const callback1 = vi.fn();
-      const callback2 = vi.fn();
-
-      manager.subscribe(callback1);
-      manager.subscribe(callback2);
-
-      // Clear initial calls
-      callback1.mockClear();
-      callback2.mockClear();
-
-      manager.setUseCommitKeys(true);
-
-      expect(callback1).toHaveBeenCalledWith(expect.objectContaining({
-        prefixes: ['::'],
-        useCommitKeys: true,
-      }));
-      expect(callback2).toHaveBeenCalledWith(expect.objectContaining({
-        prefixes: ['::'],
-        useCommitKeys: true,
-      }));
-    });
-
-    it('should unsubscribe correctly', () => {
-      const callback = vi.fn();
-      const unsubscribe = manager.subscribe(callback);
-
-      // Clear initial call
-      callback.mockClear();
-
-      // Unsubscribe
-      unsubscribe();
-
-      // Make a change
-      manager.setUseCommitKeys(true);
-
-      // Callback should not be called
-      expect(callback).not.toHaveBeenCalled();
+      expect(state.language).toBe('en'); // untouched
     });
   });
 
   describe('validation', () => {
-    it('should validate prefixes array', () => {
+    it('validates prefixes array', () => {
       expect(manager.validate({ prefixes: ['/', '::'] })).toBe(true);
-      expect(manager.validate({ prefixes: [] })).toBe(true); // Empty array is valid for validation
+      expect(manager.validate({ prefixes: [] })).toBe(true);
       expect(manager.validate({ prefixes: 'invalid' as any })).toBe(false);
-      expect(manager.validate({ prefixes: ['', '::'] })).toBe(false); // Empty string not allowed
-      expect(manager.validate({ prefixes: [123 as any] })).toBe(false); // Non-string not allowed
+      expect(manager.validate({ prefixes: ['', '::'] })).toBe(false);
+      expect(manager.validate({ prefixes: [123 as any] })).toBe(false);
     });
 
-    it('should validate useCommitKeys boolean', () => {
+    it('validates useCommitKeys boolean', () => {
       expect(manager.validate({ useCommitKeys: true })).toBe(true);
-      expect(manager.validate({ useCommitKeys: false })).toBe(true);
       expect(manager.validate({ useCommitKeys: 'invalid' as any })).toBe(false);
       expect(manager.validate({ useCommitKeys: 1 as any })).toBe(false);
     });
+
+    it('does not apply an invalid update', () => {
+      manager.setState({ prefixes: 'invalid' as any });
+      expect(manager.getState().prefixes).toEqual(DEFAULT_OPTIONS.prefixes);
+    });
   });
 
-  describe('syncFromStore', () => {
-    it('should manually sync from store', () => {
-      // Change store externally without triggering subscription
-      const store = useMacroStore.getState();
-      store.setPrefixes(['/']);
+  describe('subscription', () => {
+    it('calls a new subscriber immediately with current state', () => {
+      const cb = vi.fn();
+      manager.subscribe(cb);
+      expect(cb).toHaveBeenCalledTimes(1);
+      expect(cb).toHaveBeenCalledWith(expect.objectContaining(DEFAULT_OPTIONS));
+    });
 
-      // Manually sync
-      manager.syncFromStore();
+    it('notifies subscribers on change', () => {
+      const cb = vi.fn();
+      manager.subscribe(cb);
+      cb.mockClear();
+      manager.setUseCommitKeys(true);
+      expect(cb).toHaveBeenCalledWith(expect.objectContaining({ useCommitKeys: true }));
+    });
 
-      expect(manager.getState().prefixes).toEqual(['/']);
+    it('does not notify when an invalid update is rejected', () => {
+      const cb = vi.fn();
+      manager.subscribe(cb);
+      cb.mockClear();
+      manager.setState({ prefixes: 'invalid' as any });
+      expect(cb).not.toHaveBeenCalled();
+    });
+
+    it('supports multiple subscribers', () => {
+      const a = vi.fn();
+      const b = vi.fn();
+      manager.subscribe(a);
+      manager.subscribe(b);
+      a.mockClear();
+      b.mockClear();
+      manager.setColorTheme('mar');
+      expect(a).toHaveBeenCalledWith(expect.objectContaining({ colorTheme: 'mar' }));
+      expect(b).toHaveBeenCalledWith(expect.objectContaining({ colorTheme: 'mar' }));
+    });
+
+    it('unsubscribes correctly', () => {
+      const cb = vi.fn();
+      const unsubscribe = manager.subscribe(cb);
+      cb.mockClear();
+      unsubscribe();
+      manager.setUseCommitKeys(true);
+      expect(cb).not.toHaveBeenCalled();
     });
   });
 
   describe('destroy', () => {
-    it('should clean up resources', () => {
-      const callback = vi.fn();
-      manager.subscribe(callback);
-
+    it('removes all subscribers', () => {
+      const cb = vi.fn();
+      manager.subscribe(cb);
       manager.destroy();
-
-      // Clear initial call
-      callback.mockClear();
-
-      // External store changes should no longer trigger manager
-      const store = useMacroStore.getState();
-      store.setUseCommitKeys(true);
-
-      // Callback should not be called after destroy
-      expect(callback).not.toHaveBeenCalled();
+      cb.mockClear();
+      manager.setUseCommitKeys(true);
+      expect(cb).not.toHaveBeenCalled();
     });
   });
 });

@@ -29,6 +29,11 @@ function commandExists(macros: Macro[], command: string, currentId?: Macro['id']
   return macros.some(m => m.command === command && String(m.id) !== String(currentId))
 }
 
+// The serialized value this context most recently wrote. Used to ignore the
+// storage.onChanged echo of our own writes (see the onChanged listener below),
+// which would otherwise re-read storage and re-notify subscribers needlessly.
+let lastWrittenValue: string | null = null
+
 // Tiered storage: writes go to local (reliable) and sync (best-effort cross-device).
 // Reads prefer sync so cross-device changes are picked up; local is the fallback.
 const chromeStorage: StateStorage = {
@@ -41,6 +46,7 @@ const chromeStorage: StateStorage = {
     return result[name] ?? null
   },
   setItem: async (name: string, value: string): Promise<void> => {
+    lastWrittenValue = value
     await chrome.storage.local.set({ [name]: value })
     try {
       await chrome.storage.sync.set({ [name]: value })
@@ -150,7 +156,13 @@ if (typeof chrome !== 'undefined' && chrome.storage?.onChanged) {
     // Rehydrate when either local (same-device context switch) or sync (cross-device) changes.
     if (area === 'local' || area === 'sync') {
       const storeName = useMacroStore.persist.getOptions().name;
-      if (storeName && changes[storeName]) {
+      const change = storeName ? changes[storeName] : undefined;
+      // Ignore the echo of our own writes: a change whose value matches what we
+      // just persisted carries no new information, and re-reading it here (sync
+      // is read first and can be stale under rate-limiting) is what caused the
+      // settings controls to flicker back to a stale value. Genuine external
+      // changes (popup, another device) carry a different value and still rehydrate.
+      if (change && change.newValue !== lastWrittenValue) {
         useMacroStore.persist.rehydrate();
       }
     }
