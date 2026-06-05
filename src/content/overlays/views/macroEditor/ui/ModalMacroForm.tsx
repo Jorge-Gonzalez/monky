@@ -9,6 +9,9 @@ import { hasRichFormatting, extractPlainText } from '../../../../../shared/macro
 import { useCommandSuggestions } from '../useCommandSuggestions'
 import { CommandSuggestions } from './CommandSuggestions'
 
+// How long the success toast shows before the modal closes.
+const SAVE_TOAST_MS = 900
+
 interface ModalMacroFormProps {
   editing: Macro | null
   onDone: () => void
@@ -21,6 +24,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   const [text, setText] = useState(editing?.html || editing?.text || '')
   const [isSensitive, setSensitive] = useState(!!editing?.is_sensitive)
   const [error, setError] = useState<string | null>(null)
+  const [savedToast, setSavedToast] = useState<string | null>(null)
 
   const commandInputRef = useRef<HTMLInputElement>(null)
   const contentEditorRef = useRef<ContentEditorRef>(null)
@@ -75,18 +79,18 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
       is_sensitive: isSensitive,
     }
 
-    let result
-    if (editing?.id) {
-      result = await updateMacro(String(editing.id), macroData)
-      if (result.success) onDone()
-    } else {
-      result = await createMacro(macroData)
-      if (result.success) {
-        setCommand('')
-        setText('')
-      }
+    const result = editing?.id
+      ? await updateMacro(String(editing.id), macroData)
+      : await createMacro(macroData)
+
+    if (result.success) {
+      // Confirm the save, then close the modal. Both create and edit finish the
+      // same way — the editor is a task you complete and dismiss.
+      setSavedToast(editing ? t('macroForm.updatedToast') : t('macroForm.savedToast'))
+      window.setTimeout(onDone, SAVE_TOAST_MS)
+      return
     }
-    if (!result.success && result.error) setError(result.error)
+    if (result.error) setError(result.error)
   }
 
   return (
@@ -140,6 +144,12 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
         </div>
       )}
 
+      {savedToast && (
+        <div className="alert alert-success" role="status">
+          <p className="font-medium">{savedToast}</p>
+        </div>
+      )}
+
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <label style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
           <input
@@ -154,7 +164,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
         <div className="button-group">
           <button
             type="submit"
-            disabled={!isFormValid}
+            disabled={!isFormValid || savedToast !== null}
             className="btn btn-outlined btn-success"
           >
             {editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}

@@ -246,30 +246,28 @@ describe('ModalMacroForm', () => {
   // ---------------------------------------------------------------------------
 
   describe('form submission', () => {
-    it('calls createMacro and clears the form on successful save', async () => {
+    it('calls createMacro, confirms the save, then closes the modal', async () => {
       render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       fireEvent.change(getCommandInput(), { target: { value: '/new' } })
       setEditorContent('<p>Some text</p>')
       fireEvent.click(screen.getByRole('button', { name: 'macroForm.saveButton' }))
 
-      await waitFor(() => {
-        expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({ command: '/new' }))
-      })
-      expect(getCommandInput()).toHaveValue('')
+      await screen.findByText('macroForm.savedToast')
+      expect(mockCreate).toHaveBeenCalledWith(expect.objectContaining({ command: '/new' }))
+      await waitFor(() => expect(onDone).toHaveBeenCalled(), { timeout: 1500 })
     })
 
-    it('calls updateMacro and onDone on successful update', async () => {
+    it('calls updateMacro, confirms the update, then closes the modal', async () => {
       const editing = { id: 1, command: '/sig', text: 'My signature', is_sensitive: false }
       render(<ModalMacroForm editing={editing} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       fireEvent.change(getCommandInput(), { target: { value: '/sig2' } })
       fireEvent.click(screen.getByRole('button', { name: 'macroForm.updateButton' }))
 
-      await waitFor(() => {
-        expect(mockUpdate).toHaveBeenCalledWith('1', expect.objectContaining({ command: '/sig2' }))
-        expect(onDone).toHaveBeenCalled()
-      })
+      await screen.findByText('macroForm.updatedToast')
+      expect(mockUpdate).toHaveBeenCalledWith('1', expect.objectContaining({ command: '/sig2' }))
+      await waitFor(() => expect(onDone).toHaveBeenCalled(), { timeout: 1500 })
     })
 
     it('calls onDone when Cancel is clicked', () => {

@@ -3,13 +3,12 @@ import { MacroEditorViewProps } from '../../../modal/types';
 import { useMacroEditor } from '../../../../../editor/useMacroEditor';
 import { ModalMacroForm } from './ModalMacroForm';
 
-export function MacroEditorView({ initialMacro, onViewChange }: MacroEditorViewProps) {
-  const { editingMacro, setEditingMacro, resetForm } = useMacroEditor(initialMacro ?? null);
+export function MacroEditorView({ initialMacro, onClose }: MacroEditorViewProps) {
+  const { editingMacro, setEditingMacro } = useMacroEditor(initialMacro ?? null);
 
-  const handleDone = () => {
-    resetForm();
-    onViewChange('search');
-  };
+  // Finishing the editor (saved or cancelled) closes the whole modal, rather than
+  // dropping back to the search view — the editor is a task you complete and dismiss.
+  const handleDone = onClose;
 
   const title = editingMacro
     ? t('macroEditor.title.edit', { command: editingMacro.command })

@@ -119,6 +119,8 @@ const translations = {
       updateButton: 'Update',
       saveButton: 'Save',
       cancelButton: 'Cancel',
+      savedToast: 'Macro saved',
+      updatedToast: 'Macro updated',
     },
 
     options: {
@@ -256,6 +258,8 @@ const translations = {
       updateButton: 'Actualizar',
       saveButton: 'Guardar',
       cancelButton: 'Cancelar',
+      savedToast: 'Macro guardada',
+      updatedToast: 'Macro actualizada',
     },
 
     options: {
