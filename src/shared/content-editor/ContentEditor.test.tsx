@@ -249,6 +249,28 @@ describe('ContentEditor component', () => {
     expect(getBody().innerHTML).toBe('<p>second</p>')
   })
 
+  it('does not rewrite the DOM when the controlled value echoes our own onChange', async () => {
+    // Reproduces the formatting-collapses-selection bug: a command leaves raw <b> in
+    // the DOM, onChange emits normalized <strong>, and the controlled value echoes
+    // that back. Rewriting innerHTML here would destroy the live selection, so the
+    // raw DOM must be left intact.
+    const onChange = vi.fn()
+    const { rerender } = render(<ContentEditor value="" onChange={onChange} />)
+    const body = getBody()
+
+    body.innerHTML = '<p><b>x</b></p>'
+    fireEvent.input(body)
+
+    const emitted = onChange.mock.calls.at(-1)![0]
+    expect(emitted).toBe('<p><strong>x</strong></p>') // normalized, differs from raw
+
+    // The parent echoes the normalized value straight back.
+    await act(async () => rerender(<ContentEditor value={emitted} onChange={onChange} />))
+
+    // Raw DOM (and thus the selection) is preserved — not overwritten with the echo.
+    expect(getBody().innerHTML).toBe('<p><b>x</b></p>')
+  })
+
   describe('ref API', () => {
     it('getHTML returns current innerHTML', () => {
       const ref = createRef<ContentEditorRef>()

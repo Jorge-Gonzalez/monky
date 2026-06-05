@@ -30,6 +30,10 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
   const [linkMode, setLinkMode] = useState(false)
   const savedRangeRef = useRef<Range | null>(null)
   const isInitialMount = useRef(true)
+  // The last HTML we emitted via onChange. The controlled value echoes back as this
+  // exact string; writing it to innerHTML would collapse the live selection, so we
+  // skip the echo and only overwrite the DOM for genuinely external value changes.
+  const lastEmittedRef = useRef(value)
 
   const formatState = useEditorState(editorRef)
 
@@ -53,6 +57,9 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
       if (autoFocus) editorRef.current?.focus()
       return
     }
+    // Echo of our own onChange (e.g. right after a formatting command) — leave the
+    // DOM and its selection alone. Only an external change overwrites the editor.
+    if (value === lastEmittedRef.current) return
     if (editorRef.current && value !== editorRef.current.innerHTML) {
       editorRef.current.innerHTML = value
     }
@@ -87,7 +94,10 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
         className="content-editor-body"
         data-placeholder={placeholder}
         onInput={() => {
-          if (editorRef.current && onChange) onChange(normalizeEditorHTML(editorRef.current.innerHTML))
+          if (!editorRef.current || !onChange) return
+          const html = normalizeEditorHTML(editorRef.current.innerHTML)
+          lastEmittedRef.current = html
+          onChange(html)
         }}
       />
     </div>
