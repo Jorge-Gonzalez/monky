@@ -7,7 +7,7 @@ import {
   handleSystemMacro,
   handleParametricSystemCommand,
 } from './systemMacros'
-import { modalCoordinator } from '../overlays'
+import { modalCoordinator, deleteConfirmManager } from '../overlays'
 import { useMacroStore } from '../../store/useMacroStore'
 
 vi.mock('../overlays', () => ({
@@ -15,6 +15,9 @@ vi.mock('../overlays', () => ({
     show: vi.fn(),
     navigateToEditor: vi.fn(),
     hide: vi.fn(),
+  },
+  deleteConfirmManager: {
+    show: vi.fn(),
   },
 }))
 
@@ -217,14 +220,15 @@ describe('handleParametricSystemCommand — :edit', () => {
 })
 
 describe('handleParametricSystemCommand — :delete', () => {
-  it('calls deleteMacro when the param matches a known macro', () => {
+  it('opens the delete confirmation for a known macro (does not delete outright)', () => {
     handleParametricSystemCommand('system-delete-macro', '/nota')
-    expect(mockDeleteMacro).toHaveBeenCalledWith(notaMacro.id)
+    expect(deleteConfirmManager.show).toHaveBeenCalledWith(notaMacro)
+    expect(mockDeleteMacro).not.toHaveBeenCalled()
   })
 
   it('does nothing when the param matches no macro', () => {
     handleParametricSystemCommand('system-delete-macro', '/unknown')
-    expect(mockDeleteMacro).not.toHaveBeenCalled()
+    expect(deleteConfirmManager.show).not.toHaveBeenCalled()
   })
 
   it('returns true regardless of whether a target was found', () => {

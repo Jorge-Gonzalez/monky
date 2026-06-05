@@ -1,5 +1,5 @@
 import { Macro } from "../../types"
-import { modalCoordinator } from "../overlays";
+import { modalCoordinator, deleteConfirmManager } from "../overlays";
 import { useMacroStore } from "../../store/useMacroStore";
 
 export const SYSTEM_MACROS: Macro[] = [
@@ -85,7 +85,7 @@ export function handleSystemMacro(macro: Macro): boolean {
  * Called by the detector when a full parametric buffer is committed.
  */
 export function handleParametricSystemCommand(commandId: string, param: string): boolean {
-  const { macros, deleteMacro } = useMacroStore.getState()
+  const { macros } = useMacroStore.getState()
   const target = macros.find(m => m.command === param)
 
   switch (commandId) {
@@ -97,8 +97,10 @@ export function handleParametricSystemCommand(commandId: string, param: string):
       return true
 
     case 'system-delete-macro':
+      // Confirm before deleting; the actual delete (via macroCrud, so it syncs)
+      // runs from the popup's onConfirm wired in overlays/index.
       if (target) {
-        deleteMacro(target.id)
+        deleteConfirmManager.show(target)
       }
       return true
 

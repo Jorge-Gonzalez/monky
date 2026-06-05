@@ -84,6 +84,17 @@ const translations = {
       },
     },
 
+    deleteConfirm: {
+      message: 'Delete macro',
+      cancel: 'Cancel',
+      delete: 'Delete',
+      footer: {
+        switch: 'switch',
+        select: 'select',
+        cancel: 'cancel',
+      },
+    },
+
     macroEditor: {
       title: {
         new: 'New Macro',
@@ -221,6 +232,17 @@ const translations = {
         navigate: 'Navegar',
         select: 'Seleccionar',
         cancel: 'Cancelar',
+      },
+    },
+
+    deleteConfirm: {
+      message: 'Borrar macro',
+      cancel: 'Cancelar',
+      delete: 'Borrar',
+      footer: {
+        switch: 'cambiar',
+        select: 'seleccionar',
+        cancel: 'cancelar',
       },
     },
 
