@@ -52,4 +52,19 @@ describe('SegmentedControl', () => {
     expect(radios.map(r => r.textContent)).toEqual(['Automático', 'Manual'])
     expect(radios[1].getAttribute('aria-checked')).toBe('true')
   })
+
+  it('supports icon labels with an aria-label for screen readers', () => {
+    const iconOptions = [
+      { value: 'light', label: <svg data-testid="sun" />, ariaLabel: 'Light mode' },
+      { value: 'dark', label: <svg data-testid="moon" />, ariaLabel: 'Dark mode' },
+    ]
+    const onChange = vi.fn()
+    const { getByLabelText, getByTestId } = render(
+      <SegmentedControl options={iconOptions} value="light" onChange={onChange} />
+    )
+    expect(getByTestId('sun')).toBeInTheDocument()
+    expect(getByLabelText('Dark mode').getAttribute('aria-checked')).toBe('false')
+    fireEvent.click(getByLabelText('Dark mode'))
+    expect(onChange).toHaveBeenCalledWith('dark')
+  })
 })

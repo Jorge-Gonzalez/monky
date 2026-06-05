@@ -102,8 +102,10 @@
 
 .seg-option {
   flex: 1;
+  text-align: center;
   padding: var(--spacing-xs) var(--spacing-md);
   font-size: var(--text-sm);
+  line-height: 1.5;
   color: var(--ink-soft);
   background: transparent;
   border: none;
@@ -113,6 +115,20 @@
   position: relative;
   z-index: 1;
   transition: color var(--transition-fast);
+}
+
+/* Inline so an icon-only option occupies the same text line box (= same height)
+   as the text options, sitting on the line's middle. */
+.seg-option svg {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Color-theme and light/dark selectors sit side by side in the appearance row. */
+.settings-appearance-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
 }
 
 .seg-option:last-child {

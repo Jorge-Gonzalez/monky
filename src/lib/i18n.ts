@@ -28,6 +28,8 @@ const translations = {
       title: 'Settings',
       language: 'Language',
       colorTheme: 'Color theme',
+      lightMode: 'Light mode',
+      darkMode: 'Dark mode',
       sections: {
         general: 'General',
         appearance: 'Appearance',
@@ -182,6 +184,8 @@ const translations = {
       title: 'Configuración',
       language: 'Idioma',
       colorTheme: 'Tema de color',
+      lightMode: 'Modo claro',
+      darkMode: 'Modo oscuro',
       sections: {
         general: 'General',
         appearance: 'Apariencia',

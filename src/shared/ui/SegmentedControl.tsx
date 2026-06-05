@@ -1,8 +1,10 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState, ReactNode } from 'react'
 
 export interface SegmentedOption<T extends string> {
   value: T;
-  label: string;
+  label: ReactNode;
+  // Needed when the label is an icon with no text, for screen readers.
+  ariaLabel?: string;
 }
 
 export interface SegmentedControlProps<T extends string> {
@@ -65,6 +67,7 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
           type="button"
           role="radio"
           aria-checked={opt.value === value}
+          aria-label={opt.ariaLabel}
           className={`seg-option ${opt.value === value ? 'is-selected' : ''}`}
           onClick={() => onChange(opt.value)}
         >

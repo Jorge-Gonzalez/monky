@@ -7,6 +7,22 @@ import { SegmentedControl } from '../../../../../shared/ui/SegmentedControl';
 import { SelectableGroup } from '../../../../../shared/ui/SelectableGroup';
 import { t } from '../../../../../lib/i18n';
 
+const SunIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <g stroke="currentColor" strokeWidth="1.5">
+      <path d="M5 12H1M23 12h-4M7.05 7.05 4.222 4.222M19.778 19.778 16.95 16.95M7.05 16.95l-2.828 2.828M19.778 4.222 16.95 7.05" strokeLinecap="round" />
+      <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+      <path d="M12 19v4M12 1v4" strokeLinecap="round" />
+    </g>
+  </svg>
+);
+
+const MoonIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <path d="M10.41 13.28C7.332 10.205 6.716 5.693 8.357 2c-1.23.41-2.256 1.23-3.281 2.256a10.399 10.399 0 0 0 0 14.768c4.102 4.102 10.46 3.897 14.562-.205 1.026-1.026 1.846-2.051 2.256-3.282-3.896 1.436-8.409.82-11.486-2.256Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 const ALL_PREFIXES = ['/', ';', ':', '#', '!'];
 
 const REPLACEMENT_OPTIONS = [
@@ -26,11 +42,19 @@ const LANGUAGE_OPTIONS: { value: Lang; label: string }[] = [
 ];
 
 export function SettingsView(_props: BaseModalViewProps) {
-  const { prefixes, useCommitKeys, colorTheme, language, setPrefixes, setUseCommitKeys, setColorTheme, setLanguage } = useOptions();
+  const { prefixes, useCommitKeys, colorTheme, theme, language, setPrefixes, setUseCommitKeys, setColorTheme, setTheme, setLanguage } = useOptions();
   const { status: importStatus, exportMacros, importFromFile } = useMacroImportExport();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const replacementValue = useCommitKeys ? 'manual' : 'auto';
+
+  // The toggle is light/dark; reflect the resolved mode when the stored value is 'system'.
+  const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ?? false;
+  const mode = theme === 'dark' || (theme === 'system' && systemDark) ? 'dark' : 'light';
+  const MODE_OPTIONS = [
+    { value: 'light' as const, label: <SunIcon />,  ariaLabel: t('settings.lightMode') },
+    { value: 'dark'  as const, label: <MoonIcon />, ariaLabel: t('settings.darkMode') },
+  ];
 
   return (
     <div className="settings-view">
@@ -67,11 +91,18 @@ export function SettingsView(_props: BaseModalViewProps) {
           <div className="settings-rows">
             <div className="settings-row">
               <span className="settings-row-label">{t('settings.colorTheme')}</span>
-              <SegmentedControl
-                options={THEME_OPTIONS}
-                value={colorTheme}
-                onChange={v => setColorTheme(v)}
-              />
+              <div className="settings-appearance-controls">
+                <SegmentedControl
+                  options={THEME_OPTIONS}
+                  value={colorTheme}
+                  onChange={v => setColorTheme(v)}
+                />
+                <SegmentedControl
+                  options={MODE_OPTIONS}
+                  value={mode}
+                  onChange={v => setTheme(v)}
+                />
+              </div>
             </div>
             <div className="settings-row">
               <span className="settings-row-label">{t('settings.language')}</span>
