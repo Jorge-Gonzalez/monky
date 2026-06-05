@@ -15,6 +15,7 @@ interface MacroSearchResultsProps {
   searchQuery: string;
   onSelect: (macro: Macro) => void;
   onEdit?: (macro: Macro) => void;
+  confirmingDeleteId?: Macro['id'];
   resultsRef: React.RefObject<HTMLDivElement>;
 }
 
@@ -24,6 +25,7 @@ export function MacroSearchResults({
   searchQuery,
   onSelect,
   onEdit,
+  confirmingDeleteId,
   resultsRef,
 }: MacroSearchResultsProps) {
   if (macros.length === 0) {
@@ -43,6 +45,7 @@ export function MacroSearchResults({
           key={macro.id}
           macro={macro}
           isSelected={index === selectedIndex}
+          isConfirmingDelete={macro.id === confirmingDeleteId}
           onClick={() => onSelect(macro)}
           onEdit={onEdit ? () => onEdit(macro) : undefined}
         />
@@ -54,24 +57,34 @@ export function MacroSearchResults({
 interface MacroSearchItemProps {
   macro: Macro;
   isSelected: boolean;
+  isConfirmingDelete: boolean;
   onClick: () => void;
   onEdit?: () => void;
 }
 
-function MacroSearchItem({ macro, isSelected, onClick, onEdit }: MacroSearchItemProps) {
+function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdit }: MacroSearchItemProps) {
   return (
-    <div className={`macro-search-item ${isSelected ? 'selected' : ''}`} onClick={onClick}>
+    <div
+      className={`macro-search-item ${isSelected ? 'selected' : ''} ${isConfirmingDelete ? 'confirming-delete' : ''}`}
+      onClick={onClick}
+    >
       <div className="macro-search-item-command">{macro.command}</div>
-      <div className="macro-search-item-text">
-        {!hasPlaceholders(macro.text)
-          ? macro.text
-          : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>
-              part.startsWith('{{')
-                ? <mark key={i}><span>{'{{'}</span>{part.slice(2, -2)}<span>{'}}'}</span></mark>
-                : part
-            )}
-      </div>
-      {onEdit && (
+      {isConfirmingDelete ? (
+        <div className="macro-search-item-confirm" role="alert">
+          {t('modalSearch.confirmDelete')}
+        </div>
+      ) : (
+        <div className="macro-search-item-text">
+          {!hasPlaceholders(macro.text)
+            ? macro.text
+            : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>
+                part.startsWith('{{')
+                  ? <mark key={i}><span>{'{{'}</span>{part.slice(2, -2)}<span>{'}}'}</span></mark>
+                  : part
+              )}
+        </div>
+      )}
+      {onEdit && !isConfirmingDelete && (
         <button
           className="macro-search-item-edit"
           onClick={e => { e.stopPropagation(); onEdit(); }}

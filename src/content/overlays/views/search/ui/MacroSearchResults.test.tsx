@@ -46,6 +46,30 @@ describe('MacroSearchResults', () => {
     });
   });
 
+  describe('delete confirmation', () => {
+    it('shows the confirm prompt on the armed row, the normal text on the rest', () => {
+      const { container } = render(<MacroSearchResults {...baseProps} confirmingDeleteId={2} />);
+      const items = container.querySelectorAll('.macro-search-item');
+      expect(items[1]).toHaveClass('confirming-delete');
+      expect(items[0]).not.toHaveClass('confirming-delete');
+      // Armed row swaps its text for the confirm prompt.
+      expect(screen.getByText('modalSearch.confirmDelete')).toBeInTheDocument();
+      expect(screen.queryByText('My address')).not.toBeInTheDocument();
+      // Other rows keep their text.
+      expect(screen.getByText('My signature')).toBeInTheDocument();
+    });
+
+    it('hides the edit button on the armed row', () => {
+      const onEdit = vi.fn();
+      const { container } = render(
+        <MacroSearchResults {...baseProps} onEdit={onEdit} confirmingDeleteId={2} />
+      );
+      const items = container.querySelectorAll('.macro-search-item');
+      expect(items[1].querySelector('.macro-search-item-edit')).toBeNull();
+      expect(items[0].querySelector('.macro-search-item-edit')).not.toBeNull();
+    });
+  });
+
   describe('edit button', () => {
     it('does not render edit buttons when onEdit is not provided', () => {
       const { container } = render(<MacroSearchResults {...baseProps} />);

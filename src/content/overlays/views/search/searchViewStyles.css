@@ -104,6 +104,28 @@
   text-overflow: clip;
 }
 
+/* Armed-for-delete row: danger tint + the confirm prompt in the text column. */
+.macro-search-item-confirm {
+  padding: var(--spacing-md);
+  padding-left: var(--spacing-xs);
+  border-bottom: 1px solid var(--harmonic-minor);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--status-error);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.macro-search-item.confirming-delete .macro-search-item-command,
+.macro-search-item.confirming-delete .macro-search-item-confirm {
+  background-color: var(--status-error-wash);
+}
+
+.macro-search-item.confirming-delete .macro-search-item-command {
+  color: var(--status-error);
+}
+
 .macro-search-item-edit {
   position: absolute;
   right: var(--spacing-sm);

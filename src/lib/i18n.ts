@@ -61,6 +61,7 @@ const translations = {
       noMacrosFound: 'No macros found',
       startTypingHint: 'Start typing to search macros...',
       editMacro: 'Edit macro',
+      confirmDelete: 'Delete this macro? Press ↵ to confirm',
       footer: {
         macro: '{{count}} macro',
         macros: '{{count}} macros',
@@ -200,6 +201,7 @@ const translations = {
       noMacrosFound: 'No se encontraron macros',
       startTypingHint: 'Empieza a escribir para buscar macros...',
       editMacro: 'Editar macro',
+      confirmDelete: '¿Borrar esta macro? Pulsa ↵ para confirmar',
       footer: {
         macro: '{{count}} macro',
         macros: '{{count}} macros',

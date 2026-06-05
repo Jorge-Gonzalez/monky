@@ -26,6 +26,8 @@ export function MacroSearchView({
   onSelectMacro,
 }: MacroSearchViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  // The macro armed for deletion: first select arms it, a second select deletes.
+  const [pendingDelete, setPendingDelete] = useState<Macro | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
 
@@ -58,6 +60,8 @@ export function MacroSearchView({
     if (searchQuery.trim()) navigation.selectIndex(0);
     else navigation.reset();
   }, [searchQuery]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Disarm a pending delete when the user navigates away or edits the query.
+  useEffect(() => { setPendingDelete(null); }, [navigation.selectedIndex, searchQuery]);
 
   // --- Handlers ---
 
@@ -67,13 +71,22 @@ export function MacroSearchView({
   }, [onSelectMacro, onClose]);
 
   const handleParametricSelect = useCallback((macro: Macro, command: ModalCommand) => {
-    setSearchQuery('');
     if (command.id === 'edit') {
+      setSearchQuery('');
       onNavigateToEditor(macro);
-    } else if (command.id === 'delete') {
-      deleteMacro(String(macro.id));
+      return;
     }
-  }, [onNavigateToEditor]);
+    if (command.id === 'delete') {
+      // Two-step: first select arms the row, a second select on it confirms.
+      if (pendingDelete?.id === macro.id) {
+        deleteMacro(String(macro.id));
+        setPendingDelete(null);
+        setSearchQuery('');
+      } else {
+        setPendingDelete(macro);
+      }
+    }
+  }, [onNavigateToEditor, pendingDelete]);
 
   const handleCommandSelect = useCallback((command: ModalCommand) => {
     setSearchQuery('');
@@ -165,6 +178,7 @@ export function MacroSearchView({
           ? (m) => handleParametricSelect(m, parsed.command)
           : handleMacroSelect}
         onEdit={parsed.mode === 'search' ? onNavigateToEditor : undefined}
+        confirmingDeleteId={pendingDelete?.id}
         resultsRef={resultsRef}
       />
     );
