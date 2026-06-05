@@ -101,7 +101,10 @@ const translations = {
       title: {
         new: 'New Macro',
         edit: 'Edit: {{command}}',
+        newShort: 'New',
+        editShort: 'Edit',
       },
+      openFullEditor: 'Open in full editor',
       commandSuggestionsLabel: 'Existing macros',
       deleteMacro: 'Delete macro',
       confirmDelete: 'Confirm delete',
@@ -257,7 +260,10 @@ const translations = {
       title: {
         new: 'Nuevo macro',
         edit: 'Editar: {{command}}',
+        newShort: 'Nuevo',
+        editShort: 'Editar',
       },
+      openFullEditor: 'Abrir en editor completo',
       commandSuggestionsLabel: 'Macros existentes',
       deleteMacro: 'Borrar macro',
       confirmDelete: 'Confirmar borrado',

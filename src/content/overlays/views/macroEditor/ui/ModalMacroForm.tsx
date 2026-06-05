@@ -12,6 +12,13 @@ import { CommandSuggestions } from './CommandSuggestions'
 // How long the success toast shows before the modal closes.
 const SAVE_TOAST_MS = 900
 
+const PopoutIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none">
+    <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      d="M14 4h6m0 0v6m0-6L10 14M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5" />
+  </svg>
+)
+
 interface ModalMacroFormProps {
   editing: Macro | null
   onDone: () => void
@@ -60,6 +67,10 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
     isSensitive !== !!editing.is_sensitive
   const isFormValid = commandValid && isTextValid && isDirty
 
+  // Open the full-page editor (a content script can't call chrome.tabs directly;
+  // the background opens the tab).
+  const openFullEditor = () => { chrome.runtime.sendMessage('open-editor') }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
@@ -94,12 +105,24 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-md">
-      <div>
-        <label htmlFor="modal-macro-command" className="label">
-          {t('macroForm.triggerLabel')}
-        </label>
-        <div className="command-suggestion-wrapper">
+    <form onSubmit={onSubmit} className="editor-form">
+      <div className="editor-topbar">
+        <div className="editor-topbar-lead">
+          <h1 className="editor-title">
+            {editing ? t('macroEditor.title.editShort') : t('macroEditor.title.newShort')}
+          </h1>
+          <button
+            type="button"
+            className="editor-popout"
+            onClick={openFullEditor}
+            aria-label={t('macroEditor.openFullEditor')}
+            title={t('macroEditor.openFullEditor')}
+          >
+            <PopoutIcon />
+          </button>
+        </div>
+
+        <div className="command-suggestion-wrapper editor-command">
           <input
             id="modal-macro-command"
             ref={commandInputRef}
@@ -107,6 +130,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             value={command}
             onChange={e => setCommand(e.currentTarget.value)}
             placeholder={`e.g., ${prefixes[0]}sig`}
+            aria-label={t('macroForm.triggerLabel')}
             maxLength={50}
             autoComplete="off"
             {...suggest.inputProps}
@@ -120,56 +144,34 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             />
           )}
         </div>
-        {command && !commandValid && (
-          <p className="validation-error">
-            Command must start with: {prefixes.join(', ')}
-          </p>
-        )}
       </div>
 
-      <div>
-        <label htmlFor="modal-macro-text" className="label">
-          {t('macroForm.textLabel')}
-        </label>
-        <ContentEditor
-          ref={contentEditorRef}
-          value={text}
-          onChange={setText}
-          placeholder="Enter your macro content..."
-        />
-      </div>
-
-      {error && (
-        <div className="alert alert-error">
-          <p className="font-medium">{error}</p>
-        </div>
+      {command && !commandValid && (
+        <p className="validation-error editor-command-error">
+          Command must start with: {prefixes.join(', ')}
+        </p>
       )}
 
-      {savedToast && (
-        <div className="alert alert-success" role="status">
-          <p className="font-medium">{savedToast}</p>
-        </div>
-      )}
+      <ContentEditor
+        ref={contentEditorRef}
+        className="editor-content"
+        value={text}
+        onChange={setText}
+        placeholder="Enter your macro content..."
+      />
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--spacing-sm)' }}>
+      <div className="editor-bottombar">
+        <label className="editor-sensitive">
           <input
             type="checkbox"
             checked={isSensitive}
             onChange={e => setSensitive(e.currentTarget.checked)}
             className="checkbox"
           />
-          <span className="label" style={{ marginBottom: 0 }}>{t('macroForm.sensitiveLabel')}</span>
+          <span>{t('macroForm.sensitiveLabel')}</span>
         </label>
 
         <div className="button-group">
-          <button
-            type="submit"
-            disabled={!isFormValid || savedToast !== null}
-            className="btn btn-outlined btn-success"
-          >
-            {editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}
-          </button>
           {editing && (
             <button
               type="button"
@@ -179,8 +181,21 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
               {t('macroForm.cancelButton')}
             </button>
           )}
+          <button
+            type="submit"
+            disabled={!isFormValid || savedToast !== null}
+            className="btn btn-outlined btn-success"
+          >
+            {editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}
+          </button>
         </div>
       </div>
+
+      {(error || savedToast) && (
+        <div className={`editor-toast alert ${error ? 'alert-error' : 'alert-success'}`} role="status">
+          <p className="font-medium">{error ?? savedToast}</p>
+        </div>
+      )}
     </form>
   )
 }

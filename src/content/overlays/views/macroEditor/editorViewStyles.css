@@ -1,49 +1,114 @@
 /**
- * Styles for the macro editor view
+ * Styles for the macro editor view — a compact, full-height modal layout:
+ * top bar (title + popout + command) / editor body (fills) / bottom action bar.
  */
 .macro-editor-view {
-  padding: 20px;
+  padding: var(--spacing-xl);
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.editor-container {
+.editor-form {
+  position: relative;
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Top bar: title + popout on the left, command input on the right. */
+.editor-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+.editor-topbar-lead {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
 }
 
 .editor-title {
-  font-size: 20px;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--ink);
-  margin: 0 0 8px;
+  margin: 0;
 }
 
-.editor-description {
-  font-size: 14px;
-  color: var(--ink-soft);
-  margin: 0 0 20px;
-}
-
-.editor-placeholder {
-  flex: 1;
+.editor-popout {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px;
-  text-align: center;
+  padding: var(--spacing-xs);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
   color: var(--ink-soft);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
-.editor-actions {
+.editor-popout:hover {
+  background: var(--tone);
+  color: var(--accent);
+}
+
+.editor-command {
+  flex: 1;
+  max-width: 260px;
+}
+
+.editor-command .input {
+  width: 100%;
+}
+
+.editor-command-error {
+  margin: calc(-1 * var(--spacing-xs)) 0 0;
+}
+
+/* The content editor owns the remaining vertical space and scrolls internally. */
+.editor-content.content-editor {
+  flex: 1;
+  min-height: 0;
+}
+
+.editor-content .content-editor-body {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Bottom action bar: sensitive toggle + save/cancel. */
+.editor-bottombar {
   display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-top: 16px;
-  border-top: 1px solid var(--harmonic);
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.editor-sensitive {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--text-sm);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* Save/error confirmation floats above the bar so it never shifts the layout. */
+.editor-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 52px;
+  transform: translateX(-50%);
+  margin: 0;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px -4px rgb(0 0 0 / 25%);
 }
 
 /* Command autocomplete suggestions */

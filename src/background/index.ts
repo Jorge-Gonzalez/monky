@@ -17,6 +17,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true
   }
   
+  // Open the full-page editor (content scripts can't call chrome.tabs directly).
+  if (msg === 'open-editor') {
+    chrome.tabs.create({ url: chrome.runtime.getURL('src/editor/index.html') })
+    sendResponse({ ok: true })
+    return true
+  }
+
   // Developer utility: reload content scripts
   if (msg === 'reload-content-scripts') {
     chrome.tabs.query({}, (tabs) => {
