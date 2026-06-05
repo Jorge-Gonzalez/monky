@@ -13,13 +13,13 @@
 }
 
 .settings-body {
-  padding: var(--spacing-sm) 0 var(--spacing-xl);
+  padding: var(--spacing-2xl) 0 var(--spacing-xl);
 }
 
 .settings-group {
   display: grid;
   grid-template-columns: 1fr 3fr;
-  padding: 0 var(--spacing-xl);
+  padding: var(--spacing-xl) var(--spacing-3xl);
 }
 
 .settings-section-label {
