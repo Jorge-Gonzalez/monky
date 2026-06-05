@@ -110,3 +110,64 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Per-row delete: trash arms the row, then confirm (check) / cancel (x). */
+.command-suggestion-item > .command-suggestion-action,
+.command-suggestion-actions {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.command-suggestion-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.command-suggestion-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+}
+
+/* Reveal the trash on hover/selection, like the search view's edit icon. */
+.command-suggestion-item:hover .command-suggestion-action.delete,
+.command-suggestion-item.selected .command-suggestion-action.delete {
+  opacity: 1;
+}
+
+.command-suggestion-action.delete:hover {
+  background-color: var(--status-error-wash);
+  color: var(--status-error);
+}
+
+/* Once armed, both confirm and cancel stay visible. */
+.command-suggestion-item.confirming-delete {
+  background-color: var(--status-error-wash);
+}
+
+.command-suggestion-item.confirming-delete .command-suggestion-action {
+  opacity: 1;
+}
+
+.command-suggestion-action.confirm {
+  color: var(--status-error);
+}
+
+.command-suggestion-action.confirm:hover {
+  background-color: var(--status-error);
+  color: var(--base-tone);
+}
+
+.command-suggestion-action.cancel:hover {
+  background-color: var(--tone);
+  color: var(--ink);
+}

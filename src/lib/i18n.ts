@@ -101,6 +101,9 @@ const translations = {
         edit: 'Edit: {{command}}',
       },
       commandSuggestionsLabel: 'Existing macros',
+      deleteMacro: 'Delete macro',
+      confirmDelete: 'Confirm delete',
+      cancelDelete: 'Cancel',
     },
 
     // Popup
@@ -252,6 +255,9 @@ const translations = {
         edit: 'Editar: {{command}}',
       },
       commandSuggestionsLabel: 'Macros existentes',
+      deleteMacro: 'Borrar macro',
+      confirmDelete: 'Confirmar borrado',
+      cancelDelete: 'Cancelar',
     },
 
     // Popup

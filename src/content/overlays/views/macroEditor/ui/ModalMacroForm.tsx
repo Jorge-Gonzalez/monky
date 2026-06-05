@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Macro } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
-import { createMacro, updateMacro } from '../../../../../store/macroCrud'
+import { createMacro, updateMacro, deleteMacro } from '../../../../../store/macroCrud'
 import { ContentEditor, ContentEditorRef } from '../../../../../shared/content-editor'
 import { useMacroStore } from '../../../../../store/useMacroStore'
 import { validateCommand, isCommandValid } from '../../../../../shared/macroValidation'
@@ -116,6 +116,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
               suggestions={suggest.suggestions}
               selectedIndex={suggest.selectedIndex}
               onSelect={suggest.select}
+              onDelete={m => deleteMacro(String(m.id))}
             />
           )}
         </div>

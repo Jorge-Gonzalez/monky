@@ -34,6 +34,7 @@ const mockUpdate = vi.fn((..._args: any[]): Promise<CrudResult> => Promise.resol
 vi.mock('../../../../../store/macroCrud', () => ({
   createMacro: (data: any) => mockCreate(data),
   updateMacro: (id: any, data: any) => mockUpdate(id, data),
+  deleteMacro: vi.fn(),
 }))
 
 function setEditorContent(html: string) {
