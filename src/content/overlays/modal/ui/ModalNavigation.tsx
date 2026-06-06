@@ -30,8 +30,8 @@ const SearchIcon = () => (
 );
 
 const EditorIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
-    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m15.5 5.5 2.828 2.83M13 21h8M3 21l.047-.332c.168-1.175.252-1.763.443-2.311.17-.487.401-.95.69-1.378.323-.482.743-.902 1.583-1.741L17.41 3.59a2 2 0 0 1 2.828 2.828L8.377 18.28c-.761.761-1.142 1.142-1.576 1.445-.385.269-.8.492-1.237.664-.492.193-1.02.3-2.076.513L3 21Z"/>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width=".7" d="M10.3 3.7l1.9 1.9M2 14l0-.2c.1-.8.2-1.2.3-1.5.1-.3.3-.6.5-.9.2-.3.5-.6 1.1-1.2l7.8-7.8a1.3 1.3 0 0 1 1.9 1.9l-7.9 7.9c-.5.5-.8.8-1.1 1-.3.2-.5.3-.8.4-.3.1-.7.2-1.4.4L2 14Z M 8 14 14 14"/>
   </svg>
 );
 
