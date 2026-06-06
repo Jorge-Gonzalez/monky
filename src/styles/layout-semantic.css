@@ -944,7 +944,7 @@
 
 .btn-primary {
   background-color: var(--accent);
-  color: white;
+  color: var(--ink-alt);
 }
 
 .btn-primary:hover {

@@ -3,16 +3,17 @@ import { BlockType } from './types'
 import { setBlockType } from './editorCommands'
 import { icons } from './icons'
 import { useOverlayDismiss } from './useOverlayDismiss'
+import { t } from '../../lib/i18n'
 
-type StyleOption = { type: BlockType; label: string; shortLabel: string }
+type StyleOption = { type: BlockType; labelKey: string; shortLabel: string }
 
 const STYLE_OPTIONS: StyleOption[] = [
-  { type: 'paragraph', label: 'Paragraph',   shortLabel: '¶'    },
-  { type: 'h1',        label: 'Heading 1',   shortLabel: 'H1'   },
-  { type: 'h2',        label: 'Heading 2',   shortLabel: 'H2'   },
-  { type: 'h3',        label: 'Heading 3',   shortLabel: 'H3'   },
-  { type: 'blockquote',label: 'Blockquote',  shortLabel: '❝'    },
-  { type: 'pre',       label: 'Code block',  shortLabel: '</>'  },
+  { type: 'paragraph', labelKey: 'contentEditor.paragraph',  shortLabel: '¶'    },
+  { type: 'h1',        labelKey: 'contentEditor.h1',         shortLabel: 'H1'   },
+  { type: 'h2',        labelKey: 'contentEditor.h2',         shortLabel: 'H2'   },
+  { type: 'h3',        labelKey: 'contentEditor.h3',         shortLabel: 'H3'   },
+  { type: 'blockquote',labelKey: 'contentEditor.blockquote', shortLabel: '❝'    },
+  { type: 'pre',       labelKey: 'contentEditor.pre',        shortLabel: '</>'  },
 ]
 
 interface ContentEditorStyleMenuProps {
@@ -40,8 +41,8 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
         type="button"
         className={`ce-toolbar-btn ce-style-trigger ${open ? 'is-active' : ''}`}
         onMouseDown={e => { e.preventDefault(); setOpen(o => !o) }}
-        title="Text style"
-        aria-label="Text style"
+        title={t('contentEditor.textStyle')}
+        aria-label={t('contentEditor.textStyle')}
         aria-expanded={open}
         aria-haspopup="listbox"
       >
@@ -61,7 +62,7 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
               onMouseDown={e => { e.preventDefault(); handleSelect(opt.type) }}
             >
               <span className="ce-style-option-short">{opt.shortLabel}</span>
-              <span className="ce-style-option-label">{opt.label}</span>
+              <span className="ce-style-option-label">{t(opt.labelKey as Parameters<typeof t>[0])}</span>
             </button>
           ))}
         </div>

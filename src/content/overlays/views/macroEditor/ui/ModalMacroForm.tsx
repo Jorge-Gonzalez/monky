@@ -122,32 +122,39 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           </button>
         </div>
 
-        <div className="command-suggestion-wrapper editor-command">
-          <input
-            id="modal-macro-command"
-            ref={commandInputRef}
-            className={`input ${command && !commandValid ? 'input-error input-dropdown-open' : ''} ${suggest.visible ? 'input-dropdown-open' : ''}`}
-            value={command}
-            onChange={e => setCommand(e.currentTarget.value)}
-            placeholder={`e.g., ${prefixes[0]}sig`}
-            aria-label={t('macroForm.triggerLabel')}
-            maxLength={50}
-            autoComplete="off"
-            {...suggest.inputProps}
-          />
-          {command && !commandValid && (
-            <div className={`validation-error editor-command-error ${suggest.visible ? 'input-dropdown-open' : ''}`}>
-              Command must start with: {prefixes.join(', ')}
-            </div>
-          )}
-          {suggest.visible && (
-            <CommandSuggestions
-              suggestions={suggest.suggestions}
-              selectedIndex={suggest.selectedIndex}
-              onSelect={suggest.select}
-              onDelete={m => deleteMacro(String(m.id))}
+        <div className="horizontal snug align-center">
+          <span className="">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16">
+              <polygon fill="currentColor" points="7,9 4,9 10,0 8,7 11,7 5.417,15 "/>
+            </svg>
+          </span>
+          <div className="command-suggestion-wrapper editor-command">
+            <input
+              id="modal-macro-command"
+              ref={commandInputRef}
+              className={`input ${command && !commandValid ? 'input-error input-dropdown-open' : ''} ${suggest.visible ? 'input-dropdown-open' : ''}`}
+              value={command}
+              onChange={e => setCommand(e.currentTarget.value)}
+              placeholder={t('macroForm.commandPlaceholder', { prefix: prefixes[0] })}
+              aria-label={t('macroForm.triggerLabel')}
+              maxLength={50}
+              autoComplete="off"
+              {...suggest.inputProps}
             />
-          )}
+            {command && !commandValid && (
+              <div className={`validation-error editor-command-error ${suggest.visible ? 'input-dropdown-open' : ''}`}>
+                {t('macroForm.commandPrefixError', { prefixes: prefixes.join(', ') })}
+              </div>
+            )}
+            {suggest.visible && (
+              <CommandSuggestions
+                suggestions={suggest.suggestions}
+                selectedIndex={suggest.selectedIndex}
+                onSelect={suggest.select}
+                onDelete={m => deleteMacro(String(m.id))}
+              />
+            )}
+          </div>
         </div>
       </div>
 
@@ -156,7 +163,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
         className="editor-content"
         value={text}
         onChange={setText}
-        placeholder="Enter your macro content..."
+        placeholder={t('macroForm.contentPlaceholder')}
       />
 
       <div className="editor-bottombar">

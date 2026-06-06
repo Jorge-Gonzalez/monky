@@ -141,6 +141,9 @@ const translations = {
       cancelButton: 'Cancel',
       savedToast: 'Macro saved',
       updatedToast: 'Macro updated',
+      commandPrefixError: 'Command must start with: {{prefixes}}',
+      contentPlaceholder: 'Enter your macro content...',
+      commandPlaceholder: 'Enter your command e.g., {{prefix}}sig',
     },
 
     options: {
@@ -159,6 +162,16 @@ const translations = {
       manual: 'Manual (with Space, Enter, or Tab)',
       manualShort: 'Manual',
       description: 'In automatic mode, text replaces on match, but if a longer macro starts the same way it waits briefly before replacing.',
+    },
+
+    contentEditor: {
+      textStyle: 'Text style',
+      paragraph: 'Paragraph',
+      h1: 'Heading 1',
+      h2: 'Heading 2',
+      h3: 'Heading 3',
+      blockquote: 'Blockquote',
+      pre: 'Code block',
     },
   },
   es: {
@@ -300,6 +313,9 @@ const translations = {
       cancelButton: 'Cancelar',
       savedToast: 'Macro guardada',
       updatedToast: 'Macro actualizada',
+      commandPrefixError: 'El comando debe empezar con: {{prefixes}}',
+      contentPlaceholder: 'Escribe el contenido de tu macro...',
+      commandPlaceholder: 'Escribe tu comando ej. {{prefix}}firma',
     },
 
     options: {
@@ -318,6 +334,16 @@ const translations = {
       manual: 'Manual (con Espacio, Enter, o Tab)',
       manualShort: 'Manual',
       description: 'En modo automático, el texto se reemplaza al coincidir, pero si existe un macro más largo que empieza igual, espera un instante antes de reemplazar.',
+    },
+
+    contentEditor: {
+      textStyle: 'Estilo de texto',
+      paragraph: 'Párrafo',
+      h1: 'Encabezado 1',
+      h2: 'Encabezado 2',
+      h3: 'Encabezado 3',
+      blockquote: 'Cita',
+      pre: 'Código',
     },
   },
   // You could add more languages here in the future, e.g., en: { ... }
