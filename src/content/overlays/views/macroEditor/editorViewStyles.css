@@ -68,7 +68,11 @@
 }
 
 .editor-command-error {
-  margin: calc(-1 * var(--spacing-xs)) 0 0;
+  background: var(--status-error-wash);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  /* border: 1px solid var(--status-error); */
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
 }
 
 /* The content editor owns the remaining vertical space and scrolls internally. */
@@ -116,7 +120,7 @@
   position: relative;
 }
 
-.input-suggestions-open {
+.input-dropdown-open {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }

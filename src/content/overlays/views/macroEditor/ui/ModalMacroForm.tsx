@@ -126,7 +126,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           <input
             id="modal-macro-command"
             ref={commandInputRef}
-            className={`input ${command && !commandValid ? 'input-error' : ''} ${suggest.visible ? 'input-suggestions-open' : ''}`}
+            className={`input ${command && !commandValid ? 'input-error input-dropdown-open' : ''} ${suggest.visible ? 'input-dropdown-open' : ''}`}
             value={command}
             onChange={e => setCommand(e.currentTarget.value)}
             placeholder={`e.g., ${prefixes[0]}sig`}
@@ -135,6 +135,11 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             autoComplete="off"
             {...suggest.inputProps}
           />
+          {command && !commandValid && (
+            <div className={`validation-error editor-command-error ${suggest.visible ? 'input-dropdown-open' : ''}`}>
+              Command must start with: {prefixes.join(', ')}
+            </div>
+          )}
           {suggest.visible && (
             <CommandSuggestions
               suggestions={suggest.suggestions}
@@ -145,12 +150,6 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           )}
         </div>
       </div>
-
-      {command && !commandValid && (
-        <p className="validation-error editor-command-error">
-          Command must start with: {prefixes.join(', ')}
-        </p>
-      )}
 
       <ContentEditor
         ref={contentEditorRef}
@@ -171,7 +170,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           <span>{t('macroForm.sensitiveLabel')}</span>
         </label>
 
-        <div className="button-group">
+        <div className="button-group snug">
           {editing && (
             <button
               type="button"
