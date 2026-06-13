@@ -18,8 +18,8 @@ const MonkyLogoLight = () => (
 );
 
 const MonkyLogoWord = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="monky-logo-word" width="90" height="26" viewBox="0 0 90 26" fill="none">
-    <path fill="currentColor" d="M22.2 8.8c-.9 0-1.6.3-2.1 1v-.9h-1.8v9.4h1.9v-7.1c0-.7.6-1.1 1.4-1.1.7 0 1.4.4 1.4 1.1v7.1h1.9v-7.1c0-.7.6-1.1 1.4-1.1.7 0 1.4.4 1.4 1.1v7.1h1.9v-7.1c0-1.7-1.1-2.4-2.5-2.4-1 0-1.9.5-2.3 1.3-.4-.9-1.3-1.3-2.3-1.3m31-.1c-1.8 0-3.2.7-3.9 2v-1.9h-1.8v9.4h1.8v-5.4c0-1.8 1.4-2.8 3.2-2.8s3.2 1 3.2 2.8v5.4h1.8v-5.6c0-2.6-1.8-3.9-4.3-3.9m-15.2 0c-3 0-5.1 1.6-5.1 4.8s2.2 4.8 5.1 4.8 5.1-1.6 5.1-4.8-2.2-4.8-5.1-4.8m0 1.2c1.8 0 3.3 1.2 3.4 3.6 0 2.3-1.5 3.6-3.4 3.6s-3.3-1.2-3.4-3.6c0-2.3 1.5-3.6 3.4-3.6m36.3-1.3 4.2 9.5h.9l-1.8 4.3h1.8l5.9-13.8h-1.8l-3.6 8.5-3.7-8.5zM62.4 4.4v13.8h1.9v-2l2.2-2.2 3.2 4.2h2.2l-4.2-5.4 4-4h-2.3l-5.2 5.2V4.4zM11.2 4.4 5.3 18.2h1.8L13 4.4z"/>
+  <svg xmlns="http://www.w3.org/2000/svg" width="100" height="25" viewBox="0 0 100 25">
+    <path fill="currentColor" d="M14.2 2.9 8 18.9H5l6.1-16zM47 6.3c-3.6 0-6.4 2.9-6.4 6.4s2.9 6.4 6.4 6.4 6.4-2.9 6.4-6.4-2.9-6.4-6.4-6.4zm0 10.3c-1.9 0-3.5-1.7-3.5-3.9s1.6-3.9 3.5-3.9 3.5 1.7 3.5 3.9-1.6 3.9-3.5 3.9zM61.3 6.3c-1.4 0-2.5.6-3.3 1.7V6.6h-3v12.2h3V12c.2-1.8 1.2-3.1 2.9-3.1 1.9 0 3 1.6 3 3.7v6.3h3v-6.3c0-3.6-2.1-6.3-5.6-6.3zM33.6 6.3c-2 0-3.4.9-4.3 2.4-.8-1.5-2.2-2.4-4.2-2.4-1.3 0-2.4.6-3.1 1.5V6.6h-3v12.2h3v-6.9c.2-1.8 1.1-3 2.8-3 1.9 0 2.8 1.6 2.8 3.7v6.3h3v-6.3c0-2.1.9-3.7 2.8-3.7s2.8 1.6 2.8 3.7v6.3h3v-6.3c-.2-3.6-2.1-6.3-5.6-6.3zM91.6 6.6l-3.5 9.1L85 6.6h-3.1l4.3 12.3h.7l-1.4 3.7h3.1l6.1-16zM80.9 6.6h-3.4l-4.3 6.1 4.3 6.2h3.4l-4.3-6.2zM69.3 2.9h3v16h-3z"/>
   </svg>
 );
 
@@ -58,7 +58,7 @@ export function ModalNavigation({ currentView, onViewChange, theme }: ModalNavig
   return (
     <nav className="modal-nav-container horizontal align-center justify-between" style={{ borderBottom: '1px solid var(--harmonic)', padding: '0 1rem' }}>
       <div className="modal-nav-branding horizontal align-center gap-2">
-        <Logo />
+        {/* <Logo /> */}
         <MonkyLogoWord />
       </div>
       <div className="horizontal">
