@@ -82,12 +82,11 @@
 /* Universal selector for all elements */
 * {
   box-sizing: border-box;
-  font-family: 'IBM Plex Condensed Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-optical-sizing: auto;
   line-height: 1.5;
 }
 
-/* Shadow DOM: host element */
+/* App font lives on each context's entry point and cascades by inheritance:
+   :host for the shadow-DOM overlays, body for the extension's own pages. */
 :host {
   box-sizing: border-box;
   font-family: 'IBM Plex Condensed Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -95,12 +94,22 @@
   line-height: 1.5;
 }
 
-/* Shadow DOM: all descendants */
-:host * {
-  box-sizing: border-box;
+body {
   font-family: 'IBM Plex Condensed Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-optical-sizing: auto;
+}
+
+/* Shadow DOM: all descendants. font-family is deliberately NOT set here so
+   children inherit from :host — letting subtrees (e.g. the editor) override it. */
+:host * {
+  box-sizing: border-box;
   line-height: 1.5;
+}
+
+/* Form controls don't inherit font-family by default; opt them in so they
+   match the surrounding UI instead of the browser's default font. */
+input, textarea, button, select, optgroup {
+  font-family: inherit;
 }
 
 ::-webkit-scrollbar {
@@ -813,7 +822,10 @@
   /* border-radius: var(--radius-md); */
   border: 1px solid var(--harmonic);
   border-radius: 8px;
-  line-height: 1.6;
+  /* Neutral font so users control styling in their own macros; overrides the
+     app font inherited from :host. Children inherit this value. */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: normal;
 }
 
 .content-editor-body:focus {
