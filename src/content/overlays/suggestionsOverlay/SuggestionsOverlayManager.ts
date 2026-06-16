@@ -3,6 +3,7 @@ import { Macro, EditableEl } from '../../../types';
 import { MacroSuggestions } from './ui/MacroSuggestions';
 import { createReactRenderer } from '../services/reactRenderer';
 import { createStyleInjector } from '../services/styleInjector';
+import { ensureAppFontFace } from '../services/appFont';
 import { SUGGESTIONS_OVERLAY_STYLES } from './SuggestionsOverlayStyles';
 import { getActiveEditable, getSelection } from '../../macroEngine/replacement/editableUtils';
 import { replaceText } from '../../macroEngine/replacement/macroReplacement';
@@ -168,6 +169,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
   const initialize = (): void => {
     renderer.initialize();
     const shadowRoot = renderer.getShadowRoot();
+    ensureAppFontFace();
     styleInjector = createStyleInjector('macro-suggestions-styles', SUGGESTIONS_OVERLAY_STYLES, shadowRoot);
     styleInjector.inject();
   };

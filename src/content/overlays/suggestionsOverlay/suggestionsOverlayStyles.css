@@ -1,6 +1,6 @@
 :host,
 #macro-suggestions {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'IBM Plex Condensed Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.5;
   position: fixed !important;
   z-index: 2147483646 !important;
@@ -8,6 +8,12 @@
 
 #macro-suggestions * {
   box-sizing: border-box;
+}
+
+/* Form controls don't inherit font-family by default; opt them in so buttons
+   use the app font instead of the browser default. */
+button, input, textarea, select {
+  font-family: inherit;
 }
 
 .macro-suggestions-container {
@@ -88,7 +94,6 @@
   background-color: var(--tone-dim);
   color: var(--ink);
   font-size: 13px;
-  font-family: monospace;
   cursor: pointer;
   transition: all 0.15s ease;
   text-align: center;

@@ -3,6 +3,7 @@ import { Macro } from '../../../types'
 import { DeleteConfirmPopup } from './DeleteConfirmPopup'
 import { createReactRenderer } from '../services/reactRenderer'
 import { createStyleInjector } from '../services/styleInjector'
+import { ensureAppFontFace } from '../services/appFont'
 import { SUGGESTIONS_OVERLAY_STYLES } from '../suggestionsOverlay/SuggestionsOverlayStyles'
 import { DELETE_CONFIRM_STYLES } from './deleteConfirmStyles'
 import { getActiveEditable } from '../../macroEngine/replacement/editableUtils'
@@ -25,6 +26,7 @@ export function createDeleteConfirmManager() {
   const initialize = (): void => {
     renderer.initialize()
     const shadowRoot = renderer.getShadowRoot()
+    ensureAppFontFace()
     styleInjector = createStyleInjector(
       'macro-delete-confirm-styles',
       SUGGESTIONS_OVERLAY_STYLES + DELETE_CONFIRM_STYLES,

@@ -8,8 +8,8 @@ import { MacroEditorView } from '../views/macroEditor/ui/MacroEditorView';
 import { createReactRenderer } from '../services/reactRenderer';
 import { createFocusManager } from '../services/focusManager';
 import { createStyleInjector } from '../services/styleInjector';
+import { ensureAppFontFace, LAYOUT_STYLES_WITHOUT_FONT_FACE } from '../services/appFont';
 import { getActiveEditable } from '../../macroEngine/replacement/editableUtils';
-import LAYOUT_SEMANTIC_STYLES from '../../../styles/layout-semantic.css?raw';
 import MODAL_STYLES from './modalStyles.css?raw';
 import SEARCH_VIEW_STYLES from '../views/search/searchViewStyles.css?raw';
 import SETTINGS_VIEW_STYLES from '../views/settings/settingsViewStyles.css?raw';
@@ -24,20 +24,14 @@ export function createModalManager() {
       .replace(/#monky-modal\s*\{[^}]*\}/g, '')
       .replace(/#monky-modal\s+>\s+\*\s*\{[^}]*\}/g, '');
 
-  const fontUrl = chrome.runtime.getURL('fonts/ibm-plex-sans-condensed-v15-latin-300.woff2');
-  const layoutStylesWithFontUrl = LAYOUT_SEMANTIC_STYLES.replace("url('/fonts/ibm-plex-sans-condensed-v15-latin-300.woff2')", `url('${fontUrl}')`);
-  const fontFaceStyles = layoutStylesWithFontUrl.match(/@font-face[\s\S]*?}\s*/)?.[0] ?? '';
-  const layoutStyles = layoutStylesWithFontUrl.replace(/@font-face[\s\S]*?}\s*/,'');
-
   const allStyles = [
-    layoutStyles,
+    LAYOUT_STYLES_WITHOUT_FONT_FACE,
     adaptModalStyles(MODAL_STYLES),
     SEARCH_VIEW_STYLES,
     SETTINGS_VIEW_STYLES,
     EDITOR_VIEW_STYLES,
   ].join('\n');
 
-  let globalFontInjector: ReturnType<typeof createStyleInjector>;
   let styleInjector: ReturnType<typeof createStyleInjector>;
   let isVisible = false;
   let currentView: ModalView = 'search';
@@ -118,8 +112,7 @@ export function createModalManager() {
   const initialize = (): void => {
     renderer.initialize();
     const shadowRoot = renderer.getShadowRoot();
-    globalFontInjector = createStyleInjector('monky-font-face', fontFaceStyles);
-    globalFontInjector.inject();
+    ensureAppFontFace();
     styleInjector = createStyleInjector('monky-modal-styles', allStyles, shadowRoot);
     styleInjector.inject();
   };
@@ -146,7 +139,7 @@ export function createModalManager() {
     hide();
     renderer.destroy();
     styleInjector.remove();
-    globalFontInjector.remove();
+    // The app @font-face is shared across overlays; leave it registered.
   };
 
   const setOnMacroSelected = (callback: (macro: Macro, element: EditableEl) => void) => {

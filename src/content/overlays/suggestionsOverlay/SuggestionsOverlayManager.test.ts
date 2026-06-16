@@ -27,6 +27,12 @@ vi.mock('../services/styleInjector', () => ({
   createStyleInjector: vi.fn(() => mockStyleInjector),
 }));
 
+// The shared app @font-face registration is its own concern, tested elsewhere;
+// stub it so it doesn't share this manager's mocked style injector.
+vi.mock('../services/appFont', () => ({
+  ensureAppFontFace: vi.fn(),
+}));
+
 // Mock the editable utils
 vi.mock('../../macroEngine/replacement/editableUtils', () => ({
   getActiveEditable: vi.fn(),
