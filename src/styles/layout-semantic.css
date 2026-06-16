@@ -35,6 +35,9 @@
   --radius-sm: 3px;
   --radius-md: 6px;
   --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
 
   /* Font size scale */
   --text-xs: 12px;
@@ -51,7 +54,7 @@
   --transition-medium: 0.3s;
 
   /* Custom scrollbar styles */
-  scrollbar-width: thin;
+  /* scrollbar-width: thin; */
   scrollbar-color: var(---tone) var(--tone-dim);
 }
 
@@ -101,18 +104,18 @@
 }
 
 ::-webkit-scrollbar {
-  width: var(--spacing-sm) !important;
-  height: var(--spacing-sm) !important;
+  width: var(--spacing-md) !important;
+  height: var(--spacing-md) !important;
 }
 
 ::-webkit-scrollbar-track {
   background: var(--tone-dim) !important;
-  border-radius: var(--radius-sm) !important;
+  border-radius: var(--radius-md) !important;
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--tone) !important;
-  border-radius: var(--radius-sm) !important;
+  border-radius: var(--radius-md) !important;
   border: 1px solid var(--tone-dim) !important;
 }
 
@@ -547,7 +550,7 @@
   width: 100%;
   padding: var(--spacing-sm) var(--spacing-md);
   border: 1px solid var(--harmonic);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-3xl);
   font-size: var(--text-md);
   background-color: var(--tone-dim);
   color: var(--ink);
@@ -627,16 +630,14 @@
 .content-editor {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--harmonic);
-  border-radius: var(--radius-md);
   background-color: var(--tone-dim);
   overflow: hidden;
 }
 
-.content-editor:focus-within {
+/* .content-editor:focus-within {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--tone);
-}
+} */
 
 /* Toolbar row */
 .ce-toolbar {
@@ -645,7 +646,6 @@
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
-  border-bottom: 1px solid var(--harmonic);
   background-color: var(--base-tone);
   flex-shrink: 0;
 }
@@ -810,7 +810,15 @@
   overflow: auto;
   color: var(--ink);
   font-size: var(--text-md);
+  /* border-radius: var(--radius-md); */
+  border: 1px solid var(--harmonic);
+  border-radius: 8px;
   line-height: 1.6;
+}
+
+.content-editor-body:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--tone);
 }
 
 .content-editor-body:empty::before {
