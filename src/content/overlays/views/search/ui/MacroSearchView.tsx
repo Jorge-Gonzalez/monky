@@ -124,7 +124,7 @@ export function MacroSearchView({
       handleCommandSelect, handleParametricSelect, handleMacroSelect]);
 
   useAutoFocus(inputRef, true);
-  useScrollIntoView(resultsRef, navigation.selectedIndex, '.macro-search-item.selected');
+  useScrollIntoView(resultsRef, navigation.selectedIndex, '.macro-search-item[aria-selected="true"]');
   useKeyboardNavigation({
     isActive: true,
     itemCount: listLength,
@@ -161,8 +161,8 @@ export function MacroSearchView({
     }
     if (parsed.mode === 'awaiting') {
       return (
-        <div ref={resultsRef} className="macro-search-results">
-          <div className="macro-search-empty modal-command-hint">
+        <div ref={resultsRef} className="macro-search-results elastic basis-ratio grid">
+          <div className="macro-search-empty modal-command-hint span-all padding-relaxed">
             {t('modalSearch.awaitingHint')}
           </div>
         </div>
@@ -189,7 +189,7 @@ export function MacroSearchView({
   const hasSelection = showMacros && navigation.selectedIndex >= 0;
 
   return (
-    <div className="macro-search-view">
+    <div className="macro-search-view vertical">
       <MacroSearchInput
         value={searchQuery}
         onChange={setSearchQuery}

@@ -33,11 +33,11 @@ describe('MacroSearchResults', () => {
       expect(screen.getByText('/br')).toBeInTheDocument();
     });
 
-    it('marks the selected row with the selected class', () => {
+    it('backs the selected row with aria-selected', () => {
       const { container } = render(<MacroSearchResults {...baseProps} selectedIndex={1} />);
       const items = container.querySelectorAll('.macro-search-item');
-      expect(items[1]).toHaveClass('selected');
-      expect(items[0]).not.toHaveClass('selected');
+      expect(items[1]).toHaveAttribute('aria-selected', 'true');
+      expect(items[0]).toHaveAttribute('aria-selected', 'false');
     });
 
     it('shows empty state when macros list is empty', () => {
@@ -50,8 +50,8 @@ describe('MacroSearchResults', () => {
     it('shows the confirm prompt on the armed row, the normal text on the rest', () => {
       const { container } = render(<MacroSearchResults {...baseProps} confirmingDeleteId={2} />);
       const items = container.querySelectorAll('.macro-search-item');
-      expect(items[1]).toHaveClass('confirming-delete');
-      expect(items[0]).not.toHaveClass('confirming-delete');
+      expect(items[1]).toHaveAttribute('data-state', 'confirming-delete');
+      expect(items[0]).not.toHaveAttribute('data-state');
       // Armed row swaps its text for the confirm prompt.
       expect(screen.getByText('modalSearch.confirmDelete')).toBeInTheDocument();
       expect(screen.queryByText('My address')).not.toBeInTheDocument();

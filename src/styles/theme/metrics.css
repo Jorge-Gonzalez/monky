@@ -15,6 +15,14 @@
   --spacing-2xl: 24px;
   --spacing-3xl: 40px;
 
+  /* U5 approved Ermine density binding; preserves Monky's prior semantic classes. */
+  --spacing-tight: var(--spacing-xs);
+  --spacing-snug: var(--spacing-sm);
+  --spacing-comfortable: var(--spacing-md);
+  --spacing-relaxed: var(--spacing-lg);
+  --spacing-loose: var(--spacing-xl);
+  --spacing-separated: var(--spacing-3xl);
+
   /* Border radius scale */
   --radius-sm: 3px;
   --radius-md: 6px;

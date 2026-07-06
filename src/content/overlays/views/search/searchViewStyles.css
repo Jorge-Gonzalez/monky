@@ -6,21 +6,17 @@
  */
 /* Search view container */
 .macro-search-view {
-  display: flex;
-  flex-direction: column;
   height: 100%;
 }
 
 /* Input container */
 .macro-search-input-container {
-  padding: var(--spacing-lg);
   border-bottom: 1px solid var(--harmonic);
 }
 
 /* Search uses shared .input pattern from modalStyles */
 .macro-search-input {
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
   border: 1px solid var(--accent-dim);
   border-radius: var(--radius-md);
   font-size: var(--text-md);
@@ -38,18 +34,14 @@
 
 /* Results container - extends .scrollable pattern */
 .macro-search-results {
-  flex: 1;
   max-height: 400px;
   overflow-y: auto;
-  display: grid;
   grid-template-columns: fit-content(140px) 1fr;
   align-content: start;
 }
 
 /* Empty state - uses shared .empty-state pattern */
 .macro-search-empty {
-  grid-column: 1 / -1;
-  padding: var(--spacing-lg);
   color: var(--ink-soft);
   text-align: center;
   font-size: var(--text-md);
@@ -57,15 +49,11 @@
 
 /* Search result items - search-specific pattern */
 .macro-search-item {
-  display: grid;
-  grid-column: 1 / -1;
   grid-template-columns: subgrid;
-  position: relative;
 }
 
 .macro-search-item-command,
 .macro-search-item-text {
-  padding: var(--spacing-md);
   border-bottom: 1px solid var(--harmonic-minor);
   color: var(--ink);
   cursor: pointer;
@@ -93,12 +81,12 @@
   background-color: var(--tone-dim);
 }
 
-.macro-search-item.selected .macro-search-item-command,
-.macro-search-item.selected .macro-search-item-text {
+.macro-search-item[aria-selected="true"] .macro-search-item-command,
+.macro-search-item[aria-selected="true"] .macro-search-item-text {
   background-color: var(--tone);
 }
 
-.macro-search-item.selected .macro-search-item-text {
+.macro-search-item[aria-selected="true"] .macro-search-item-text {
   white-space: normal;
   overflow: visible;
   text-overflow: clip;
@@ -106,7 +94,6 @@
 
 /* Armed-for-delete row: danger tint + the confirm prompt in the text column. */
 .macro-search-item-confirm {
-  padding: var(--spacing-md);
   padding-left: var(--spacing-xs);
   border-bottom: 1px solid var(--harmonic-minor);
   font-size: var(--text-base);
@@ -117,24 +104,19 @@
   text-overflow: ellipsis;
 }
 
-.macro-search-item.confirming-delete .macro-search-item-command,
-.macro-search-item.confirming-delete .macro-search-item-confirm {
+.macro-search-item[data-state="confirming-delete"] .macro-search-item-command,
+.macro-search-item[data-state="confirming-delete"] .macro-search-item-confirm {
   background-color: var(--status-error-wash);
 }
 
-.macro-search-item.confirming-delete .macro-search-item-command {
+.macro-search-item[data-state="confirming-delete"] .macro-search-item-command {
   color: var(--status-error);
 }
 
 .macro-search-item-edit {
-  position: absolute;
   right: var(--spacing-sm);
   top: 50%;
   transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xs);
   border: none;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -150,7 +132,7 @@
 }
 
 .macro-search-item:hover .macro-search-item-edit,
-.macro-search-item.selected .macro-search-item-edit {
+.macro-search-item[aria-selected="true"] .macro-search-item-edit {
   opacity: 1;
 }
 
@@ -166,12 +148,9 @@
 
 /* Footer */
 .macro-search-footer {
-  padding: var(--spacing-sm);
   border-top: 1px solid var(--harmonic);
   font-size: var(--text-sm);
   color: var(--ink-soft);
-  display: flex;
-  justify-content: space-between;
   background-color: var(--base-tone);
 }
 
@@ -204,17 +183,10 @@
 } */
 
 .macro-search-shortcut {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-sm);
   margin-right: var(--spacing-xl);
 }
 
 .macro-search-kbd {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   font-family: monospace;
   font-size: 12px;
   line-height: 1;

@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "elements": [
+    {
+      "id": "modal-backdrop",
+      "classString": "position-fixed horizontal align-center justify-center",
+      "backing": []
+    },
+    {
+      "id": "vertical-shells",
+      "classString": "vertical",
+      "backing": []
+    },
+    {
+      "id": "modal-content",
+      "classString": "elastic basis-ratio vertical",
+      "backing": []
+    },
+    {
+      "id": "modal-navigation",
+      "classString": "horizontal align-center justify-between padding-inline-relaxed",
+      "backing": []
+    },
+    {
+      "id": "modal-navigation-brand",
+      "classString": "horizontal align-center gap-snug",
+      "backing": []
+    },
+    {
+      "id": "modal-navigation-tabs",
+      "classString": "horizontal",
+      "backing": []
+    },
+    {
+      "id": "modal-navigation-tab",
+      "classString": "horizontal align-center justify-center gap-snug",
+      "backing": []
+    },
+    {
+      "id": "search-input-container",
+      "classString": "padding-relaxed",
+      "backing": []
+    },
+    {
+      "id": "search-input",
+      "classString": "padding-block-snug padding-inline-comfortable",
+      "backing": []
+    },
+    {
+      "id": "search-results",
+      "classString": "elastic basis-ratio grid",
+      "backing": []
+    },
+    {
+      "id": "search-empty",
+      "classString": "span-all padding-relaxed",
+      "backing": []
+    },
+    {
+      "id": "search-item",
+      "classString": "grid span-all position-relative",
+      "backing": []
+    },
+    {
+      "id": "search-item-cell",
+      "classString": "padding-comfortable",
+      "backing": []
+    },
+    {
+      "id": "search-item-edit",
+      "classString": "position-absolute horizontal align-center justify-center padding-tight",
+      "backing": []
+    },
+    {
+      "id": "search-footer",
+      "classString": "padding-snug horizontal justify-between",
+      "backing": []
+    },
+    {
+      "id": "search-shortcut",
+      "classString": "horizontal inline align-center gap-snug",
+      "backing": []
+    },
+    {
+      "id": "search-kbd",
+      "classString": "position-relative horizontal align-center justify-center",
+      "backing": []
+    }
+  ]
+}

@@ -9,14 +9,14 @@ interface MacroSearchInputProps {
 
 export function MacroSearchInput({ value, onChange, inputRef }: MacroSearchInputProps) {
   return (
-    <div className="macro-search-input-container">
+    <div className="macro-search-input-container padding-relaxed">
       <input
         ref={inputRef}
         type="text"
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={t('modalSearch.inputPlaceholder')}
-        className="macro-search-input"
+        className="macro-search-input padding-block-snug padding-inline-comfortable"
       />
     </div>
   );

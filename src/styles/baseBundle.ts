@@ -2,6 +2,7 @@ import RESET_STYLES from './substrate/reset.css?raw'
 import METRIC_STYLES from './theme/metrics.css?raw'
 import FONT_STYLES from './theme/font.css?raw'
 import LEGACY_GRAMMAR_STYLES from './grammar/legacy.css?raw'
+import GENERATED_GRAMMAR_STYLES from './grammar/ermine.generated.css?raw'
 import CONTROL_SKIN_STYLES from './skin/controls.css?raw'
 import SURFACE_SKIN_STYLES from './skin/surfaces.css?raw'
 import TYPOGRAPHY_SKIN_STYLES from './skin/typography.css?raw'
@@ -34,7 +35,7 @@ export function composeShadowBundle(options: ShadowBundleOptions = {}): string {
     layer('reset', BASE_SHADOW_STYLE_INPUTS.reset),
     layer('theme', BASE_SHADOW_STYLE_INPUTS.theme),
     layer('grammar', BASE_SHADOW_STYLE_INPUTS.legacyGrammar),
-    layer('grammar', options.generatedGrammar ?? ''),
+    layer('grammar', options.generatedGrammar ?? GENERATED_GRAMMAR_STYLES),
     layer('skin', BASE_SHADOW_STYLE_INPUTS.skin),
     layer('components', (options.componentStyles ?? []).join('\n')),
     layer('overrides', options.overrides ?? ''),

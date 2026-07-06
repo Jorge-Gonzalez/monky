@@ -29,7 +29,24 @@ function shadow(css: string, html: string): void {
 
 shadow(
   composeShadowBundle({ componentStyles: [MODAL_STYLES, SEARCH_STYLES, SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
-  '<div data-probe="modal" class="modal-dialog horizontal"><input class="macro-search-input"></div>',
+  `<div data-probe="modal" class="modal-dialog vertical">
+    <div data-probe="search-view" class="macro-search-view vertical">
+      <div data-probe="search-input-container" class="macro-search-input-container padding-relaxed">
+        <input data-probe="search-input" class="macro-search-input padding-block-snug padding-inline-comfortable">
+      </div>
+      <div data-probe="search-results" class="macro-search-results elastic basis-ratio grid">
+        <div data-probe="search-item" class="macro-search-item grid span-all position-relative" aria-selected="true">
+          <span data-probe="search-cell" class="macro-search-item-command padding-comfortable">command</span>
+          <button data-probe="search-edit" class="macro-search-item-edit position-absolute horizontal align-center justify-center padding-tight">edit</button>
+        </div>
+      </div>
+      <footer data-probe="search-footer" class="macro-search-footer padding-snug horizontal justify-between">
+        <div><span data-probe="search-shortcut" class="macro-search-shortcut horizontal inline align-center gap-snug">
+          <kbd data-probe="search-kbd" class="macro-search-kbd position-relative horizontal align-center justify-center">Esc</kbd>
+        </span></div>
+      </footer>
+    </div>
+  </div>`,
 )
 shadow(
   composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES] }),

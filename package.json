@@ -23,7 +23,8 @@
     "dev:status": "lsof -i:5173,3001 || echo 'No development servers running'",
     "size": "node scripts/check-build-size.js",
     "lint:fix": "eslint . --fix",
-    "test:styles": "node scripts/style-smoke.mjs"
+    "test:styles": "node scripts/style-smoke.mjs",
+    "ermine:css": "node scripts/update-ermine-css.mjs"
   },
   "dependencies": {
     "@preact/preset-vite": "^2.10.5",
