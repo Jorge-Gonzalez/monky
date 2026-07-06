@@ -71,3 +71,7 @@ npm run test:styles
 npm run lint:css
 npm run build
 ```
+
+## Clean-commit analyzer comparison
+
+The U2 baseline is preserved in Ermine and was not regenerated. A read-only comparison used Ermine analyzer bdabb07f18953043a9842ca52274c4b742791c97 against Monky fff8baa875c94a8734437a8446b22b65c8985574. It reports 19 CSS files, 1,401 declarations, zero CSS templates, 11 import edges, 15 raw imports, and the same 48 duplicate-definition and 117 context-dependent-definition findings as U2. Together with the eight delivery-dead modal declarations documented above, declaration conservation remains 1,409.
