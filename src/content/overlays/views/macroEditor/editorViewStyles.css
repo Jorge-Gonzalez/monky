@@ -1,3 +1,4 @@
+/* stylelint-disable no-descending-specificity -- component state selectors intentionally follow base selectors */
 /**
  * Styles for the macro editor view — a compact, full-height modal layout:
  * top bar (title + popout + command) / editor body (fills) / bottom action bar.

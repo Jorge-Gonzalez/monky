@@ -1,8 +1,9 @@
+/* stylelint-disable color-function-alias-notation, color-function-notation, alpha-value-notation, length-zero-no-unit -- preserved modal rendering */
 /**
  * Modal Styles - Modal-specific infrastructure
  *
  * Contains only modal-specific structure and layout.
- * All shared component patterns (including fonts) are loaded from layout-semantic.css (imported in modalManager.ts).
+ * Shared base styles and fonts come from composeShadowBundle(); this file owns modal identity only.
  *
  * Architecture:
  * - Modal backdrop and dialog structure
@@ -92,20 +93,4 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-}
-
-/* ===== Root Container ===== */
-:host,
-#monky-modal {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: 2147483647 !important;
-  pointer-events: none !important;
-}
-
-#monky-modal > * {
-  pointer-events: auto !important;
 }

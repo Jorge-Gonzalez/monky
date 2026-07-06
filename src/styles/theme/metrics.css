@@ -1,0 +1,63 @@
+/**
+ * Preserved Monky metric values. These are project evidence, not an approved
+ * Ermine scale binding; see docs/style-architecture.md.
+ */
+
+/* ===== Design Tokens ===== */
+:root,
+:host {
+  /* Spacing scale */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-2xl: 24px;
+  --spacing-3xl: 40px;
+
+  /* Border radius scale */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+
+  /* Font size scale */
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 16px;
+  --text-xl: 19px;
+  --text-2xl: 21px;
+  --text-3xl: 25px;
+
+  /* Transition timing */
+  --transition-fast: 0.15s;
+  --transition-medium: 0.3s;
+
+  /* Custom scrollbar styles */
+  /* scrollbar-width: thin; */
+  scrollbar-color: var(---tone) var(--tone-dim);
+}
+
+/* ===== Global Animations ===== */
+/* Keyframes must be at root level to work across all contexts */
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}

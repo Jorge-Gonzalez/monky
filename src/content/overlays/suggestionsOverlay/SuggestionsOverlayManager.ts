@@ -4,7 +4,7 @@ import { MacroSuggestions } from './ui/MacroSuggestions';
 import { createReactRenderer } from '../services/reactRenderer';
 import { createStyleInjector } from '../services/styleInjector';
 import { ensureAppFontFace } from '../services/appFont';
-import { SUGGESTIONS_OVERLAY_STYLES } from './SuggestionsOverlayStyles';
+import { SUGGESTIONS_OVERLAY_BUNDLE } from './SuggestionsOverlayStyles';
 import { getActiveEditable, getSelection } from '../../macroEngine/replacement/editableUtils';
 import { replaceText } from '../../macroEngine/replacement/macroReplacement';
 import { getCaretCoordinates } from './utils/caretPosition';
@@ -170,7 +170,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
     renderer.initialize();
     const shadowRoot = renderer.getShadowRoot();
     ensureAppFontFace();
-    styleInjector = createStyleInjector('macro-suggestions-styles', SUGGESTIONS_OVERLAY_STYLES, shadowRoot);
+    styleInjector = createStyleInjector('macro-suggestions-styles', SUGGESTIONS_OVERLAY_BUNDLE, shadowRoot);
     styleInjector.inject();
   };
 

@@ -1,0 +1,19 @@
+/* App font lives on each context's entry point and cascades by inheritance:
+   :host for the shadow-DOM overlays, body for the extension's own pages. */
+:host {
+  box-sizing: border-box;
+  font-family: 'IBM Plex Condensed Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-optical-sizing: auto;
+  line-height: 1.5;
+}
+
+body {
+  font-family: 'IBM Plex Condensed Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-optical-sizing: auto;
+}
+
+/* Form controls don't inherit font-family by default; opt them in so they
+   match the surrounding UI instead of the browser's default font. */
+input, textarea, button, select, optgroup {
+  font-family: inherit;
+}

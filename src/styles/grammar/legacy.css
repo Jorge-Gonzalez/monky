@@ -1,3 +1,388 @@
+/* stylelint-disable no-duplicate-selectors, declaration-property-value-keyword-no-deprecated, declaration-block-no-redundant-longhand-properties, property-no-vendor-prefix -- frozen compatibility source */
+/**
+ * Temporary pre-Ermine compatibility grammar.
+ * New authority must come from generated Ermine CSS; do not add vocabulary here.
+ */
+
+/* ===== STRUCTURE: Layout Patterns ===== */
+
+/* Directional arrangement */
+.horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+.vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid {
+  display: grid;
+}
+
+/* Child type semantics */
+.blocks > * {
+  flex: 0 1 auto;
+}
+
+.items > * {
+  flex: 0 0 auto;
+}
+
+/* Two-part layouts */
+.two-sections {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+}
+
+.sidebar-main {
+  display: flex;
+  flex-direction: row;
+}
+
+.sidebar-main > :first-child {
+  flex: 0 0 auto;
+}
+
+.sidebar-main > :last-child {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+/* ===== BEHAVIOR: Sizing Strategies ===== */
+
+
+/* Uniform sizing */
+.equal-square > * {
+  aspect-ratio: 1;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+}
+
+/* Fill behaviors */
+.fit-content > * {
+  flex: 0 0 auto;
+}
+
+/* ===== INTERACTION: Selectable Groups ===== */
+
+.selectable-group > * {
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.selectable-group > *:hover {
+  background-color: var(--tone);
+}
+
+.selectable-group > *:active {
+  transform: scale(0.98);
+}
+
+.selectable-group > .is-selected {
+  background-color: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.selectable-group > .is-selected:hover {
+  background-color: var(--accent);
+  opacity: 0.9;
+}
+
+/* Fill behaviors */
+.fill-container.horizontal > *,
+.fill-container.vertical > * {
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.fill-remaining {
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.fit-content {
+  width: fit-content;
+}
+
+.equal-sizes.horizontal > * {
+  flex: 1 1 0%;
+}
+
+.equal-sizes.vertical > * {
+  flex: 1 1 0%;
+}
+
+/* ===== BEHAVIOR: Spacing Patterns ===== */
+
+.tight {
+  gap: var(--spacing-xs);
+}
+
+.snug {
+  gap: var(--spacing-sm);
+}
+
+.comfortable {
+  gap: var(--spacing-md);
+}
+
+.relaxed {
+  gap: var(--spacing-lg);
+}
+
+.comfortable-relaxed {
+  gap: var(--spacing-md) var(--spacing-xl);
+}
+
+.loose {
+  gap: var(--spacing-xl);
+}
+
+.separated {
+  gap: var(--spacing-3xl);
+}
+
+/* ===== BEHAVIOR: Wrapping ===== */
+
+.wrap-allowed {
+  flex-wrap: wrap;
+}
+
+.wrap-prevent {
+  flex-wrap: nowrap;
+}
+
+.wrap-reverse {
+  flex-wrap: wrap-reverse;
+}
+
+/* ===== BEHAVIOR: Alignment ===== */
+
+.align-start {
+  align-items: flex-start;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.align-end {
+  align-items: flex-end;
+}
+
+.align-stretch {
+  align-items: stretch;
+}
+
+.align-baseline {
+  align-items: baseline;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-around {
+  justify-content: space-around;
+}
+
+/* Aligned two-sections (form pattern) */
+.rows.two-sections.align-start-max {
+  grid-template-columns: max-content 1fr;
+}
+
+.rows.two-sections.align-start-max > * {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+/* ===== BEHAVIOR: Overflow ===== */
+
+.scroll-y {
+  overflow-y: auto;
+}
+
+.scroll-x {
+  overflow-x: auto;
+}
+
+.scroll-auto {
+  overflow: auto;
+}
+
+.clip {
+  overflow: hidden;
+}
+
+/* ===== CONSTRAINTS: Size Limits ===== */
+
+/* Width constraints */
+.min-width-150 {
+  --min-item-width: 150px;
+}
+
+.min-width-200 {
+  --min-item-width: 200px;
+}
+
+.min-width-250 {
+  --min-item-width: 250px;
+}
+
+.min-width-300 {
+  --min-item-width: 300px;
+}
+
+.max-width-400 {
+  --max-item-width: 400px;
+}
+
+.max-width-600 {
+  --max-item-width: 600px;
+}
+
+/* Column constraints */
+.min-1-col {
+  --min-cols: 1;
+}
+
+.min-2-col {
+  --min-cols: 2;
+}
+
+.max-2-col {
+  --max-cols: 2;
+}
+
+.max-3-col {
+  --max-cols: 3;
+}
+
+.max-4-col {
+  --max-cols: 4;
+}
+
+.fixed-2-col {
+  --min-cols: 2;
+  --max-cols: 2;
+}
+
+.fixed-3-col {
+  --min-cols: 3;
+  --max-cols: 3;
+}
+
+/* Apply grid constraints */
+.grid.blocks.fill-container {
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(
+      clamp(
+        calc((100% - (var(--max-cols, 4) - 1) * var(--gap, var(--spacing-md))) / var(--max-cols, 4)),
+        var(--min-item-width, 200px),
+        calc(100% / var(--min-cols, 1))
+      ),
+      1fr
+    )
+  );
+}
+
+/* ===== BEHAVIOR: Responsive ===== */
+
+@media (width <= 640px) {
+  .stack-small {
+    flex-direction: column !important;
+  }
+
+  .hide-small {
+    display: none !important;
+  }
+
+  .collapse-small > * {
+    flex: 1 1 100% !important;
+  }
+}
+
+/* Selection constraints */
+.min-selected-1 > .is-selected:only-of-type {
+  cursor: not-allowed;
+  opacity: 0.95;
+}
+
+.min-selected-1 > .is-selected:only-of-type:hover {
+  opacity: 0.95;
+}
+
+/* ===== INTERACTION: Feedback Animations ===== */
+/* Note: @keyframes are defined at root level above :where() wrapper */
+
+.shake {
+  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+  transition: none !important;
+}
+
+.pulse {
+  animation: pulse 0.3s ease;
+}
+
+.flash {
+  animation: flash 0.3s ease;
+}
+
+/* ===== BEHAVIOR: Padding Patterns ===== */
+
+.padded-snug {
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.padded-comfortable {
+  --gap-base: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.padded-relaxed {
+  padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.padded-comfortable-loose {
+  padding: var(--spacing-md) var(--spacing-2xl);
+}
+
+.padded-loose {
+  padding: var(--spacing-xl) var(--spacing-2xl);
+}
+
+.wide {
+  --gap-x: calc(var(--gap-base) * 1.8);
+}
+
 /**
  * Utility Classes - Tailwind replacement utilities
  * Common utility classes to replace Tailwind in the codebase

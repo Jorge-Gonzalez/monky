@@ -1,3 +1,4 @@
+/* stylelint-disable property-no-vendor-prefix, no-duplicate-selectors, selector-attribute-quotes -- preserved cross-browser reset */
 /**
  * CSS Reset - Minimal reset for consistent cross-browser styling
  * Based on modern CSS reset practices
@@ -108,4 +109,17 @@ input[type=number] {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ===== Universal Base ===== */
+/* Universal selector for all elements */
+* {
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+/* Shadow DOM: all descendants. font-family is deliberately NOT set here so
+   children inherit from :host — letting subtrees (e.g. the editor) override it. */
+:host * {
+  box-sizing: border-box;
+  line-height: 1.5;
 }
