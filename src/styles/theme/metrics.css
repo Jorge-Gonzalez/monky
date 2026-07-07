@@ -47,7 +47,7 @@
 
   /* Custom scrollbar styles */
   /* scrollbar-width: thin; */
-  scrollbar-color: var(---tone) var(--tone-dim);
+  scrollbar-color: var(--tone) var(--tone-dim);
 }
 
 /* ===== Global Animations ===== */
