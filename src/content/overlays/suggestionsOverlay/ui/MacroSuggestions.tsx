@@ -166,13 +166,13 @@ export function MacroSuggestions({
         position: 'fixed',
       }}
     >
-      <div className={`macro-suggestions-arrow ${placement}`} />
-      <div ref={listRef} role="listbox" className="macro-suggestions-commands-list">
+      <div className={`macro-suggestions-arrow position-absolute ${placement}`} />
+      <div ref={listRef} role="listbox" className="macro-suggestions-commands-list horizontal padding-tight gap-tight">
         {visibleMacros.map((macro, index) => (
           <button
             key={macro.id}
             ref={(el) => { buttonRefs.current[index] = el; }}
-            className={`macro-suggestions-command-item ${index === navigation.selectedIndex ? 'selected' : ''}`}
+            className="macro-suggestions-command-item compressible"
             onMouseDown={(e) => {
               e.preventDefault();
               onSelectMacro(macro);
@@ -190,7 +190,7 @@ export function MacroSuggestions({
           {selectedMacro.text}
         </div>
       )}
-      <div className="macro-suggestions-footer">
+      <div className="macro-suggestions-footer horizontal gap-comfortable">
         <span>
           <kbd className="macro-suggestions-kbd">←</kbd>
           <kbd className="macro-suggestions-kbd">→</kbd>/

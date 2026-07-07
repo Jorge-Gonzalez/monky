@@ -50,11 +50,20 @@ shadow(
 )
 shadow(
   composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES] }),
-  '<div data-probe="suggestions" class="macro-suggestions-container"><div class="macro-suggestions-commands-list"></div></div>',
+  `<div data-probe="suggestions" class="macro-suggestions-container">
+    <div data-probe="suggestions-list" class="macro-suggestions-commands-list horizontal padding-tight gap-tight" role="listbox">
+      <button data-probe="suggestions-option" class="macro-suggestions-command-item compressible" role="option" aria-selected="true">/brb</button>
+    </div>
+    <div data-probe="suggestions-footer" class="macro-suggestions-footer horizontal gap-comfortable"></div>
+  </div>`,
 )
 shadow(
   composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES, DELETE_STYLES] }),
-  '<div data-probe="deletion" class="macro-suggestions-container delete-confirm"></div>',
+  `<div data-probe="deletion" class="macro-suggestions-container delete-confirm">
+    <div class="macro-suggestions-commands-list horizontal padding-tight gap-tight" role="listbox">
+      <button data-probe="delete-option" class="macro-suggestions-command-item delete-confirm-option elastic basis-ratio" role="option" aria-selected="true">Cancel</button>
+    </div>
+  </div>`,
 )
 shadow(
   composeShadowBundle({ componentStyles: [SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),

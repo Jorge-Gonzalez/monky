@@ -70,8 +70,16 @@ try {
         dropdown2: shadowTarget('ce-style-dropdown', ['position', 'display', 'flex-direction', 'padding', 'gap']),
         option: shadowTarget('ce-style-option', ['display', 'align-items', 'gap', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left']),
       },
-      suggestions: shadowProbe('suggestions', ['min-width', 'max-width', 'border-radius', 'overflow', 'font-size']),
-      deletion: shadowProbe('deletion', ['min-width', 'max-width', 'border-radius']),
+      suggestions: {
+        container: shadowProbe('suggestions', ['min-width', 'max-width', 'border-radius', 'overflow', 'font-size']),
+        list: shadowTarget('suggestions-list', ['display', 'padding', 'gap']),
+        option: shadowTarget('suggestions-option', ['flex-grow', 'flex-shrink', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'background-color', 'color', 'border-color']),
+        footer: shadowTarget('suggestions-footer', ['display', 'gap', 'justify-content']),
+      },
+      deletion: {
+        container: shadowProbe('deletion', ['min-width', 'max-width', 'border-radius']),
+        option: shadowTarget('delete-option', ['flex-grow', 'flex-shrink', 'flex-basis', 'max-width']),
+      },
     }
   })
   const expected = {
@@ -229,27 +237,58 @@ try {
     }
   },
   "suggestions": {
-    "host": {
-      "font-family": "\"IBM Plex Condensed Light\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
-      "line-height": "24px"
+    "container": {
+      "host": {
+        "font-family": "\"IBM Plex Condensed Light\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+        "line-height": "24px"
+      },
+      "target": {
+        "min-width": "200px",
+        "max-width": "360px",
+        "border-radius": "8px",
+        "overflow": "hidden",
+        "font-size": "14px"
+      }
     },
-    "target": {
-      "min-width": "200px",
-      "max-width": "360px",
-      "border-radius": "8px",
-      "overflow": "hidden",
-      "font-size": "14px"
+    "list": {
+      "display": "flex",
+      "padding": "4px",
+      "gap": "4px"
+    },
+    "option": {
+      "flex-grow": "0",
+      "flex-shrink": "1",
+      "padding-top": "3px",
+      "padding-right": "6px",
+      "padding-bottom": "3px",
+      "padding-left": "6px",
+      "background-color": "rgb(220, 221, 222)",
+      "color": "rgb(20, 90, 200)",
+      "border-color": "rgb(20, 90, 200)"
+    },
+    "footer": {
+      "display": "flex",
+      "gap": "12px",
+      "justify-content": "flex-end"
     }
   },
   "deletion": {
-    "host": {
-      "font-family": "\"IBM Plex Condensed Light\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
-      "line-height": "24px"
+    "container": {
+      "host": {
+        "font-family": "\"IBM Plex Condensed Light\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+        "line-height": "24px"
+      },
+      "target": {
+        "min-width": "240px",
+        "max-width": "360px",
+        "border-radius": "8px"
+      }
     },
-    "target": {
-      "min-width": "240px",
-      "max-width": "360px",
-      "border-radius": "8px"
+    "option": {
+      "flex-grow": "1",
+      "flex-shrink": "1",
+      "flex-basis": "0%",
+      "max-width": "none"
     }
   }
 }

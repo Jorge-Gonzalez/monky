@@ -128,3 +128,8 @@
 .padding-inline-separated {
   padding-inline: var(--spacing-separated);
 }
+
+.compressible {
+  flex-grow: 0;
+  flex-shrink: 1;
+}

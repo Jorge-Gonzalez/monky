@@ -170,6 +170,21 @@
       "id": "u6-content-style-option",
       "classString": "horizontal align-center gap-snug padding-block-tight padding-inline-snug",
       "backing": []
+    },
+    {
+      "id": "u7-suggestions-command-list",
+      "classString": "horizontal padding-tight gap-tight",
+      "backing": []
+    },
+    {
+      "id": "u7-suggestions-command-item",
+      "classString": "compressible",
+      "backing": []
+    },
+    {
+      "id": "u7-suggestions-footer",
+      "classString": "horizontal gap-comfortable",
+      "backing": []
     }
   ]
 }

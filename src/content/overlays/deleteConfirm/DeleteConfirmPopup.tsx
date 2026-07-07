@@ -46,28 +46,32 @@ export function DeleteConfirmPopup({
       className="macro-suggestions-container delete-confirm"
       style={{ left: position.x, top: position.y, position: 'fixed' }}
     >
-      <div className={`macro-suggestions-arrow ${placement}`} />
+      <div className={`macro-suggestions-arrow position-absolute ${placement}`} />
       <div className="delete-confirm-message">
         {t('deleteConfirm.message')}{' '}
         <span className="delete-confirm-command">{macro.command}</span>
       </div>
-      <div className="macro-suggestions-commands-list">
+      <div className="macro-suggestions-commands-list horizontal padding-tight gap-tight" role="listbox">
         <button
           type="button"
-          className={`macro-suggestions-command-item delete-confirm-option ${nav.selectedIndex === 0 ? 'selected' : ''}`}
+          className="macro-suggestions-command-item delete-confirm-option elastic basis-ratio"
+          role="option"
+          aria-selected={nav.selectedIndex === 0}
           onMouseDown={e => { e.preventDefault(); onCancel() }}
         >
           {t('deleteConfirm.cancel')}
         </button>
         <button
           type="button"
-          className={`macro-suggestions-command-item delete-confirm-option delete-confirm-danger ${nav.selectedIndex === 1 ? 'selected' : ''}`}
+          className="macro-suggestions-command-item delete-confirm-option delete-confirm-danger elastic basis-ratio"
+          role="option"
+          aria-selected={nav.selectedIndex === 1}
           onMouseDown={e => { e.preventDefault(); onConfirm() }}
         >
           {t('deleteConfirm.delete')}
         </button>
       </div>
-      <div className="macro-suggestions-footer">
+      <div className="macro-suggestions-footer horizontal gap-comfortable">
         <span><kbd className="macro-suggestions-kbd">Tab</kbd> {t('deleteConfirm.footer.switch')}</span>
         <span><kbd className="macro-suggestions-kbd">↵</kbd> {t('deleteConfirm.footer.select')}</span>
         <span><kbd className="macro-suggestions-kbd">Esc</kbd> {t('deleteConfirm.footer.cancel')}</span>

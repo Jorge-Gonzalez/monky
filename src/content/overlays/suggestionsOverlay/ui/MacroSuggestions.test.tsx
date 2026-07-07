@@ -194,7 +194,8 @@ describe('MacroSuggestions', () => {
       render(<MacroSuggestions {...defaultProps} />);
 
       const firstButton = screen.getByText('test-macro');
-      expect(firstButton).toHaveClass('selected');
+      expect(firstButton).toHaveAttribute('aria-selected', 'true');
+      expect(firstButton).not.toHaveClass('selected');
     });
   });
 

@@ -29,7 +29,6 @@ button, input, textarea, select {
 }
 
 .macro-suggestions-arrow {
-  position: absolute;
   width: 0;
   height: 0;
   border: 6px solid transparent;
@@ -49,43 +48,11 @@ button, input, textarea, select {
   border-bottom-color: var(--base-tone);
 }
 
-.macro-suggestions-item {
-  padding: 6px 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  transition: background-color 0.15s;
-  border-bottom: 1px solid var(--harmonic-minor);
-}
-
-.macro-suggestions-item:last-of-type {
-  border-bottom: none;
-}
-
-.macro-suggestions-item:hover {
-  background-color: var(--tone-dim);
-}
-
-.macro-suggestions-item.selected {
-  background-color: var(--tone);
-  border-left: 1px solid var(--accent);
-}
-
-.macro-suggestions-item-content {
-  flex: 1;
-  min-width: 0;
-}
-
 .macro-suggestions-commands-list {
-  display: flex;
-  padding: 4px;
-  gap: 4px;
   border-bottom: 1px solid var(--harmonic-minor);
 }
 
 .macro-suggestions-command-item {
-  flex: 0 1 auto;
   min-width: 0;
   max-width: 8em;
   padding: 3px 6px;
@@ -107,24 +74,10 @@ button, input, textarea, select {
   border-color: var(--harmonic);
 }
 
-.macro-suggestions-command-item.selected {
+.macro-suggestions-command-item[aria-selected="true"] {
   background-color: var(--tone);
   color: var(--accent);
   border-color: var(--accent);
-}
-
-.macro-suggestions-item-text {
-  font-size: 11px;
-  color: var(--ink-soft);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.macro-suggestions-item-indicator {
-  margin-left: 8px;
-  font-size: 11px;
-  color: var(--accent);
 }
 
 .macro-suggestions-text-preview {
@@ -143,8 +96,6 @@ button, input, textarea, select {
   font-size: 11px;
   color: var(--ink-soft);
   background-color: var(--base-tone);
-  display: flex;
-  gap: 12px;
   justify-content: flex-end;
 }
 

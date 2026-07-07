@@ -16,11 +16,10 @@
 }
 
 .macro-suggestions-command-item.delete-confirm-option {
-  flex: 1 1 0;
   max-width: none;
 }
 
-.macro-suggestions-command-item.delete-confirm-danger.selected {
+.macro-suggestions-command-item.delete-confirm-danger[aria-selected="true"] {
   background-color: var(--status-error-wash);
   color: var(--status-error);
   border-color: var(--status-error);
