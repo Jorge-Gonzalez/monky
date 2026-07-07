@@ -1,8 +1,6 @@
 /* ===== COMPONENT PATTERNS: ContentEditor ===== */
 
 .content-editor {
-  display: flex;
-  flex-direction: column;
   background-color: var(--tone-dim);
   overflow: hidden;
 }
@@ -14,13 +12,7 @@
 
 /* Toolbar row */
 .ce-toolbar {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
   background-color: var(--base-tone);
-  flex-shrink: 0;
 }
 
 .ce-toolbar-sep {
@@ -28,13 +20,9 @@
   height: 16px;
   background-color: var(--harmonic);
   margin: 0 var(--spacing-xs);
-  flex-shrink: 0;
 }
 
 .ce-toolbar-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 28px;
   height: 28px;
   border: none;
@@ -44,7 +32,6 @@
   cursor: pointer;
   padding: 0;
   transition: background var(--transition-fast), color var(--transition-fast);
-  flex-shrink: 0;
 }
 
 .ce-toolbar-btn:hover {
@@ -62,18 +49,11 @@
 }
 
 .ce-toolbar-icon {
-  display: flex;
-  align-items: center;
   color: var(--ink-soft);
   padding: 0 var(--spacing-xs);
-  flex-shrink: 0;
 }
 
 /* Style menu (¶▾ dropdown) */
-.ce-style-menu {
-  position: relative;
-}
-
 .ce-style-trigger {
   width: auto;
   min-width: 36px;
@@ -83,18 +63,13 @@
   font-weight: 500;
 }
 
-.ce-style-caret {
-  display: flex;
-  align-items: center;
-  opacity: 0.6;
-}
+.ce-style-caret { opacity: 0.6; }
 
 .ce-style-caret svg {
   display: block;
 }
 
 .ce-style-dropdown {
-  position: absolute;
   top: calc(100% + 4px);
   left: 0;
   z-index: 10;
@@ -103,18 +78,11 @@
   border-radius: var(--radius-md);
   box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
   min-width: 140px;
-  padding: var(--spacing-xs);
-  display: flex;
-  flex-direction: column;
   gap: 2px;
 }
 
 .ce-style-option {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
   width: 100%;
-  padding: var(--spacing-xs) var(--spacing-sm);
   border: none;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -139,27 +107,13 @@
   font-weight: 600;
   color: var(--ink-soft);
   width: 24px;
-  flex-shrink: 0;
 }
 
 .ce-style-option.is-active .ce-style-option-short {
   color: var(--accent);
 }
 
-.ce-style-option-label {
-  flex: 1;
-}
-
-/* Link field */
-.ce-link-field {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  flex: 1;
-}
-
 .ce-link-input {
-  flex: 1;
   height: 28px;
   padding: 0 var(--spacing-sm);
   border: 1px solid var(--harmonic);

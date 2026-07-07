@@ -35,8 +35,8 @@ describe('CommandSuggestions', () => {
     const rows = container.querySelectorAll('.command-suggestion-item')
     fireEvent.mouseDown(trashOf(rows[1]))
 
-    expect(rows[1]).toHaveClass('confirming-delete')
-    expect(rows[0]).not.toHaveClass('confirming-delete')
+    expect(rows[1]).toHaveAttribute('data-state', 'confirming-delete')
+    expect(rows[0]).not.toHaveAttribute('data-state')
     expect(screen.getByLabelText('macroEditor.confirmDelete')).toBeInTheDocument()
     expect(screen.getByLabelText('macroEditor.cancelDelete')).toBeInTheDocument()
     // The armed row no longer offers the plain trash; the other row still does.
@@ -60,8 +60,15 @@ describe('CommandSuggestions', () => {
     fireEvent.mouseDown(screen.getByLabelText('macroEditor.cancelDelete'))
 
     expect(onDelete).not.toHaveBeenCalled()
-    expect(rows[1]).not.toHaveClass('confirming-delete')
+    expect(rows[1]).not.toHaveAttribute('data-state')
     expect(screen.getAllByLabelText('macroEditor.deleteMacro')).toHaveLength(2)
+  })
+
+  it('backs the selected suggestion with aria-selected', () => {
+    const { container } = setup()
+    const rows = container.querySelectorAll('.command-suggestion-item')
+    expect(rows[0]).toHaveAttribute('aria-selected', 'true')
+    expect(rows[1]).toHaveAttribute('aria-selected', 'false')
   })
 
   it('clicking a row body selects it', () => {

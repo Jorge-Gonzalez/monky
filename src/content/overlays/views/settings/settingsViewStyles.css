@@ -6,8 +6,6 @@
  */
 
 .settings-view {
-  display: flex;
-  flex-direction: column;
   height: 100%;
   overflow-y: auto;
 }
@@ -17,9 +15,7 @@
 }
 
 .settings-group {
-  display: grid;
   grid-template-columns: 1fr 3fr;
-  padding: var(--spacing-xl) var(--spacing-3xl);
 }
 
 .settings-section-label {
@@ -34,14 +30,6 @@
 .settings-rows {
   flex: 1;
   min-width: 0;
-}
-
-.settings-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--spacing-sm) 0;
-  gap: var(--spacing-lg);
 }
 
 .settings-row-label {
@@ -60,9 +48,6 @@
   width: 2rem;
   height: 2rem;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .settings-import-status {
@@ -73,15 +58,13 @@
 /* ===== Segmented Control ===== */
 
 .seg-control {
-  display: flex;
   border: 1px solid var(--harmonic);
   border-radius: var(--radius-md);
   overflow: hidden;
-  position: relative;
 }
 
-/* Slide-only pill: hidden unless a selection change is animating. The selected
-   button owns the resting background (see .seg-option.is-selected). */
+/* Slide-only pill: hidden unless a selection change is animating. The checked
+   button owns the resting background. */
 .seg-control::before {
   content: '';
   position: absolute;
@@ -101,9 +84,7 @@
 .seg-control.seg-snap::before { transition: none; }
 
 .seg-option {
-  flex: 1;
   text-align: center;
-  padding: var(--spacing-xs) var(--spacing-md);
   font-size: var(--text-sm);
   line-height: 1.5;
   color: var(--ink-soft);
@@ -112,7 +93,6 @@
   border-right: 1px solid var(--harmonic);
   cursor: pointer;
   white-space: nowrap;
-  position: relative;
   z-index: 1;
   transition: color var(--transition-fast);
 }
@@ -125,22 +105,16 @@
 }
 
 /* Color-theme and light/dark selectors sit side by side in the appearance row. */
-.settings-appearance-controls {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
 .seg-option:last-child {
   border-right: none;
 }
 
-.seg-option:hover:not(.is-selected) {
+.seg-option:hover:not([aria-checked="true"]) {
   background: var(--tone);
   color: var(--ink);
 }
 
-.seg-option.is-selected {
+.seg-option[aria-checked="true"] {
   color: var(--ink-alt);
   background: var(--accent);
   border-right-color: transparent;
@@ -148,7 +122,7 @@
 
 /* While the pill is sliding in, it is the only fill — suppress the destination
    button's background so the two don't double up, then swap back on landing. */
-.seg-control.is-sliding .seg-option.is-selected {
+.seg-control.is-sliding .seg-option[aria-checked="true"] {
   background: transparent;
 }
 

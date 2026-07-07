@@ -105,15 +105,15 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   }
 
   return (
-    <form onSubmit={onSubmit} className="editor-form">
-      <div className="editor-topbar">
-        <div className="editor-topbar-lead">
+    <form onSubmit={onSubmit} className="editor-form position-relative elastic basis-ratio vertical gap-comfortable">
+      <div className="editor-topbar horizontal align-center justify-between gap-relaxed">
+        <div className="editor-topbar-lead horizontal align-center gap-snug rigid">
           <h1 className="editor-title">
             {editing ? t('macroEditor.title.editShort') : t('macroEditor.title.newShort')}
           </h1>
           <button
             type="button"
-            className="editor-popout"
+            className="editor-popout horizontal align-center justify-center padding-tight"
             onClick={openFullEditor}
             aria-label={t('macroEditor.openFullEditor')}
             title={t('macroEditor.openFullEditor')}
@@ -122,13 +122,13 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           </button>
         </div>
 
-        <div className="horizontal snug align-center">
+        <div className="horizontal gap-snug align-center">
           <span className="">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16">
               <polygon fill="currentColor" points="7,9 4,9 10,0 8,7 11,7 5.417,15 "/>
             </svg>
           </span>
-          <div className="command-suggestion-wrapper editor-command">
+          <div className="command-suggestion-wrapper editor-command position-relative elastic basis-ratio">
             <input
               id="modal-macro-command"
               ref={commandInputRef}
@@ -142,7 +142,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
               {...suggest.inputProps}
             />
             {command && !commandValid && (
-              <div className={`validation-error editor-command-error ${suggest.visible ? 'input-dropdown-open' : ''}`}>
+              <div className={`validation-error editor-command-error padding-block-tight padding-inline-snug ${suggest.visible ? 'input-dropdown-open' : ''}`}>
                 {t('macroForm.commandPrefixError', { prefixes: prefixes.join(', ') })}
               </div>
             )}
@@ -160,14 +160,14 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
 
       <ContentEditor
         ref={contentEditorRef}
-        className="editor-content"
+        className="editor-content elastic basis-ratio"
         value={text}
         onChange={setText}
         placeholder={t('macroForm.contentPlaceholder')}
       />
 
-      <div className="editor-bottombar">
-        <label className="editor-sensitive">
+      <div className="editor-bottombar horizontal align-center justify-between gap-comfortable rigid">
+        <label className="editor-sensitive horizontal align-center gap-snug">
           <input
             type="checkbox"
             checked={isSensitive}
@@ -177,7 +177,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           <span>{t('macroForm.sensitiveLabel')}</span>
         </label>
 
-        <div className="button-group snug">
+        <div className="button-group gap-snug">
           {editing && (
             <button
               type="button"

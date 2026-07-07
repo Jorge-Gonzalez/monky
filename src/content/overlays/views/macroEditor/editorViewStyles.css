@@ -4,35 +4,12 @@
  * top bar (title + popout + command) / editor body (fills) / bottom action bar.
  */
 .macro-editor-view {
-  padding: var(--spacing-xl);
-  display: flex;
-  flex-direction: column;
   height: 100%;
   color: var(--ink);
 }
 
 .editor-form {
-  position: relative;
-  flex: 1;
   min-height: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-/* Top bar: title + popout on the left, command input on the right. */
-.editor-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-lg);
-}
-
-.editor-topbar-lead {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  flex-shrink: 0;
 }
 
 .editor-title {
@@ -43,10 +20,6 @@
 }
 
 .editor-popout {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xs);
   border: none;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -61,7 +34,6 @@
 }
 
 .editor-command {
-  flex: 1;
   width: 280px;
 }
 
@@ -71,7 +43,6 @@
 
 .editor-command-error {
   background: var(--status-error-wash);
-  padding: var(--spacing-xs) var(--spacing-sm);
   /* border: 1px solid var(--status-error); */
   border-bottom-left-radius: var(--radius-md);
   border-bottom-right-radius: var(--radius-md);
@@ -79,7 +50,6 @@
 
 /* The content editor owns the remaining vertical space and scrolls internally. */
 .editor-content.content-editor {
-  flex: 1;
   min-height: 0;
 }
 
@@ -88,19 +58,7 @@
   min-height: 0;
 }
 
-/* Bottom action bar: sensitive toggle + save/cancel. */
-.editor-bottombar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--spacing-md);
-  flex-shrink: 0;
-}
-
 .editor-sensitive {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-sm);
   font-size: var(--text-sm);
   color: var(--ink);
   cursor: pointer;
@@ -117,18 +75,12 @@
   box-shadow: 0 6px 16px -4px rgb(0 0 0 / 25%);
 }
 
-/* Command autocomplete suggestions */
-.command-suggestion-wrapper {
-  position: relative;
-}
-
 .input-dropdown-open {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
 
 .command-suggestions {
-  position: absolute;
   left: 0;
   right: 0;
   top: 100%;
@@ -142,17 +94,12 @@
 }
 
 .command-suggestions-label {
-  padding: var(--spacing-xs) var(--spacing-md);
   font-size: var(--text-sm);
   color: var(--ink-soft);
   border-bottom: 1px solid var(--harmonic);
 }
 
 .command-suggestion-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-sm) var(--spacing-md);
   cursor: pointer;
   transition: background-color var(--transition-fast);
   overflow: hidden;
@@ -162,7 +109,7 @@
   background: var(--base-tone);
 }
 
-.command-suggestion-item.selected {
+.command-suggestion-item[aria-selected="true"] {
   background: var(--tone);
 }
 
@@ -171,7 +118,6 @@
   color: var(--accent);
   font-size: var(--text-md);
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
 .command-suggestion-text {
@@ -189,17 +135,7 @@
   flex-shrink: 0;
 }
 
-.command-suggestion-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
 .command-suggestion-action {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xs);
   border: none;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -211,7 +147,7 @@
 
 /* Reveal the trash on hover/selection, like the search view's edit icon. */
 .command-suggestion-item:hover .command-suggestion-action.delete,
-.command-suggestion-item.selected .command-suggestion-action.delete {
+.command-suggestion-item[aria-selected="true"] .command-suggestion-action.delete {
   opacity: 1;
 }
 
@@ -221,11 +157,11 @@
 }
 
 /* Once armed, both confirm and cancel stay visible. */
-.command-suggestion-item.confirming-delete {
+.command-suggestion-item[data-state="confirming-delete"] {
   background-color: var(--status-error-wash);
 }
 
-.command-suggestion-item.confirming-delete .command-suggestion-action {
+.command-suggestion-item[data-state="confirming-delete"] .command-suggestion-action {
   opacity: 1;
 }
 

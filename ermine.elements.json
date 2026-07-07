@@ -85,6 +85,91 @@
       "id": "search-kbd",
       "classString": "position-relative horizontal align-center justify-center",
       "backing": []
+    },
+    {
+      "id": "u6-settings-shell",
+      "classString": "padding-block-loose padding-inline-separated",
+      "backing": []
+    },
+    {
+      "id": "u6-settings-row",
+      "classString": "horizontal align-center justify-between gap-relaxed padding-block-snug",
+      "backing": []
+    },
+    {
+      "id": "u6-settings-appearance",
+      "classString": "horizontal align-center gap-comfortable",
+      "backing": []
+    },
+    {
+      "id": "u6-segmented-control",
+      "classString": "horizontal position-relative",
+      "backing": []
+    },
+    {
+      "id": "u6-editor-shell",
+      "classString": "vertical padding-loose position-relative gap-comfortable",
+      "backing": []
+    },
+    {
+      "id": "u6-editor-bar",
+      "classString": "horizontal align-center justify-between gap-relaxed rigid",
+      "backing": []
+    },
+    {
+      "id": "u6-editor-button",
+      "classString": "horizontal align-center justify-center padding-tight",
+      "backing": []
+    },
+    {
+      "id": "u6-editor-flex-fill",
+      "classString": "elastic basis-ratio",
+      "backing": []
+    },
+    {
+      "id": "u6-editor-command-error",
+      "classString": "padding-block-tight padding-inline-snug",
+      "backing": []
+    },
+    {
+      "id": "u6-command-dropdown",
+      "classString": "position-absolute",
+      "backing": []
+    },
+    {
+      "id": "u6-command-suggestion-row",
+      "classString": "horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable",
+      "backing": []
+    },
+    {
+      "id": "u6-command-suggestion-actions",
+      "classString": "horizontal align-center gap-tight",
+      "backing": []
+    },
+    {
+      "id": "u6-content-toolbar",
+      "classString": "horizontal wrap-allowed align-center gap-tight padding-block-tight padding-inline-snug rigid",
+      "backing": []
+    },
+    {
+      "id": "u6-content-toolbar-button",
+      "classString": "horizontal align-center justify-center rigid",
+      "backing": []
+    },
+    {
+      "id": "u6-content-style-menu",
+      "classString": "position-relative",
+      "backing": []
+    },
+    {
+      "id": "u6-content-style-dropdown",
+      "classString": "position-absolute vertical padding-tight",
+      "backing": []
+    },
+    {
+      "id": "u6-content-style-option",
+      "classString": "horizontal align-center gap-snug padding-block-tight padding-inline-snug",
+      "backing": []
     }
   ]
 }

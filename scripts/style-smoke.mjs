@@ -46,6 +46,30 @@ try {
         shortcut: shadowTarget('search-shortcut', ['display', 'align-items', 'gap']),
         kbd: shadowTarget('search-kbd', ['position', 'display', 'align-items', 'justify-content']),
       },
+      settings: {
+        view: shadowTarget('settings-view', ['display', 'flex-direction', 'height', 'overflow-y']),
+        group: shadowTarget('settings-group', ['display', 'grid-template-columns', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left']),
+        row: shadowTarget('settings-row', ['display', 'align-items', 'justify-content', 'gap', 'padding-top', 'padding-bottom']),
+        appearance: shadowTarget('settings-appearance', ['display', 'align-items', 'gap']),
+        seg: shadowTarget('seg-control', ['display', 'position', 'overflow', 'border-radius']),
+        prefix: shadowTarget('settings-prefix', ['flex-grow', 'flex-shrink', 'width', 'height', 'display', 'align-items', 'justify-content']),
+      },
+      editor: {
+        view: shadowTarget('editor-view', ['display', 'flex-direction', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left']),
+        form: shadowTarget('editor-form', ['position', 'display', 'flex-direction', 'flex-grow', 'flex-shrink', 'flex-basis', 'gap', 'min-height']),
+        topbar: shadowTarget('editor-topbar', ['display', 'align-items', 'justify-content', 'gap']),
+        lead: shadowTarget('editor-topbar-lead', ['display', 'align-items', 'gap', 'flex-grow', 'flex-shrink']),
+        popout: shadowTarget('editor-popout', ['display', 'align-items', 'justify-content', 'padding']),
+        dropdown: shadowTarget('command-suggestions', ['position', 'overflow', 'border-radius']),
+        item: shadowTarget('command-suggestion-item', ['display', 'align-items', 'gap', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'background-color']),
+        action: shadowTarget('command-suggestion-action', ['display', 'align-items', 'justify-content', 'padding']),
+        content: shadowTarget('content-editor', ['display', 'flex-direction', 'flex-grow', 'flex-shrink', 'flex-basis', 'overflow']),
+        toolbar: shadowTarget('ce-toolbar', ['display', 'flex-direction', 'flex-wrap', 'align-items', 'gap', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'flex-grow', 'flex-shrink']),
+        toolbarBtn: shadowTarget('ce-toolbar-btn', ['display', 'align-items', 'justify-content', 'flex-grow', 'flex-shrink']),
+        menu: shadowTarget('ce-style-menu', ['position']),
+        dropdown2: shadowTarget('ce-style-dropdown', ['position', 'display', 'flex-direction', 'padding', 'gap']),
+        option: shadowTarget('ce-style-option', ['display', 'align-items', 'gap', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left']),
+      },
       suggestions: shadowProbe('suggestions', ['min-width', 'max-width', 'border-radius', 'overflow', 'font-size']),
       deletion: shadowProbe('deletion', ['min-width', 'max-width', 'border-radius']),
     }
@@ -106,6 +130,104 @@ try {
     "shortcut": { "display": "inline-flex", "align-items": "center", "gap": "8px" },
     "kbd": { "position": "relative", "display": "flex", "align-items": "center", "justify-content": "center" }
   },
+  "settings": {
+    "view": { "display": "flex", "flex-direction": "column", "height": "234px", "overflow-y": "auto" },
+    "group": {
+      "display": "grid",
+      "grid-template-columns": "300px 900px",
+      "padding-top": "20px",
+      "padding-right": "40px",
+      "padding-bottom": "20px",
+      "padding-left": "40px"
+    },
+    "row": {
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "space-between",
+      "gap": "16px",
+      "padding-top": "8px",
+      "padding-bottom": "8px"
+    },
+    "appearance": { "display": "flex", "align-items": "center", "gap": "12px" },
+    "seg": { "display": "flex", "position": "relative", "overflow": "hidden", "border-radius": "6px" },
+    "prefix": {
+      "flex-grow": "0",
+      "flex-shrink": "0",
+      "width": "32px",
+      "height": "32px",
+      "display": "flex",
+      "align-items": "center",
+      "justify-content": "center"
+    }
+  },
+  "editor": {
+    "view": {
+      "display": "flex",
+      "flex-direction": "column",
+      "padding-top": "20px",
+      "padding-right": "20px",
+      "padding-bottom": "20px",
+      "padding-left": "20px"
+    },
+    "form": {
+      "position": "relative",
+      "display": "flex",
+      "flex-direction": "column",
+      "flex-grow": "1",
+      "flex-shrink": "1",
+      "flex-basis": "0%",
+      "gap": "12px",
+      "min-height": "0px"
+    },
+    "topbar": { "display": "flex", "align-items": "center", "justify-content": "space-between", "gap": "16px" },
+    "lead": { "display": "flex", "align-items": "center", "gap": "8px", "flex-grow": "0", "flex-shrink": "0" },
+    "popout": { "display": "flex", "align-items": "center", "justify-content": "center", "padding": "4px" },
+    "dropdown": { "position": "absolute", "overflow": "hidden", "border-radius": "0px 0px 6px 6px" },
+    "item": {
+      "display": "flex",
+      "align-items": "center",
+      "gap": "12px",
+      "padding-top": "8px",
+      "padding-right": "12px",
+      "padding-bottom": "8px",
+      "padding-left": "12px",
+      "background-color": "rgb(220, 221, 222)"
+    },
+    "action": { "display": "flex", "align-items": "center", "justify-content": "center", "padding": "4px" },
+    "content": {
+      "display": "flex",
+      "flex-direction": "column",
+      "flex-grow": "1",
+      "flex-shrink": "1",
+      "flex-basis": "0%",
+      "overflow": "hidden"
+    },
+    "toolbar": {
+      "display": "flex",
+      "flex-direction": "row",
+      "flex-wrap": "wrap",
+      "align-items": "center",
+      "gap": "4px",
+      "padding-top": "4px",
+      "padding-right": "8px",
+      "padding-bottom": "4px",
+      "padding-left": "8px",
+      "flex-grow": "0",
+      "flex-shrink": "0"
+    },
+    "toolbarBtn": { "display": "flex", "align-items": "center", "justify-content": "center", "flex-grow": "0", "flex-shrink": "0" },
+    "menu": { "position": "relative" },
+    "dropdown2": { "position": "absolute", "display": "flex", "flex-direction": "column", "padding": "4px", "gap": "2px" },
+    "option": {
+      "display": "flex",
+      "align-items": "center",
+      "gap": "8px",
+      "padding-top": "4px",
+      "padding-right": "8px",
+      "padding-bottom": "4px",
+      "padding-left": "8px"
+    }
+  },
   "suggestions": {
     "host": {
       "font-family": "\"IBM Plex Condensed Light\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
@@ -132,7 +254,7 @@ try {
   }
 }
   assert.deepEqual(actual, expected)
-  console.log('style smoke passed: generated grammar + page + modal/search + suggestions + delete confirmation match their frozen baselines')
+  console.log('style smoke passed: generated grammar + page + modal/search + settings/editor + suggestions + delete confirmation match their frozen baselines')
 } finally {
   await browser?.close()
   await server.close()

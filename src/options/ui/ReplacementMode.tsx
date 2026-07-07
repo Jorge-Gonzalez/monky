@@ -12,26 +12,26 @@ export default function ReplacementMode({ useCommitKeys, onChange }: Replacement
   return (
     <div className="section">
       <h3 className="section-title">{t('replacementMode.title')}</h3>
-      <div className="horizontal items fit-content loose">
-        <label className="horizontal items fit-content align-center snug">
+      <div className="horizontal fit-content loose">
+        <label className="horizontal fit-content align-center snug">
           <input
             type="radio"
             name="behavior"
             checked={!useCommitKeys}
             onChange={() => onChange(false)}
-            className="radio"
+            className="radio rigid"
           />
-          <span className="radio-label">{t('replacementMode.auto')}</span>
+          <span className="radio-label rigid">{t('replacementMode.auto')}</span>
         </label>
-        <label className="horizontal items fit-content align-center snug">
+        <label className="horizontal fit-content align-center snug">
           <input
             type="radio"
             name="behavior"
             checked={useCommitKeys}
             onChange={() => onChange(true)}
-            className="radio"
+            className="radio rigid"
           />
-          <span className="radio-label">{t('replacementMode.manual')}</span>
+          <span className="radio-label rigid">{t('replacementMode.manual')}</span>
         </label>
       </div>
       <p className="section-description">

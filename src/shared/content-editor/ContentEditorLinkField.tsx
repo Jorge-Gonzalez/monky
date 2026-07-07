@@ -45,12 +45,12 @@ export function ContentEditorLinkField({
   }
 
   return (
-    <div className="ce-link-field">
-      <span className="ce-toolbar-icon" dangerouslySetInnerHTML={{ __html: icons.link }} />
+    <div className="ce-link-field horizontal align-center gap-tight elastic basis-ratio">
+      <span className="ce-toolbar-icon horizontal align-center rigid" dangerouslySetInnerHTML={{ __html: icons.link }} />
       <input
         ref={inputRef}
         type="url"
-        className="ce-link-input"
+        className="ce-link-input elastic basis-ratio"
         value={url}
         onChange={e => setUrl(e.currentTarget.value)}
         onKeyDown={onKeyDown}
@@ -58,7 +58,7 @@ export function ContentEditorLinkField({
       />
       <button
         type="button"
-        className="ce-toolbar-btn"
+        className="ce-toolbar-btn horizontal align-center justify-center rigid"
         onMouseDown={e => { e.preventDefault(); confirm() }}
         title="Apply (Enter)"
         aria-label="Apply link"
@@ -66,7 +66,7 @@ export function ContentEditorLinkField({
       />
       <button
         type="button"
-        className="ce-toolbar-btn"
+        className="ce-toolbar-btn horizontal align-center justify-center rigid"
         onMouseDown={e => { e.preventDefault(); cancel() }}
         title="Cancel (Escape)"
         aria-label="Cancel"

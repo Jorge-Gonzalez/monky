@@ -57,23 +57,23 @@ export function SettingsView(_props: BaseModalViewProps) {
   ];
 
   return (
-    <div className="settings-view">
+    <div className="settings-view vertical">
       <div className="settings-body">
 
-        <div className="settings-group">
+        <div className="settings-group grid padding-block-loose padding-inline-separated">
           <div className="settings-section-label">{t('settings.sections.general')}</div>
           <div className="settings-rows">
-            <div className="settings-row">
+            <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
               <span className="settings-row-label">{t('options.prefixEditor.title')}</span>
               <SelectableGroup
                 options={ALL_PREFIXES}
                 selected={prefixes}
                 onChange={setPrefixes}
-                className="horizontal items snug"
-                buttonClassName="btn btn-outlined text-mono settings-prefix-btn"
+                className="horizontal gap-snug"
+                buttonClassName="btn btn-outlined text-mono settings-prefix-btn horizontal align-center justify-center rigid"
               />
             </div>
-            <div className="settings-row">
+            <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
               <span className="settings-row-label">{t('replacementMode.title')}</span>
               <SegmentedControl
                 options={REPLACEMENT_OPTIONS.map(o => ({ value: o.value, label: o.label() }))}
@@ -86,12 +86,12 @@ export function SettingsView(_props: BaseModalViewProps) {
 
         <div className="settings-divider" />
 
-        <div className="settings-group">
+        <div className="settings-group grid padding-block-loose padding-inline-separated">
           <div className="settings-section-label">{t('settings.sections.appearance')}</div>
           <div className="settings-rows">
-            <div className="settings-row">
+            <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
               <span className="settings-row-label">{t('settings.colorTheme')}</span>
-              <div className="settings-appearance-controls">
+              <div className="settings-appearance-controls horizontal align-center gap-comfortable">
                 <SegmentedControl
                   options={THEME_OPTIONS}
                   value={colorTheme}
@@ -104,7 +104,7 @@ export function SettingsView(_props: BaseModalViewProps) {
                 />
               </div>
             </div>
-            <div className="settings-row">
+            <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
               <span className="settings-row-label">{t('settings.language')}</span>
               <SegmentedControl
                 options={LANGUAGE_OPTIONS}
@@ -117,16 +117,16 @@ export function SettingsView(_props: BaseModalViewProps) {
 
         <div className="settings-divider" />
 
-        <div className="settings-group">
+        <div className="settings-group grid padding-block-loose padding-inline-separated">
           <div className="settings-section-label">{t('settings.sections.data')}</div>
           <div className="settings-rows">
-            <div className="settings-row">
+            <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
               <span className="settings-row-label">{t('settings.importExport.title')}</span>
-              <div className="horizontal items snug">
-                <button className="btn btn-outlined" type="button" onClick={exportMacros}>
+              <div className="horizontal gap-snug">
+                <button className="btn btn-outlined rigid" type="button" onClick={exportMacros}>
                   {t('settings.importExport.exportButton')}
                 </button>
-                <button className="btn btn-outlined" type="button" onClick={() => fileInputRef.current?.click()}>
+                <button className="btn btn-outlined rigid" type="button" onClick={() => fileInputRef.current?.click()}>
                   {t('settings.importExport.importButton')}
                 </button>
                 <input

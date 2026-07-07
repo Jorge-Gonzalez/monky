@@ -31,10 +31,6 @@
   flex: 0 1 auto;
 }
 
-.items > * {
-  flex: 0 0 auto;
-}
-
 /* Two-part layouts */
 .two-sections {
   display: grid;

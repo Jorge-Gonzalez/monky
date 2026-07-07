@@ -56,5 +56,55 @@ shadow(
   composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES, DELETE_STYLES] }),
   '<div data-probe="deletion" class="macro-suggestions-container delete-confirm"></div>',
 )
+shadow(
+  composeShadowBundle({ componentStyles: [SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
+  `<div data-probe="settings-view" class="settings-view vertical">
+    <div data-probe="settings-group" class="settings-group grid padding-block-loose padding-inline-separated">
+      <div data-probe="settings-row" class="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
+        <span class="settings-row-label">Theme</span>
+        <div data-probe="settings-appearance" class="settings-appearance-controls horizontal align-center gap-comfortable">
+          <div data-probe="seg-control" class="seg-control horizontal position-relative">
+            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative" aria-checked="true">One</button>
+            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative" aria-checked="false">Two</button>
+          </div>
+          <button data-probe="settings-prefix" class="btn btn-outlined text-mono settings-prefix-btn horizontal align-center justify-center rigid">/</button>
+        </div>
+      </div>
+    </div>
+    <div data-probe="editor-view" class="macro-editor-view vertical padding-loose">
+      <form data-probe="editor-form" class="editor-form position-relative elastic basis-ratio vertical gap-comfortable">
+        <div data-probe="editor-topbar" class="editor-topbar horizontal align-center justify-between gap-relaxed">
+          <div data-probe="editor-topbar-lead" class="editor-topbar-lead horizontal align-center gap-snug rigid">
+            <button data-probe="editor-popout" class="editor-popout horizontal align-center justify-center padding-tight">↗</button>
+          </div>
+          <div class="command-suggestion-wrapper editor-command position-relative elastic basis-ratio">
+            <div data-probe="command-suggestions" class="command-suggestions position-absolute">
+              <div data-probe="command-suggestions-label" class="command-suggestions-label padding-block-tight padding-inline-comfortable">Existing</div>
+              <div data-probe="command-suggestion-item" class="command-suggestion-item horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable" aria-selected="true">
+                <span data-probe="command-suggestion-command" class="command-suggestion-command rigid">/sig</span>
+                <span class="command-suggestion-text">Signature</span>
+                <button data-probe="command-suggestion-action" class="command-suggestion-action delete horizontal align-center justify-center padding-tight">×</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div data-probe="content-editor" class="content-editor vertical editor-content elastic basis-ratio">
+          <div data-probe="ce-toolbar" class="ce-toolbar horizontal wrap-allowed align-center gap-tight padding-block-tight padding-inline-snug rigid">
+            <button data-probe="ce-toolbar-btn" class="ce-toolbar-btn horizontal align-center justify-center rigid">B</button>
+            <div data-probe="ce-style-menu" class="ce-style-menu position-relative">
+              <div data-probe="ce-style-dropdown" class="ce-style-dropdown position-absolute vertical padding-tight">
+                <button data-probe="ce-style-option" class="ce-style-option horizontal align-center gap-snug padding-block-tight padding-inline-snug">
+                  <span class="ce-style-option-short rigid">¶</span>
+                  <span class="ce-style-option-label elastic basis-ratio">Paragraph</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div data-probe="content-editor-body" class="content-editor-body"></div>
+        </div>
+      </form>
+    </div>
+  </div>`,
+)
 
 document.documentElement.dataset.styleSmokeReady = 'true'

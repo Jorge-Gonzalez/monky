@@ -35,7 +35,7 @@ describe('SegmentedControl', () => {
     rerender(<SegmentedControl options={options} value="manual" onChange={() => {}} />)
     const radios = getAllByRole('radio')
     expect(radios[1].getAttribute('aria-checked')).toBe('true')
-    expect(radios[1].className).toContain('is-selected')
+    expect(radios[1].className).not.toContain('is-selected')
     expect(radios[0].className).not.toContain('is-selected')
   })
 

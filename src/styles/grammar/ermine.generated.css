@@ -87,3 +87,44 @@
 .horizontal.inline {
   display: inline flex;
 }
+
+.gap-tight {
+  gap: var(--spacing-tight);
+}
+
+.gap-comfortable {
+  gap: var(--spacing-comfortable);
+}
+
+.padding-block-tight {
+  padding-block: var(--spacing-tight);
+}
+
+.padding-inline-snug {
+  padding-inline: var(--spacing-snug);
+}
+
+.wrap-allowed {
+  flex-wrap: wrap;
+}
+
+.rigid {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.gap-relaxed {
+  gap: var(--spacing-relaxed);
+}
+
+.padding-loose {
+  padding: var(--spacing-loose);
+}
+
+.padding-block-loose {
+  padding-block: var(--spacing-loose);
+}
+
+.padding-inline-separated {
+  padding-inline: var(--spacing-separated);
+}
