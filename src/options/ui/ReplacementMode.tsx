@@ -12,8 +12,8 @@ export default function ReplacementMode({ useCommitKeys, onChange }: Replacement
   return (
     <div className="section">
       <h3 className="section-title">{t('replacementMode.title')}</h3>
-      <div className="horizontal fit-content loose">
-        <label className="horizontal fit-content align-center snug">
+      <div className="horizontal gap-loose mode-row">
+        <label className="horizontal align-center gap-snug rigid mode-choice">
           <input
             type="radio"
             name="behavior"
@@ -23,7 +23,7 @@ export default function ReplacementMode({ useCommitKeys, onChange }: Replacement
           />
           <span className="radio-label rigid">{t('replacementMode.auto')}</span>
         </label>
-        <label className="horizontal fit-content align-center snug">
+        <label className="horizontal align-center gap-snug rigid mode-choice">
           <input
             type="radio"
             name="behavior"

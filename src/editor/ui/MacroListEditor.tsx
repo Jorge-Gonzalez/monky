@@ -9,7 +9,7 @@ export default function MacroListEditor({ macros, onEdit, onDelete }: {
 }) {
   if (!macros?.length) return <p className="empty-state">{t('macroListEditor.noMacros')}</p>
   return (
-    <div className="space-y-sm">
+    <div className="vertical gap-snug">
       {macros.map(m => <MacroItemEditor key={m.id} macro={m} onEdit={onEdit} onDelete={onDelete} />)}
     </div>
   )

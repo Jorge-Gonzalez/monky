@@ -13,7 +13,7 @@ export default function Settings() {
   return (
     <div className="section">
       <h2 className="section-title">{t('settings.title')}</h2>
-      <div className="flex items-center gap-md">
+      <div className="horizontal align-center gap-comfortable">
         <label htmlFor="language-select" className="label" style={{ marginBottom: 0 }}>
           {t('settings.language')}
         </label>

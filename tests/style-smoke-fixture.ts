@@ -12,7 +12,7 @@ import DELETE_STYLES from '../src/content/overlays/deleteConfirm/deleteConfirmSt
 const theme = '--base-tone: rgb(250, 251, 252); --ink: rgb(20, 21, 22); --ink-soft: rgb(70, 71, 72); --accent: rgb(20, 90, 200); --accent-dim: rgb(60, 110, 200); --tone: rgb(220, 221, 222); --tone-dim: rgb(235, 236, 237); --harmonic: rgb(160, 161, 162); --harmonic-minor: rgb(200, 201, 202); --shadow-color: rgba(0, 0, 0, 0.5); --button-bg: rgb(1, 2, 3); --ink-alt: rgb(254, 254, 254); --button-bg-hover: rgb(4, 5, 6); --kbd-bg: rgb(230, 230, 230); --kbd-border: rgb(100, 100, 100); --status-error-wash: rgb(255, 230, 230); --status-error: rgb(180, 0, 0);'
 
 document.documentElement.setAttribute('style', theme)
-document.body.innerHTML = '<div id="page" class="page-container"><div id="row" class="horizontal gap-2"><button id="button" class="btn btn-primary">x</button></div><div id="popup" class="popup-container"></div></div>'
+document.body.innerHTML = '<div id="page" class="page-container"><div id="row" class="horizontal gap-snug"><button id="button" class="btn btn-primary">x</button></div><div id="popup" class="popup-container"></div></div>'
 
 function shadow(css: string, html: string): void {
   const host = document.createElement('div')

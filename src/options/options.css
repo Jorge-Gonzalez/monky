@@ -1,0 +1,15 @@
+/* Options page identity. Structural layout comes from generated Ermine grammar. */
+
+/* The prefix toggle cells: fixed 3rem squares (component identity, not grammar). */
+.prefix-cell {
+  aspect-ratio: 1;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+}
+
+/* Rows that hug their content instead of filling the page column. */
+.mode-row,
+.mode-choice {
+  width: fit-content;
+}

@@ -26,18 +26,18 @@ export function MacroSearch({ macros }: MacroSearchProps) {
   }, [query, macros])
 
   return (
-    <div className="my-2">
+    <div className="vertical gap-snug margin-block-snug">
       <input
         type="text"
         value={query}
         onChange={e => setQuery(e.target.value)}
         placeholder={t('popup.searchPlaceholder')}
-        className="input w-full mb-2"
+        className="input"
       />
-      <ul className="macro-search-results scrollable" style={{ maxHeight: '256px', overflowY: 'auto' }}>
+      <ul className="popup-results" style={{ maxHeight: '256px', overflowY: 'auto' }}>
         {results.length > 0 ? (
           results.map(result => (
-            <li key={result.obj.id} className="p-2 border-b border-primary">
+            <li key={result.obj.id} className="padding-snug border-b border-primary">
               <>
                 <div className="font-bold">{result.obj.command}</div>
                 <p className="text-sm truncate text-secondary">{result.obj.text}</p>
@@ -45,7 +45,7 @@ export function MacroSearch({ macros }: MacroSearchProps) {
             </li>
           ))
         ) : (
-          <p className="p-2 text-secondary">{t('macroList.noMacros')}</p>
+          <p className="padding-snug text-secondary">{t('macroList.noMacros')}</p>
         )}
       </ul>
     </div>

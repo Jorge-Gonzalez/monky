@@ -34,12 +34,12 @@ export default function SiteToggle() {
   const displayHostname = hostname || t('popup.localFile');
 
   return (
-    <div className="section flex items-center justify-between">
-      <div className="text-sm overflow-hidden">
+    <div className="section horizontal align-center justify-between">
+      <div className="text-sm" style={{ overflow: 'hidden' }}>
         <p className="font-medium">{t('popup.macrosOnThisSite')}</p>
         <p className="text-xs truncate text-secondary" title={displayHostname}>{displayHostname}</p>
       </div>
-      <label className="relative inline-flex items-center cursor-pointer ml-2 shrink-0">
+      <label className="position-relative horizontal inline align-center rigid popup-toggle-label">
         <input
           type="checkbox"
           className="checkbox"

@@ -83,7 +83,7 @@ export default function MacroForm({ editing, onDone }: {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-md">
+    <form onSubmit={onSubmit} className="vertical gap-comfortable">
       <div>
         <label htmlFor="macro-command" className="label">
           {t('macroForm.triggerLabel')}

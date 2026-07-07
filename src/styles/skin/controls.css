@@ -231,3 +231,64 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-dim) !important;
 }
+
+/* ===== Shared radius recipe (U8): the popup control corner ===== */
+
+.ui-rounded {
+  border-radius: var(--radius-md);
+}
+
+/* ===== Selectable group pattern (relocated verbatim from the retired legacy sheet, U8).
+   Consumed by options PrefixEditor and the modal settings view. ===== */
+
+.selectable-group > * {
+  cursor: pointer;
+  position: relative;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.selectable-group > *:hover {
+  background-color: var(--tone);
+}
+
+.selectable-group > *:active {
+  transform: scale(0.98);
+}
+
+.selectable-group > .is-selected {
+  background-color: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.selectable-group > .is-selected:hover {
+  background-color: var(--accent);
+  opacity: 0.9;
+}
+
+.min-selected-1 > .is-selected:only-of-type {
+  cursor: not-allowed;
+  opacity: 0.95;
+}
+
+.min-selected-1 > .is-selected:only-of-type:hover {
+  opacity: 0.95;
+}
+
+/* ===== Feedback animations (relocated verbatim, U8; keyframes live in theme/metrics.css) ===== */
+
+.shake {
+  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+  transition: none !important;
+}
+
+.flash {
+  animation: flash 0.3s ease;
+}
+
+.transition-colors {
+  transition-property: color, background-color, border-color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}

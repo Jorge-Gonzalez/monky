@@ -41,3 +41,33 @@
 .font-semibold {
 font-weight: 600;
 }
+
+/* ===== UTILITIES: consolidated from the retired legacy sheet (U8) ===== */
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-primary {
+  color: var(--ink);
+}
+
+.text-secondary {
+  color: var(--ink-soft);
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== Text utilities consolidated from the retired legacy sheet (U8) ===== */
+
+.text-white {
+  color: #ffffff;
+}
+
+.whitespace-pre-wrap {
+  white-space: pre-wrap;
+}

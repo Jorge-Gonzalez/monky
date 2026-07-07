@@ -185,6 +185,31 @@
       "id": "u7-suggestions-footer",
       "classString": "horizontal gap-comfortable",
       "backing": []
+    },
+    {
+      "id": "u8-options-mode-row",
+      "classString": "horizontal gap-loose",
+      "backing": []
+    },
+    {
+      "id": "u8-editor-form",
+      "classString": "vertical gap-comfortable",
+      "backing": []
+    },
+    {
+      "id": "u8-popup-container",
+      "classString": "vertical gap-snug padding-snug",
+      "backing": []
+    },
+    {
+      "id": "u8-popup-header-titles",
+      "classString": "horizontal align-center gap-snug grow-1",
+      "backing": []
+    },
+    {
+      "id": "u8-popup-search",
+      "classString": "vertical gap-snug margin-block-snug",
+      "backing": []
     }
   ]
 }
