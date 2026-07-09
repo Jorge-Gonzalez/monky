@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useMacroStore } from '../../store/useMacroStore';
 import { ThemeMode } from '../../types';
-import { getColorThemeColors } from '../colorTheme';
+import { themeSocketVars } from '../socketPalette';
 
 const MQL = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -23,7 +23,7 @@ export function ThemeManager() {
       htmlElement.classList.toggle('dark', isDark);
       bodyElement.classList.toggle('dark', isDark);
 
-      const colors = getColorThemeColors(colorTheme, isDark);
+      const colors = themeSocketVars(colorTheme, isDark);
       Object.entries(colors).forEach(([key, value]) => {
         htmlElement.style.setProperty(key, value);
       });

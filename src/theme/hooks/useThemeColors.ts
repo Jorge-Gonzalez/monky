@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { ThemeMode, ColorTheme } from '../../types';
-import { getColorThemeColors } from '../colorTheme';
+import { themeSocketVars } from '../socketPalette';
 
 function isSystemDark(): boolean {
   return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -17,7 +17,7 @@ export function useThemeColors(
 
     const element = ref.current;
     const isDark = theme === 'dark' || (theme === 'system' && isSystemDark());
-    const colors = getColorThemeColors(colorTheme, isDark);
+    const colors = themeSocketVars(colorTheme, isDark);
 
     for (const [property, value] of Object.entries(colors)) {
       element.style.setProperty(property, value);
