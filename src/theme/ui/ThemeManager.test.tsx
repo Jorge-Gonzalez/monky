@@ -2,7 +2,7 @@
 import { render, act } from '@testing-library/preact'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useMacroStore } from '../../store/useMacroStore'
-import { getColorThemeColors } from '../colorTheme'
+import { themeSocketVars } from '../socketPalette'
 
 // Mock the zustand store
 vi.mock('../../store/useMacroStore')
@@ -91,7 +91,7 @@ describe('ThemeManager component', () => {
           selector(mockConfig({ theme: 'light', colorTheme })) as any
         )
         render(<ThemeManager />)
-        const expected = getColorThemeColors(colorTheme, false)['--accent']
+        const expected = themeSocketVars(colorTheme, false)['--accent']
         expect(document.documentElement.style.getPropertyValue('--accent')).toBe(expected)
       }
     })
@@ -102,7 +102,7 @@ describe('ThemeManager component', () => {
           selector(mockConfig({ theme: 'dark', colorTheme })) as any
         )
         render(<ThemeManager />)
-        const expected = getColorThemeColors(colorTheme, true)['--accent']
+        const expected = themeSocketVars(colorTheme, true)['--accent']
         expect(document.documentElement.style.getPropertyValue('--accent')).toBe(expected)
       }
     })
@@ -113,7 +113,7 @@ describe('ThemeManager component', () => {
         selector({ config: { disabledSites: [], prefixes: ['/'], theme: 'light' } } as any) as any
       )
       render(<ThemeManager />)
-      const expected = getColorThemeColors('humo', false)['--accent']
+      const expected = themeSocketVars('humo', false)['--accent']
       expect(document.documentElement.style.getPropertyValue('--accent')).toBe(expected)
     })
   })
