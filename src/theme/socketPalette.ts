@@ -31,6 +31,7 @@ const sockets = (t: Tones): Record<string, string> => ({
   '--warn': t.active, '--warn-faint': wash('warn'),
   '--fail': t.charged, '--fail-faint': wash('fail'),
   '--note': t.still, '--note-faint': wash('note'),
+  '--shadow': t.shadow,
 });
 
 // Monky's consumed var names, aliased to the sockets above. Names that already match a
@@ -44,6 +45,7 @@ const BRIDGE: Record<string, string> = {
   '--status-success': 'var(--pass)', '--status-success-wash': 'var(--pass-faint)',
   '--status-warning': 'var(--warn)', '--status-warning-wash': 'var(--warn-faint)',
   '--status-info': 'var(--note)', '--status-info-wash': 'var(--note-faint)',
+  '--shadow-color': 'var(--shadow)',
 };
 
 const TONES: Record<string, Record<Mode, Tones>> = {
@@ -64,5 +66,5 @@ const TONES: Record<string, Record<Mode, Tones>> = {
 /** The custom properties a themed root sets for a given color theme and mode. */
 export function themeSocketVars(colorTheme: string, isDark: boolean): Record<string, string> {
   const tones = (TONES[colorTheme] ?? TONES.humo)[isDark ? 'dark' : 'light'];
-  return { ...sockets(tones), ...BRIDGE, '--shadow-color': tones.shadow };
+  return { ...sockets(tones), ...BRIDGE };
 }
