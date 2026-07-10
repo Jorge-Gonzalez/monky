@@ -12,6 +12,12 @@ try {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } })
   await page.goto(new URL('/tests/style-smoke.html', url).href)
   await page.waitForFunction(() => document.documentElement.dataset.styleSmokeReady === 'true')
+  const shadowTarget = (name, properties) => page.evaluate(({ name, properties }) => {
+    const host = [...document.querySelectorAll('body > div')].find((element) => element.shadowRoot?.querySelector(`[data-probe="${name}"]`))
+    const target = host.shadowRoot.querySelector(`[data-probe="${name}"]`)
+    const styles = getComputedStyle(target)
+    return Object.fromEntries(properties.map((property) => [property, styles.getPropertyValue(property)]))
+  }, { name, properties })
   const actual = await page.evaluate(() => {
     const pick = (element, properties) => Object.fromEntries(properties.map((property) => [property, getComputedStyle(element).getPropertyValue(property)]))
     const shadowProbe = (name, properties) => {
@@ -74,6 +80,7 @@ try {
         container: shadowProbe('suggestions', ['min-width', 'max-width', 'border-radius', 'overflow', 'font-size']),
         list: shadowTarget('suggestions-list', ['display', 'padding', 'gap']),
         option: shadowTarget('suggestions-option', ['flex-grow', 'flex-shrink', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'background-color', 'color', 'border-color']),
+        base: shadowTarget('suggestions-option-base', ['background-color', 'color', 'border-color']),
         footer: shadowTarget('suggestions-footer', ['display', 'gap', 'justify-content']),
       },
       deletion: {
@@ -82,6 +89,12 @@ try {
       },
     }
   })
+  await page.locator('[data-probe="suggestions-option-hover"]').hover()
+  await page.waitForTimeout(200)
+  actual.suggestions.hoverOnly = await shadowTarget('suggestions-option-hover', ['background-color', 'color', 'border-color'])
+  await page.locator('[data-probe="suggestions-option"]').hover()
+  await page.waitForTimeout(200)
+  actual.suggestions.selectedHover = await shadowTarget('suggestions-option', ['background-color', 'color', 'border-color'])
   const expected = {
   "generatedGrammarPresent": true,
   "page": {
@@ -262,6 +275,21 @@ try {
       "padding-right": "6px",
       "padding-bottom": "3px",
       "padding-left": "6px",
+      "background-color": "rgb(220, 221, 222)",
+      "color": "rgb(20, 90, 200)",
+      "border-color": "rgb(20, 90, 200)"
+    },
+    "base": {
+      "background-color": "rgb(235, 236, 237)",
+      "color": "rgb(20, 21, 22)",
+      "border-color": "rgb(200, 201, 202)"
+    },
+    "hoverOnly": {
+      "background-color": "rgb(220, 221, 222)",
+      "color": "rgb(20, 21, 22)",
+      "border-color": "rgb(160, 161, 162)"
+    },
+    "selectedHover": {
       "background-color": "rgb(220, 221, 222)",
       "color": "rgb(20, 90, 200)",
       "border-color": "rgb(20, 90, 200)"

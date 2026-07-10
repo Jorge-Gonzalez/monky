@@ -248,8 +248,8 @@
     },
     {
       "id": "u7-suggestions-command-item",
-      "classString": "compressible",
-      "backing": []
+      "classString": "compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent",
+      "backing": ["aria-selected"]
     },
     {
       "id": "u7-suggestions-footer",

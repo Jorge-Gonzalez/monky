@@ -172,7 +172,7 @@ export function MacroSuggestions({
           <button
             key={macro.id}
             ref={(el) => { buttonRefs.current[index] = el; }}
-            className="macro-suggestions-command-item compressible"
+            className="macro-suggestions-command-item compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
             onMouseDown={(e) => {
               e.preventDefault();
               onSelectMacro(macro);

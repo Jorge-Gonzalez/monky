@@ -56,28 +56,14 @@ button, input, textarea, select {
   min-width: 0;
   max-width: 8em;
   padding: 3px 6px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  background-color: var(--tone-dim);
-  color: var(--ink);
-  font-size: 13px;
+  border-width: 1px;
+  border-style: solid;
   cursor: pointer;
   transition: all 0.15s ease;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.macro-suggestions-command-item:hover {
-  background-color: var(--tone);
-  border-color: var(--harmonic);
-}
-
-.macro-suggestions-command-item[aria-selected="true"] {
-  background-color: var(--tone);
-  color: var(--accent);
-  border-color: var(--accent);
 }
 
 .macro-suggestions-text-preview {
