@@ -49,11 +49,13 @@
   color: inherit;
 }
 
+/* Preserved for the wordmark restoration path; currently not emitted by the modal markup.
 .monky-logo-word {
   display: block;
   width: auto;
   height: 26px;
 }
+*/
 
 /* Navigation tabs - appearance only, all layout/behavior handled by semantic classes */
 .modal-nav-tab {

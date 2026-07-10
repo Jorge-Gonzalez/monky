@@ -1,13 +1,12 @@
 {
-  "generatedAt": "2026-07-10T07:45:10.512Z",
+  "generatedAt": "2026-07-10T07:54:59.208Z",
   "summary": {
-    "definedClasses": 228,
-    "selectorBlocks": 321,
+    "definedClasses": 198,
+    "selectorBlocks": 288,
     "byDisposition": {
-      "live-static": 198,
-      "dead-candidate": 30
+      "live-static": 198
     },
-    "deadCandidateDeclarations": 68,
+    "deadCandidateDeclarations": 0,
     "runtimePages": [
       "/src/popup/index.html",
       "/src/options/index.html",
@@ -17,24 +16,24 @@
   "cssCoverage": [
     {
       "page": "/src/popup/index.html",
+      "asset": "assets/renderPageWithTheme-VB5WvDKs.css",
+      "usedBytes": 11283,
+      "totalBytes": 17351,
+      "usedPercent": 65
+    },
+    {
+      "page": "/src/popup/index.html",
       "asset": "assets/popup-D2NWzBVx.css",
       "usedBytes": 617,
       "totalBytes": 1765,
       "usedPercent": 35
     },
     {
-      "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-DOtTrvAU.css",
-      "usedBytes": 12648,
-      "totalBytes": 19859,
-      "usedPercent": 63.7
-    },
-    {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-DOtTrvAU.css",
-      "usedBytes": 15186,
-      "totalBytes": 19859,
-      "usedPercent": 76.5
+      "asset": "assets/renderPageWithTheme-VB5WvDKs.css",
+      "usedBytes": 12678,
+      "totalBytes": 17351,
+      "usedPercent": 73.1
     },
     {
       "page": "/src/options/index.html",
@@ -45,10 +44,10 @@
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-DOtTrvAU.css",
-      "usedBytes": 19545,
-      "totalBytes": 19859,
-      "usedPercent": 98.4
+      "asset": "assets/renderPageWithTheme-VB5WvDKs.css",
+      "usedBytes": 17037,
+      "totalBytes": 17351,
+      "usedPercent": 98.2
     }
   ],
   "classes": [
@@ -89,21 +88,6 @@
       ]
     },
     {
-      "className": "alert-info",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".alert-info"
-      ],
-      "declarations": 3,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
       "className": "alert-success",
       "files": [
         "src/styles/skin/surfaces.css"
@@ -116,21 +100,6 @@
       "livenessEvidence": [
         "production-source"
       ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "alert-warning",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".alert-warning"
-      ],
-      "declarations": 3,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
       "supportingEvidence": [
         "bundled-app-token"
       ]
@@ -171,66 +140,6 @@
       ]
     },
     {
-      "className": "bg-secondary",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".bg-secondary"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "border-b",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".border-b"
-      ],
-      "declarations": 2,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "border-primary",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".border-primary"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "border-t",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".border-t"
-      ],
-      "declarations": 2,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
       "className": "btn",
       "files": [
         "src/styles/skin/controls.css"
@@ -248,22 +157,6 @@
         "production-source",
         "runtime-observed"
       ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "btn-danger",
-      "files": [
-        "src/styles/skin/controls.css"
-      ],
-      "selectors": [
-        ".btn-danger",
-        ".btn-danger:hover"
-      ],
-      "declarations": 3,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
       "supportingEvidence": [
         "bundled-app-token"
       ]
@@ -323,22 +216,6 @@
         "production-source",
         "runtime-observed"
       ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "btn-primary",
-      "files": [
-        "src/styles/skin/controls.css"
-      ],
-      "selectors": [
-        ".btn-primary",
-        ".btn-primary:hover"
-      ],
-      "declarations": 3,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
       "supportingEvidence": [
         "bundled-app-token"
       ]
@@ -412,21 +289,6 @@
         "production-source",
         "runtime-observed"
       ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "card-elevated",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".card-elevated"
-      ],
-      "declarations": 5,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
       "supportingEvidence": [
         "bundled-app-token"
       ]
@@ -1110,22 +972,6 @@
       "livenessEvidence": [
         "production-source"
       ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "editor-wrapper",
-      "files": [
-        "src/styles/skin/controls.css"
-      ],
-      "selectors": [
-        ".editor-wrapper",
-        ".editor-wrapper:focus-within"
-      ],
-      "declarations": 8,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
       "supportingEvidence": [
         "bundled-app-token"
       ]
@@ -2590,21 +2436,6 @@
       ]
     },
     {
-      "className": "monky-logo-word",
-      "files": [
-        "src/content/overlays/modal/modalStyles.css"
-      ],
-      "selectors": [
-        ".monky-logo-word"
-      ],
-      "declarations": 3,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
       "className": "padding-block-loose",
       "files": [
         "src/styles/grammar/ermine.generated.css"
@@ -2831,19 +2662,6 @@
       "supportingEvidence": [
         "bundled-app-token"
       ]
-    },
-    {
-      "className": "page-description",
-      "files": [
-        "src/styles/entries/pages.css"
-      ],
-      "selectors": [
-        ".page-description"
-      ],
-      "declarations": 3,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": []
     },
     {
       "className": "page-title",
@@ -3685,21 +3503,6 @@
       ]
     },
     {
-      "className": "shadow-sm",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".shadow-sm"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
       "className": "shake",
       "files": [
         "src/styles/skin/controls.css"
@@ -3735,51 +3538,6 @@
       ]
     },
     {
-      "className": "text-2xl",
-      "files": [
-        "src/styles/skin/typography.css"
-      ],
-      "selectors": [
-        ".text-2xl"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "text-3xl",
-      "files": [
-        "src/styles/skin/typography.css"
-      ],
-      "selectors": [
-        ".text-3xl"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "text-base",
-      "files": [
-        "src/styles/skin/typography.css"
-      ],
-      "selectors": [
-        ".text-base"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
       "className": "text-lg",
       "files": [
         "src/styles/skin/typography.css"
@@ -3793,21 +3551,6 @@
         "production-source",
         "runtime-observed"
       ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "text-md",
-      "files": [
-        "src/styles/skin/typography.css"
-      ],
-      "selectors": [
-        ".text-md"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
       "supportingEvidence": [
         "bundled-app-token"
       ]
@@ -3831,36 +3574,6 @@
       ]
     },
     {
-      "className": "text-primary",
-      "files": [
-        "src/styles/skin/typography.css"
-      ],
-      "selectors": [
-        ".text-primary"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "text-secondary",
-      "files": [
-        "src/styles/skin/typography.css"
-      ],
-      "selectors": [
-        ".text-secondary"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
       "className": "text-sm",
       "files": [
         "src/styles/skin/typography.css"
@@ -3873,96 +3586,6 @@
       "livenessEvidence": [
         "production-source"
       ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "text-white",
-      "files": [
-        "src/styles/skin/typography.css"
-      ],
-      "selectors": [
-        ".text-white"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "text-xl",
-      "files": [
-        "src/styles/skin/typography.css"
-      ],
-      "selectors": [
-        ".text-xl"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "text-xs",
-      "files": [
-        "src/styles/skin/typography.css"
-      ],
-      "selectors": [
-        ".text-xs"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "transition-colors",
-      "files": [
-        "src/styles/skin/controls.css"
-      ],
-      "selectors": [
-        ".transition-colors"
-      ],
-      "declarations": 3,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "truncate",
-      "files": [
-        "src/styles/skin/typography.css"
-      ],
-      "selectors": [
-        ".truncate"
-      ],
-      "declarations": 3,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "ui-rounded",
-      "files": [
-        "src/styles/skin/controls.css"
-      ],
-      "selectors": [
-        ".ui-rounded"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
       "supportingEvidence": [
         "bundled-app-token"
       ]
@@ -3985,21 +3608,6 @@
       ]
     },
     {
-      "className": "validation-success",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".validation-success"
-      ],
-      "declarations": 2,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
       "className": "vertical",
       "files": [
         "src/styles/grammar/ermine.generated.css"
@@ -4014,66 +3622,6 @@
         "runtime-observed",
         "test-reference"
       ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "view-container",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".view-container"
-      ],
-      "declarations": 4,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "view-description",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".view-description"
-      ],
-      "declarations": 3,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "view-title",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".view-title"
-      ],
-      "declarations": 4,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "whitespace-pre-wrap",
-      "files": [
-        "src/styles/skin/typography.css"
-      ],
-      "selectors": [
-        ".whitespace-pre-wrap"
-      ],
-      "declarations": 1,
-      "disposition": "dead-candidate",
-      "livenessEvidence": [],
       "supportingEvidence": [
         "bundled-app-token"
       ]

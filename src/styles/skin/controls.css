@@ -66,20 +66,6 @@
   outline-offset: 2px;
 }
 
-.editor-wrapper {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--harmonic);
-  border-radius: var(--radius-md);
-  background-color: var(--tone-dim);
-  overflow: hidden;
-}
-
-.editor-wrapper:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--tone);
-}
-
 .editor-content {
   color: var(--ink);
   min-height: 150px;
@@ -102,15 +88,6 @@
 
 .btn:focus {
   box-shadow: 0 0 0 2px var(--accent);
-}
-
-.btn-primary {
-  background-color: var(--accent);
-  color: var(--ink-alt);
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
 }
 
 .btn-secondary {
@@ -140,15 +117,6 @@
 
 .btn-success:hover {
   background-color: color-mix(in oklch, var(--status-success) 82%, black);
-}
-
-.btn-danger {
-  background-color: var(--status-error);
-  color: var(--ink-alt);
-}
-
-.btn-danger:hover {
-  background-color: color-mix(in oklch, var(--status-error) 82%, black);
 }
 
 .btn-link {
@@ -232,12 +200,6 @@
   background: var(--accent-dim) !important;
 }
 
-/* ===== Shared radius recipe (U8): the popup control corner ===== */
-
-.ui-rounded {
-  border-radius: var(--radius-md);
-}
-
 /* ===== Selectable group pattern (relocated verbatim from the retired legacy sheet, U8).
    Consumed by options PrefixEditor and the modal settings view. ===== */
 
@@ -285,10 +247,4 @@
 
 .flash {
   animation: flash 0.3s ease;
-}
-
-.transition-colors {
-  transition-property: color, background-color, border-color;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
 }

@@ -22,12 +22,6 @@
   margin: 0 0 var(--spacing-lg) 0;
 }
 
-.page-description {
-  font-size: var(--text-md);
-  color: var(--ink-soft);
-  margin: 0 0 var(--spacing-2xl) 0;
-}
-
 body {
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   background-color: var(--base-tone);
