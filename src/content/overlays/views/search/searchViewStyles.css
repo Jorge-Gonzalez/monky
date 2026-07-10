@@ -19,7 +19,6 @@
   width: 100%;
   border-width: 1px;
   border-style: solid;
-  font-size: var(--text-md);
   outline: none;
   box-sizing: border-box;
   transition: border-color var(--transition-fast);
@@ -41,7 +40,6 @@
 /* Empty state - uses shared .empty-state pattern */
 .macro-search-empty {
   text-align: center;
-  font-size: var(--text-md);
 }
 
 /* Search result items - search-specific pattern */
@@ -61,7 +59,6 @@
 }
 
 .macro-search-item-command {
-  font-size: var(--text-md);
   padding-right: var(--spacing-xs);
 }
 
@@ -69,20 +66,20 @@
   padding-left: var(--spacing-xs);
 }
 
-.macro-search-item:hover .macro-search-item-command,
-.macro-search-item:hover .macro-search-item-text {
-  background-color: var(--tone-dim);
-}
-
-.macro-search-item[aria-selected="true"] .macro-search-item-command,
-.macro-search-item[aria-selected="true"] .macro-search-item-text {
-  background-color: var(--tone);
-}
-
 .macro-search-item[aria-selected="true"] .macro-search-item-text {
   white-space: normal;
   overflow: visible;
   text-overflow: clip;
+}
+
+.macro-search-item:not([data-state="confirming-delete"]):hover .macro-search-item-command,
+.macro-search-item:not([data-state="confirming-delete"]):hover .macro-search-item-text {
+  background-color: var(--tone-dim);
+}
+
+.macro-search-item:not([data-state="confirming-delete"])[aria-selected="true"] .macro-search-item-command,
+.macro-search-item:not([data-state="confirming-delete"])[aria-selected="true"] .macro-search-item-text {
+  background-color: var(--tone);
 }
 
 /* Armed-for-delete row: danger tint + the confirm prompt in the text column. */
@@ -93,15 +90,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.macro-search-item[data-state="confirming-delete"] .macro-search-item-command,
-.macro-search-item[data-state="confirming-delete"] .macro-search-item-confirm {
-  background-color: var(--status-error-wash);
-}
-
-.macro-search-item[data-state="confirming-delete"] .macro-search-item-command {
-  color: var(--status-error);
 }
 
 .macro-search-item-edit {

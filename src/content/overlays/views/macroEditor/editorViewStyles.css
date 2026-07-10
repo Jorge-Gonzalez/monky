@@ -5,7 +5,6 @@
  */
 .macro-editor-view {
   height: 100%;
-  color: var(--ink);
 }
 
 .editor-form {
@@ -13,17 +12,12 @@
 }
 
 .editor-title {
-  font-size: var(--text-lg);
-  font-weight: 600;
-  color: var(--ink);
   margin: 0;
 }
 
 .editor-popout {
   border: none;
-  border-radius: var(--radius-sm);
   background: transparent;
-  color: var(--ink-soft);
   cursor: pointer;
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
@@ -42,7 +36,6 @@
 }
 
 .editor-command-error {
-  background: var(--status-error-wash);
   /* border: 1px solid var(--status-error); */
   border-bottom-left-radius: var(--radius-md);
   border-bottom-right-radius: var(--radius-md);
@@ -59,8 +52,6 @@
 }
 
 .editor-sensitive {
-  font-size: var(--text-sm);
-  color: var(--ink);
   cursor: pointer;
 }
 
@@ -84,8 +75,8 @@
   left: 0;
   right: 0;
   top: 100%;
-  background: var(--tone-dim);
-  border: 1px solid var(--accent-dim);
+  border-width: 1px;
+  border-style: solid;
   border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   z-index: 10;
@@ -94,9 +85,8 @@
 }
 
 .command-suggestions-label {
-  font-size: var(--text-sm);
-  color: var(--ink-soft);
-  border-bottom: 1px solid var(--harmonic);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
 }
 
 .command-suggestion-item {
@@ -105,24 +95,19 @@
   overflow: hidden;
 }
 
-.command-suggestion-item:hover {
+.command-suggestion-item:not([data-state="confirming-delete"]):hover {
   background: var(--base-tone);
 }
 
-.command-suggestion-item[aria-selected="true"] {
+.command-suggestion-item:not([data-state="confirming-delete"])[aria-selected="true"] {
   background: var(--tone);
 }
 
 .command-suggestion-command {
-  font-weight: 500;
-  color: var(--accent);
-  font-size: var(--text-md);
   white-space: nowrap;
 }
 
 .command-suggestion-text {
-  color: var(--ink-soft);
-  font-size: var(--text-sm);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -137,9 +122,7 @@
 
 .command-suggestion-action {
   border: none;
-  border-radius: var(--radius-sm);
   background: transparent;
-  color: var(--ink-soft);
   cursor: pointer;
   opacity: 0;
   transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
@@ -156,17 +139,8 @@
   color: var(--status-error);
 }
 
-/* Once armed, both confirm and cancel stay visible. */
-.command-suggestion-item[data-state="confirming-delete"] {
-  background-color: var(--status-error-wash);
-}
-
 .command-suggestion-item[data-state="confirming-delete"] .command-suggestion-action {
   opacity: 1;
-}
-
-.command-suggestion-action.confirm {
-  color: var(--status-error);
 }
 
 .command-suggestion-action.confirm:hover {

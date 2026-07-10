@@ -43,7 +43,7 @@
     },
     {
       "id": "search-input",
-      "classString": "padding-block-snug padding-inline-comfortable ground-subtle ink rule-accent-soft corner-md",
+      "classString": "padding-block-snug padding-inline-comfortable ground-subtle ink rule-accent-soft corner-md font-md",
       "backing": []
     },
     {
@@ -53,7 +53,7 @@
     },
     {
       "id": "search-empty",
-      "classString": "span-all padding-relaxed ink-soft",
+      "classString": "span-all padding-relaxed ink-soft font-md",
       "backing": []
     },
     {
@@ -63,7 +63,7 @@
     },
     {
       "id": "search-item-command-cell",
-      "classString": "padding-comfortable ink-accent rule-soft font-medium",
+      "classString": "padding-comfortable ink-accent rule-soft font-md font-medium",
       "backing": []
     },
     {
@@ -73,12 +73,12 @@
     },
     {
       "id": "search-item-confirm-cell",
-      "classString": "padding-comfortable ink-fail rule-soft font-md font-medium",
+      "classString": "padding-comfortable ground-fail-faint ink-fail rule-soft font-md font-medium",
       "backing": []
     },
     {
       "id": "search-command-name-cell",
-      "classString": "padding-comfortable ink-accent rule-soft font-semibold",
+      "classString": "padding-comfortable ink-accent rule-soft font-md font-semibold",
       "backing": []
     },
     {
@@ -112,18 +112,43 @@
       "backing": []
     },
     {
+      "id": "u6-settings-section-label",
+      "classString": "font-xs font-medium ink-accent-soft",
+      "backing": []
+    },
+    {
+      "id": "u6-settings-row-label",
+      "classString": "font-md ink",
+      "backing": []
+    },
+    {
+      "id": "u6-settings-import-status",
+      "classString": "font-sm",
+      "backing": []
+    },
+    {
       "id": "u6-settings-appearance",
       "classString": "horizontal align-center gap-comfortable",
       "backing": []
     },
     {
       "id": "u6-segmented-control",
-      "classString": "horizontal position-relative",
+      "classString": "horizontal position-relative ground-subtle rule corner-md",
+      "backing": []
+    },
+    {
+      "id": "u6-segmented-option",
+      "classString": "elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft",
       "backing": []
     },
     {
       "id": "u6-editor-shell",
-      "classString": "vertical padding-loose position-relative gap-comfortable",
+      "classString": "vertical padding-loose position-relative gap-comfortable ink",
+      "backing": []
+    },
+    {
+      "id": "u6-editor-title",
+      "classString": "font-lg font-semibold ink",
       "backing": []
     },
     {
@@ -133,7 +158,7 @@
     },
     {
       "id": "u6-editor-button",
-      "classString": "horizontal align-center justify-center padding-tight",
+      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-soft",
       "backing": []
     },
     {
@@ -143,12 +168,17 @@
     },
     {
       "id": "u6-editor-command-error",
-      "classString": "padding-block-tight padding-inline-snug",
+      "classString": "padding-block-tight padding-inline-snug ground-fail-faint",
       "backing": []
     },
     {
       "id": "u6-command-dropdown",
-      "classString": "position-absolute",
+      "classString": "position-absolute ground-subtle rule-accent-soft",
+      "backing": []
+    },
+    {
+      "id": "u6-command-suggestions-label",
+      "classString": "padding-block-tight padding-inline-comfortable font-sm ink-soft rule",
       "backing": []
     },
     {
@@ -157,8 +187,33 @@
       "backing": []
     },
     {
+      "id": "u6-command-suggestion-row-confirming",
+      "classString": "horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable ground-fail-faint",
+      "backing": []
+    },
+    {
+      "id": "u6-command-suggestion-command",
+      "classString": "rigid font-md font-medium ink-accent",
+      "backing": []
+    },
+    {
+      "id": "u6-command-suggestion-text",
+      "classString": "font-sm ink-soft",
+      "backing": []
+    },
+    {
       "id": "u6-command-suggestion-actions",
       "classString": "horizontal align-center gap-tight",
+      "backing": []
+    },
+    {
+      "id": "u6-command-suggestion-confirm-action",
+      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-fail",
+      "backing": []
+    },
+    {
+      "id": "u6-editor-sensitive",
+      "classString": "horizontal align-center gap-snug font-sm ink",
       "backing": []
     },
     {

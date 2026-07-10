@@ -52,7 +52,7 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
   return (
     <div
       ref={containerRef}
-      className={`seg-control horizontal position-relative ${sliding ? 'is-sliding' : ''}`}
+      className={`seg-control horizontal position-relative ground-subtle rule corner-md ${sliding ? 'is-sliding' : ''}`}
       role="radiogroup"
       onTransitionEnd={e => {
         // Only the pill's own (::before) transition lands on the container; button
@@ -68,7 +68,7 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
           role="radio"
           aria-checked={opt.value === value}
           aria-label={opt.ariaLabel}
-          className="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative"
+          className="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft"
           onClick={() => onChange(opt.value)}
         >
           {opt.label}

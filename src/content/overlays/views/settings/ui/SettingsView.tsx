@@ -61,10 +61,10 @@ export function SettingsView(_props: BaseModalViewProps) {
       <div className="settings-body">
 
         <div className="settings-group grid padding-block-loose padding-inline-separated">
-          <div className="settings-section-label">{t('settings.sections.general')}</div>
+          <div className="settings-section-label font-xs font-medium ink-accent-soft">{t('settings.sections.general')}</div>
           <div className="settings-rows">
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
-              <span className="settings-row-label">{t('options.prefixEditor.title')}</span>
+              <span className="settings-row-label font-md ink">{t('options.prefixEditor.title')}</span>
               <SelectableGroup
                 options={ALL_PREFIXES}
                 selected={prefixes}
@@ -74,7 +74,7 @@ export function SettingsView(_props: BaseModalViewProps) {
               />
             </div>
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
-              <span className="settings-row-label">{t('replacementMode.title')}</span>
+              <span className="settings-row-label font-md ink">{t('replacementMode.title')}</span>
               <SegmentedControl
                 options={REPLACEMENT_OPTIONS.map(o => ({ value: o.value, label: o.label() }))}
                 value={replacementValue}
@@ -87,10 +87,10 @@ export function SettingsView(_props: BaseModalViewProps) {
         <div className="settings-divider" />
 
         <div className="settings-group grid padding-block-loose padding-inline-separated">
-          <div className="settings-section-label">{t('settings.sections.appearance')}</div>
+          <div className="settings-section-label font-xs font-medium ink-accent-soft">{t('settings.sections.appearance')}</div>
           <div className="settings-rows">
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
-              <span className="settings-row-label">{t('settings.colorTheme')}</span>
+              <span className="settings-row-label font-md ink">{t('settings.colorTheme')}</span>
               <div className="settings-appearance-controls horizontal align-center gap-comfortable">
                 <SegmentedControl
                   options={THEME_OPTIONS}
@@ -105,7 +105,7 @@ export function SettingsView(_props: BaseModalViewProps) {
               </div>
             </div>
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
-              <span className="settings-row-label">{t('settings.language')}</span>
+              <span className="settings-row-label font-md ink">{t('settings.language')}</span>
               <SegmentedControl
                 options={LANGUAGE_OPTIONS}
                 value={language}
@@ -118,10 +118,10 @@ export function SettingsView(_props: BaseModalViewProps) {
         <div className="settings-divider" />
 
         <div className="settings-group grid padding-block-loose padding-inline-separated">
-          <div className="settings-section-label">{t('settings.sections.data')}</div>
+          <div className="settings-section-label font-xs font-medium ink-accent-soft">{t('settings.sections.data')}</div>
           <div className="settings-rows">
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
-              <span className="settings-row-label">{t('settings.importExport.title')}</span>
+              <span className="settings-row-label font-md ink">{t('settings.importExport.title')}</span>
               <div className="horizontal gap-snug">
                 <button className="btn btn-outlined rigid" type="button" onClick={exportMacros}>
                   {t('settings.importExport.exportButton')}
@@ -147,7 +147,7 @@ export function SettingsView(_props: BaseModalViewProps) {
         </div>
 
         {importStatus && (
-          <div className={`settings-import-status ${importStatus.ok ? 'import-status--ok' : 'import-status--error'}`}>
+          <div className={`settings-import-status font-sm ${importStatus.ok ? 'import-status--ok ink-accent' : 'import-status--error'}`}>
             {importStatus.message}
           </div>
         )}

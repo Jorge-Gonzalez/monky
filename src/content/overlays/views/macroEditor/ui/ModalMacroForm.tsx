@@ -108,12 +108,12 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
     <form onSubmit={onSubmit} className="editor-form position-relative elastic basis-ratio vertical gap-comfortable">
       <div className="editor-topbar horizontal align-center justify-between gap-relaxed">
         <div className="editor-topbar-lead horizontal align-center gap-snug rigid">
-          <h1 className="editor-title">
+          <h1 className="editor-title font-lg font-semibold ink">
             {editing ? t('macroEditor.title.editShort') : t('macroEditor.title.newShort')}
           </h1>
           <button
             type="button"
-            className="editor-popout horizontal align-center justify-center padding-tight"
+            className="editor-popout horizontal align-center justify-center padding-tight corner-sm ink-soft"
             onClick={openFullEditor}
             aria-label={t('macroEditor.openFullEditor')}
             title={t('macroEditor.openFullEditor')}
@@ -142,7 +142,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
               {...suggest.inputProps}
             />
             {command && !commandValid && (
-              <div className={`validation-error editor-command-error padding-block-tight padding-inline-snug ${suggest.visible ? 'input-dropdown-open' : ''}`}>
+              <div className={`validation-error editor-command-error padding-block-tight padding-inline-snug ground-fail-faint ${suggest.visible ? 'input-dropdown-open' : ''}`}>
                 {t('macroForm.commandPrefixError', { prefixes: prefixes.join(', ') })}
               </div>
             )}
@@ -167,7 +167,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
       />
 
       <div className="editor-bottombar horizontal align-center justify-between gap-comfortable rigid">
-        <label className="editor-sensitive horizontal align-center gap-snug">
+        <label className="editor-sensitive horizontal align-center gap-snug font-sm ink">
           <input
             type="checkbox"
             checked={isSensitive}

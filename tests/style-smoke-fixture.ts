@@ -70,29 +70,29 @@ shadow(
   `<div data-probe="settings-view" class="settings-view vertical">
     <div data-probe="settings-group" class="settings-group grid padding-block-loose padding-inline-separated">
       <div data-probe="settings-row" class="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
-        <span class="settings-row-label">Theme</span>
+        <span class="settings-row-label font-md ink">Theme</span>
         <div data-probe="settings-appearance" class="settings-appearance-controls horizontal align-center gap-comfortable">
-          <div data-probe="seg-control" class="seg-control horizontal position-relative">
-            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative" aria-checked="true">One</button>
-            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative" aria-checked="false">Two</button>
+          <div data-probe="seg-control" class="seg-control horizontal position-relative ground-subtle rule corner-md">
+            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft" aria-checked="true">One</button>
+            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft" aria-checked="false">Two</button>
           </div>
           <button data-probe="settings-prefix" class="btn btn-outlined text-mono settings-prefix-btn horizontal align-center justify-center rigid">/</button>
         </div>
       </div>
     </div>
-    <div data-probe="editor-view" class="macro-editor-view vertical padding-loose">
+    <div data-probe="editor-view" class="macro-editor-view vertical padding-loose ink">
       <form data-probe="editor-form" class="editor-form position-relative elastic basis-ratio vertical gap-comfortable">
         <div data-probe="editor-topbar" class="editor-topbar horizontal align-center justify-between gap-relaxed">
           <div data-probe="editor-topbar-lead" class="editor-topbar-lead horizontal align-center gap-snug rigid">
-            <button data-probe="editor-popout" class="editor-popout horizontal align-center justify-center padding-tight">↗</button>
+            <button data-probe="editor-popout" class="editor-popout horizontal align-center justify-center padding-tight corner-sm ink-soft">↗</button>
           </div>
           <div class="command-suggestion-wrapper editor-command position-relative elastic basis-ratio">
-            <div data-probe="command-suggestions" class="command-suggestions position-absolute">
-              <div data-probe="command-suggestions-label" class="command-suggestions-label padding-block-tight padding-inline-comfortable">Existing</div>
+            <div data-probe="command-suggestions" class="command-suggestions position-absolute ground-subtle rule-accent-soft">
+              <div data-probe="command-suggestions-label" class="command-suggestions-label padding-block-tight padding-inline-comfortable font-sm ink-soft rule">Existing</div>
               <div data-probe="command-suggestion-item" class="command-suggestion-item horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable" aria-selected="true">
-                <span data-probe="command-suggestion-command" class="command-suggestion-command rigid">/sig</span>
-                <span class="command-suggestion-text">Signature</span>
-                <button data-probe="command-suggestion-action" class="command-suggestion-action delete horizontal align-center justify-center padding-tight">×</button>
+                <span data-probe="command-suggestion-command" class="command-suggestion-command rigid font-md font-medium ink-accent">/sig</span>
+                <span class="command-suggestion-text font-sm ink-soft">Signature</span>
+                <button data-probe="command-suggestion-action" class="command-suggestion-action delete horizontal align-center justify-center padding-tight corner-sm ink-soft">×</button>
               </div>
             </div>
           </div>

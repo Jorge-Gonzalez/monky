@@ -31,7 +31,7 @@ export function MacroSearchResults({
   if (macros.length === 0) {
     return (
       <div ref={resultsRef} className="macro-search-results elastic basis-ratio grid" role="listbox">
-        <div className="macro-search-empty span-all padding-relaxed ink-soft">
+        <div className="macro-search-empty span-all padding-relaxed ink-soft font-md">
           {searchQuery ? t('modalSearch.noMacrosFound') : t('modalSearch.startTypingHint')}
         </div>
       </div>
@@ -63,6 +63,11 @@ interface MacroSearchItemProps {
 }
 
 function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdit }: MacroSearchItemProps) {
+  const commandClassName = [
+    'macro-search-item-command padding-comfortable rule-soft font-md font-medium',
+    isConfirmingDelete ? 'ground-fail-faint ink-fail' : 'ink-accent',
+  ].join(' ');
+
   return (
     <div
       className="macro-search-item grid span-all position-relative"
@@ -71,9 +76,9 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
       data-state={isConfirmingDelete ? 'confirming-delete' : undefined}
       onClick={onClick}
     >
-      <div className="macro-search-item-command padding-comfortable ink-accent rule-soft font-medium">{macro.command}</div>
+      <div className={commandClassName}>{macro.command}</div>
       {isConfirmingDelete ? (
-        <div className="macro-search-item-confirm padding-comfortable ink-fail rule-soft font-md font-medium" role="alert">
+        <div className="macro-search-item-confirm padding-comfortable ground-fail-faint ink-fail rule-soft font-md font-medium" role="alert">
           {t('modalSearch.confirmDelete')}
         </div>
       ) : (
