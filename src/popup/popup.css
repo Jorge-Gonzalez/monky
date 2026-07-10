@@ -4,20 +4,70 @@
 
 .popup-container {
   width: 320px;
-  background-color: var(--base-tone);
-  color: var(--ink);
+}
+
+.popup-card,
+.popup-section {
+  border-width: 1px;
+  border-style: solid;
+}
+
+.popup-button,
+.popup-icon-button {
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--transition-fast), background-color var(--transition-fast);
+}
+
+.popup-button:hover,
+.popup-icon-button:hover {
+  opacity: 0.9;
+}
+
+.popup-search-input {
+  width: 100%;
+  border-width: 1px;
+  border-style: solid;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast);
+}
+
+.popup-search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--tone);
 }
 
 /* Toggle button spanning the macro card header (component identity). */
 .popup-item-toggle {
   width: 100%;
   text-align: left;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
 
 /* Expanded macro detail: single-side rhythm the grammar does not express. */
 .popup-item-detail {
   margin-top: var(--spacing-sm);
   padding-top: var(--spacing-sm);
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+
+.popup-macro-text {
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.popup-site-copy {
+  overflow: hidden;
+}
+
+.popup-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Site-toggle label: left offset from the description block. */
@@ -28,11 +78,18 @@
 
 /* Popup result list scrollbar (popup-local; the overlay surfaces style their own). */
 .popup-results {
-  max-height: 300px;
+  max-height: 256px;
   overflow-y: auto;
-  padding: 0.5rem 0;
+  padding: var(--spacing-sm) 0;
+  margin: 0;
+  list-style: none;
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.popup-result-item {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
 }
 
 .popup-results::-webkit-scrollbar {

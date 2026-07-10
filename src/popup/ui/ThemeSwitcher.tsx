@@ -12,7 +12,7 @@ export default function ThemeSwitcher() {
     <div className="horizontal gap-tight">
       <button
         onClick={() => handleThemeChange('light')}
-        className="btn-secondary padding-tight ui-rounded"
+        className="popup-icon-button padding-tight ground-subtle ink rule corner-md font-sm"
         aria-label="Set light theme"
         title="Light theme"
       >
@@ -20,13 +20,13 @@ export default function ThemeSwitcher() {
       </button>
       <button
         onClick={() => handleThemeChange('dark')}
-        className="btn-secondary padding-tight ui-rounded"
+        className="popup-icon-button padding-tight ground-subtle ink rule corner-md font-sm"
         aria-label="Set dark theme"
         title="Dark theme"
       >
         🌙
       </button>
-      <button onClick={() => handleThemeChange('system')} className="btn-secondary padding-tight ui-rounded" aria-label="Set system theme" title="System theme">⚙️</button>
+      <button onClick={() => handleThemeChange('system')} className="popup-icon-button padding-tight ground-subtle ink rule corner-md font-sm" aria-label="Set system theme" title="System theme">⚙️</button>
     </div>
   );
 }

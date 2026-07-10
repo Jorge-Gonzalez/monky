@@ -8,7 +8,7 @@ export default function NewMacroButton() {
   return (
     <button
       onClick={handleNewMacro}
-      className="btn-primary padding-inline-snug padding-block-tight text-xs font-semibold ui-rounded transition-colors"
+      className="popup-button padding-inline-snug padding-block-tight ground-accent ink-inverse corner-md font-xs font-semibold"
       title={t('popup.newMacro')}
     >
       + {t('popup.newMacro')}

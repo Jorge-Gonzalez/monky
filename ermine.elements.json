@@ -268,7 +268,7 @@
     },
     {
       "id": "u8-popup-container",
-      "classString": "vertical gap-snug padding-snug",
+      "classString": "vertical gap-snug padding-snug ground ink",
       "backing": []
     },
     {
@@ -279,6 +279,86 @@
     {
       "id": "u8-popup-search",
       "classString": "vertical gap-snug margin-block-snug",
+      "backing": []
+    },
+    {
+      "id": "popup-title",
+      "classString": "font-lg font-bold ink",
+      "backing": []
+    },
+    {
+      "id": "popup-primary-button",
+      "classString": "padding-inline-snug padding-block-tight ground-accent ink-inverse corner-md font-xs font-semibold",
+      "backing": []
+    },
+    {
+      "id": "popup-icon-button",
+      "classString": "padding-tight ground-subtle ink rule corner-md font-sm",
+      "backing": []
+    },
+    {
+      "id": "popup-results",
+      "classString": "vertical gap-tight",
+      "backing": []
+    },
+    {
+      "id": "popup-result-item",
+      "classString": "padding-snug rule-soft",
+      "backing": []
+    },
+    {
+      "id": "popup-result-command",
+      "classString": "font-md font-bold ink-accent",
+      "backing": []
+    },
+    {
+      "id": "popup-card",
+      "classString": "padding-snug ground rule corner-md",
+      "backing": []
+    },
+    {
+      "id": "popup-item-command",
+      "classString": "font-sm font-medium ink-accent",
+      "backing": []
+    },
+    {
+      "id": "popup-item-chevron",
+      "classString": "ink-soft",
+      "backing": []
+    },
+    {
+      "id": "popup-item-detail",
+      "classString": "vertical gap-snug rule-soft",
+      "backing": []
+    },
+    {
+      "id": "popup-macro-text",
+      "classString": "font-sm ink ground-subtle padding-snug corner-md",
+      "backing": []
+    },
+    {
+      "id": "popup-secondary-button",
+      "classString": "padding-inline-snug padding-block-tight ground-accent ink-inverse corner-md font-sm",
+      "backing": []
+    },
+    {
+      "id": "popup-danger-button",
+      "classString": "padding-inline-snug padding-block-tight ground-fail ink-inverse corner-md font-sm",
+      "backing": []
+    },
+    {
+      "id": "popup-section",
+      "classString": "horizontal align-center justify-between padding-snug ground-subtle rule corner-md",
+      "backing": []
+    },
+    {
+      "id": "popup-site-title",
+      "classString": "font-medium ink",
+      "backing": []
+    },
+    {
+      "id": "popup-site-hostname",
+      "classString": "font-xs ink-soft",
       "backing": []
     }
   ]
