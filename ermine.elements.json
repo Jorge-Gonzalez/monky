@@ -33,7 +33,7 @@
     },
     {
       "id": "modal-navigation-tab",
-      "classString": "horizontal align-center justify-center gap-snug",
+      "classString": "horizontal align-center justify-center gap-snug hover:ground-subtle hover:ink",
       "backing": []
     },
     {

@@ -63,11 +63,6 @@
   border-bottom: 2px solid transparent;
 }
 
-.modal-nav-tab:hover {
-  background-color: var(--tone-dim);
-  color: var(--ink);
-}
-
 .modal-nav-tab[aria-current="page"] {
   color: var(--accent);
   border-bottom-color: var(--accent);
