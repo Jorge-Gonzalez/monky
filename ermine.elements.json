@@ -242,8 +242,13 @@
       "backing": []
     },
     {
+      "id": "u7-suggestions-container",
+      "classString": "ground rule corner-lg font-md",
+      "backing": []
+    },
+    {
       "id": "u7-suggestions-command-list",
-      "classString": "horizontal padding-tight gap-tight",
+      "classString": "horizontal padding-tight gap-tight rule-soft",
       "backing": []
     },
     {
@@ -253,8 +258,38 @@
     },
     {
       "id": "u7-suggestions-footer",
-      "classString": "horizontal gap-comfortable",
+      "classString": "horizontal gap-comfortable padding-block-tight padding-inline-comfortable font-xs ink-soft ground rule",
       "backing": []
+    },
+    {
+      "id": "u7-suggestions-kbd",
+      "classString": "corner-sm font-xs ink ground-subtle rule",
+      "backing": []
+    },
+    {
+      "id": "u7-suggestions-text-preview",
+      "classString": "padding-block-snug padding-inline-comfortable font-xs ink-soft",
+      "backing": []
+    },
+    {
+      "id": "u7-delete-message",
+      "classString": "padding-block-snug padding-inline-comfortable font-sm ink rule-soft",
+      "backing": []
+    },
+    {
+      "id": "u7-delete-command",
+      "classString": "font-semibold ink-accent",
+      "backing": []
+    },
+    {
+      "id": "u7-delete-option",
+      "classString": "elastic basis-ratio ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent",
+      "backing": ["aria-selected"]
+    },
+    {
+      "id": "u7-delete-danger-option",
+      "classString": "elastic basis-ratio ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail",
+      "backing": ["aria-selected"]
     },
     {
       "id": "u8-options-mode-row",

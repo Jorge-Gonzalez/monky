@@ -50,20 +50,20 @@ shadow(
 )
 shadow(
   composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES] }),
-  `<div data-probe="suggestions" class="macro-suggestions-container" style="left: 24px; top: 24px; position: fixed;">
-    <div data-probe="suggestions-list" class="macro-suggestions-commands-list horizontal padding-tight gap-tight" role="listbox">
+  `<div data-probe="suggestions" class="macro-suggestions-container ground rule corner-lg font-md" style="left: 24px; top: 24px; position: fixed;">
+    <div data-probe="suggestions-list" class="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft" role="listbox">
       <button data-probe="suggestions-option" class="macro-suggestions-command-item compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">/brb</button>
       <button data-probe="suggestions-option-hover" class="macro-suggestions-command-item compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/sig</button>
       <button data-probe="suggestions-option-base" class="macro-suggestions-command-item compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/email</button>
     </div>
-    <div data-probe="suggestions-footer" class="macro-suggestions-footer horizontal gap-comfortable"></div>
+    <div data-probe="suggestions-footer" class="macro-suggestions-footer horizontal gap-comfortable padding-block-tight padding-inline-comfortable font-xs ink-soft ground rule"></div>
   </div>`,
 )
 shadow(
   composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES, DELETE_STYLES] }),
-  `<div data-probe="deletion" class="macro-suggestions-container delete-confirm">
-    <div class="macro-suggestions-commands-list horizontal padding-tight gap-tight" role="listbox">
-      <button data-probe="delete-option" class="macro-suggestions-command-item delete-confirm-option elastic basis-ratio" role="option" aria-selected="true">Cancel</button>
+  `<div data-probe="deletion" class="macro-suggestions-container delete-confirm ground rule corner-lg font-md">
+    <div class="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft" role="listbox">
+      <button data-probe="delete-option" class="macro-suggestions-command-item delete-confirm-option elastic basis-ratio ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">Cancel</button>
     </div>
   </div>`,
 )

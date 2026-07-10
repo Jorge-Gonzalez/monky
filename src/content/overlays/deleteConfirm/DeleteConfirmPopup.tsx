@@ -43,18 +43,18 @@ export function DeleteConfirmPopup({
   return (
     <div
       ref={containerRef}
-      className="macro-suggestions-container delete-confirm"
+      className="macro-suggestions-container delete-confirm ground rule corner-lg font-md"
       style={{ left: position.x, top: position.y, position: 'fixed' }}
     >
       <div className={`macro-suggestions-arrow position-absolute ${placement}`} />
-      <div className="delete-confirm-message">
+      <div className="delete-confirm-message padding-block-snug padding-inline-comfortable font-sm ink rule-soft">
         {t('deleteConfirm.message')}{' '}
-        <span className="delete-confirm-command">{macro.command}</span>
+        <span className="delete-confirm-command font-semibold ink-accent">{macro.command}</span>
       </div>
-      <div className="macro-suggestions-commands-list horizontal padding-tight gap-tight" role="listbox">
+      <div className="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft" role="listbox">
         <button
           type="button"
-          className="macro-suggestions-command-item delete-confirm-option elastic basis-ratio"
+          className="macro-suggestions-command-item delete-confirm-option elastic basis-ratio ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
           role="option"
           aria-selected={nav.selectedIndex === 0}
           onMouseDown={e => { e.preventDefault(); onCancel() }}
@@ -63,7 +63,7 @@ export function DeleteConfirmPopup({
         </button>
         <button
           type="button"
-          className="macro-suggestions-command-item delete-confirm-option delete-confirm-danger elastic basis-ratio"
+          className="macro-suggestions-command-item delete-confirm-option delete-confirm-danger elastic basis-ratio ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail"
           role="option"
           aria-selected={nav.selectedIndex === 1}
           onMouseDown={e => { e.preventDefault(); onConfirm() }}
@@ -71,10 +71,10 @@ export function DeleteConfirmPopup({
           {t('deleteConfirm.delete')}
         </button>
       </div>
-      <div className="macro-suggestions-footer horizontal gap-comfortable">
-        <span><kbd className="macro-suggestions-kbd">Tab</kbd> {t('deleteConfirm.footer.switch')}</span>
-        <span><kbd className="macro-suggestions-kbd">↵</kbd> {t('deleteConfirm.footer.select')}</span>
-        <span><kbd className="macro-suggestions-kbd">Esc</kbd> {t('deleteConfirm.footer.cancel')}</span>
+      <div className="macro-suggestions-footer horizontal gap-comfortable padding-block-tight padding-inline-comfortable font-xs ink-soft ground rule">
+        <span><kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule">Tab</kbd> {t('deleteConfirm.footer.switch')}</span>
+        <span><kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule">↵</kbd> {t('deleteConfirm.footer.select')}</span>
+        <span><kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule">Esc</kbd> {t('deleteConfirm.footer.cancel')}</span>
       </div>
     </div>
   )

@@ -260,7 +260,7 @@ try {
         "max-width": "360px",
         "border-radius": "8px",
         "overflow": "hidden",
-        "font-size": "14px"
+        "font-size": "15px"
       }
     },
     "list": {

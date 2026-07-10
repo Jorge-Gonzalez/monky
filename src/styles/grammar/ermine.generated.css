@@ -237,9 +237,24 @@
   padding-inline: var(--spacing-separated);
 }
 
-.compressible {
-  flex-grow: 0;
-  flex-shrink: 1;
+.hover\:ground-fail-faint:hover {
+  background: var(--fail-faint);
+}
+
+.hover\:rule-fail:hover {
+  border-color: var(--fail);
+}
+
+.selected\:ground-fail-faint[aria-selected="true"] {
+  background: var(--fail-faint);
+}
+
+.selected\:ink-fail[aria-selected="true"] {
+  color: var(--fail);
+}
+
+.selected\:rule-fail[aria-selected="true"] {
+  border-color: var(--fail);
 }
 
 .hover\:rule:hover {
@@ -256,6 +271,15 @@
 
 .selected\:rule-accent[aria-selected="true"] {
   border-color: var(--accent);
+}
+
+.compressible {
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.corner-lg {
+  border-radius: var(--radius-lg);
 }
 
 .gap-loose {

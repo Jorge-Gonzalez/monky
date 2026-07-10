@@ -17,13 +17,11 @@ button, input, textarea, select {
 }
 
 .macro-suggestions-container {
-  background-color: var(--base-tone);
-  border-radius: 8px;
   box-shadow: 0 10px 25px -5px var(--shadow-color);
-  border: 1px solid var(--harmonic);
+  border-width: 1px;
+  border-style: solid;
   min-width: 200px;
   max-width: 360px;
-  font-size: 14px;
   overflow: hidden;
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
@@ -49,7 +47,8 @@ button, input, textarea, select {
 }
 
 .macro-suggestions-commands-list {
-  border-bottom: 1px solid var(--harmonic-minor);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
 }
 
 .macro-suggestions-command-item {
@@ -67,9 +66,6 @@ button, input, textarea, select {
 }
 
 .macro-suggestions-text-preview {
-  padding: 8px 12px;
-  font-size: 12px;
-  color: var(--ink-soft);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -77,20 +73,14 @@ button, input, textarea, select {
 }
 
 .macro-suggestions-footer {
-  padding: 6px 12px;
-  border-top: 1px solid var(--harmonic);
-  font-size: 11px;
-  color: var(--ink-soft);
-  background-color: var(--base-tone);
+  border-top-width: 1px;
+  border-top-style: solid;
   justify-content: flex-end;
 }
 
 .macro-suggestions-kbd {
   padding: 1px 4px;
-  border-radius: 3px;
   font-family: monospace;
-  background-color: var(--kbd-bg);
-  border: 1px solid var(--kbd-border);
-  color: var(--ink);
-  font-size: 10px;
+  border-width: 1px;
+  border-style: solid;
 }
