@@ -192,6 +192,14 @@
   border-radius: var(--radius-sm);
 }
 
+.hover\:ground-defined:hover {
+  background: var(--ground-defined);
+}
+
+.hover\:ink-accent:hover {
+  color: var(--accent);
+}
+
 .horizontal.inline {
   display: inline flex;
 }

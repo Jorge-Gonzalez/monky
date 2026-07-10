@@ -83,7 +83,7 @@
     },
     {
       "id": "search-item-edit",
-      "classString": "position-absolute horizontal align-center justify-center padding-tight ink-soft corner-sm",
+      "classString": "position-absolute horizontal align-center justify-center padding-tight ink-soft corner-sm hover:ground-defined hover:ink-accent",
       "backing": []
     },
     {

@@ -94,7 +94,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
       )}
       {onEdit && !isConfirmingDelete && (
         <button
-          className="macro-search-item-edit position-absolute horizontal align-center justify-center padding-tight ink-soft corner-sm"
+          className="macro-search-item-edit position-absolute horizontal align-center justify-center padding-tight ink-soft corner-sm hover:ground-defined hover:ink-accent"
           onClick={e => { e.stopPropagation(); onEdit(); }}
           aria-label={t('modalSearch.editMacro')}
           tabIndex={-1}
