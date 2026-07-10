@@ -22,11 +22,6 @@
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
-.editor-popout:hover {
-  background: var(--tone);
-  color: var(--accent);
-}
-
 .editor-command {
   width: 280px;
 }

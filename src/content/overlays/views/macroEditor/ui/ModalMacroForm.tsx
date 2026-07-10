@@ -113,7 +113,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           </h1>
           <button
             type="button"
-            className="editor-popout horizontal align-center justify-center padding-tight corner-sm ink-soft"
+            className="editor-popout horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-defined hover:ink-accent"
             onClick={openFullEditor}
             aria-label={t('macroEditor.openFullEditor')}
             title={t('macroEditor.openFullEditor')}

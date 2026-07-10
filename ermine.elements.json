@@ -158,7 +158,7 @@
     },
     {
       "id": "u6-editor-button",
-      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-soft",
+      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-defined hover:ink-accent",
       "backing": []
     },
     {
