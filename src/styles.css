@@ -1,6 +1,7 @@
 @import url('./styles/layers.css');
 @import url('./styles/substrate/reset.css') layer(reset);
 @import url('./styles/theme/metrics.css') layer(theme);
+@import url('./styles/theme/ermine.config.css') layer(theme);
 @import url('./styles/theme/font-face.css') layer(theme);
 @import url('./styles/theme/font.css') layer(theme);
 @import url('./styles/grammar/ermine.generated.css') layer(grammar);

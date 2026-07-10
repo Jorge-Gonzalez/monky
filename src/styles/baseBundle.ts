@@ -1,5 +1,6 @@
 import RESET_STYLES from './substrate/reset.css?raw'
 import METRIC_STYLES from './theme/metrics.css?raw'
+import ERMINE_CONFIG_STYLES from './theme/ermine.config.css?raw'
 import FONT_STYLES from './theme/font.css?raw'
 import GENERATED_GRAMMAR_STYLES from './grammar/ermine.generated.css?raw'
 import CONTROL_SKIN_STYLES from './skin/controls.css?raw'
@@ -10,7 +11,7 @@ export const STYLE_LAYER_ORDER = '@layer reset, theme, grammar, skin, components
 
 export const BASE_SHADOW_STYLE_INPUTS = {
   reset: RESET_STYLES,
-  theme: [METRIC_STYLES, FONT_STYLES].join('\n'),
+  theme: [METRIC_STYLES, ERMINE_CONFIG_STYLES, FONT_STYLES].join('\n'),
   skin: [CONTROL_SKIN_STYLES, SURFACE_SKIN_STYLES, TYPOGRAPHY_SKIN_STYLES].join('\n'),
 } as const
 

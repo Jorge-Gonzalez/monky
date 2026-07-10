@@ -1,0 +1,13 @@
+/**
+ * Monky project Ermine configuration.
+ *
+ * Ermine owns the grammar words and variable names. Monky adds values here only
+ * when a migration confirms that the project intentionally departs from the
+ * current Ermine/default binding.
+ */
+
+:root,
+:host {
+  /* Search text preserves Monky's established 15px reading size through `font-md`. */
+  --type-md: 15px;
+}
