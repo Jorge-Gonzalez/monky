@@ -1,0 +1,4100 @@
+{
+  "generatedAt": "2026-07-10T07:45:10.512Z",
+  "summary": {
+    "definedClasses": 228,
+    "selectorBlocks": 321,
+    "byDisposition": {
+      "live-static": 198,
+      "dead-candidate": 30
+    },
+    "deadCandidateDeclarations": 68,
+    "runtimePages": [
+      "/src/popup/index.html",
+      "/src/options/index.html",
+      "/src/editor/index.html"
+    ]
+  },
+  "cssCoverage": [
+    {
+      "page": "/src/popup/index.html",
+      "asset": "assets/popup-D2NWzBVx.css",
+      "usedBytes": 617,
+      "totalBytes": 1765,
+      "usedPercent": 35
+    },
+    {
+      "page": "/src/popup/index.html",
+      "asset": "assets/renderPageWithTheme-DOtTrvAU.css",
+      "usedBytes": 12648,
+      "totalBytes": 19859,
+      "usedPercent": 63.7
+    },
+    {
+      "page": "/src/options/index.html",
+      "asset": "assets/renderPageWithTheme-DOtTrvAU.css",
+      "usedBytes": 15186,
+      "totalBytes": 19859,
+      "usedPercent": 76.5
+    },
+    {
+      "page": "/src/options/index.html",
+      "asset": "assets/options-D9hCHWuu.css",
+      "usedBytes": 129,
+      "totalBytes": 130,
+      "usedPercent": 99.2
+    },
+    {
+      "page": "/src/editor/index.html",
+      "asset": "assets/renderPageWithTheme-DOtTrvAU.css",
+      "usedBytes": 19545,
+      "totalBytes": 19859,
+      "usedPercent": 98.4
+    }
+  ],
+  "classes": [
+    {
+      "className": "alert",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".alert"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token",
+        "bundled-example-token"
+      ]
+    },
+    {
+      "className": "alert-error",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".alert-error"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "alert-info",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".alert-info"
+      ],
+      "declarations": 3,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "alert-success",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".alert-success"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "alert-warning",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".alert-warning"
+      ],
+      "declarations": 3,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "align-center",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".align-center"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "basis-ratio",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".basis-ratio"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "bg-secondary",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".bg-secondary"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "border-b",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".border-b"
+      ],
+      "declarations": 2,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "border-primary",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".border-primary"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "border-t",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".border-t"
+      ],
+      "declarations": 2,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "btn",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".btn",
+        ".btn:active",
+        ".btn:disabled",
+        ".btn:disabled:hover",
+        ".btn:focus"
+      ],
+      "declarations": 17,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "btn-danger",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".btn-danger",
+        ".btn-danger:hover"
+      ],
+      "declarations": 3,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "btn-link",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".btn-link",
+        ".btn-link:hover"
+      ],
+      "declarations": 9,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "btn-link-danger",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".btn-link-danger",
+        ".btn-link-danger:hover"
+      ],
+      "declarations": 9,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "btn-outlined",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css",
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".btn-outlined",
+        ".btn-outlined:hover",
+        ".settings-view .btn-outlined:not(.is-selected, :hover, :active)"
+      ],
+      "declarations": 5,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "btn-primary",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".btn-primary",
+        ".btn-primary:hover"
+      ],
+      "declarations": 3,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "btn-secondary",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".btn-secondary",
+        ".btn-secondary:hover"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "btn-success",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".btn-success",
+        ".btn-success:hover"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "button-group",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".button-group"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "card",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".card"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "card-elevated",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".card-elevated"
+      ],
+      "declarations": 5,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ce-link-input",
+      "files": [
+        "src/styles/components/content-editor.css"
+      ],
+      "selectors": [
+        ".ce-link-input",
+        ".ce-link-input:focus"
+      ],
+      "declarations": 10,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ce-style-caret",
+      "files": [
+        "src/styles/components/content-editor.css"
+      ],
+      "selectors": [
+        ".ce-style-caret",
+        ".ce-style-caret svg"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ce-style-dropdown",
+      "files": [
+        "src/styles/components/content-editor.css"
+      ],
+      "selectors": [
+        ".ce-style-dropdown"
+      ],
+      "declarations": 9,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ce-style-option",
+      "files": [
+        "src/styles/components/content-editor.css"
+      ],
+      "selectors": [
+        ".ce-style-option",
+        ".ce-style-option.is-active",
+        ".ce-style-option.is-active .ce-style-option-short",
+        ".ce-style-option:hover"
+      ],
+      "declarations": 13,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ce-style-option-short",
+      "files": [
+        "src/styles/components/content-editor.css"
+      ],
+      "selectors": [
+        ".ce-style-option-short",
+        ".ce-style-option.is-active .ce-style-option-short"
+      ],
+      "declarations": 5,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ce-style-trigger",
+      "files": [
+        "src/styles/components/content-editor.css"
+      ],
+      "selectors": [
+        ".ce-style-trigger"
+      ],
+      "declarations": 6,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ce-toolbar",
+      "files": [
+        "src/styles/components/content-editor.css"
+      ],
+      "selectors": [
+        ".ce-toolbar"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ce-toolbar-btn",
+      "files": [
+        "src/styles/components/content-editor.css"
+      ],
+      "selectors": [
+        ".ce-toolbar-btn",
+        ".ce-toolbar-btn svg",
+        ".ce-toolbar-btn.is-active",
+        ".ce-toolbar-btn:hover"
+      ],
+      "declarations": 14,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ce-toolbar-icon",
+      "files": [
+        "src/styles/components/content-editor.css"
+      ],
+      "selectors": [
+        ".ce-toolbar-icon"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ce-toolbar-sep",
+      "files": [
+        "src/styles/components/content-editor.css"
+      ],
+      "selectors": [
+        ".ce-toolbar-sep"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "checkbox",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".checkbox",
+        ".checkbox:checked",
+        ".checkbox:focus"
+      ],
+      "declarations": 8,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "command-suggestion-action",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".command-suggestion-action",
+        ".command-suggestion-action.cancel:hover",
+        ".command-suggestion-action.confirm:hover",
+        ".command-suggestion-action.delete:hover",
+        ".command-suggestion-item > .command-suggestion-action, .command-suggestion-actions",
+        ".command-suggestion-item:hover .command-suggestion-action.delete, .command-suggestion-item[aria-selected=\"true\"] .command-suggestion-action.delete",
+        ".command-suggestion-item[data-state=\"confirming-delete\"] .command-suggestion-action"
+      ],
+      "declarations": 15,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "command-suggestion-actions",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".command-suggestion-item > .command-suggestion-action, .command-suggestion-actions"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "command-suggestion-command",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".command-suggestion-command"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "command-suggestion-item",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".command-suggestion-item",
+        ".command-suggestion-item > .command-suggestion-action, .command-suggestion-actions",
+        ".command-suggestion-item:hover .command-suggestion-action.delete, .command-suggestion-item[aria-selected=\"true\"] .command-suggestion-action.delete",
+        ".command-suggestion-item:not([data-state=\"confirming-delete\"]):hover",
+        ".command-suggestion-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"]",
+        ".command-suggestion-item[data-state=\"confirming-delete\"] .command-suggestion-action"
+      ],
+      "declarations": 9,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "command-suggestion-text",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".command-suggestion-text"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "command-suggestions",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".command-suggestions"
+      ],
+      "declarations": 10,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "command-suggestions-label",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".command-suggestions-label"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "compressible",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".compressible"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "content-editor",
+      "files": [
+        "src/styles/components/content-editor.css"
+      ],
+      "selectors": [
+        ".content-editor",
+        ".content-editor .content-editor-body ol",
+        ".content-editor .content-editor-body ul",
+        ".content-editor .content-editor-body ul, .content-editor .content-editor-body ol"
+      ],
+      "declarations": 6,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "content-editor-body",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css",
+        "src/styles/components/content-editor.css"
+      ],
+      "selectors": [
+        ".content-editor .content-editor-body ol",
+        ".content-editor .content-editor-body ul",
+        ".content-editor .content-editor-body ul, .content-editor .content-editor-body ol",
+        ".content-editor-body",
+        ".content-editor-body a",
+        ".content-editor-body a:hover",
+        ".content-editor-body blockquote",
+        ".content-editor-body code",
+        ".content-editor-body em, .content-editor-body i",
+        ".content-editor-body h1",
+        ".content-editor-body h1:first-child, .content-editor-body h2:first-child, .content-editor-body h3:first-child",
+        ".content-editor-body h2",
+        ".content-editor-body h3",
+        ".content-editor-body li",
+        ".content-editor-body p",
+        ".content-editor-body p:last-child",
+        ".content-editor-body pre",
+        ".content-editor-body s",
+        ".content-editor-body strong, .content-editor-body b",
+        ".content-editor-body u",
+        ".content-editor-body:empty::before",
+        ".content-editor-body:focus",
+        ".editor-content .content-editor-body"
+      ],
+      "declarations": 60,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "corner-lg",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".corner-lg"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "corner-md",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".corner-md"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "corner-sm",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".corner-sm"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "dark",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".dark .popup-results",
+        ".dark .popup-results::-webkit-scrollbar-thumb",
+        ".dark .popup-results::-webkit-scrollbar-thumb:hover",
+        ".dark .popup-results::-webkit-scrollbar-track"
+      ],
+      "declarations": 5,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "delete-confirm-command",
+      "files": [
+        "src/content/overlays/deleteConfirm/deleteConfirmStyles.css"
+      ],
+      "selectors": [
+        ".delete-confirm-command"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "delete-confirm-message",
+      "files": [
+        "src/content/overlays/deleteConfirm/deleteConfirmStyles.css"
+      ],
+      "selectors": [
+        ".delete-confirm-message"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "divider",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".divider"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "editor-command",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".editor-command",
+        ".editor-command .input"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "editor-command-error",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".editor-command-error"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "editor-content",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css",
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".editor-content",
+        ".editor-content .content-editor-body",
+        ".editor-content.content-editor"
+      ],
+      "declarations": 7,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "editor-form",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".editor-form"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "editor-popout",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".editor-popout"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "editor-sensitive",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".editor-sensitive"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "editor-title",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".editor-title"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "editor-toast",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".editor-toast"
+      ],
+      "declarations": 7,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "editor-wrapper",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".editor-wrapper",
+        ".editor-wrapper:focus-within"
+      ],
+      "declarations": 8,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "elastic",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".elastic"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "empty-state",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".empty-state"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token",
+        "bundled-example-token"
+      ]
+    },
+    {
+      "className": "flash",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".flash"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "font-bold",
+      "files": [
+        "src/styles/grammar/ermine.generated.css",
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".font-bold"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "font-lg",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".font-lg"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "font-md",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".font-md"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "font-medium",
+      "files": [
+        "src/styles/grammar/ermine.generated.css",
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".font-medium"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "font-semibold",
+      "files": [
+        "src/styles/grammar/ermine.generated.css",
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".font-semibold"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "font-sm",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".font-sm"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "font-xs",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".font-xs"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "gap-comfortable",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".gap-comfortable"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "gap-loose",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".gap-loose"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "gap-relaxed",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".gap-relaxed"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "gap-snug",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".gap-snug"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "gap-tight",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".gap-tight"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "grid",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".grid"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ground",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ground"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ground-accent",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ground-accent"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ground-fail",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ground-fail"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ground-fail-faint",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ground-fail-faint"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ground-subtle",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ground-subtle"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "grow-1",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".grow-1"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "horizontal",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".horizontal",
+        ".horizontal.inline"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "hover:ground-defined",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".hover\\:ground-defined:hover"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "hover:ground-fail-faint",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".hover\\:ground-fail-faint:hover"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "hover:ground-subtle",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".hover\\:ground-subtle:hover"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "hover:ink",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".hover\\:ink:hover"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "hover:ink-accent",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".hover\\:ink-accent:hover"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "hover:rule",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".hover\\:rule:hover"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "hover:rule-fail",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".hover\\:rule-fail:hover"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "import-status--error",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css"
+      ],
+      "selectors": [
+        ".import-status--error"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ink",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ink"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ink-accent",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ink-accent"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ink-accent-soft",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ink-accent-soft"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ink-fail",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ink-fail"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ink-inverse",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ink-inverse"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ink-soft",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ink-soft"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "input",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css",
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".editor-command .input",
+        ".input",
+        ".input:focus"
+      ],
+      "declarations": 12,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token",
+        "bundled-example-token"
+      ]
+    },
+    {
+      "className": "input-dropdown-open",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".input-dropdown-open"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "input-error",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".input-error",
+        ".input-error:focus"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "is-selected",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css",
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".min-selected-1 > .is-selected:only-of-type",
+        ".min-selected-1 > .is-selected:only-of-type:hover",
+        ".selectable-group > .is-selected",
+        ".selectable-group > .is-selected:hover",
+        ".settings-view .btn-outlined:not(.is-selected, :hover, :active)"
+      ],
+      "declarations": 9,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "justify-between",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".justify-between"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "justify-center",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".justify-center"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "label",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".label"
+      ],
+      "declarations": 5,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token",
+        "bundled-example-token"
+      ]
+    },
+    {
+      "className": "macro-editor-view",
+      "files": [
+        "src/content/overlays/views/macroEditor/editorViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-editor-view"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-count",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-count"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-empty",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-empty"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-footer",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-footer"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-input",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-input",
+        ".macro-search-input:focus"
+      ],
+      "declarations": 8,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-input-container",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-input-container"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-item",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-item",
+        ".macro-search-item:hover .macro-search-item-edit, .macro-search-item[aria-selected=\"true\"] .macro-search-item-edit",
+        ".macro-search-item:not([data-state=\"confirming-delete\"]):hover .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"]):hover .macro-search-item-text",
+        ".macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-text",
+        ".macro-search-item[aria-selected=\"true\"] .macro-search-item-text"
+      ],
+      "declarations": 7,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-item-command",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-item-command",
+        ".macro-search-item-command, .macro-search-item-text",
+        ".macro-search-item:not([data-state=\"confirming-delete\"]):hover .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"]):hover .macro-search-item-text",
+        ".macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-text"
+      ],
+      "declarations": 10,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-item-confirm",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-item-confirm"
+      ],
+      "declarations": 6,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-item-edit",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-item-edit",
+        ".macro-search-item:hover .macro-search-item-edit, .macro-search-item[aria-selected=\"true\"] .macro-search-item-edit"
+      ],
+      "declarations": 9,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-item-text",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-item-command, .macro-search-item-text",
+        ".macro-search-item-text",
+        ".macro-search-item-text mark",
+        ".macro-search-item-text mark span",
+        ".macro-search-item:not([data-state=\"confirming-delete\"]):hover .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"]):hover .macro-search-item-text",
+        ".macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-text",
+        ".macro-search-item[aria-selected=\"true\"] .macro-search-item-text"
+      ],
+      "declarations": 17,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-kbd",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-kbd",
+        ".macro-search-kbd::after",
+        ".macro-search-kbd:first-child"
+      ],
+      "declarations": 17,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-results",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-results"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-shortcut",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-shortcut"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-search-view",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".macro-search-view"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-suggestions-arrow",
+      "files": [
+        "src/content/overlays/suggestionsOverlay/suggestionsOverlayStyles.css"
+      ],
+      "selectors": [
+        ".macro-suggestions-arrow",
+        ".macro-suggestions-arrow.bottom",
+        ".macro-suggestions-arrow.top"
+      ],
+      "declarations": 11,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-suggestions-command-item",
+      "files": [
+        "src/content/overlays/deleteConfirm/deleteConfirmStyles.css",
+        "src/content/overlays/suggestionsOverlay/suggestionsOverlayStyles.css"
+      ],
+      "selectors": [
+        ".macro-suggestions-command-item",
+        ".macro-suggestions-command-item.delete-confirm-option"
+      ],
+      "declarations": 12,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-suggestions-commands-list",
+      "files": [
+        "src/content/overlays/suggestionsOverlay/suggestionsOverlayStyles.css"
+      ],
+      "selectors": [
+        ".macro-suggestions-commands-list"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-suggestions-container",
+      "files": [
+        "src/content/overlays/deleteConfirm/deleteConfirmStyles.css",
+        "src/content/overlays/suggestionsOverlay/suggestionsOverlayStyles.css"
+      ],
+      "selectors": [
+        ".macro-suggestions-container",
+        ".macro-suggestions-container.delete-confirm"
+      ],
+      "declarations": 8,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-suggestions-footer",
+      "files": [
+        "src/content/overlays/suggestionsOverlay/suggestionsOverlayStyles.css"
+      ],
+      "selectors": [
+        ".macro-suggestions-footer"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-suggestions-kbd",
+      "files": [
+        "src/content/overlays/suggestionsOverlay/suggestionsOverlayStyles.css"
+      ],
+      "selectors": [
+        ".macro-suggestions-kbd"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "macro-suggestions-text-preview",
+      "files": [
+        "src/content/overlays/suggestionsOverlay/suggestionsOverlayStyles.css"
+      ],
+      "selectors": [
+        ".macro-suggestions-text-preview"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "margin-block-snug",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".margin-block-snug"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "min-selected-1",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".min-selected-1 > .is-selected:only-of-type",
+        ".min-selected-1 > .is-selected:only-of-type:hover"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "modal-backdrop",
+      "files": [
+        "src/content/overlays/modal/modalStyles.css"
+      ],
+      "selectors": [
+        ".modal-backdrop"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "modal-command-description",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".modal-command-item .modal-command-description"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "modal-command-item",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".modal-command-item .modal-command-description",
+        ".modal-command-item .modal-command-name"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "modal-command-name",
+      "files": [
+        "src/content/overlays/views/search/searchViewStyles.css"
+      ],
+      "selectors": [
+        ".modal-command-item .modal-command-name"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "modal-content",
+      "files": [
+        "src/content/overlays/modal/modalStyles.css"
+      ],
+      "selectors": [
+        ".modal-content"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "modal-dialog",
+      "files": [
+        "src/content/overlays/modal/modalStyles.css"
+      ],
+      "selectors": [
+        ".modal-dialog"
+      ],
+      "declarations": 8,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "modal-nav-branding",
+      "files": [
+        "src/content/overlays/modal/modalStyles.css"
+      ],
+      "selectors": [
+        ".modal-nav-branding",
+        ".modal-nav-branding svg"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "modal-nav-container",
+      "files": [
+        "src/content/overlays/modal/modalStyles.css"
+      ],
+      "selectors": [
+        ".modal-nav-container"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "modal-nav-icon",
+      "files": [
+        "src/content/overlays/modal/modalStyles.css"
+      ],
+      "selectors": [
+        ".modal-nav-icon"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "modal-nav-label",
+      "files": [
+        "src/content/overlays/modal/modalStyles.css"
+      ],
+      "selectors": [
+        ".modal-nav-label"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "modal-nav-tab",
+      "files": [
+        "src/content/overlays/modal/modalStyles.css"
+      ],
+      "selectors": [
+        ".modal-nav-tab",
+        ".modal-nav-tab[aria-current=\"page\"]"
+      ],
+      "declarations": 6,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "mode-choice",
+      "files": [
+        "src/options/options.css"
+      ],
+      "selectors": [
+        ".mode-row, .mode-choice"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "mode-row",
+      "files": [
+        "src/options/options.css"
+      ],
+      "selectors": [
+        ".mode-row, .mode-choice"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "monky-logo-word",
+      "files": [
+        "src/content/overlays/modal/modalStyles.css"
+      ],
+      "selectors": [
+        ".monky-logo-word"
+      ],
+      "declarations": 3,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "padding-block-loose",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".padding-block-loose"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "padding-block-snug",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".padding-block-snug"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "padding-block-tight",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".padding-block-tight"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "padding-comfortable",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".padding-comfortable"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "padding-inline-comfortable",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".padding-inline-comfortable"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "padding-inline-relaxed",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".padding-inline-relaxed"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "padding-inline-separated",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".padding-inline-separated"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "padding-inline-snug",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".padding-inline-snug"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "padding-loose",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".padding-loose"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "padding-relaxed",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".padding-relaxed"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "padding-snug",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".padding-snug"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "padding-tight",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".padding-tight"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "page-container",
+      "files": [
+        "src/styles/entries/pages.css"
+      ],
+      "selectors": [
+        ".page-container"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "page-description",
+      "files": [
+        "src/styles/entries/pages.css"
+      ],
+      "selectors": [
+        ".page-description"
+      ],
+      "declarations": 3,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": []
+    },
+    {
+      "className": "page-title",
+      "files": [
+        "src/styles/entries/pages.css"
+      ],
+      "selectors": [
+        ".page-title"
+      ],
+      "declarations": 5,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "panel-button",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".panel-button"
+      ],
+      "declarations": 6,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "popup-button",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".popup-button, .popup-icon-button",
+        ".popup-button:hover, .popup-icon-button:hover"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "popup-card",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".popup-card, .popup-section"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": []
+    },
+    {
+      "className": "popup-container",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".popup-container"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "popup-icon-button",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".popup-button, .popup-icon-button",
+        ".popup-button:hover, .popup-icon-button:hover"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "popup-item-detail",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".popup-item-detail"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": []
+    },
+    {
+      "className": "popup-item-toggle",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".popup-item-toggle"
+      ],
+      "declarations": 5,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": []
+    },
+    {
+      "className": "popup-macro-text",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".popup-macro-text"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": []
+    },
+    {
+      "className": "popup-result-item",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".popup-result-item"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "popup-results",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".dark .popup-results",
+        ".dark .popup-results::-webkit-scrollbar-thumb",
+        ".dark .popup-results::-webkit-scrollbar-thumb:hover",
+        ".dark .popup-results::-webkit-scrollbar-track",
+        ".popup-results",
+        ".popup-results::-webkit-scrollbar",
+        ".popup-results::-webkit-scrollbar-thumb",
+        ".popup-results::-webkit-scrollbar-thumb:hover",
+        ".popup-results::-webkit-scrollbar-track"
+      ],
+      "declarations": 20,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "popup-search-input",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".popup-search-input",
+        ".popup-search-input:focus"
+      ],
+      "declarations": 8,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "popup-section",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".popup-card, .popup-section"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "popup-site-copy",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".popup-site-copy"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "popup-toggle-label",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".popup-toggle-label"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "popup-truncate",
+      "files": [
+        "src/popup/popup.css"
+      ],
+      "selectors": [
+        ".popup-truncate"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "position-absolute",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".position-absolute"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "position-fixed",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".position-fixed"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "position-relative",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".position-relative"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "prefix-cell",
+      "files": [
+        "src/options/options.css"
+      ],
+      "selectors": [
+        ".prefix-cell"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "radio",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".radio"
+      ],
+      "declarations": 5,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "radio-label",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".radio-label"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "rigid",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".rigid"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "rule",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".rule"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "rule-accent-soft",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".rule-accent-soft"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "rule-soft",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".rule-soft"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "section",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".section"
+      ],
+      "declarations": 5,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "section-description",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".section-description"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "section-title",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".section-title"
+      ],
+      "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "seg-control",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css"
+      ],
+      "selectors": [
+        ".seg-control",
+        ".seg-control.is-sliding .seg-option[aria-checked=\"true\"]",
+        ".seg-control.is-sliding::before",
+        ".seg-control.seg-snap::before",
+        ".seg-control::before"
+      ],
+      "declarations": 16,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "seg-option",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css"
+      ],
+      "selectors": [
+        ".seg-control.is-sliding .seg-option[aria-checked=\"true\"]",
+        ".seg-option",
+        ".seg-option svg",
+        ".seg-option:hover:not([aria-checked=\"true\"])",
+        ".seg-option:last-child",
+        ".seg-option[aria-checked=\"true\"]"
+      ],
+      "declarations": 18,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "selectable-group",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".selectable-group > *",
+        ".selectable-group > *:active",
+        ".selectable-group > *:hover",
+        ".selectable-group > .is-selected",
+        ".selectable-group > .is-selected:hover"
+      ],
+      "declarations": 11,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "selected:ground-defined",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".selected\\:ground-defined[aria-selected=\"true\"]"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "selected:ground-fail-faint",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".selected\\:ground-fail-faint[aria-selected=\"true\"]"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "selected:ink-accent",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".selected\\:ink-accent[aria-selected=\"true\"]"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "selected:ink-fail",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".selected\\:ink-fail[aria-selected=\"true\"]"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "selected:rule-accent",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".selected\\:rule-accent[aria-selected=\"true\"]"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "selected:rule-fail",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".selected\\:rule-fail[aria-selected=\"true\"]"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "settings-body",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css"
+      ],
+      "selectors": [
+        ".settings-body"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "settings-divider",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css"
+      ],
+      "selectors": [
+        ".settings-divider"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "settings-group",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css"
+      ],
+      "selectors": [
+        ".settings-group"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "settings-import-status",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css"
+      ],
+      "selectors": [
+        ".settings-import-status"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "settings-prefix-btn",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css"
+      ],
+      "selectors": [
+        ".settings-prefix-btn"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "settings-row-label",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css"
+      ],
+      "selectors": [
+        ".settings-row-label"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "settings-rows",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css"
+      ],
+      "selectors": [
+        ".settings-rows"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "settings-section-label",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css"
+      ],
+      "selectors": [
+        ".settings-section-label"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "settings-view",
+      "files": [
+        "src/content/overlays/views/settings/settingsViewStyles.css"
+      ],
+      "selectors": [
+        ".settings-view",
+        ".settings-view .btn-outlined:not(.is-selected, :hover, :active)"
+      ],
+      "declarations": 3,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "shadow-sm",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".shadow-sm"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "shake",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".shake"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "span-all",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".span-all"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-2xl",
+      "files": [
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".text-2xl"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-3xl",
+      "files": [
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".text-3xl"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-base",
+      "files": [
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".text-base"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-lg",
+      "files": [
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".text-lg"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-md",
+      "files": [
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".text-md"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-mono",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".text-mono"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-primary",
+      "files": [
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".text-primary"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-secondary",
+      "files": [
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".text-secondary"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-sm",
+      "files": [
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".text-sm"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-white",
+      "files": [
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".text-white"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-xl",
+      "files": [
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".text-xl"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-xs",
+      "files": [
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".text-xs"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "transition-colors",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".transition-colors"
+      ],
+      "declarations": 3,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "truncate",
+      "files": [
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".truncate"
+      ],
+      "declarations": 3,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "ui-rounded",
+      "files": [
+        "src/styles/skin/controls.css"
+      ],
+      "selectors": [
+        ".ui-rounded"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "validation-error",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".validation-error"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "validation-success",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".validation-success"
+      ],
+      "declarations": 2,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "vertical",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".vertical"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed",
+        "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "view-container",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".view-container"
+      ],
+      "declarations": 4,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "view-description",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".view-description"
+      ],
+      "declarations": 3,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "view-title",
+      "files": [
+        "src/styles/skin/surfaces.css"
+      ],
+      "selectors": [
+        ".view-title"
+      ],
+      "declarations": 4,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "whitespace-pre-wrap",
+      "files": [
+        "src/styles/skin/typography.css"
+      ],
+      "selectors": [
+        ".whitespace-pre-wrap"
+      ],
+      "declarations": 1,
+      "disposition": "dead-candidate",
+      "livenessEvidence": [],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "wrap-allowed",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".wrap-allowed"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    }
+  ]
+}
