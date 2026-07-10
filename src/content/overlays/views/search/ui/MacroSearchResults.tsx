@@ -31,7 +31,7 @@ export function MacroSearchResults({
   if (macros.length === 0) {
     return (
       <div ref={resultsRef} className="macro-search-results elastic basis-ratio grid" role="listbox">
-        <div className="macro-search-empty span-all padding-relaxed">
+        <div className="macro-search-empty span-all padding-relaxed ink-soft">
           {searchQuery ? t('modalSearch.noMacrosFound') : t('modalSearch.startTypingHint')}
         </div>
       </div>
@@ -71,13 +71,13 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
       data-state={isConfirmingDelete ? 'confirming-delete' : undefined}
       onClick={onClick}
     >
-      <div className="macro-search-item-command padding-comfortable">{macro.command}</div>
+      <div className="macro-search-item-command padding-comfortable ink-accent rule-soft font-medium">{macro.command}</div>
       {isConfirmingDelete ? (
-        <div className="macro-search-item-confirm padding-comfortable" role="alert">
+        <div className="macro-search-item-confirm padding-comfortable ink-fail rule-soft font-md font-medium" role="alert">
           {t('modalSearch.confirmDelete')}
         </div>
       ) : (
-        <div className="macro-search-item-text padding-comfortable">
+        <div className="macro-search-item-text padding-comfortable ink-soft rule-soft font-md">
           {!hasPlaceholders(macro.text)
             ? macro.text
             : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>
@@ -89,7 +89,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
       )}
       {onEdit && !isConfirmingDelete && (
         <button
-          className="macro-search-item-edit position-absolute horizontal align-center justify-center padding-tight"
+          className="macro-search-item-edit position-absolute horizontal align-center justify-center padding-tight ink-soft corner-sm"
           onClick={e => { e.stopPropagation(); onEdit(); }}
           aria-label={t('modalSearch.editMacro')}
           tabIndex={-1}

@@ -41,6 +41,21 @@
   --text-2xl: 21px;
   --text-3xl: 25px;
 
+  /* Ermine type scale binding. Monky adopts Ermine's T-shirt scale; the
+     historical --text-base token bridges to the middle step. */
+  --type-xs: var(--text-xs);
+  --type-sm: var(--text-sm);
+  --type-md: var(--text-base);
+  --type-lg: var(--text-lg);
+  --type-xl: var(--text-xl);
+  --type-2xl: var(--text-2xl);
+  --type-3xl: var(--text-3xl);
+
+  /* Ermine weight scale binding. */
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
   /* Transition timing */
   --transition-fast: 0.15s;
   --transition-medium: 0.3s;

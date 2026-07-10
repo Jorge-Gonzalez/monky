@@ -17,11 +17,9 @@
 /* Search uses shared .input pattern from modalStyles */
 .macro-search-input {
   width: 100%;
-  border: 1px solid var(--accent-dim);
-  border-radius: var(--radius-md);
+  border-width: 1px;
+  border-style: solid;
   font-size: var(--text-md);
-  background-color: var(--tone-dim);
-  color: var(--ink);
   outline: none;
   box-sizing: border-box;
   transition: border-color var(--transition-fast);
@@ -42,7 +40,6 @@
 
 /* Empty state - uses shared .empty-state pattern */
 .macro-search-empty {
-  color: var(--ink-soft);
   text-align: center;
   font-size: var(--text-md);
 }
@@ -54,8 +51,8 @@
 
 .macro-search-item-command,
 .macro-search-item-text {
-  border-bottom: 1px solid var(--harmonic-minor);
-  color: var(--ink);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
   cursor: pointer;
   transition: background-color var(--transition-fast);
   overflow: hidden;
@@ -64,15 +61,11 @@
 }
 
 .macro-search-item-command {
-  font-weight: 500;
-  color: var(--accent);
   font-size: var(--text-md);
   padding-right: var(--spacing-xs);
 }
 
 .macro-search-item-text {
-  font-size: var(--text-base);
-  color: var(--ink-soft);
   padding-left: var(--spacing-xs);
 }
 
@@ -95,10 +88,8 @@
 /* Armed-for-delete row: danger tint + the confirm prompt in the text column. */
 .macro-search-item-confirm {
   padding-left: var(--spacing-xs);
-  border-bottom: 1px solid var(--harmonic-minor);
-  font-size: var(--text-base);
-  font-weight: 500;
-  color: var(--status-error);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -118,9 +109,7 @@
   top: 50%;
   transform: translateY(-50%);
   border: none;
-  border-radius: var(--radius-sm);
   background: transparent;
-  color: var(--ink-soft);
   cursor: pointer;
   opacity: 0;
   transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
@@ -148,25 +137,19 @@
 
 /* Footer */
 .macro-search-footer {
-  border-top: 1px solid var(--harmonic);
-  font-size: var(--text-sm);
-  color: var(--ink-soft);
-  background-color: var(--base-tone);
+  border-top-width: 1px;
+  border-top-style: solid;
 }
 
 .macro-search-count {
-  color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
 }
 
 .modal-command-item .modal-command-name {
-  color: var(--accent);
   font-family: monospace;
-  font-weight: 600;
 }
 
 .modal-command-item .modal-command-description {
-  color: var(--ink-soft);
   font-style: italic;
 }
 
@@ -188,13 +171,11 @@
 
 .macro-search-kbd {
   font-family: monospace;
-  font-size: 12px;
   line-height: 1;
   padding: 3px 6px 6px;
   min-width: 26px;
-  background: var(--base-tone);
-  color: var(--ink-soft);
-  border: 1px solid var(--harmonic-minor);
+  border-width: 1px;
+  border-style: solid;
   border-radius: 4px;
   z-index: 0;
 }

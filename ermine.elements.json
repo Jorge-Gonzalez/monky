@@ -43,7 +43,7 @@
     },
     {
       "id": "search-input",
-      "classString": "padding-block-snug padding-inline-comfortable",
+      "classString": "padding-block-snug padding-inline-comfortable ground-subtle ink rule-accent-soft corner-md",
       "backing": []
     },
     {
@@ -53,7 +53,7 @@
     },
     {
       "id": "search-empty",
-      "classString": "span-all padding-relaxed",
+      "classString": "span-all padding-relaxed ink-soft",
       "backing": []
     },
     {
@@ -62,18 +62,33 @@
       "backing": []
     },
     {
-      "id": "search-item-cell",
-      "classString": "padding-comfortable",
+      "id": "search-item-command-cell",
+      "classString": "padding-comfortable ink-accent rule-soft font-medium",
+      "backing": []
+    },
+    {
+      "id": "search-item-text-cell",
+      "classString": "padding-comfortable ink-soft rule-soft font-md",
+      "backing": []
+    },
+    {
+      "id": "search-item-confirm-cell",
+      "classString": "padding-comfortable ink-fail rule-soft font-md font-medium",
+      "backing": []
+    },
+    {
+      "id": "search-command-name-cell",
+      "classString": "padding-comfortable ink-accent rule-soft font-semibold",
       "backing": []
     },
     {
       "id": "search-item-edit",
-      "classString": "position-absolute horizontal align-center justify-center padding-tight",
+      "classString": "position-absolute horizontal align-center justify-center padding-tight ink-soft corner-sm",
       "backing": []
     },
     {
       "id": "search-footer",
-      "classString": "padding-snug horizontal justify-between",
+      "classString": "padding-snug horizontal justify-between rule ink-soft ground font-sm",
       "backing": []
     },
     {
@@ -83,7 +98,7 @@
     },
     {
       "id": "search-kbd",
-      "classString": "position-relative horizontal align-center justify-center",
+      "classString": "position-relative horizontal align-center justify-center ground ink-soft rule-soft font-xs",
       "backing": []
     },
     {
