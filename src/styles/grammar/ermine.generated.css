@@ -31,6 +31,10 @@
   flex-basis: 0%;
 }
 
+.ground {
+  background: var(--ground);
+}
+
 .justify-between {
   justify-content: space-between;
 }
@@ -43,6 +47,14 @@
   gap: var(--spacing-snug);
 }
 
+.ink-accent {
+  color: var(--accent);
+}
+
+.ink-soft {
+  color: var(--ink-soft);
+}
+
 .hover\:ground-subtle:hover {
   background: var(--ground-subtle);
 }
@@ -53,10 +65,6 @@
 
 .padding-snug {
   padding: var(--spacing-snug);
-}
-
-.ground {
-  background: var(--ground);
 }
 
 .rule {
@@ -99,16 +107,8 @@
   color: var(--ink);
 }
 
-.ink-soft {
-  color: var(--ink-soft);
-}
-
 .font-medium {
   font-weight: var(--weight-medium);
-}
-
-.ink-accent {
-  color: var(--accent);
 }
 
 .rule-soft {
@@ -209,8 +209,32 @@
   flex-shrink: 0;
 }
 
+.hover\:ground-fail:hover {
+  background: var(--fail);
+}
+
+.hover\:ink-inverse:hover {
+  color: var(--ink-inverse);
+}
+
+.hover\:ground-fail-faint:hover {
+  background: var(--fail-faint);
+}
+
+.hover\:ink-fail:hover {
+  color: var(--fail);
+}
+
 .gap-comfortable {
   gap: var(--spacing-comfortable);
+}
+
+.hover\:ground:hover {
+  background: var(--ground);
+}
+
+.selected\:ground-defined[aria-selected="true"] {
+  background: var(--ground-defined);
 }
 
 .wrap-allowed {
@@ -225,6 +249,14 @@
   padding: var(--spacing-loose);
 }
 
+.checked\:ground-accent[aria-checked="true"] {
+  background: var(--accent);
+}
+
+.checked\:ink-inverse[aria-checked="true"] {
+  color: var(--ink-inverse);
+}
+
 .ink-accent-soft {
   color: var(--accent-soft);
 }
@@ -235,10 +267,6 @@
 
 .padding-inline-separated {
   padding-inline: var(--spacing-separated);
-}
-
-.hover\:ground-fail-faint:hover {
-  background: var(--fail-faint);
 }
 
 .hover\:rule-fail:hover {
@@ -259,10 +287,6 @@
 
 .hover\:rule:hover {
   border-color: var(--rule);
-}
-
-.selected\:ground-defined[aria-selected="true"] {
-  background: var(--ground-defined);
 }
 
 .selected\:ink-accent[aria-selected="true"] {

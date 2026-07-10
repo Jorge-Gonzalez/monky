@@ -12,7 +12,7 @@ import DELETE_STYLES from '../src/content/overlays/deleteConfirm/deleteConfirmSt
 const theme = '--ground: rgb(250, 251, 252); --ground-subtle: rgb(235, 236, 237); --ground-defined: rgb(220, 221, 222); --ink: rgb(20, 21, 22); --ink-soft: rgb(70, 71, 72); --ink-inverse: rgb(254, 254, 254); --accent: rgb(20, 90, 200); --accent-dim: rgb(60, 110, 200); --rule: rgb(160, 161, 162); --rule-soft: rgb(200, 201, 202); --fail: rgb(180, 0, 0); --fail-faint: rgb(255, 230, 230); --base-tone: var(--ground); --tone: var(--ground-defined); --tone-dim: var(--ground-subtle); --harmonic: var(--rule); --harmonic-minor: var(--rule-soft); --shadow-color: rgba(0, 0, 0, 0.5); --button-bg: rgb(1, 2, 3); --ink-alt: var(--ink-inverse); --button-bg-hover: rgb(4, 5, 6); --kbd-bg: rgb(230, 230, 230); --kbd-border: rgb(100, 100, 100); --status-error-wash: var(--fail-faint); --status-error: var(--fail);'
 
 document.documentElement.setAttribute('style', theme)
-document.body.innerHTML = '<div id="page" class="page-container"><div id="row" class="horizontal gap-snug"><button id="button" class="btn btn-primary">x</button></div><div id="popup" class="popup-container ground ink"></div></div>'
+document.body.innerHTML = '<div id="page" class="page-container"><div id="row" class="horizontal gap-snug"><button id="button" class="btn ground-accent ink-inverse corner-md padding-block-tight padding-inline-snug">x</button></div><div id="popup" class="popup-container ground ink"></div></div>'
 
 function shadow(css: string, html: string): void {
   const host = document.createElement('div')
@@ -75,8 +75,8 @@ shadow(
         <span class="settings-row-label font-md ink">Theme</span>
         <div data-probe="settings-appearance" class="settings-appearance-controls horizontal align-center gap-comfortable">
           <div data-probe="seg-control" class="seg-control horizontal position-relative ground-subtle rule corner-md">
-            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft" aria-checked="true">One</button>
-            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft" aria-checked="false">Two</button>
+            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="true">One</button>
+            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="false">Two</button>
           </div>
           <button data-probe="settings-prefix" class="btn btn-outlined text-mono settings-prefix-btn horizontal align-center justify-center rigid">/</button>
         </div>
@@ -91,7 +91,7 @@ shadow(
           <div class="command-suggestion-wrapper editor-command position-relative elastic basis-ratio">
             <div data-probe="command-suggestions" class="command-suggestions position-absolute ground-subtle rule-accent-soft">
               <div data-probe="command-suggestions-label" class="command-suggestions-label padding-block-tight padding-inline-comfortable font-sm ink-soft rule">Existing</div>
-              <div data-probe="command-suggestion-item" class="command-suggestion-item horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable" aria-selected="true">
+              <div data-probe="command-suggestion-item" class="command-suggestion-item horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable hover:ground selected:ground-defined" aria-selected="true">
                 <span data-probe="command-suggestion-command" class="command-suggestion-command rigid font-md font-medium ink-accent">/sig</span>
                 <span class="command-suggestion-text font-sm ink-soft">Signature</span>
                 <button data-probe="command-suggestion-action" class="command-suggestion-action delete horizontal align-center justify-center padding-tight corner-sm ink-soft">×</button>

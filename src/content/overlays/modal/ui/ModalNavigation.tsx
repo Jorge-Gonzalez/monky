@@ -57,7 +57,7 @@ export function ModalNavigation({ currentView, onViewChange, theme }: ModalNavig
 
   return (
     <nav className="modal-nav-container horizontal align-center justify-between padding-inline-relaxed" style={{ borderBottom: '1px solid var(--harmonic)' }}>
-      <div className="modal-nav-branding horizontal align-center gap-snug">
+      <div className="modal-nav-branding horizontal align-center gap-snug ink-accent">
         {/* <Logo /> */}
         <MonkyLogoWord />
       </div>
@@ -65,7 +65,7 @@ export function ModalNavigation({ currentView, onViewChange, theme }: ModalNavig
         {tabs.map(tab => (
           <button
             key={tab.view}
-            className="modal-nav-tab panel-button horizontal align-center justify-center gap-snug hover:ground-subtle hover:ink"
+            className="modal-nav-tab panel-button horizontal align-center justify-center gap-snug ink-soft hover:ground-subtle hover:ink"
             onClick={() => onViewChange(tab.view)}
             aria-label={t('modalNavigation.switchTo', { view: tab.label })}
             aria-current={currentView === tab.view ? 'page' : undefined}

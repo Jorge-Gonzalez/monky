@@ -44,7 +44,7 @@ export function ModalShell({
     >
       <div
         ref={modalRef}
-        className="modal-dialog vertical"
+        className="modal-dialog vertical ground"
         role="dialog"
         aria-modal="true"
         aria-label="Monky Modal"

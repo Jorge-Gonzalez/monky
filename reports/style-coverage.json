@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-10T07:54:59.208Z",
+  "generatedAt": "2026-07-10T22:11:47.321Z",
   "summary": {
-    "definedClasses": 198,
-    "selectorBlocks": 288,
+    "definedClasses": 203,
+    "selectorBlocks": 286,
     "byDisposition": {
-      "live-static": 198
+      "live-static": 203
     },
     "deadCandidateDeclarations": 0,
     "runtimePages": [
@@ -16,10 +16,10 @@
   "cssCoverage": [
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-VB5WvDKs.css",
-      "usedBytes": 11283,
-      "totalBytes": 17351,
-      "usedPercent": 65
+      "asset": "assets/renderPageWithTheme-DvZq97CQ.css",
+      "usedBytes": 11604,
+      "totalBytes": 17672,
+      "usedPercent": 65.7
     },
     {
       "page": "/src/popup/index.html",
@@ -30,10 +30,10 @@
     },
     {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-VB5WvDKs.css",
-      "usedBytes": 12678,
-      "totalBytes": 17351,
-      "usedPercent": 73.1
+      "asset": "assets/renderPageWithTheme-DvZq97CQ.css",
+      "usedBytes": 12999,
+      "totalBytes": 17672,
+      "usedPercent": 73.6
     },
     {
       "page": "/src/options/index.html",
@@ -44,9 +44,9 @@
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-VB5WvDKs.css",
-      "usedBytes": 17037,
-      "totalBytes": 17351,
+      "asset": "assets/renderPageWithTheme-DvZq97CQ.css",
+      "usedBytes": 17358,
+      "totalBytes": 17672,
       "usedPercent": 98.2
     }
   ],
@@ -500,20 +500,51 @@
       ]
     },
     {
+      "className": "checked:ground-accent",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".checked\\:ground-accent[aria-checked=\"true\"]"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "checked:ink-inverse",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".checked\\:ink-inverse[aria-checked=\"true\"]"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
       "className": "command-suggestion-action",
       "files": [
         "src/content/overlays/views/macroEditor/editorViewStyles.css"
       ],
       "selectors": [
         ".command-suggestion-action",
-        ".command-suggestion-action.cancel:hover",
-        ".command-suggestion-action.confirm:hover",
-        ".command-suggestion-action.delete:hover",
         ".command-suggestion-item > .command-suggestion-action, .command-suggestion-actions",
         ".command-suggestion-item:hover .command-suggestion-action.delete, .command-suggestion-item[aria-selected=\"true\"] .command-suggestion-action.delete",
         ".command-suggestion-item[data-state=\"confirming-delete\"] .command-suggestion-action"
       ],
-      "declarations": 15,
+      "declarations": 8,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -565,11 +596,9 @@
         ".command-suggestion-item",
         ".command-suggestion-item > .command-suggestion-action, .command-suggestion-actions",
         ".command-suggestion-item:hover .command-suggestion-action.delete, .command-suggestion-item[aria-selected=\"true\"] .command-suggestion-action.delete",
-        ".command-suggestion-item:not([data-state=\"confirming-delete\"]):hover",
-        ".command-suggestion-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"]",
         ".command-suggestion-item[data-state=\"confirming-delete\"] .command-suggestion-action"
       ],
-      "declarations": 9,
+      "declarations": 7,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -916,7 +945,7 @@
       "selectors": [
         ".editor-popout"
       ],
-      "declarations": 4,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -1389,12 +1418,46 @@
       ]
     },
     {
+      "className": "hover:ground",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".hover\\:ground:hover"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
       "className": "hover:ground-defined",
       "files": [
         "src/styles/grammar/ermine.generated.css"
       ],
       "selectors": [
         ".hover\\:ground-defined:hover"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "hover:ground-fail",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".hover\\:ground-fail:hover"
       ],
       "declarations": 1,
       "disposition": "live-static",
@@ -1474,6 +1537,40 @@
       ]
     },
     {
+      "className": "hover:ink-fail",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".hover\\:ink-fail:hover"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "hover:ink-inverse",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".hover\\:ink-inverse:hover"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
       "className": "hover:rule",
       "files": [
         "src/styles/grammar/ermine.generated.css"
@@ -1497,23 +1594,6 @@
       ],
       "selectors": [
         ".hover\\:rule-fail:hover"
-      ],
-      "declarations": 1,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "import-status--error",
-      "files": [
-        "src/content/overlays/views/settings/settingsViewStyles.css"
-      ],
-      "selectors": [
-        ".import-status--error"
       ],
       "declarations": 1,
       "disposition": "live-static",
@@ -2303,7 +2383,7 @@
       "selectors": [
         ".modal-dialog"
       ],
-      "declarations": 8,
+      "declarations": 7,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2318,10 +2398,9 @@
         "src/content/overlays/modal/modalStyles.css"
       ],
       "selectors": [
-        ".modal-nav-branding",
-        ".modal-nav-branding svg"
+        ".modal-nav-branding"
       ],
-      "declarations": 3,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2390,7 +2469,7 @@
         ".modal-nav-tab",
         ".modal-nav-tab[aria-current=\"page\"]"
       ],
-      "declarations": 6,
+      "declarations": 5,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -3210,11 +3289,10 @@
         ".seg-control.is-sliding .seg-option[aria-checked=\"true\"]",
         ".seg-option",
         ".seg-option svg",
-        ".seg-option:hover:not([aria-checked=\"true\"])",
         ".seg-option:last-child",
         ".seg-option[aria-checked=\"true\"]"
       ],
-      "declarations": 18,
+      "declarations": 13,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -3373,7 +3451,7 @@
       "selectors": [
         ".settings-divider"
       ],
-      "declarations": 3,
+      "declarations": 4,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"

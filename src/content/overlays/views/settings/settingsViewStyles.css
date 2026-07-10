@@ -34,8 +34,9 @@
 }
 
 .settings-divider {
-  height: 1px;
-  background: var(--harmonic);
+  height: 0;
+  border-top-width: 1px;
+  border-top-style: solid;
   margin: var(--spacing-sm) var(--spacing-xl);
 }
 
@@ -80,7 +81,6 @@
 .seg-option {
   text-align: center;
   line-height: 1.5;
-  background: transparent;
   border: none;
   border-right: 1px solid var(--harmonic);
   cursor: pointer;
@@ -101,14 +101,7 @@
   border-right: none;
 }
 
-.seg-option:hover:not([aria-checked="true"]) {
-  background: var(--tone);
-  color: var(--ink);
-}
-
 .seg-option[aria-checked="true"] {
-  color: var(--ink-alt);
-  background: var(--accent);
   border-right-color: transparent;
 }
 
@@ -122,5 +115,3 @@
 .settings-view .btn-outlined:not(.is-selected, :hover, :active) {
   background-color: var(--tone-dim);
 }
-
-.import-status--error { color: var(--color-error, #e06c75); }

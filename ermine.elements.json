@@ -7,6 +7,11 @@
       "backing": []
     },
     {
+      "id": "modal-dialog",
+      "classString": "vertical ground",
+      "backing": []
+    },
+    {
       "id": "vertical-shells",
       "classString": "vertical",
       "backing": []
@@ -23,7 +28,7 @@
     },
     {
       "id": "modal-navigation-brand",
-      "classString": "horizontal align-center gap-snug",
+      "classString": "horizontal align-center gap-snug ink-accent",
       "backing": []
     },
     {
@@ -33,7 +38,7 @@
     },
     {
       "id": "modal-navigation-tab",
-      "classString": "horizontal align-center justify-center gap-snug hover:ground-subtle hover:ink",
+      "classString": "horizontal align-center justify-center gap-snug ink-soft hover:ground-subtle hover:ink",
       "backing": []
     },
     {
@@ -122,6 +127,11 @@
       "backing": []
     },
     {
+      "id": "u6-settings-divider",
+      "classString": "rule",
+      "backing": []
+    },
+    {
       "id": "u6-settings-import-status",
       "classString": "font-sm",
       "backing": []
@@ -138,8 +148,8 @@
     },
     {
       "id": "u6-segmented-option",
-      "classString": "elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft",
-      "backing": []
+      "classString": "elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse",
+      "backing": ["aria-checked"]
     },
     {
       "id": "u6-editor-shell",
@@ -183,8 +193,8 @@
     },
     {
       "id": "u6-command-suggestion-row",
-      "classString": "horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable",
-      "backing": []
+      "classString": "horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable hover:ground selected:ground-defined",
+      "backing": ["aria-selected"]
     },
     {
       "id": "u6-command-suggestion-row-confirming",
@@ -208,7 +218,17 @@
     },
     {
       "id": "u6-command-suggestion-confirm-action",
-      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-fail",
+      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-fail hover:ground-fail hover:ink-inverse",
+      "backing": []
+    },
+    {
+      "id": "u6-command-suggestion-delete-action",
+      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-fail-faint hover:ink-fail",
+      "backing": []
+    },
+    {
+      "id": "u6-command-suggestion-cancel-action",
+      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-defined hover:ink",
       "backing": []
     },
     {
