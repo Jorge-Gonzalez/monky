@@ -11,7 +11,8 @@
 
 /* Input container */
 .macro-search-input-container {
-  border-bottom: 1px solid var(--harmonic);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
 }
 
 /* Search uses shared .input pattern from modalStyles */

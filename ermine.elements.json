@@ -8,7 +8,7 @@
     },
     {
       "id": "modal-dialog",
-      "classString": "vertical ground",
+      "classString": "vertical ground rule",
       "backing": []
     },
     {
@@ -43,7 +43,7 @@
     },
     {
       "id": "search-input-container",
-      "classString": "padding-relaxed",
+      "classString": "padding-relaxed rule",
       "backing": []
     },
     {
@@ -148,7 +148,7 @@
     },
     {
       "id": "u6-segmented-option",
-      "classString": "elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse",
+      "classString": "elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft rule selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse",
       "backing": ["aria-checked"]
     },
     {

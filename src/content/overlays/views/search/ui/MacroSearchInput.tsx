@@ -9,7 +9,7 @@ interface MacroSearchInputProps {
 
 export function MacroSearchInput({ value, onChange, inputRef }: MacroSearchInputProps) {
   return (
-    <div className="macro-search-input-container padding-relaxed">
+    <div className="macro-search-input-container padding-relaxed rule">
       <input
         ref={inputRef}
         type="text"

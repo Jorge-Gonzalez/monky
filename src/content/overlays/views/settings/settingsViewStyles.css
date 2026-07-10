@@ -81,8 +81,9 @@
 .seg-option {
   text-align: center;
   line-height: 1.5;
-  border: none;
-  border-right: 1px solid var(--harmonic);
+  border-width: 0;
+  border-style: solid;
+  border-right-width: 1px;
   cursor: pointer;
   white-space: nowrap;
   z-index: 1;

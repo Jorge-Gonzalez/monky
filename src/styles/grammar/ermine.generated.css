@@ -35,6 +35,10 @@
   background: var(--ground);
 }
 
+.rule {
+  border-color: var(--rule);
+}
+
 .justify-between {
   justify-content: space-between;
 }
@@ -65,10 +69,6 @@
 
 .padding-snug {
   padding: var(--spacing-snug);
-}
-
-.rule {
-  border-color: var(--rule);
 }
 
 .corner-md {

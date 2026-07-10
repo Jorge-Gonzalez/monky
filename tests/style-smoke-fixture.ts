@@ -29,9 +29,9 @@ function shadow(css: string, html: string): void {
 
 shadow(
   composeShadowBundle({ componentStyles: [MODAL_STYLES, SEARCH_STYLES, SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
-  `<div data-probe="modal" class="modal-dialog vertical">
+  `<div data-probe="modal" class="modal-dialog vertical ground rule">
     <div data-probe="search-view" class="macro-search-view vertical">
-      <div data-probe="search-input-container" class="macro-search-input-container padding-relaxed">
+      <div data-probe="search-input-container" class="macro-search-input-container padding-relaxed rule">
         <input data-probe="search-input" class="macro-search-input padding-block-snug padding-inline-comfortable">
       </div>
       <div data-probe="search-results" class="macro-search-results elastic basis-ratio grid">
@@ -75,8 +75,8 @@ shadow(
         <span class="settings-row-label font-md ink">Theme</span>
         <div data-probe="settings-appearance" class="settings-appearance-controls horizontal align-center gap-comfortable">
           <div data-probe="seg-control" class="seg-control horizontal position-relative ground-subtle rule corner-md">
-            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="true">One</button>
-            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="false">Two</button>
+            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft rule selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="true">One</button>
+            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft rule selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="false">Two</button>
           </div>
           <button data-probe="settings-prefix" class="btn btn-outlined text-mono settings-prefix-btn horizontal align-center justify-center rigid">/</button>
         </div>

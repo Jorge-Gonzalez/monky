@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-10T22:11:47.321Z",
+  "generatedAt": "2026-07-10T22:31:47.210Z",
   "summary": {
     "definedClasses": 203,
     "selectorBlocks": 286,
@@ -16,7 +16,7 @@
   "cssCoverage": [
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-DvZq97CQ.css",
+      "asset": "assets/renderPageWithTheme-BKyMUsie.css",
       "usedBytes": 11604,
       "totalBytes": 17672,
       "usedPercent": 65.7
@@ -30,7 +30,7 @@
     },
     {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-DvZq97CQ.css",
+      "asset": "assets/renderPageWithTheme-BKyMUsie.css",
       "usedBytes": 12999,
       "totalBytes": 17672,
       "usedPercent": 73.6
@@ -44,7 +44,7 @@
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-DvZq97CQ.css",
+      "asset": "assets/renderPageWithTheme-BKyMUsie.css",
       "usedBytes": 17358,
       "totalBytes": 17672,
       "usedPercent": 98.2
@@ -1943,7 +1943,7 @@
       "selectors": [
         ".macro-search-input-container"
       ],
-      "declarations": 1,
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2383,7 +2383,7 @@
       "selectors": [
         ".modal-dialog"
       ],
-      "declarations": 7,
+      "declarations": 8,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -3292,7 +3292,7 @@
         ".seg-option:last-child",
         ".seg-option[aria-checked=\"true\"]"
       ],
-      "declarations": 13,
+      "declarations": 14,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
