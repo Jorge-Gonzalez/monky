@@ -1,9 +1,5 @@
 /* ===== COMPONENT PATTERNS: ContentEditor ===== */
 
-.content-editor {
-  overflow: hidden;
-}
-
 /* .content-editor:focus-within {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--tone);
@@ -92,7 +88,6 @@
 .content-editor-body {
   min-height: 150px;
   outline: none;
-  overflow: auto;
   /* Neutral font so users control styling in their own macros; overrides the
      app font inherited from :host. Children inherit this value. */
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;

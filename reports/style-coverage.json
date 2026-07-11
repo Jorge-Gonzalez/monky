@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-11T21:45:05.354Z",
+  "generatedAt": "2026-07-11T21:57:48.587Z",
   "summary": {
-    "definedClasses": 201,
-    "selectorBlocks": 273,
+    "definedClasses": 200,
+    "selectorBlocks": 271,
     "byDisposition": {
-      "live-static": 201
+      "live-static": 200
     },
     "deadCandidateDeclarations": 0,
     "runtimePages": [
@@ -16,17 +16,24 @@
   "cssCoverage": [
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-ENTV8Nt1.css",
-      "usedBytes": 11883,
-      "totalBytes": 15935,
-      "usedPercent": 74.6
+      "asset": "assets/renderPageWithTheme-DQrE4yxC.css",
+      "usedBytes": 11965,
+      "totalBytes": 15971,
+      "usedPercent": 74.9
     },
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/popup-DWYBjTY-.css",
-      "usedBytes": 513,
-      "totalBytes": 1292,
-      "usedPercent": 39.7
+      "asset": "assets/popup-BI7gm1N6.css",
+      "usedBytes": 439,
+      "totalBytes": 1185,
+      "usedPercent": 37
+    },
+    {
+      "page": "/src/options/index.html",
+      "asset": "assets/renderPageWithTheme-DQrE4yxC.css",
+      "usedBytes": 12472,
+      "totalBytes": 15971,
+      "usedPercent": 78.1
     },
     {
       "page": "/src/options/index.html",
@@ -36,17 +43,10 @@
       "usedPercent": 99.2
     },
     {
-      "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-ENTV8Nt1.css",
-      "usedBytes": 12390,
-      "totalBytes": 15935,
-      "usedPercent": 77.8
-    },
-    {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-ENTV8Nt1.css",
-      "usedBytes": 15628,
-      "totalBytes": 15935,
+      "asset": "assets/renderPageWithTheme-DQrE4yxC.css",
+      "usedBytes": 15664,
+      "totalBytes": 15971,
       "usedPercent": 98.1
     }
   ],
@@ -576,28 +576,11 @@
         ".command-suggestion-item:hover .command-suggestion-action.delete, .command-suggestion-item[aria-selected=\"true\"] .command-suggestion-action.delete",
         ".command-suggestion-item[data-state=\"confirming-delete\"] .command-suggestion-action"
       ],
-      "declarations": 6,
+      "declarations": 5,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
         "test-reference"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "command-suggestion-text",
-      "files": [
-        "src/content/overlays/views/macroEditor/editorViewStyles.css"
-      ],
-      "selectors": [
-        ".command-suggestion-text"
-      ],
-      "declarations": 3,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -611,7 +594,7 @@
       "selectors": [
         ".command-suggestions"
       ],
-      "declarations": 7,
+      "declarations": 6,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -644,12 +627,11 @@
         "src/styles/components/content-editor.css"
       ],
       "selectors": [
-        ".content-editor",
         ".content-editor .content-editor-body ol",
         ".content-editor .content-editor-body ul",
         ".content-editor .content-editor-body ul, .content-editor .content-editor-body ol"
       ],
-      "declarations": 5,
+      "declarations": 4,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -690,7 +672,7 @@
         ".content-editor-body:focus",
         ".editor-content .content-editor-body"
       ],
-      "declarations": 54,
+      "declarations": 53,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -871,7 +853,7 @@
         ".editor-content .content-editor-body",
         ".editor-content.content-editor"
       ],
-      "declarations": 6,
+      "declarations": 5,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -1439,6 +1421,25 @@
       "livenessEvidence": [
         "production-source",
         "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "hidden",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".hidden"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed",
+        "test-reference"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -2017,7 +2018,7 @@
         ".macro-search-item:not([data-state=\"confirming-delete\"]):hover .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"]):hover .macro-search-item-text",
         ".macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-text"
       ],
-      "declarations": 8,
+      "declarations": 5,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2034,7 +2035,7 @@
       "selectors": [
         ".macro-search-item-confirm"
       ],
-      "declarations": 4,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2076,7 +2077,7 @@
         ".macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-text",
         ".macro-search-item[aria-selected=\"true\"] .macro-search-item-text"
       ],
-      "declarations": 15,
+      "declarations": 12,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2185,7 +2186,7 @@
         ".macro-suggestions-command-item",
         ".macro-suggestions-command-item.delete-confirm-option"
       ],
-      "declarations": 10,
+      "declarations": 7,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2204,7 +2205,7 @@
         ".macro-suggestions-container",
         ".macro-suggestions-container.delete-confirm"
       ],
-      "declarations": 6,
+      "declarations": 5,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -2257,7 +2258,7 @@
       "selectors": [
         ".macro-suggestions-text-preview"
       ],
-      "declarations": 4,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2363,7 +2364,7 @@
       "selectors": [
         ".modal-content"
       ],
-      "declarations": 2,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2380,7 +2381,7 @@
       "selectors": [
         ".modal-dialog"
       ],
-      "declarations": 5,
+      "declarations": 4,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2920,23 +2921,6 @@
       ]
     },
     {
-      "className": "popup-site-copy",
-      "files": [
-        "src/popup/popup.css"
-      ],
-      "selectors": [
-        ".popup-site-copy"
-      ],
-      "declarations": 1,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
       "className": "popup-toggle-label",
       "files": [
         "src/popup/popup.css"
@@ -2948,24 +2932,6 @@
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "popup-truncate",
-      "files": [
-        "src/popup/popup.css"
-      ],
-      "selectors": [
-        ".popup-truncate"
-      ],
-      "declarations": 3,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source",
-        "runtime-observed"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -3644,6 +3610,24 @@
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "truncate",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".truncate"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
       ],
       "supportingEvidence": [
         "bundled-app-token"

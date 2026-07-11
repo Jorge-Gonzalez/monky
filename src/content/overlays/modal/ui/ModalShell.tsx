@@ -44,7 +44,7 @@ export function ModalShell({
     >
       <div
         ref={modalRef}
-        className="modal-dialog vertical ground rule ruled corner-lg"
+        className="modal-dialog vertical ground rule ruled corner-lg hidden"
         role="dialog"
         aria-modal="true"
         aria-label="Monky Modal"
@@ -56,7 +56,7 @@ export function ModalShell({
           theme={theme}
         />
 
-        <div className="modal-content elastic basis-ratio vertical">
+        <div className="modal-content elastic basis-ratio vertical hidden">
           {childrenWithProps}
         </div>
       </div>

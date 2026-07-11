@@ -40,7 +40,7 @@ export function MacroSearch({ macros }: MacroSearchProps) {
             <li key={result.obj.id} className="popup-result-item padding-snug rule-soft ruled-bottom">
               <>
                 <div className="font-md font-bold ink-accent">{result.obj.command}</div>
-                <p className="popup-truncate font-sm ink-soft">{result.obj.text}</p>
+                <p className="hidden truncate font-sm ink-soft">{result.obj.text}</p>
               </>
             </li>
           ))

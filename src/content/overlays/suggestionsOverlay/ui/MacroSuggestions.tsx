@@ -159,7 +159,7 @@ export function MacroSuggestions({
   return (
     <div
       ref={containerRef}
-      className="macro-suggestions-container ground rule ruled corner-lg font-md"
+      className="macro-suggestions-container ground rule ruled corner-lg font-md hidden"
       style={{
         left: position.x,
         top: position.y,
@@ -172,7 +172,7 @@ export function MacroSuggestions({
           <button
             key={macro.id}
             ref={(el) => { buttonRefs.current[index] = el; }}
-            className="macro-suggestions-command-item compressible ground-subtle ink rule-soft ruled corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
+            className="macro-suggestions-command-item compressible ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
             onMouseDown={(e) => {
               e.preventDefault();
               onSelectMacro(macro);
@@ -186,7 +186,7 @@ export function MacroSuggestions({
         ))}
       </div>
       {selectedMacro && (
-        <div className="macro-suggestions-text-preview padding-block-snug padding-inline-comfortable font-xs ink-soft">
+        <div className="macro-suggestions-text-preview padding-block-snug padding-inline-comfortable font-xs ink-soft hidden">
           {selectedMacro.text}
         </div>
       )}

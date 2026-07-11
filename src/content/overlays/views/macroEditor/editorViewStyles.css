@@ -72,22 +72,14 @@
   border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   z-index: 10;
-  overflow: hidden;
 }
 
 .command-suggestion-item {
   cursor: pointer;
   transition: background-color var(--transition-fast);
-  overflow: hidden;
 }
 
 .command-suggestion-command {
-  white-space: nowrap;
-}
-
-.command-suggestion-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 

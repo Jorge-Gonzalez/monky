@@ -43,7 +43,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
   useEffect(() => { setConfirmingId(null); }, [suggestions]);
 
   return (
-    <div className="command-suggestions position-absolute ground-subtle rule-accent-soft ruled elevated">
+    <div className="command-suggestions position-absolute ground-subtle rule-accent-soft ruled elevated hidden">
       <div className="command-suggestions-label padding-block-tight padding-inline-comfortable font-sm ink-soft rule ruled-bottom">
         {t('macroEditor.commandSuggestionsLabel')}
       </div>
@@ -52,13 +52,13 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
         return (
           <div
             key={macro.id}
-            className={`command-suggestion-item horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable ${confirming ? 'ground-fail-faint' : 'selectable hover:ground selected:ground-defined'}`}
+            className={`command-suggestion-item hidden horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable ${confirming ? 'ground-fail-faint' : 'selectable hover:ground selected:ground-defined'}`}
             aria-selected={i === selectedIndex ? 'true' : 'false'}
             data-state={confirming ? 'confirming-delete' : undefined}
             onMouseDown={e => { e.preventDefault(); onSelect(macro); }}
           >
             <span className="command-suggestion-command rigid font-md font-medium ink-accent">{macro.command}</span>
-            <span className="command-suggestion-text font-sm ink-soft">{macro.text}</span>
+            <span className="command-suggestion-text font-sm ink-soft hidden truncate">{macro.text}</span>
             {confirming ? (
               <span className="command-suggestion-actions horizontal align-center gap-tight rigid">
                 <button

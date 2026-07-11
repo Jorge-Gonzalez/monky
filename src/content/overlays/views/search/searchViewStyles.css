@@ -43,9 +43,6 @@
 .macro-search-item-text {
   cursor: pointer;
   transition: background-color var(--transition-fast);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .macro-search-item-command {
@@ -75,9 +72,6 @@
 /* Armed-for-delete row: danger tint + the confirm prompt in the text column. */
 .macro-search-item-confirm {
   padding-left: var(--spacing-xs);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .macro-search-item-edit {

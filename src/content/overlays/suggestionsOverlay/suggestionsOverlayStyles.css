@@ -20,7 +20,6 @@ button, input, textarea, select {
   box-shadow: 0 10px 25px -5px var(--shadow-color);
   min-width: 200px;
   max-width: 360px;
-  overflow: hidden;
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
@@ -51,16 +50,12 @@ button, input, textarea, select {
   cursor: pointer;
   transition: all 0.15s ease;
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .macro-suggestions-text-preview {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .macro-suggestions-footer {

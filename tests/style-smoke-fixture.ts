@@ -29,7 +29,7 @@ function shadow(css: string, html: string): void {
 
 shadow(
   composeShadowBundle({ componentStyles: [MODAL_STYLES, SEARCH_STYLES, SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
-  `<div data-probe="modal" class="modal-dialog vertical ground rule ruled corner-lg">
+  `<div data-probe="modal" class="modal-dialog vertical ground rule ruled corner-lg hidden">
     <div data-probe="search-view" class="macro-search-view vertical">
       <div data-probe="search-input-container" class="macro-search-input-container padding-relaxed rule ruled-bottom">
         <input data-probe="search-input" class="macro-search-input padding-block-snug padding-inline-comfortable">
@@ -50,11 +50,11 @@ shadow(
 )
 shadow(
   composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES] }),
-  `<div data-probe="suggestions" class="macro-suggestions-container ground rule ruled corner-lg font-md" style="left: 24px; top: 24px; position: fixed;">
+  `<div data-probe="suggestions" class="macro-suggestions-container ground rule ruled corner-lg font-md hidden" style="left: 24px; top: 24px; position: fixed;">
     <div data-probe="suggestions-list" class="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft ruled-bottom" role="listbox">
-      <button data-probe="suggestions-option" class="macro-suggestions-command-item compressible ground-subtle ink rule-soft ruled corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">/brb</button>
-      <button data-probe="suggestions-option-hover" class="macro-suggestions-command-item compressible ground-subtle ink rule-soft ruled corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/sig</button>
-      <button data-probe="suggestions-option-base" class="macro-suggestions-command-item compressible ground-subtle ink rule-soft ruled corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/email</button>
+      <button data-probe="suggestions-option" class="macro-suggestions-command-item compressible ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">/brb</button>
+      <button data-probe="suggestions-option-hover" class="macro-suggestions-command-item compressible ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/sig</button>
+      <button data-probe="suggestions-option-base" class="macro-suggestions-command-item compressible ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/email</button>
     </div>
     <div data-probe="suggestions-footer" class="macro-suggestions-footer horizontal gap-comfortable padding-block-tight padding-inline-comfortable font-xs ink-soft ground rule ruled-top"></div>
   </div>`,
@@ -89,17 +89,17 @@ shadow(
             <button data-probe="editor-popout" class="editor-popout horizontal align-center justify-center padding-tight corner-sm ink-soft">↗</button>
           </div>
           <div class="command-suggestion-wrapper editor-command position-relative elastic basis-ratio">
-            <div data-probe="command-suggestions" class="command-suggestions position-absolute ground-subtle rule-accent-soft ruled elevated">
+            <div data-probe="command-suggestions" class="command-suggestions position-absolute ground-subtle rule-accent-soft ruled elevated hidden">
               <div data-probe="command-suggestions-label" class="command-suggestions-label padding-block-tight padding-inline-comfortable font-sm ink-soft rule ruled-bottom">Existing</div>
-              <div data-probe="command-suggestion-item" class="command-suggestion-item horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable hover:ground selected:ground-defined" aria-selected="true">
+              <div data-probe="command-suggestion-item" class="command-suggestion-item hidden horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable hover:ground selected:ground-defined" aria-selected="true">
                 <span data-probe="command-suggestion-command" class="command-suggestion-command rigid font-md font-medium ink-accent">/sig</span>
-                <span class="command-suggestion-text font-sm ink-soft">Signature</span>
+                <span class="command-suggestion-text font-sm ink-soft hidden truncate">Signature</span>
                 <button data-probe="command-suggestion-action" class="command-suggestion-action delete horizontal align-center justify-center padding-tight corner-sm ink-soft rigid">×</button>
               </div>
             </div>
           </div>
         </div>
-        <div data-probe="content-editor" class="content-editor vertical ground-subtle editor-content elastic basis-ratio">
+        <div data-probe="content-editor" class="content-editor vertical ground-subtle hidden editor-content elastic basis-ratio">
           <div data-probe="ce-toolbar" class="ce-toolbar horizontal wrap-allowed align-center gap-tight padding-block-tight padding-inline-snug rigid ground">
             <button data-probe="ce-toolbar-btn" class="ce-toolbar-btn horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink">B</button>
             <div data-probe="ce-style-menu" class="ce-style-menu position-relative">
@@ -111,7 +111,7 @@ shadow(
               </div>
             </div>
           </div>
-          <div data-probe="content-editor-body" class="content-editor-body padding-comfortable ink font-md corner-lg rule ruled focus:rule-accent"></div>
+          <div data-probe="content-editor-body" class="content-editor-body padding-comfortable ink font-md corner-lg rule ruled scroll-auto focus:rule-accent"></div>
         </div>
       </form>
     </div>

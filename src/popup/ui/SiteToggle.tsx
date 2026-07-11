@@ -35,9 +35,9 @@ export default function SiteToggle() {
 
   return (
     <div className="popup-section horizontal align-center justify-between padding-snug ground-subtle rule ruled corner-md">
-      <div className="popup-site-copy font-sm">
+      <div className="popup-site-copy font-sm hidden">
         <p className="font-medium ink">{t('popup.macrosOnThisSite')}</p>
-        <p className="popup-truncate font-xs ink-soft" title={displayHostname}>{displayHostname}</p>
+        <p className="hidden truncate font-xs ink-soft" title={displayHostname}>{displayHostname}</p>
       </div>
       <label className="position-relative horizontal inline align-center rigid popup-toggle-label">
         <input

@@ -29,7 +29,6 @@
   mix-blend-mode: multiply;
   width: min(600px, calc(100vw - 2rem));
   height: min(560px, 85vh);
-  overflow: hidden;
 }
 
 /* Modal Navigation Container */
@@ -74,5 +73,4 @@
 /* Content area */
 .modal-content {
   min-height: 0;
-  overflow: hidden;
 }

@@ -50,16 +50,6 @@
   margin: 0;
 }
 
-.popup-site-copy {
-  overflow: hidden;
-}
-
-.popup-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 /* Site-toggle label: left offset from the description block. */
 .popup-toggle-label {
   cursor: pointer;

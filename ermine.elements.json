@@ -8,7 +8,7 @@
     },
     {
       "id": "modal-dialog",
-      "classString": "vertical ground rule corner-lg ruled",
+      "classString": "vertical ground rule corner-lg ruled hidden",
       "backing": []
     },
     {
@@ -18,7 +18,7 @@
     },
     {
       "id": "modal-content",
-      "classString": "elastic basis-ratio vertical",
+      "classString": "elastic basis-ratio vertical hidden",
       "backing": []
     },
     {
@@ -68,22 +68,22 @@
     },
     {
       "id": "search-item-command-cell",
-      "classString": "padding-comfortable ink-accent rule-soft font-md font-medium ruled-bottom",
+      "classString": "padding-comfortable ink-accent rule-soft font-md font-medium ruled-bottom hidden truncate",
       "backing": []
     },
     {
       "id": "search-item-text-cell",
-      "classString": "padding-comfortable ink-soft rule-soft font-md ruled-bottom",
+      "classString": "padding-comfortable ink-soft rule-soft font-md ruled-bottom hidden truncate",
       "backing": []
     },
     {
       "id": "search-item-confirm-cell",
-      "classString": "padding-comfortable ground-fail-faint ink-fail rule-soft font-md font-medium ruled-bottom",
+      "classString": "padding-comfortable ground-fail-faint ink-fail rule-soft font-md font-medium ruled-bottom hidden truncate",
       "backing": []
     },
     {
       "id": "search-command-name-cell",
-      "classString": "padding-comfortable ink-accent rule-soft font-md font-semibold font-mono ruled-bottom",
+      "classString": "padding-comfortable ink-accent rule-soft font-md font-semibold font-mono ruled-bottom hidden truncate",
       "backing": []
     },
     {
@@ -185,7 +185,7 @@
     },
     {
       "id": "u6-command-dropdown",
-      "classString": "position-absolute ground-subtle rule-accent-soft ruled",
+      "classString": "position-absolute ground-subtle rule-accent-soft ruled hidden",
       "backing": []
     },
     {
@@ -195,7 +195,7 @@
     },
     {
       "id": "u6-command-suggestion-row",
-      "classString": "horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable hover:ground selected:ground-defined",
+      "classString": "horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable hover:ground selected:ground-defined hidden",
       "backing": [
         "aria-selected"
       ]
@@ -212,7 +212,7 @@
     },
     {
       "id": "u6-command-suggestion-text",
-      "classString": "font-sm ink-soft",
+      "classString": "font-sm ink-soft hidden truncate",
       "backing": []
     },
     {
@@ -267,7 +267,7 @@
     },
     {
       "id": "u7-suggestions-container",
-      "classString": "ground rule corner-lg font-md ruled",
+      "classString": "ground rule corner-lg font-md ruled hidden",
       "backing": []
     },
     {
@@ -277,7 +277,7 @@
     },
     {
       "id": "u7-suggestions-command-item",
-      "classString": "compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent ruled",
+      "classString": "compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent ruled hidden truncate",
       "backing": [
         "aria-selected"
       ]
@@ -478,7 +478,7 @@
     },
     {
       "id": "phase-b-content-editor-body",
-      "classString": "padding-comfortable ink font-md corner-lg rule focus:rule-accent ruled",
+      "classString": "padding-comfortable ink font-md corner-lg rule focus:rule-accent ruled scroll-auto",
       "backing": []
     },
     {
