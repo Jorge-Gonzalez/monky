@@ -25,7 +25,8 @@
     "size": "node scripts/check-build-size.js",
     "lint:fix": "eslint . --fix",
     "test:styles": "node scripts/style-smoke.mjs",
-    "ermine:css": "node scripts/update-ermine-css.mjs"
+    "ermine:css": "node scripts/update-ermine-css.mjs",
+    "styles:reconcile": "node scripts/reconcile-styles.mjs"
   },
   "dependencies": {
     "@preact/preset-vite": "^2.10.5",
