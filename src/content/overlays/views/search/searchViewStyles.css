@@ -128,9 +128,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-.modal-command-item .modal-command-name {
-  font-family: monospace;
-}
+/* Command typeface comes from `font-mono` (R-SKIN-07). */
 
 .modal-command-item .modal-command-description {
   font-style: italic;
@@ -152,8 +150,8 @@
   margin-right: var(--spacing-xl);
 }
 
+/* Key typeface comes from `font-mono` (R-SKIN-07). */
 .macro-search-kbd {
-  font-family: monospace;
   line-height: 1;
   padding: 3px 6px 6px;
   min-width: 26px;

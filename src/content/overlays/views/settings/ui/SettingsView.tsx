@@ -70,7 +70,7 @@ export function SettingsView(_props: BaseModalViewProps) {
                 selected={prefixes}
                 onChange={setPrefixes}
                 className="horizontal gap-snug"
-                buttonClassName="btn btn-outlined text-mono settings-prefix-btn horizontal align-center justify-center rigid"
+                buttonClassName="btn btn-outlined font-mono settings-prefix-btn horizontal align-center justify-center rigid"
               />
             </div>
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">

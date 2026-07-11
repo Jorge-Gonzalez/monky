@@ -59,6 +59,4 @@
   margin: var(--spacing-2xl) 0;
 }
 
-.text-mono {
-  font-family: monospace;
-}
+/* .text-mono retired: consumers now carry the `font-mono` word (R-SKIN-07). */

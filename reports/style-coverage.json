@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-11T04:59:17.203Z",
+  "generatedAt": "2026-07-11T21:22:07.348Z",
   "summary": {
-    "definedClasses": 208,
-    "selectorBlocks": 279,
+    "definedClasses": 206,
+    "selectorBlocks": 277,
     "byDisposition": {
-      "live-static": 208
+      "live-static": 206
     },
     "deadCandidateDeclarations": 0,
     "runtimePages": [
@@ -23,17 +23,17 @@
     },
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-fcsRtz-i.css",
-      "usedBytes": 11511,
-      "totalBytes": 15759,
-      "usedPercent": 73
+      "asset": "assets/renderPageWithTheme-51oHObnX.css",
+      "usedBytes": 11584,
+      "totalBytes": 15799,
+      "usedPercent": 73.3
     },
     {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-fcsRtz-i.css",
-      "usedBytes": 12106,
-      "totalBytes": 15759,
-      "usedPercent": 76.8
+      "asset": "assets/renderPageWithTheme-51oHObnX.css",
+      "usedBytes": 12146,
+      "totalBytes": 15799,
+      "usedPercent": 76.9
     },
     {
       "page": "/src/options/index.html",
@@ -44,9 +44,9 @@
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-fcsRtz-i.css",
-      "usedBytes": 15452,
-      "totalBytes": 15759,
+      "asset": "assets/renderPageWithTheme-51oHObnX.css",
+      "usedBytes": 15492,
+      "totalBytes": 15799,
       "usedPercent": 98.1
     }
   ],
@@ -825,23 +825,6 @@
       ]
     },
     {
-      "className": "delete-confirm-command",
-      "files": [
-        "src/content/overlays/deleteConfirm/deleteConfirmStyles.css"
-      ],
-      "selectors": [
-        ".delete-confirm-command"
-      ],
-      "declarations": 1,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
       "className": "delete-confirm-message",
       "files": [
         "src/content/overlays/deleteConfirm/deleteConfirmStyles.css"
@@ -1183,6 +1166,24 @@
       ],
       "selectors": [
         ".font-medium"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "font-mono",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".font-mono"
       ],
       "declarations": 1,
       "disposition": "live-static",
@@ -2162,7 +2163,7 @@
         ".macro-search-kbd::after",
         ".macro-search-kbd:first-child"
       ],
-      "declarations": 17,
+      "declarations": 16,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2323,7 +2324,7 @@
       "selectors": [
         ".macro-suggestions-kbd"
       ],
-      "declarations": 4,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -2428,25 +2429,7 @@
         "src/content/overlays/views/search/searchViewStyles.css"
       ],
       "selectors": [
-        ".modal-command-item .modal-command-description",
-        ".modal-command-item .modal-command-name"
-      ],
-      "declarations": 2,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "modal-command-name",
-      "files": [
-        "src/content/overlays/views/search/searchViewStyles.css"
-      ],
-      "selectors": [
-        ".modal-command-item .modal-command-name"
+        ".modal-command-item .modal-command-description"
       ],
       "declarations": 1,
       "disposition": "live-static",
@@ -3742,24 +3725,6 @@
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "text-mono",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".text-mono"
-      ],
-      "declarations": 1,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source",
-        "runtime-observed"
       ],
       "supportingEvidence": [
         "bundled-app-token"

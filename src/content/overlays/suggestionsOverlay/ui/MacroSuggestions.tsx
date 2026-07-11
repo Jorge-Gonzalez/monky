@@ -192,15 +192,15 @@ export function MacroSuggestions({
       )}
       <div className="macro-suggestions-footer horizontal gap-comfortable padding-block-tight padding-inline-comfortable font-xs ink-soft ground rule">
         <span>
-          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule">←</kbd>
-          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule">→</kbd>/
-          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule">Tab</kbd> {t('macroSuggestions.footer.navigate')}
+          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule font-mono">←</kbd>
+          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule font-mono">→</kbd>/
+          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule font-mono">Tab</kbd> {t('macroSuggestions.footer.navigate')}
         </span>
         <span>
-          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule">↵</kbd> {t('macroSuggestions.footer.select')}
+          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule font-mono">↵</kbd> {t('macroSuggestions.footer.select')}
         </span>
         <span>
-          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule">Esc</kbd> {t('macroSuggestions.footer.cancel')}
+          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule font-mono">Esc</kbd> {t('macroSuggestions.footer.cancel')}
         </span>
       </div>
     </div>

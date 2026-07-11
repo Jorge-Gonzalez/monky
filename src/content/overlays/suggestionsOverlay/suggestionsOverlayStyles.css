@@ -78,9 +78,9 @@ button, input, textarea, select {
   justify-content: flex-end;
 }
 
+/* Key typeface comes from `font-mono` (R-SKIN-07). */
 .macro-suggestions-kbd {
   padding: 1px 4px;
-  font-family: monospace;
   border-width: 1px;
   border-style: solid;
 }

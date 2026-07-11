@@ -83,7 +83,7 @@
     },
     {
       "id": "search-command-name-cell",
-      "classString": "padding-comfortable ink-accent rule-soft font-md font-semibold",
+      "classString": "padding-comfortable ink-accent rule-soft font-md font-semibold font-mono",
       "backing": []
     },
     {
@@ -103,7 +103,7 @@
     },
     {
       "id": "search-kbd",
-      "classString": "position-relative horizontal align-center justify-center ground ink-soft rule-soft font-xs",
+      "classString": "position-relative horizontal align-center justify-center ground ink-soft rule-soft font-xs font-mono",
       "backing": []
     },
     {
@@ -289,7 +289,7 @@
     },
     {
       "id": "u7-suggestions-kbd",
-      "classString": "corner-sm font-xs ink ground-subtle rule",
+      "classString": "corner-sm font-xs ink ground-subtle rule font-mono",
       "backing": []
     },
     {

@@ -20,7 +20,7 @@ export default function PrefixEditor({ prefixes, onChange }: PrefixEditorProps) 
         selected={prefixes}
         onChange={onChange}
         className="horizontal wrap-allowed gap-snug"
-        buttonClassName="btn btn-outlined text-mono font-lg prefix-cell"
+        buttonClassName="btn btn-outlined font-mono font-lg prefix-cell"
       />
       <p className="section-description ink-soft">{t('options.prefixEditor.description')}</p>
     </div>
