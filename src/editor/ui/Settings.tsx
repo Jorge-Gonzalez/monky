@@ -11,13 +11,13 @@ export default function Settings() {
   }
 
   return (
-    <div className="section">
-      <h2 className="section-title">{t('settings.title')}</h2>
+    <div className="section padding-relaxed rule corner-md ground-subtle">
+      <h2 className="section-title font-lg ink">{t('settings.title')}</h2>
       <div className="horizontal align-center gap-comfortable">
-        <label htmlFor="language-select" className="label" style={{ marginBottom: 0 }}>
+        <label htmlFor="language-select" className="label boxed font-sm font-medium ink" style={{ marginBottom: 0 }}>
           {t('settings.language')}
         </label>
-        <select id="language-select" value={language} onChange={handleLanguageChange} className="input" style={{ width: 'auto' }}>
+        <select id="language-select" value={language} onChange={handleLanguageChange} className="input corner-3xl font-md ground-subtle ink rule" style={{ width: 'auto' }}>
           <option value="en">English</option>
           <option value="es">Español</option>
         </select>

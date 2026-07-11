@@ -5,14 +5,13 @@ import FONT_STYLES from './theme/font.css?raw'
 import GENERATED_GRAMMAR_STYLES from './grammar/ermine.generated.css?raw'
 import CONTROL_SKIN_STYLES from './skin/controls.css?raw'
 import SURFACE_SKIN_STYLES from './skin/surfaces.css?raw'
-import TYPOGRAPHY_SKIN_STYLES from './skin/typography.css?raw'
 
 export const STYLE_LAYER_ORDER = '@layer reset, theme, grammar, skin, components, overrides;'
 
 export const BASE_SHADOW_STYLE_INPUTS = {
   reset: RESET_STYLES,
   theme: [METRIC_STYLES, ERMINE_CONFIG_STYLES, FONT_STYLES].join('\n'),
-  skin: [CONTROL_SKIN_STYLES, SURFACE_SKIN_STYLES, TYPOGRAPHY_SKIN_STYLES].join('\n'),
+  skin: [CONTROL_SKIN_STYLES, SURFACE_SKIN_STYLES].join('\n'),
 } as const
 
 export interface ShadowBundleOptions {

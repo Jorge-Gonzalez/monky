@@ -64,7 +64,7 @@ export function SelectableGroup({
             role="switch"
             aria-checked={isSelected}
             onClick={() => handleClick(option)}
-            className={`${buttonClassName ?? ''} ${isSelected ? 'is-selected' : ''} ${shake === option ? 'shake' : ''}`}
+            className={`${buttonClassName ?? ''} position-relative hover:ground-defined ${isSelected ? 'is-selected' : ''} ${shake === option ? 'shake' : ''}`}
           >
             {option}
           </button>

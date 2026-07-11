@@ -1,7 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/stylelintrc",
   "extends": "stylelint-config-standard",
-  "ignoreFiles": ["src/styles/grammar/ermine.generated.css"],
+  "ignoreFiles": [
+    "src/styles/grammar/ermine.generated.css"
+  ],
   "rules": {
     "color-hex-length": "long",
     "selector-class-pattern": null,
@@ -12,9 +14,28 @@
     "rule-empty-line-before": [
       "always-multi-line",
       {
-        "except": ["first-nested"],
-        "ignore": ["after-comment"]
+        "except": [
+          "first-nested"
+        ],
+        "ignore": [
+          "after-comment"
+        ]
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "src/styles/skin/**/*.css",
+        "src/styles/components/**/*.css",
+        "src/content/overlays/**/*.css",
+        "src/popup/**/*.css",
+        "src/options/**/*.css"
+      ],
+      "rules": {
+        "color-no-hex": true,
+        "color-named": "never"
+      }
+    }
+  ]
 }

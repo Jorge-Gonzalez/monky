@@ -1,5 +1,5 @@
-const p = `width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"`
-const a = `width="26" height="26" fill="currentColor"`
+const p = `class="boxed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"`
+const a = `class="boxed" width="26" height="26" fill="currentColor"`
 
 export const icons = {
   undo: `<svg ${a}><path d="M12.5 10q-3.8.1-6.5 2.6V10H5v5h5v-1H6.3a8 8 0 0 1 6.2-2.8q4.4.2 6.8 3.5l.9-.7a9 9 0 0 0-7.7-4"/></svg>`,

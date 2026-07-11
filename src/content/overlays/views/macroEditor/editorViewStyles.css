@@ -51,7 +51,6 @@
 
 /* Save/error confirmation floats above the bar so it never shifts the layout. */
 .editor-toast {
-  position: absolute;
   left: 50%;
   bottom: 52px;
   transform: translateX(-50%);
@@ -103,7 +102,6 @@
 .command-suggestion-item > .command-suggestion-action,
 .command-suggestion-actions {
   margin-left: auto;
-  flex-shrink: 0;
 }
 
 .command-suggestion-action {

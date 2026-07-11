@@ -132,7 +132,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             <input
               id="modal-macro-command"
               ref={commandInputRef}
-              className={`input ${command && !commandValid ? 'input-error input-dropdown-open' : ''} ${suggest.visible ? 'input-dropdown-open' : ''}`}
+              className={`input corner-3xl font-md ground-subtle ink rule ${command && !commandValid ? 'input-error rule-fail input-dropdown-open' : ''} ${suggest.visible ? 'input-dropdown-open' : ''}`}
               value={command}
               onChange={e => setCommand(e.currentTarget.value)}
               placeholder={t('macroForm.commandPlaceholder', { prefix: prefixes[0] })}
@@ -142,7 +142,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
               {...suggest.inputProps}
             />
             {command && !commandValid && (
-              <div className={`validation-error editor-command-error padding-block-tight padding-inline-snug ground-fail-faint ${suggest.visible ? 'input-dropdown-open' : ''}`}>
+              <div className={`validation-error editor-command-error padding-block-tight padding-inline-snug ground-fail-faint ink-fail font-xs ${suggest.visible ? 'input-dropdown-open' : ''}`}>
                 {t('macroForm.commandPrefixError', { prefixes: prefixes.join(', ') })}
               </div>
             )}
@@ -172,7 +172,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             type="checkbox"
             checked={isSensitive}
             onChange={e => setSensitive(e.currentTarget.checked)}
-            className="checkbox"
+            className="checkbox corner-sm rule"
           />
           <span>{t('macroForm.sensitiveLabel')}</span>
         </label>
@@ -198,7 +198,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
       </div>
 
       {(error || savedToast) && (
-        <div className={`editor-toast alert ${error ? 'alert-error' : 'alert-success'}`} role="status">
+        <div className={`editor-toast alert position-absolute padding-comfortable corner-md ${error ? 'alert-error ground-fail-faint rule-fail ink-fail' : 'alert-success ground-pass-faint rule-pass ink-pass'}`} role="status">
           <p className="font-medium">{error ?? savedToast}</p>
         </div>
       )}

@@ -15,17 +15,13 @@
 }
 
 .page-title {
-  font-size: var(--text-2xl);
   font-weight: 200;
   font-family: 'IBM Plex Condensed Light', sans-serif;
-  color: var(--ink);
   margin: 0 0 var(--spacing-lg) 0;
 }
 
 body {
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background-color: var(--base-tone);
-  color: var(--ink);
   margin: 0;
   padding: 0;
 }

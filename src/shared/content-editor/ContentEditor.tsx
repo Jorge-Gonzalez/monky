@@ -79,7 +79,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
   useEditorShortcuts(editorRef, formatState, handleLinkRequest)
 
   return (
-    <div className={`content-editor vertical ${className}`}>
+    <div className={`content-editor vertical ground-subtle ${className}`}>
       <ContentEditorToolbar
         formatState={formatState}
         linkMode={linkMode}
@@ -91,7 +91,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
       <div
         ref={editorRef}
         contentEditable
-        className="content-editor-body"
+        className="content-editor-body padding-comfortable ink font-md corner-lg rule"
         data-placeholder={placeholder}
         onInput={() => {
           if (!editorRef.current || !onChange) return

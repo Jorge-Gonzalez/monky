@@ -60,10 +60,10 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
             <span className="command-suggestion-command rigid font-md font-medium ink-accent">{macro.command}</span>
             <span className="command-suggestion-text font-sm ink-soft">{macro.text}</span>
             {confirming ? (
-              <span className="command-suggestion-actions horizontal align-center gap-tight">
+              <span className="command-suggestion-actions horizontal align-center gap-tight rigid">
                 <button
                   type="button"
-                  className="command-suggestion-action confirm horizontal align-center justify-center padding-tight corner-sm ink-fail hover:ground-fail hover:ink-inverse"
+                  className="command-suggestion-action confirm horizontal align-center justify-center padding-tight corner-sm ink-fail hover:ground-fail hover:ink-inverse rigid"
                   aria-label={t('macroEditor.confirmDelete')}
                   onMouseDown={e => { e.preventDefault(); e.stopPropagation(); onDelete(macro); setConfirmingId(null); }}
                 >
@@ -71,7 +71,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
                 </button>
                 <button
                   type="button"
-                  className="command-suggestion-action cancel horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-defined hover:ink"
+                  className="command-suggestion-action cancel horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-defined hover:ink rigid"
                   aria-label={t('macroEditor.cancelDelete')}
                   onMouseDown={e => { e.preventDefault(); e.stopPropagation(); setConfirmingId(null); }}
                 >
@@ -81,7 +81,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
             ) : (
               <button
                 type="button"
-                className="command-suggestion-action delete horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-fail-faint hover:ink-fail"
+                className="command-suggestion-action delete horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-fail-faint hover:ink-fail rigid"
                 aria-label={t('macroEditor.deleteMacro')}
                 onMouseDown={e => { e.preventDefault(); e.stopPropagation(); setConfirmingId(macro.id); }}
               >

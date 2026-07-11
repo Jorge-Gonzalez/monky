@@ -13,16 +13,16 @@ interface PrefixEditorProps {
  */
 export default function PrefixEditor({ prefixes, onChange }: PrefixEditorProps) {
   return (
-    <div className="section">
-      <h3 className="section-title">{t('options.prefixEditor.title')}</h3>
+    <div className="section padding-relaxed rule corner-md ground-subtle">
+      <h3 className="section-title font-lg ink">{t('options.prefixEditor.title')}</h3>
       <SelectableGroup
         options={ALL_PREFIXES}
         selected={prefixes}
         onChange={onChange}
         className="horizontal wrap-allowed gap-snug"
-        buttonClassName="btn btn-outlined text-mono text-lg prefix-cell"
+        buttonClassName="btn btn-outlined text-mono font-lg prefix-cell"
       />
-      <p className="section-description">{t('options.prefixEditor.description')}</p>
+      <p className="section-description ink-soft">{t('options.prefixEditor.description')}</p>
     </div>
   );
 }

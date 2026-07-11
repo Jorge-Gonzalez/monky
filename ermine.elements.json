@@ -8,7 +8,7 @@
     },
     {
       "id": "modal-dialog",
-      "classString": "vertical ground rule",
+      "classString": "vertical ground rule corner-lg",
       "backing": []
     },
     {
@@ -149,7 +149,9 @@
     {
       "id": "u6-segmented-option",
       "classString": "elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft rule selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse",
-      "backing": ["aria-checked"]
+      "backing": [
+        "aria-checked"
+      ]
     },
     {
       "id": "u6-editor-shell",
@@ -194,7 +196,9 @@
     {
       "id": "u6-command-suggestion-row",
       "classString": "horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable hover:ground selected:ground-defined",
-      "backing": ["aria-selected"]
+      "backing": [
+        "aria-selected"
+      ]
     },
     {
       "id": "u6-command-suggestion-row-confirming",
@@ -238,12 +242,12 @@
     },
     {
       "id": "u6-content-toolbar",
-      "classString": "horizontal wrap-allowed align-center gap-tight padding-block-tight padding-inline-snug rigid",
+      "classString": "horizontal wrap-allowed align-center gap-tight padding-block-tight padding-inline-snug rigid ground",
       "backing": []
     },
     {
       "id": "u6-content-toolbar-button",
-      "classString": "horizontal align-center justify-center rigid",
+      "classString": "horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink",
       "backing": []
     },
     {
@@ -253,12 +257,12 @@
     },
     {
       "id": "u6-content-style-dropdown",
-      "classString": "position-absolute vertical padding-tight",
+      "classString": "position-absolute vertical padding-tight ground rule corner-md",
       "backing": []
     },
     {
       "id": "u6-content-style-option",
-      "classString": "horizontal align-center gap-snug padding-block-tight padding-inline-snug",
+      "classString": "horizontal align-center gap-snug padding-block-tight padding-inline-snug corner-sm ink font-sm hover:ground-defined",
       "backing": []
     },
     {
@@ -274,7 +278,9 @@
     {
       "id": "u7-suggestions-command-item",
       "classString": "compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent",
-      "backing": ["aria-selected"]
+      "backing": [
+        "aria-selected"
+      ]
     },
     {
       "id": "u7-suggestions-footer",
@@ -304,12 +310,16 @@
     {
       "id": "u7-delete-option",
       "classString": "elastic basis-ratio ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent",
-      "backing": ["aria-selected"]
+      "backing": [
+        "aria-selected"
+      ]
     },
     {
       "id": "u7-delete-danger-option",
       "classString": "elastic basis-ratio ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail",
-      "backing": ["aria-selected"]
+      "backing": [
+        "aria-selected"
+      ]
     },
     {
       "id": "u8-options-mode-row",
@@ -353,7 +363,7 @@
     },
     {
       "id": "popup-results",
-      "classString": "vertical gap-tight",
+      "classString": "vertical gap-tight scroll-auto",
       "backing": []
     },
     {
@@ -414,6 +424,106 @@
     {
       "id": "popup-site-hostname",
       "classString": "font-xs ink-soft",
+      "backing": []
+    },
+    {
+      "id": "phase-b-section",
+      "classString": "padding-relaxed rule corner-md ground-subtle",
+      "backing": []
+    },
+    {
+      "id": "phase-b-section-title",
+      "classString": "font-lg ink",
+      "backing": []
+    },
+    {
+      "id": "phase-b-alert-error",
+      "classString": "padding-comfortable corner-md ground-fail-faint rule-fail ink-fail",
+      "backing": []
+    },
+    {
+      "id": "phase-b-alert-success",
+      "classString": "padding-comfortable corner-md ground-pass-faint rule-pass ink-pass",
+      "backing": []
+    },
+    {
+      "id": "phase-b-card",
+      "classString": "ground rule corner-md padding-comfortable",
+      "backing": []
+    },
+    {
+      "id": "phase-b-empty-state",
+      "classString": "padding-relaxed ink-soft font-md",
+      "backing": []
+    },
+    {
+      "id": "phase-b-label",
+      "classString": "boxed font-sm font-medium ink",
+      "backing": []
+    },
+    {
+      "id": "phase-b-checkbox",
+      "classString": "corner-sm rule",
+      "backing": []
+    },
+    {
+      "id": "phase-b-selectable",
+      "classString": "position-relative hover:ground-defined",
+      "backing": []
+    },
+    {
+      "id": "phase-b-content-editor-shell",
+      "classString": "ground-subtle",
+      "backing": []
+    },
+    {
+      "id": "phase-b-content-editor-body",
+      "classString": "padding-comfortable ink font-md corner-lg rule",
+      "backing": []
+    },
+    {
+      "id": "phase-b-link-input",
+      "classString": "corner-sm ground-subtle ink font-sm rule",
+      "backing": []
+    },
+    {
+      "id": "phase-b-page",
+      "classString": "font-2xl ink ground",
+      "backing": []
+    },
+    {
+      "id": "phase-b-input",
+      "classString": "corner-3xl font-md ground-subtle ink rule",
+      "backing": []
+    },
+    {
+      "id": "phase-b-input-error",
+      "classString": "rule-fail padding-tight",
+      "backing": []
+    },
+    {
+      "id": "phase-b-icon-boxed",
+      "classString": "boxed padding-tight",
+      "backing": []
+    },
+    {
+      "id": "phase-b-icon-boxed-inline",
+      "classString": "boxed-inline padding-tight",
+      "backing": []
+    },
+    {
+      "id": "phase-b-position-straggler",
+      "classString": "position-absolute padding-tight",
+      "backing": []
+    },
+    {
+      "id": "phase-b-rigid-straggler",
+      "classString": "rigid padding-tight",
+      "backing": []
+    },
+    {
+      "id": "phase-b-scroll-straggler",
+      "classString": "scroll-auto padding-tight",
       "backing": []
     }
   ]

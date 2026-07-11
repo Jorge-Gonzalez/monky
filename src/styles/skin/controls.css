@@ -1,21 +1,14 @@
 /* ===== COMPONENT PATTERNS: Forms ===== */
 
 .label {
-  display: block;
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--ink);
   margin-bottom: var(--spacing-xs);
 }
 
 .input {
   width: 100%;
   padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--harmonic);
-  border-radius: var(--radius-3xl);
-  font-size: var(--text-md);
-  background-color: var(--tone-dim);
-  color: var(--ink);
+  border-width: 1px;
+  border-style: solid;
   outline: none;
   transition: border-color var(--transition-fast);
 }
@@ -23,10 +16,6 @@
 .input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--tone);
-}
-
-.input-error {
-  border-color: var(--status-error);
 }
 
 .input-error:focus {
@@ -43,8 +32,6 @@
 }
 
 .radio-label {
-  font-size: var(--text-md);
-  color: var(--ink);
   cursor: pointer;
   user-select: none;
 }
@@ -52,8 +39,8 @@
 .checkbox {
   width: 16px;
   height: 16px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--harmonic);
+  border-width: 1px;
+  border-style: solid;
   cursor: pointer;
 }
 
@@ -67,7 +54,6 @@
 }
 
 .editor-content {
-  color: var(--ink);
   min-height: 150px;
   outline: none;
   overflow: auto;
@@ -116,7 +102,7 @@
 }
 
 .btn-success:hover {
-  background-color: color-mix(in oklch, var(--status-success) 82%, black);
+  background-color: color-mix(in oklch, var(--status-success) 82%, var(--shadow-color));
 }
 
 .btn-link {
@@ -175,7 +161,6 @@
   cursor: pointer;
   border: none;
   background: transparent;
-  font-weight: 500;
   font-size: var(--text-base);
   transition: all var(--transition-fast);
 }
@@ -205,13 +190,8 @@
 
 .selectable-group > * {
   cursor: pointer;
-  position: relative;
   transition: all var(--transition-fast);
   user-select: none;
-}
-
-.selectable-group > *:hover {
-  background-color: var(--tone);
 }
 
 .selectable-group > *:active {
@@ -220,7 +200,7 @@
 
 .selectable-group > .is-selected {
   background-color: var(--accent);
-  color: white;
+  color: var(--ink-alt);
   border-color: var(--accent);
 }
 

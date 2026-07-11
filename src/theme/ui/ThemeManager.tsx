@@ -22,6 +22,7 @@ export function ThemeManager() {
       const isDark = newTheme === 'dark' || (newTheme === 'system' && MQL.matches);
       htmlElement.classList.toggle('dark', isDark);
       bodyElement.classList.toggle('dark', isDark);
+      bodyElement.classList.add('ground', 'ink');
 
       const colors = themeSocketVars(colorTheme, isDark);
       Object.entries(colors).forEach(([key, value]) => {

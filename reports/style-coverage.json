@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-10T22:31:47.210Z",
+  "generatedAt": "2026-07-11T00:04:01.115Z",
   "summary": {
-    "definedClasses": 203,
-    "selectorBlocks": 286,
+    "definedClasses": 204,
+    "selectorBlocks": 275,
     "byDisposition": {
-      "live-static": 203
+      "live-static": 204
     },
     "deadCandidateDeclarations": 0,
     "runtimePages": [
@@ -16,24 +16,24 @@
   "cssCoverage": [
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-BKyMUsie.css",
-      "usedBytes": 11604,
-      "totalBytes": 17672,
-      "usedPercent": 65.7
+      "asset": "assets/renderPageWithTheme-P0uIcgxb.css",
+      "usedBytes": 11211,
+      "totalBytes": 15545,
+      "usedPercent": 72.1
     },
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/popup-D2NWzBVx.css",
-      "usedBytes": 617,
-      "totalBytes": 1765,
-      "usedPercent": 35
+      "asset": "assets/popup-CT07-7yy.css",
+      "usedBytes": 618,
+      "totalBytes": 1531,
+      "usedPercent": 40.4
     },
     {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-BKyMUsie.css",
-      "usedBytes": 12999,
-      "totalBytes": 17672,
-      "usedPercent": 73.6
+      "asset": "assets/renderPageWithTheme-P0uIcgxb.css",
+      "usedBytes": 11806,
+      "totalBytes": 15545,
+      "usedPercent": 75.9
     },
     {
       "page": "/src/options/index.html",
@@ -44,10 +44,10 @@
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-BKyMUsie.css",
-      "usedBytes": 17358,
-      "totalBytes": 17672,
-      "usedPercent": 98.2
+      "asset": "assets/renderPageWithTheme-P0uIcgxb.css",
+      "usedBytes": 15238,
+      "totalBytes": 15545,
+      "usedPercent": 98
     }
   ],
   "classes": [
@@ -59,7 +59,7 @@
       "selectors": [
         ".alert"
       ],
-      "declarations": 4,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -68,40 +68,6 @@
       "supportingEvidence": [
         "bundled-app-token",
         "bundled-example-token"
-      ]
-    },
-    {
-      "className": "alert-error",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".alert-error"
-      ],
-      "declarations": 3,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "alert-success",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".alert-success"
-      ],
-      "declarations": 3,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
       ]
     },
     {
@@ -129,6 +95,41 @@
       ],
       "selectors": [
         ".basis-ratio"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "boxed",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".boxed"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "boxed-inline",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".boxed-inline"
       ],
       "declarations": 1,
       "disposition": "live-static",
@@ -283,7 +284,7 @@
       "selectors": [
         ".card"
       ],
-      "declarations": 4,
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -302,7 +303,7 @@
         ".ce-link-input",
         ".ce-link-input:focus"
       ],
-      "declarations": 10,
+      "declarations": 7,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -317,10 +318,9 @@
         "src/styles/components/content-editor.css"
       ],
       "selectors": [
-        ".ce-style-caret",
-        ".ce-style-caret svg"
+        ".ce-style-caret"
       ],
-      "declarations": 2,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -338,7 +338,7 @@
       "selectors": [
         ".ce-style-dropdown"
       ],
-      "declarations": 9,
+      "declarations": 8,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -355,10 +355,9 @@
       "selectors": [
         ".ce-style-option",
         ".ce-style-option.is-active",
-        ".ce-style-option.is-active .ce-style-option-short",
-        ".ce-style-option:hover"
+        ".ce-style-option.is-active .ce-style-option-short"
       ],
-      "declarations": 13,
+      "declarations": 9,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -376,7 +375,7 @@
         ".ce-style-option-short",
         ".ce-style-option.is-active .ce-style-option-short"
       ],
-      "declarations": 5,
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -393,30 +392,11 @@
       "selectors": [
         ".ce-style-trigger"
       ],
-      "declarations": 6,
+      "declarations": 4,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
         "runtime-observed"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "ce-toolbar",
-      "files": [
-        "src/styles/components/content-editor.css"
-      ],
-      "selectors": [
-        ".ce-toolbar"
-      ],
-      "declarations": 1,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source",
-        "runtime-observed",
-        "test-reference"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -429,11 +409,9 @@
       ],
       "selectors": [
         ".ce-toolbar-btn",
-        ".ce-toolbar-btn svg",
-        ".ce-toolbar-btn.is-active",
-        ".ce-toolbar-btn:hover"
+        ".ce-toolbar-btn.is-active"
       ],
-      "declarations": 14,
+      "declarations": 9,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -451,7 +429,7 @@
       "selectors": [
         ".ce-toolbar-icon"
       ],
-      "declarations": 2,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -544,7 +522,7 @@
         ".command-suggestion-item:hover .command-suggestion-action.delete, .command-suggestion-item[aria-selected=\"true\"] .command-suggestion-action.delete",
         ".command-suggestion-item[data-state=\"confirming-delete\"] .command-suggestion-action"
       ],
-      "declarations": 8,
+      "declarations": 7,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -561,7 +539,7 @@
       "selectors": [
         ".command-suggestion-item > .command-suggestion-action, .command-suggestion-actions"
       ],
-      "declarations": 2,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -598,7 +576,7 @@
         ".command-suggestion-item:hover .command-suggestion-action.delete, .command-suggestion-item[aria-selected=\"true\"] .command-suggestion-action.delete",
         ".command-suggestion-item[data-state=\"confirming-delete\"] .command-suggestion-action"
       ],
-      "declarations": 7,
+      "declarations": 6,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -688,7 +666,7 @@
         ".content-editor .content-editor-body ul",
         ".content-editor .content-editor-body ul, .content-editor .content-editor-body ol"
       ],
-      "declarations": 6,
+      "declarations": 5,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -729,12 +707,30 @@
         ".content-editor-body:focus",
         ".editor-content .content-editor-body"
       ],
-      "declarations": 60,
+      "declarations": 57,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
         "runtime-observed",
         "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "corner-3xl",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".corner-3xl"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -751,7 +747,8 @@
       "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
-        "production-source"
+        "production-source",
+        "runtime-observed"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -786,28 +783,8 @@
       "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "dark",
-      "files": [
-        "src/popup/popup.css"
-      ],
-      "selectors": [
-        ".dark .popup-results",
-        ".dark .popup-results::-webkit-scrollbar-thumb",
-        ".dark .popup-results::-webkit-scrollbar-thumb:hover",
-        ".dark .popup-results::-webkit-scrollbar-track"
-      ],
-      "declarations": 5,
-      "disposition": "live-static",
-      "livenessEvidence": [
         "production-source",
-        "test-reference"
+        "runtime-observed"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -855,7 +832,7 @@
       "selectors": [
         ".divider"
       ],
-      "declarations": 3,
+      "declarations": 4,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -911,7 +888,7 @@
         ".editor-content .content-editor-body",
         ".editor-content.content-editor"
       ],
-      "declarations": 7,
+      "declarations": 6,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -996,7 +973,7 @@
       "selectors": [
         ".editor-toast"
       ],
-      "declarations": 7,
+      "declarations": 6,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -1030,7 +1007,7 @@
       "selectors": [
         ".empty-state"
       ],
-      "declarations": 4,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -1058,15 +1035,32 @@
       ]
     },
     {
+      "className": "font-2xl",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".font-2xl"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
       "className": "font-bold",
       "files": [
-        "src/styles/grammar/ermine.generated.css",
-        "src/styles/skin/typography.css"
+        "src/styles/grammar/ermine.generated.css"
       ],
       "selectors": [
         ".font-bold"
       ],
-      "declarations": 2,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -1109,22 +1103,23 @@
         "runtime-observed"
       ],
       "supportingEvidence": [
-        "bundled-app-token"
+        "bundled-app-token",
+        "bundled-example-token"
       ]
     },
     {
       "className": "font-medium",
       "files": [
-        "src/styles/grammar/ermine.generated.css",
-        "src/styles/skin/typography.css"
+        "src/styles/grammar/ermine.generated.css"
       ],
       "selectors": [
         ".font-medium"
       ],
-      "declarations": 2,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
-        "production-source"
+        "production-source",
+        "runtime-observed"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -1133,13 +1128,12 @@
     {
       "className": "font-semibold",
       "files": [
-        "src/styles/grammar/ermine.generated.css",
-        "src/styles/skin/typography.css"
+        "src/styles/grammar/ermine.generated.css"
       ],
       "selectors": [
         ".font-semibold"
       ],
-      "declarations": 2,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -1362,6 +1356,23 @@
       ]
     },
     {
+      "className": "ground-pass-faint",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ground-pass-faint"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
       "className": "ground-subtle",
       "files": [
         "src/styles/grammar/ermine.generated.css"
@@ -1445,7 +1456,8 @@
       "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
-        "production-source"
+        "production-source",
+        "runtime-observed"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -1513,7 +1525,8 @@
       "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
-        "production-source"
+        "production-source",
+        "runtime-observed"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -1693,6 +1706,23 @@
       ]
     },
     {
+      "className": "ink-pass",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ink-pass"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
       "className": "ink-soft",
       "files": [
         "src/styles/grammar/ermine.generated.css"
@@ -1707,7 +1737,8 @@
         "runtime-observed"
       ],
       "supportingEvidence": [
-        "bundled-app-token"
+        "bundled-app-token",
+        "bundled-example-token"
       ]
     },
     {
@@ -1721,7 +1752,7 @@
         ".input",
         ".input:focus"
       ],
-      "declarations": 12,
+      "declarations": 9,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -1756,10 +1787,9 @@
         "src/styles/skin/controls.css"
       ],
       "selectors": [
-        ".input-error",
         ".input-error:focus"
       ],
-      "declarations": 3,
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -1837,7 +1867,7 @@
       "selectors": [
         ".label"
       ],
-      "declarations": 5,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -2080,7 +2110,7 @@
       "selectors": [
         ".macro-search-results"
       ],
-      "declarations": 4,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2383,7 +2413,7 @@
       "selectors": [
         ".modal-dialog"
       ],
-      "declarations": 8,
+      "declarations": 7,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2578,7 +2608,8 @@
       "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
-        "production-source"
+        "production-source",
+        "runtime-observed"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -2682,10 +2713,12 @@
       "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
-        "production-source"
+        "production-source",
+        "runtime-observed"
       ],
       "supportingEvidence": [
-        "bundled-app-token"
+        "bundled-app-token",
+        "bundled-example-token"
       ]
     },
     {
@@ -2750,7 +2783,7 @@
       "selectors": [
         ".page-title"
       ],
-      "declarations": 5,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -2768,7 +2801,7 @@
       "selectors": [
         ".panel-button"
       ],
-      "declarations": 6,
+      "declarations": 5,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2917,17 +2950,13 @@
         "src/popup/popup.css"
       ],
       "selectors": [
-        ".dark .popup-results",
-        ".dark .popup-results::-webkit-scrollbar-thumb",
-        ".dark .popup-results::-webkit-scrollbar-thumb:hover",
-        ".dark .popup-results::-webkit-scrollbar-track",
         ".popup-results",
         ".popup-results::-webkit-scrollbar",
         ".popup-results::-webkit-scrollbar-thumb",
         ".popup-results::-webkit-scrollbar-thumb:hover",
         ".popup-results::-webkit-scrollbar-track"
       ],
-      "declarations": 20,
+      "declarations": 14,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -3122,7 +3151,7 @@
       "selectors": [
         ".radio-label"
       ],
-      "declarations": 4,
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -3187,6 +3216,40 @@
       ]
     },
     {
+      "className": "rule-fail",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".rule-fail"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "rule-pass",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".rule-pass"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
       "className": "rule-soft",
       "files": [
         "src/styles/grammar/ermine.generated.css"
@@ -3205,6 +3268,24 @@
       ]
     },
     {
+      "className": "scroll-auto",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".scroll-auto"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
       "className": "section",
       "files": [
         "src/styles/skin/surfaces.css"
@@ -3212,7 +3293,7 @@
       "selectors": [
         ".section"
       ],
-      "declarations": 5,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -3231,7 +3312,7 @@
       "selectors": [
         ".section-description"
       ],
-      "declarations": 3,
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -3249,7 +3330,7 @@
       "selectors": [
         ".section-title"
       ],
-      "declarations": 4,
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -3292,7 +3373,7 @@
         ".seg-option:last-child",
         ".seg-option[aria-checked=\"true\"]"
       ],
-      "declarations": 14,
+      "declarations": 13,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -3309,11 +3390,10 @@
       "selectors": [
         ".selectable-group > *",
         ".selectable-group > *:active",
-        ".selectable-group > *:hover",
         ".selectable-group > .is-selected",
         ".selectable-group > .is-selected:hover"
       ],
-      "declarations": 11,
+      "declarations": 9,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -3512,23 +3592,6 @@
       ]
     },
     {
-      "className": "settings-row-label",
-      "files": [
-        "src/content/overlays/views/settings/settingsViewStyles.css"
-      ],
-      "selectors": [
-        ".settings-row-label"
-      ],
-      "declarations": 1,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
       "className": "settings-rows",
       "files": [
         "src/content/overlays/views/settings/settingsViewStyles.css"
@@ -3571,7 +3634,7 @@
         ".settings-view",
         ".settings-view .btn-outlined:not(.is-selected, :hover, :active)"
       ],
-      "declarations": 3,
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -3616,24 +3679,6 @@
       ]
     },
     {
-      "className": "text-lg",
-      "files": [
-        "src/styles/skin/typography.css"
-      ],
-      "selectors": [
-        ".text-lg"
-      ],
-      "declarations": 1,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source",
-        "runtime-observed"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
       "className": "text-mono",
       "files": [
         "src/styles/skin/surfaces.css"
@@ -3646,40 +3691,6 @@
       "livenessEvidence": [
         "production-source",
         "runtime-observed"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "text-sm",
-      "files": [
-        "src/styles/skin/typography.css"
-      ],
-      "selectors": [
-        ".text-sm"
-      ],
-      "declarations": 1,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "validation-error",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".validation-error"
-      ],
-      "declarations": 2,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
       ],
       "supportingEvidence": [
         "bundled-app-token"

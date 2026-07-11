@@ -29,12 +29,12 @@ function shadow(css: string, html: string): void {
 
 shadow(
   composeShadowBundle({ componentStyles: [MODAL_STYLES, SEARCH_STYLES, SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
-  `<div data-probe="modal" class="modal-dialog vertical ground rule">
+  `<div data-probe="modal" class="modal-dialog vertical ground rule corner-lg">
     <div data-probe="search-view" class="macro-search-view vertical">
       <div data-probe="search-input-container" class="macro-search-input-container padding-relaxed rule">
         <input data-probe="search-input" class="macro-search-input padding-block-snug padding-inline-comfortable">
       </div>
-      <div data-probe="search-results" class="macro-search-results elastic basis-ratio grid">
+      <div data-probe="search-results" class="macro-search-results elastic basis-ratio grid scroll-auto">
         <div data-probe="search-item" class="macro-search-item grid span-all position-relative" aria-selected="true">
           <span data-probe="search-cell" class="macro-search-item-command padding-comfortable">command</span>
           <button data-probe="search-edit" class="macro-search-item-edit position-absolute horizontal align-center justify-center padding-tight">edit</button>
@@ -69,16 +69,16 @@ shadow(
 )
 shadow(
   composeShadowBundle({ componentStyles: [SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
-  `<div data-probe="settings-view" class="settings-view vertical">
+  `<div data-probe="settings-view" class="settings-view vertical scroll-auto">
     <div data-probe="settings-group" class="settings-group grid padding-block-loose padding-inline-separated">
       <div data-probe="settings-row" class="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
-        <span class="settings-row-label font-md ink">Theme</span>
+        <span class="settings-row-label font-md ink rigid">Theme</span>
         <div data-probe="settings-appearance" class="settings-appearance-controls horizontal align-center gap-comfortable">
           <div data-probe="seg-control" class="seg-control horizontal position-relative ground-subtle rule corner-md">
             <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft rule selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="true">One</button>
             <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft rule selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="false">Two</button>
           </div>
-          <button data-probe="settings-prefix" class="btn btn-outlined text-mono settings-prefix-btn horizontal align-center justify-center rigid">/</button>
+          <button data-probe="settings-prefix" class="btn btn-outlined text-mono settings-prefix-btn horizontal align-center justify-center rigid position-relative hover:ground-defined">/</button>
         </div>
       </div>
     </div>
@@ -94,24 +94,24 @@ shadow(
               <div data-probe="command-suggestion-item" class="command-suggestion-item horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable hover:ground selected:ground-defined" aria-selected="true">
                 <span data-probe="command-suggestion-command" class="command-suggestion-command rigid font-md font-medium ink-accent">/sig</span>
                 <span class="command-suggestion-text font-sm ink-soft">Signature</span>
-                <button data-probe="command-suggestion-action" class="command-suggestion-action delete horizontal align-center justify-center padding-tight corner-sm ink-soft">×</button>
+                <button data-probe="command-suggestion-action" class="command-suggestion-action delete horizontal align-center justify-center padding-tight corner-sm ink-soft rigid">×</button>
               </div>
             </div>
           </div>
         </div>
-        <div data-probe="content-editor" class="content-editor vertical editor-content elastic basis-ratio">
-          <div data-probe="ce-toolbar" class="ce-toolbar horizontal wrap-allowed align-center gap-tight padding-block-tight padding-inline-snug rigid">
-            <button data-probe="ce-toolbar-btn" class="ce-toolbar-btn horizontal align-center justify-center rigid">B</button>
+        <div data-probe="content-editor" class="content-editor vertical ground-subtle editor-content elastic basis-ratio">
+          <div data-probe="ce-toolbar" class="ce-toolbar horizontal wrap-allowed align-center gap-tight padding-block-tight padding-inline-snug rigid ground">
+            <button data-probe="ce-toolbar-btn" class="ce-toolbar-btn horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink">B</button>
             <div data-probe="ce-style-menu" class="ce-style-menu position-relative">
-              <div data-probe="ce-style-dropdown" class="ce-style-dropdown position-absolute vertical padding-tight">
-                <button data-probe="ce-style-option" class="ce-style-option horizontal align-center gap-snug padding-block-tight padding-inline-snug">
-                  <span class="ce-style-option-short rigid">¶</span>
+              <div data-probe="ce-style-dropdown" class="ce-style-dropdown position-absolute vertical padding-tight ground rule corner-md">
+                <button data-probe="ce-style-option" class="ce-style-option horizontal align-center gap-snug padding-block-tight padding-inline-snug corner-sm ink font-sm hover:ground-defined">
+                  <span class="ce-style-option-short rigid font-xs font-semibold ink-soft">¶</span>
                   <span class="ce-style-option-label elastic basis-ratio">Paragraph</span>
                 </button>
               </div>
             </div>
           </div>
-          <div data-probe="content-editor-body" class="content-editor-body"></div>
+          <div data-probe="content-editor-body" class="content-editor-body padding-comfortable ink font-md corner-lg rule"></div>
         </div>
       </form>
     </div>

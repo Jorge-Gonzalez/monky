@@ -12,9 +12,9 @@ export default function Editor() {
 
   return (
     <div className="page-container">
-      <h1 className="page-title">{t('editor.title')}</h1>
+      <h1 className="page-title font-2xl ink">{t('editor.title')}</h1>
       <MacroForm editing={editingMacro} onDone={resetForm} />
-      <hr className="divider" />
+      <hr className="divider rule" />
       <Settings />
       <MacroListEditor macros={macros} onEdit={setEditingMacro} onDelete={deleteMacro} />
     </div>

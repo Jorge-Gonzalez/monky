@@ -1,59 +1,34 @@
 /* ===== COMPONENT PATTERNS: Sections ===== */
 
 .section {
-  padding: var(--spacing-lg);
-  border: 1px solid var(--harmonic);
-  border-radius: var(--radius-md);
+  border-width: 1px;
+  border-style: solid;
   margin-bottom: var(--spacing-lg);
-  background-color: var(--tone-dim);
 }
 
 .section-title {
-  font-size: var(--text-lg);
   font-weight: 200;
-  color: var(--ink);
   margin: 0 0 var(--spacing-md) 0;
 }
 
 .section-description {
   font-size: var(--text-base);
-  color: var(--ink-soft);
   margin: var(--spacing-sm) 0 0 0;
 }
 
 /* ===== COMPONENT PATTERNS: Alerts ===== */
 
 .alert {
-  padding: var(--spacing-md);
-  border-radius: var(--radius-md);
-  border: 1px solid;
+  border-width: 1px;
+  border-style: solid;
   margin-bottom: var(--spacing-lg);
-}
-
-.alert-error {
-  background-color: var(--status-error-wash);
-  border-color: var(--status-error);
-  color: var(--status-error);
-}
-
-.alert-success {
-  background-color: var(--status-success-wash);
-  border-color: var(--status-success);
-  color: var(--status-success);
-}
-
-.validation-error {
-  color: var(--status-error);
-  font-size: var(--text-xs);
 }
 
 /* ===== COMPONENT PATTERNS: Cards ===== */
 
 .card {
-  background-color: var(--base-tone);
-  border: 1px solid var(--harmonic);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-md);
+  border-width: 1px;
+  border-style: solid;
 }
 
 /* ===== COMPONENT PATTERNS: Utilities ===== */
@@ -74,15 +49,13 @@
 } */
 
 .empty-state {
-  padding: var(--spacing-lg);
-  color: var(--ink-soft);
   text-align: center;
-  font-size: var(--text-md);
 }
 
 .divider {
-  border: none;
-  border-top: 1px solid var(--harmonic);
+  border-width: 0;
+  border-style: solid;
+  border-top-width: 1px;
   margin: var(--spacing-2xl) 0;
 }
 

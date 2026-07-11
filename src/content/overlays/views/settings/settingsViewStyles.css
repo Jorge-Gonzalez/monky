@@ -7,7 +7,6 @@
 
 .settings-view {
   height: 100%;
-  overflow-y: auto;
 }
 
 .settings-body {
@@ -29,9 +28,6 @@
   min-width: 0;
 }
 
-.settings-row-label {
-  flex-shrink: 0;
-}
 
 .settings-divider {
   height: 0;
@@ -93,7 +89,6 @@
 /* Inline so an icon-only option occupies the same text line box (= same height)
    as the text options, sitting on the line's middle. */
 .seg-option svg {
-  display: inline-block;
   vertical-align: middle;
 }
 

@@ -85,27 +85,27 @@ export default function MacroForm({ editing, onDone }: {
   return (
     <form onSubmit={onSubmit} className="vertical gap-comfortable">
       <div>
-        <label htmlFor="macro-command" className="label">
+        <label htmlFor="macro-command" className="label boxed font-sm font-medium ink">
           {t('macroForm.triggerLabel')}
         </label>
         <input
           id="macro-command"
           ref={commandInputRef}
-          className={`input ${command && !commandValid ? 'input-error' : ''}`}
+          className={`input corner-3xl font-md ground-subtle ink rule ${command && !commandValid ? 'input-error rule-fail' : ''}`}
           value={command}
           onChange={e => setCommand(e.currentTarget.value)}
           placeholder={`e.g., ${prefixes[0]}sig`}
           maxLength={50}
         />
         {command && !commandValid && (
-          <p className="validation-error">
+          <p className="validation-error ink-fail font-xs">
             Command must start with: {prefixes.join(', ')}
           </p>
         )}
       </div>
 
       <div>
-        <label htmlFor="macro-text" className="label">
+        <label htmlFor="macro-text" className="label boxed font-sm font-medium ink">
           {t('macroForm.textLabel')}
         </label>
         <ContentEditor
@@ -117,7 +117,7 @@ export default function MacroForm({ editing, onDone }: {
       </div>
 
       {error && (
-        <div className="alert alert-error">
+        <div className="alert alert-error padding-comfortable corner-md ground-fail-faint rule-fail ink-fail">
           <p className="font-medium">{error}</p>
         </div>
       )}
@@ -128,9 +128,9 @@ export default function MacroForm({ editing, onDone }: {
             type="checkbox"
             checked={isSensitive}
             onChange={e => setSensitive(e.currentTarget.checked)}
-            className="checkbox"
+            className="checkbox corner-sm rule"
           />
-          <span className="label" style={{ marginBottom: 0 }}>{t('macroForm.sensitiveLabel')}</span>
+          <span className="label boxed font-sm font-medium ink" style={{ marginBottom: 0 }}>{t('macroForm.sensitiveLabel')}</span>
         </label>
 
         <div className="button-group">

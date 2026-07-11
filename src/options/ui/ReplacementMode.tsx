@@ -10,8 +10,8 @@ interface ReplacementModeProps {
  */
 export default function ReplacementMode({ useCommitKeys, onChange }: ReplacementModeProps) {
   return (
-    <div className="section">
-      <h3 className="section-title">{t('replacementMode.title')}</h3>
+    <div className="section padding-relaxed rule corner-md ground-subtle">
+      <h3 className="section-title font-lg ink">{t('replacementMode.title')}</h3>
       <div className="horizontal gap-loose mode-row">
         <label className="horizontal align-center gap-snug rigid mode-choice">
           <input
@@ -21,7 +21,7 @@ export default function ReplacementMode({ useCommitKeys, onChange }: Replacement
             onChange={() => onChange(false)}
             className="radio rigid"
           />
-          <span className="radio-label rigid">{t('replacementMode.auto')}</span>
+          <span className="radio-label rigid font-md ink">{t('replacementMode.auto')}</span>
         </label>
         <label className="horizontal align-center gap-snug rigid mode-choice">
           <input
@@ -31,10 +31,10 @@ export default function ReplacementMode({ useCommitKeys, onChange }: Replacement
             onChange={() => onChange(true)}
             className="radio rigid"
           />
-          <span className="radio-label rigid">{t('replacementMode.manual')}</span>
+          <span className="radio-label rigid font-md ink">{t('replacementMode.manual')}</span>
         </label>
       </div>
-      <p className="section-description">
+      <p className="section-description ink-soft">
         {t('replacementMode.description')}
       </p>
     </div>

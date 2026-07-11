@@ -8,7 +8,7 @@ export default function Options() {
 
   return (
     <div className="page-container">
-      <h1 className="page-title">{t('options.title')}</h1>
+      <h1 className="page-title font-2xl ink">{t('options.title')}</h1>
       <PrefixEditor prefixes={prefixes} onChange={setPrefixes} />
       <ReplacementMode useCommitKeys={useCommitKeys} onChange={setUseCommitKeys} />
     </div>

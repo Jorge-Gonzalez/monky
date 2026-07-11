@@ -8,7 +8,7 @@ import { SelectableGroup } from '../../../../../shared/ui/SelectableGroup';
 import { t } from '../../../../../lib/i18n';
 
 const SunIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+  <svg className="boxed-inline" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
     <g stroke="currentColor" strokeWidth="1.5">
       <path d="M5 12H1M23 12h-4M7.05 7.05 4.222 4.222M19.778 19.778 16.95 16.95M7.05 16.95l-2.828 2.828M19.778 4.222 16.95 7.05" strokeLinecap="round" />
       <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
@@ -18,7 +18,7 @@ const SunIcon = () => (
 );
 
 const MoonIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+  <svg className="boxed-inline" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
     <path d="M10.41 13.28C7.332 10.205 6.716 5.693 8.357 2c-1.23.41-2.256 1.23-3.281 2.256a10.399 10.399 0 0 0 0 14.768c4.102 4.102 10.46 3.897 14.562-.205 1.026-1.026 1.846-2.051 2.256-3.282-3.896 1.436-8.409.82-11.486-2.256Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
@@ -57,14 +57,14 @@ export function SettingsView(_props: BaseModalViewProps) {
   ];
 
   return (
-    <div className="settings-view vertical">
+    <div className="settings-view vertical scroll-auto">
       <div className="settings-body">
 
         <div className="settings-group grid padding-block-loose padding-inline-separated">
           <div className="settings-section-label font-xs font-medium ink-accent-soft">{t('settings.sections.general')}</div>
           <div className="settings-rows">
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
-              <span className="settings-row-label font-md ink">{t('options.prefixEditor.title')}</span>
+              <span className="settings-row-label font-md ink rigid">{t('options.prefixEditor.title')}</span>
               <SelectableGroup
                 options={ALL_PREFIXES}
                 selected={prefixes}
@@ -74,7 +74,7 @@ export function SettingsView(_props: BaseModalViewProps) {
               />
             </div>
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
-              <span className="settings-row-label font-md ink">{t('replacementMode.title')}</span>
+              <span className="settings-row-label font-md ink rigid">{t('replacementMode.title')}</span>
               <SegmentedControl
                 options={REPLACEMENT_OPTIONS.map(o => ({ value: o.value, label: o.label() }))}
                 value={replacementValue}
@@ -90,7 +90,7 @@ export function SettingsView(_props: BaseModalViewProps) {
           <div className="settings-section-label font-xs font-medium ink-accent-soft">{t('settings.sections.appearance')}</div>
           <div className="settings-rows">
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
-              <span className="settings-row-label font-md ink">{t('settings.colorTheme')}</span>
+              <span className="settings-row-label font-md ink rigid">{t('settings.colorTheme')}</span>
               <div className="settings-appearance-controls horizontal align-center gap-comfortable">
                 <SegmentedControl
                   options={THEME_OPTIONS}
@@ -105,7 +105,7 @@ export function SettingsView(_props: BaseModalViewProps) {
               </div>
             </div>
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
-              <span className="settings-row-label font-md ink">{t('settings.language')}</span>
+              <span className="settings-row-label font-md ink rigid">{t('settings.language')}</span>
               <SegmentedControl
                 options={LANGUAGE_OPTIONS}
                 value={language}
@@ -121,7 +121,7 @@ export function SettingsView(_props: BaseModalViewProps) {
           <div className="settings-section-label font-xs font-medium ink-accent-soft">{t('settings.sections.data')}</div>
           <div className="settings-rows">
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
-              <span className="settings-row-label font-md ink">{t('settings.importExport.title')}</span>
+              <span className="settings-row-label font-md ink rigid">{t('settings.importExport.title')}</span>
               <div className="horizontal gap-snug">
                 <button className="btn btn-outlined rigid" type="button" onClick={exportMacros}>
                   {t('settings.importExport.exportButton')}

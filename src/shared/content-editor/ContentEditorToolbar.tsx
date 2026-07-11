@@ -28,7 +28,7 @@ function Btn({ icon, title, active, onAction }: BtnProps) {
   return (
     <button
       type="button"
-      className={`ce-toolbar-btn horizontal align-center justify-center rigid${active ? ' is-active' : ''}`}
+      className={`ce-toolbar-btn horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink${active ? ' is-active' : ''}`}
       onMouseDown={e => { e.preventDefault(); onAction() }}
       title={title}
       aria-label={title}
@@ -52,7 +52,7 @@ export function ContentEditorToolbar({
 }: ContentEditorToolbarProps) {
   if (linkMode) {
     return (
-      <div className="ce-toolbar horizontal wrap-allowed align-center gap-tight padding-block-tight padding-inline-snug rigid">
+      <div className="ce-toolbar horizontal wrap-allowed align-center gap-tight padding-block-tight padding-inline-snug rigid ground">
         <ContentEditorLinkField
           savedRange={savedRange}
           existingHref={formatState.linkHref}
@@ -64,7 +64,7 @@ export function ContentEditorToolbar({
   }
 
   return (
-    <div className="ce-toolbar horizontal wrap-allowed align-center gap-tight padding-block-tight padding-inline-snug rigid" role="toolbar" aria-label="Formatting">
+    <div className="ce-toolbar horizontal wrap-allowed align-center gap-tight padding-block-tight padding-inline-snug rigid ground" role="toolbar" aria-label="Formatting">
       <Btn icon={icons.undo} title="Undo (Ctrl+Z)" onAction={undo} />
       <Btn icon={icons.redo} title="Redo (Ctrl+Y)" onAction={redo} />
 

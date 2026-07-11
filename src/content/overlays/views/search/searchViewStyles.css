@@ -33,7 +33,6 @@
 /* Results container - extends .scrollable pattern */
 .macro-search-results {
   max-height: 400px;
-  overflow-y: auto;
   grid-template-columns: fit-content(140px) 1fr;
   align-content: start;
 }
