@@ -27,8 +27,6 @@
 .modal-dialog {
   box-shadow: rgba(31, 32, 34, 0.3) 0px 1px 2px 0px, rgba(31, 32, 34, 0.15) 0px 2px 6px 2px;
   mix-blend-mode: multiply;
-  border-width: 1px;
-  border-style: solid;
   width: min(600px, calc(100vw - 2rem));
   height: min(560px, 85vh);
   overflow: hidden;

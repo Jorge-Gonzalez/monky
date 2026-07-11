@@ -17,6 +17,11 @@
   padding: 0;
 }
 
+/* Neutralize the UA hr border; line presence is authored (R-SKIN-11 ruled words). */
+hr {
+  border: none;
+}
+
 /* Reset HTML and body */
 html {
   -webkit-text-size-adjust: 100%;

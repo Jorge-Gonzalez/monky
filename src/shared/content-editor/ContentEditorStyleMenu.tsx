@@ -51,7 +51,7 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
       </button>
 
       {open && (
-        <div className="ce-style-dropdown position-absolute vertical padding-tight ground rule corner-md elevated" role="listbox">
+        <div className="ce-style-dropdown position-absolute vertical padding-tight ground rule ruled corner-md elevated" role="listbox">
           {STYLE_OPTIONS.map(opt => (
             <button
               key={opt.type}

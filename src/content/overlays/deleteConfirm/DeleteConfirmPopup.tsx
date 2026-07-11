@@ -43,15 +43,15 @@ export function DeleteConfirmPopup({
   return (
     <div
       ref={containerRef}
-      className="macro-suggestions-container delete-confirm ground rule corner-lg font-md"
+      className="macro-suggestions-container delete-confirm ground rule ruled corner-lg font-md"
       style={{ left: position.x, top: position.y, position: 'fixed' }}
     >
       <div className={`macro-suggestions-arrow position-absolute ${placement}`} />
-      <div className="delete-confirm-message padding-block-snug padding-inline-comfortable font-sm ink rule-soft">
+      <div className="delete-confirm-message padding-block-snug padding-inline-comfortable font-sm ink rule-soft ruled-bottom">
         {t('deleteConfirm.message')}{' '}
         <span className="delete-confirm-command font-semibold ink-accent font-mono">{macro.command}</span>
       </div>
-      <div className="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft" role="listbox">
+      <div className="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft ruled-bottom" role="listbox">
         <button
           type="button"
           className="macro-suggestions-command-item delete-confirm-option elastic basis-ratio ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
@@ -72,9 +72,9 @@ export function DeleteConfirmPopup({
         </button>
       </div>
       <div className="macro-suggestions-footer horizontal gap-comfortable padding-block-tight padding-inline-comfortable font-xs ink-soft ground rule">
-        <span><kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule font-mono">Tab</kbd> {t('deleteConfirm.footer.switch')}</span>
-        <span><kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule font-mono">↵</kbd> {t('deleteConfirm.footer.select')}</span>
-        <span><kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule font-mono">Esc</kbd> {t('deleteConfirm.footer.cancel')}</span>
+        <span><kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule ruled font-mono">Tab</kbd> {t('deleteConfirm.footer.switch')}</span>
+        <span><kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule ruled font-mono">↵</kbd> {t('deleteConfirm.footer.select')}</span>
+        <span><kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule ruled font-mono">Esc</kbd> {t('deleteConfirm.footer.cancel')}</span>
       </div>
     </div>
   )

@@ -10,13 +10,13 @@ interface MacroItemProps {
 export default function MacroItem({ macro }: MacroItemProps) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="popup-card padding-snug ground rule corner-md">
+    <div className="popup-card padding-snug ground rule ruled corner-md">
       <button className="horizontal justify-between popup-item-toggle ink" onClick={()=>setOpen(!open)}>
         <span className="font-sm font-medium ink-accent">{macro.command}</span>
         <span className="ink-soft">{open ? '▲' : '▼'}</span>
       </button>
       {open && (
-        <div className="vertical gap-snug popup-item-detail rule-soft">
+        <div className="vertical gap-snug popup-item-detail rule-soft ruled-top">
           <pre className="popup-macro-text font-sm ink ground-subtle padding-snug corner-md">{macro.text}</pre>
           <div className="horizontal gap-snug">
             <button className="popup-button padding-inline-snug padding-block-tight ground-accent ink-inverse corner-md font-sm" onClick={()=>chrome.runtime.openOptionsPage()}>{t('macroItem.edit')}</button>

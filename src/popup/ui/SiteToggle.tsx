@@ -34,7 +34,7 @@ export default function SiteToggle() {
   const displayHostname = hostname || t('popup.localFile');
 
   return (
-    <div className="popup-section horizontal align-center justify-between padding-snug ground-subtle rule corner-md">
+    <div className="popup-section horizontal align-center justify-between padding-snug ground-subtle rule ruled corner-md">
       <div className="popup-site-copy font-sm">
         <p className="font-medium ink">{t('popup.macrosOnThisSite')}</p>
         <p className="popup-truncate font-xs ink-soft" title={displayHostname}>{displayHostname}</p>

@@ -2,11 +2,6 @@
   min-width: 240px;
 }
 
-.delete-confirm-message {
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-}
-
 /* Command typeface comes from `font-mono` (R-SKIN-07). */
 
 .macro-suggestions-command-item.delete-confirm-option {

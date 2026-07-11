@@ -18,8 +18,6 @@ button, input, textarea, select {
 
 .macro-suggestions-container {
   box-shadow: 0 10px 25px -5px var(--shadow-color);
-  border-width: 1px;
-  border-style: solid;
   min-width: 200px;
   max-width: 360px;
   overflow: hidden;
@@ -46,17 +44,10 @@ button, input, textarea, select {
   border-bottom-color: var(--base-tone);
 }
 
-.macro-suggestions-commands-list {
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-}
-
 .macro-suggestions-command-item {
   min-width: 0;
   max-width: 8em;
   padding: 3px 6px;
-  border-width: 1px;
-  border-style: solid;
   cursor: pointer;
   transition: all 0.15s ease;
   text-align: center;
@@ -73,14 +64,10 @@ button, input, textarea, select {
 }
 
 .macro-suggestions-footer {
-  border-top-width: 1px;
-  border-top-style: solid;
   justify-content: flex-end;
 }
 
 /* Key typeface comes from `font-mono` (R-SKIN-07). */
 .macro-suggestions-kbd {
   padding: 1px 4px;
-  border-width: 1px;
-  border-style: solid;
 }

@@ -6,12 +6,6 @@
   width: 320px;
 }
 
-.popup-card,
-.popup-section {
-  border-width: 1px;
-  border-style: solid;
-}
-
 .popup-button,
 .popup-icon-button {
   border: none;
@@ -26,8 +20,6 @@
 
 .popup-search-input {
   width: 100%;
-  border-width: 1px;
-  border-style: solid;
   outline: none;
   box-sizing: border-box;
   transition: border-color var(--transition-fast);
@@ -51,8 +43,6 @@
 .popup-item-detail {
   margin-top: var(--spacing-sm);
   padding-top: var(--spacing-sm);
-  border-top-width: 1px;
-  border-top-style: solid;
 }
 
 .popup-macro-text {
@@ -84,11 +74,6 @@
   list-style: none;
   scrollbar-width: thin;
   scrollbar-color: var(--rule) var(--ground-subtle);
-}
-
-.popup-result-item {
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
 }
 
 .popup-results::-webkit-scrollbar {

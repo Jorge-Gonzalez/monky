@@ -29,10 +29,9 @@
 }
 
 
+/* Line presence comes from `ruled-top` (R-SKIN-11); colour from `rule`. */
 .settings-divider {
   height: 0;
-  border-top-width: 1px;
-  border-top-style: solid;
   margin: var(--spacing-sm) var(--spacing-xl);
 }
 

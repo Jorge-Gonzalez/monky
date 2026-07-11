@@ -69,17 +69,10 @@
   left: 0;
   right: 0;
   top: 100%;
-  border-width: 1px;
-  border-style: solid;
   border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   z-index: 10;
   overflow: hidden;
-}
-
-.command-suggestions-label {
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
 }
 
 .command-suggestion-item {
