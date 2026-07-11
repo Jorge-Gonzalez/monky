@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-11T00:04:01.115Z",
+  "generatedAt": "2026-07-11T04:59:17.203Z",
   "summary": {
-    "definedClasses": 204,
-    "selectorBlocks": 275,
+    "definedClasses": 208,
+    "selectorBlocks": 279,
     "byDisposition": {
-      "live-static": 204
+      "live-static": 208
     },
     "deadCandidateDeclarations": 0,
     "runtimePages": [
@@ -16,24 +16,24 @@
   "cssCoverage": [
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-P0uIcgxb.css",
-      "usedBytes": 11211,
-      "totalBytes": 15545,
-      "usedPercent": 72.1
+      "asset": "assets/popup-rX_XcVg_.css",
+      "usedBytes": 618,
+      "totalBytes": 1504,
+      "usedPercent": 41.1
     },
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/popup-CT07-7yy.css",
-      "usedBytes": 618,
-      "totalBytes": 1531,
-      "usedPercent": 40.4
+      "asset": "assets/renderPageWithTheme-fcsRtz-i.css",
+      "usedBytes": 11511,
+      "totalBytes": 15759,
+      "usedPercent": 73
     },
     {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-P0uIcgxb.css",
-      "usedBytes": 11806,
-      "totalBytes": 15545,
-      "usedPercent": 75.9
+      "asset": "assets/renderPageWithTheme-fcsRtz-i.css",
+      "usedBytes": 12106,
+      "totalBytes": 15759,
+      "usedPercent": 76.8
     },
     {
       "page": "/src/options/index.html",
@@ -44,10 +44,10 @@
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-P0uIcgxb.css",
-      "usedBytes": 15238,
-      "totalBytes": 15545,
-      "usedPercent": 98
+      "asset": "assets/renderPageWithTheme-fcsRtz-i.css",
+      "usedBytes": 15452,
+      "totalBytes": 15759,
+      "usedPercent": 98.1
     }
   ],
   "classes": [
@@ -303,7 +303,7 @@
         ".ce-link-input",
         ".ce-link-input:focus"
       ],
-      "declarations": 7,
+      "declarations": 6,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -338,7 +338,7 @@
       "selectors": [
         ".ce-style-dropdown"
       ],
-      "declarations": 8,
+      "declarations": 7,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -611,7 +611,7 @@
       "selectors": [
         ".command-suggestions"
       ],
-      "declarations": 10,
+      "declarations": 9,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -707,7 +707,7 @@
         ".content-editor-body:focus",
         ".editor-content .content-editor-body"
       ],
-      "declarations": 57,
+      "declarations": 56,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -785,6 +785,40 @@
       "livenessEvidence": [
         "production-source",
         "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "current:ground-subtle",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".current\\:ground-subtle[aria-current]:not([aria-current=\"false\"])"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "current:ink-accent",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".current\\:ink-accent[aria-current]:not([aria-current=\"false\"])"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -1000,6 +1034,23 @@
       ]
     },
     {
+      "className": "elevated",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".elevated"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
       "className": "empty-state",
       "files": [
         "src/styles/skin/surfaces.css"
@@ -1029,6 +1080,24 @@
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "focus:rule-accent",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".focus\\:rule-accent:focus"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -1956,7 +2025,7 @@
         ".macro-search-input",
         ".macro-search-input:focus"
       ],
-      "declarations": 8,
+      "declarations": 7,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2499,7 +2568,7 @@
         ".modal-nav-tab",
         ".modal-nav-tab[aria-current=\"page\"]"
       ],
-      "declarations": 5,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2975,7 +3044,7 @@
         ".popup-search-input",
         ".popup-search-input:focus"
       ],
-      "declarations": 8,
+      "declarations": 7,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",

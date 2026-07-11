@@ -38,7 +38,7 @@
     },
     {
       "id": "modal-navigation-tab",
-      "classString": "horizontal align-center justify-center gap-snug ink-soft hover:ground-subtle hover:ink",
+      "classString": "horizontal align-center justify-center gap-snug ink-soft hover:ground-subtle hover:ink current:ink-accent current:ground-subtle",
       "backing": []
     },
     {
@@ -48,7 +48,7 @@
     },
     {
       "id": "search-input",
-      "classString": "padding-block-snug padding-inline-comfortable ground-subtle ink rule-accent-soft corner-md font-md",
+      "classString": "padding-block-snug padding-inline-comfortable ground-subtle ink rule-accent-soft corner-md font-md focus:rule-accent",
       "backing": []
     },
     {
@@ -257,7 +257,7 @@
     },
     {
       "id": "u6-content-style-dropdown",
-      "classString": "position-absolute vertical padding-tight ground rule corner-md",
+      "classString": "position-absolute vertical padding-tight ground rule corner-md elevated",
       "backing": []
     },
     {
@@ -478,12 +478,12 @@
     },
     {
       "id": "phase-b-content-editor-body",
-      "classString": "padding-comfortable ink font-md corner-lg rule",
+      "classString": "padding-comfortable ink font-md corner-lg rule focus:rule-accent",
       "backing": []
     },
     {
       "id": "phase-b-link-input",
-      "classString": "corner-sm ground-subtle ink font-sm rule",
+      "classString": "corner-sm ground-subtle ink font-sm rule focus:rule-accent",
       "backing": []
     },
     {

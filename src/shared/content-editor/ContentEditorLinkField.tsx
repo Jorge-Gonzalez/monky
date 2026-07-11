@@ -50,7 +50,7 @@ export function ContentEditorLinkField({
       <input
         ref={inputRef}
         type="url"
-        className="ce-link-input elastic basis-ratio corner-sm ground-subtle ink font-sm rule"
+        className="ce-link-input elastic basis-ratio corner-sm ground-subtle ink font-sm rule focus:rule-accent"
         value={url}
         onChange={e => setUrl(e.currentTarget.value)}
         onKeyDown={onKeyDown}

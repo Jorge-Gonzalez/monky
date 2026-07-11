@@ -58,10 +58,11 @@
   border-bottom: 2px solid transparent;
 }
 
+/* Current-tab ink and ground come from `current:` words (R-STATE-12). The bottom-rule
+   colour stays local: the base transparent sentinel lives in this (components) layer,
+   which outranks the grammar layer, so a grammar word could never win it back. */
 .modal-nav-tab[aria-current="page"] {
-  color: var(--accent);
   border-bottom-color: var(--accent);
-  background-color: var(--tone-dim);
 }
 
 .modal-nav-icon {

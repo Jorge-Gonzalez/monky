@@ -25,8 +25,8 @@
   transition: border-color var(--transition-fast);
 }
 
+/* Focus border colour comes from `focus:rule-accent` (R-STATE-10); the ring stays local. */
 .macro-search-input:focus {
-  border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--tone);
 }
 

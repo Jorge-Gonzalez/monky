@@ -64,6 +64,7 @@
   border-bottom-right-radius: 0;
 }
 
+/* Cast shadow comes from `elevated` (R-SKIN-09); the dropdown tier shares one shadow. */
 .command-suggestions {
   left: 0;
   right: 0;
@@ -74,7 +75,6 @@
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   z-index: 10;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgb(0 0 0 / 8%);
 }
 
 .command-suggestions-label {

@@ -46,13 +46,13 @@
 
 .ce-style-caret { opacity: 0.6; }
 
+/* Cast shadow comes from `elevated` (R-SKIN-09). */
 .ce-style-dropdown {
   top: calc(100% + 4px);
   left: 0;
   z-index: 10;
   border-width: 1px;
   border-style: solid;
-  box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
   min-width: 140px;
   gap: 2px;
 }
@@ -87,8 +87,8 @@
   outline: none;
 }
 
+/* Focus border colour comes from `focus:rule-accent` (R-STATE-10); the ring stays local. */
 .ce-link-input:focus {
-  border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--tone);
 }
 
@@ -105,8 +105,8 @@
   line-height: normal;
 }
 
+/* Focus border colour comes from `focus:rule-accent` (R-STATE-10); the ring stays local. */
 .content-editor-body:focus {
-  border-color: var(--accent);
   box-shadow: 0 0 0 2px var(--tone);
 }
 
