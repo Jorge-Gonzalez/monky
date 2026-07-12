@@ -9,7 +9,6 @@
 .popup-button,
 .popup-icon-button {
   border: none;
-  cursor: pointer;
   transition: opacity var(--transition-fast), background-color var(--transition-fast);
 }
 
@@ -29,7 +28,6 @@
   width: 100%;
   border: none;
   background: transparent;
-  cursor: pointer;
 }
 
 /* Expanded macro detail: single-side rhythm the grammar does not express. */
@@ -45,7 +43,6 @@
 
 /* Site-toggle label: left offset from the description block. */
 .popup-toggle-label {
-  cursor: pointer;
   margin-left: var(--spacing-sm);
 }
 

@@ -13,7 +13,6 @@
 
 .editor-popout {
   border: none;
-  cursor: pointer;
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
@@ -44,7 +43,6 @@
 }
 
 .editor-sensitive {
-  cursor: pointer;
 }
 
 /* Save/error confirmation floats above the bar so it never shifts the layout. */
@@ -73,7 +71,6 @@
 }
 
 .command-suggestion-item {
-  cursor: pointer;
   transition: background-color var(--transition-fast);
 }
 
@@ -89,7 +86,6 @@
 
 .command-suggestion-action {
   border: none;
-  cursor: pointer;
   transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
 }
 

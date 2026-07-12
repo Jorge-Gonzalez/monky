@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-12T22:24:10.791Z",
+  "generatedAt": "2026-07-12T22:29:44.795Z",
   "summary": {
-    "definedClasses": 206,
-    "selectorBlocks": 265,
+    "definedClasses": 207,
+    "selectorBlocks": 266,
     "byDisposition": {
-      "live-static": 206
+      "live-static": 207
     },
     "deadCandidateDeclarations": 0,
     "runtimePages": [
@@ -16,24 +16,24 @@
   "cssCoverage": [
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/popup-B1hyioFA.css",
-      "usedBytes": 356,
-      "totalBytes": 684,
-      "usedPercent": 52
+      "asset": "assets/popup-DhhFxYmH.css",
+      "usedBytes": 341,
+      "totalBytes": 639,
+      "usedPercent": 53.4
     },
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-By97usM4.css",
-      "usedBytes": 12523,
-      "totalBytes": 16342,
-      "usedPercent": 76.6
+      "asset": "assets/renderPageWithTheme-Dyn3uv_z.css",
+      "usedBytes": 12549,
+      "totalBytes": 16338,
+      "usedPercent": 76.8
     },
     {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-By97usM4.css",
-      "usedBytes": 12999,
-      "totalBytes": 16342,
-      "usedPercent": 79.5
+      "asset": "assets/renderPageWithTheme-Dyn3uv_z.css",
+      "usedBytes": 13025,
+      "totalBytes": 16338,
+      "usedPercent": 79.7
     },
     {
       "page": "/src/options/index.html",
@@ -44,9 +44,9 @@
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-By97usM4.css",
-      "usedBytes": 16035,
-      "totalBytes": 16342,
+      "asset": "assets/renderPageWithTheme-Dyn3uv_z.css",
+      "usedBytes": 16031,
+      "totalBytes": 16338,
       "usedPercent": 98.1
     }
   ],
@@ -356,7 +356,7 @@
         ".ce-style-option.is-active",
         ".ce-style-option.is-active .ce-style-option-short"
       ],
-      "declarations": 8,
+      "declarations": 7,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -410,7 +410,7 @@
         ".ce-toolbar-btn",
         ".ce-toolbar-btn.is-active"
       ],
-      "declarations": 9,
+      "declarations": 8,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -519,7 +519,7 @@
         ".command-suggestion-action",
         ".command-suggestion-item > .command-suggestion-action, .command-suggestion-actions"
       ],
-      "declarations": 4,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -571,7 +571,7 @@
         ".command-suggestion-item",
         ".command-suggestion-item > .command-suggestion-action, .command-suggestion-actions"
       ],
-      "declarations": 3,
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -881,7 +881,7 @@
       "selectors": [
         ".editor-popout"
       ],
-      "declarations": 3,
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -898,7 +898,7 @@
       "selectors": [
         ".editor-sensitive"
       ],
-      "declarations": 1,
+      "declarations": 0,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -1993,7 +1993,7 @@
         ".macro-search-item:not([data-state=\"confirming-delete\"]):hover .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"]):hover .macro-search-item-text",
         ".macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-text"
       ],
-      "declarations": 5,
+      "declarations": 4,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2027,7 +2027,7 @@
       "selectors": [
         ".macro-search-item-edit"
       ],
-      "declarations": 7,
+      "declarations": 6,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -2051,7 +2051,7 @@
         ".macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-text",
         ".macro-search-item[aria-selected=\"true\"] .macro-search-item-text"
       ],
-      "declarations": 12,
+      "declarations": 11,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2160,7 +2160,7 @@
         ".macro-suggestions-command-item",
         ".macro-suggestions-command-item.delete-confirm-option"
       ],
-      "declarations": 5,
+      "declarations": 4,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2812,7 +2812,7 @@
         ".popup-button, .popup-icon-button",
         ".popup-button:hover, .popup-icon-button:hover"
       ],
-      "declarations": 4,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -2849,7 +2849,7 @@
         ".popup-button, .popup-icon-button",
         ".popup-button:hover, .popup-icon-button:hover"
       ],
-      "declarations": 4,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -2882,7 +2882,7 @@
       "selectors": [
         ".popup-item-toggle"
       ],
-      "declarations": 4,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2948,7 +2948,7 @@
       "selectors": [
         ".popup-toggle-label"
       ],
-      "declarations": 2,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -3018,6 +3018,24 @@
         ".prefix-cell"
       ],
       "declarations": 4,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "pressable",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".pressable"
+      ],
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",

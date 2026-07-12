@@ -54,7 +54,7 @@ export function DeleteConfirmPopup({
       <div className="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft ruled-bottom" role="listbox">
         <button
           type="button"
-          className="macro-suggestions-command-item delete-confirm-option elastic basis-ratio min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
+          className="macro-suggestions-command-item delete-confirm-option pressable elastic basis-ratio min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
           role="option"
           aria-selected={nav.selectedIndex === 0}
           onMouseDown={e => { e.preventDefault(); onCancel() }}
@@ -63,7 +63,7 @@ export function DeleteConfirmPopup({
         </button>
         <button
           type="button"
-          className="macro-suggestions-command-item delete-confirm-option delete-confirm-danger elastic basis-ratio min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail"
+          className="macro-suggestions-command-item delete-confirm-option delete-confirm-danger pressable elastic basis-ratio min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail"
           role="option"
           aria-selected={nav.selectedIndex === 1}
           onMouseDown={e => { e.preventDefault(); onConfirm() }}

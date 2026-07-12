@@ -39,7 +39,7 @@ export default function SiteToggle() {
         <p className="font-medium ink">{t('popup.macrosOnThisSite')}</p>
         <p className="hidden truncate font-xs ink-soft" title={displayHostname}>{displayHostname}</p>
       </div>
-      <label className="position-relative horizontal inline align-center rigid popup-toggle-label">
+      <label className="position-relative horizontal inline align-center rigid popup-toggle-label pressable">
         <input
           type="checkbox"
           className="checkbox corner-sm rule"

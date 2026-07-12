@@ -30,7 +30,6 @@
 
 .macro-search-item-command,
 .macro-search-item-text {
-  cursor: pointer;
   transition: background-color var(--transition-fast);
 }
 
@@ -69,7 +68,6 @@
   transform: translateY(-50%);
   border: none;
   background: transparent;
-  cursor: pointer;
   transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
 }
 

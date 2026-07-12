@@ -37,7 +37,7 @@ shadow(
       <div data-probe="search-results" class="macro-search-results elastic basis-ratio grid scroll-auto">
         <div data-probe="search-item" class="macro-search-item grid span-all position-relative selectable" aria-selected="true">
           <span data-probe="search-cell" class="macro-search-item-command padding-comfortable">command</span>
-          <button data-probe="search-edit" class="macro-search-item-edit position-absolute horizontal align-center justify-center padding-tight concealed parent-hover:revealed parent-selected:revealed">edit</button>
+          <button data-probe="search-edit" class="macro-search-item-edit pressable position-absolute horizontal align-center justify-center padding-tight concealed parent-hover:revealed parent-selected:revealed">edit</button>
         </div>
       </div>
       <footer data-probe="search-footer" class="macro-search-footer padding-snug horizontal justify-between">
@@ -52,9 +52,9 @@ shadow(
   composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES] }),
   `<div data-probe="suggestions" class="macro-suggestions-container ground rule ruled corner-lg font-md hidden" style="left: 24px; top: 24px; position: fixed;">
     <div data-probe="suggestions-list" class="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft ruled-bottom" role="listbox">
-      <button data-probe="suggestions-option" class="macro-suggestions-command-item compressible min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">/brb</button>
-      <button data-probe="suggestions-option-hover" class="macro-suggestions-command-item compressible min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/sig</button>
-      <button data-probe="suggestions-option-base" class="macro-suggestions-command-item compressible min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/email</button>
+      <button data-probe="suggestions-option" class="macro-suggestions-command-item pressable compressible min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">/brb</button>
+      <button data-probe="suggestions-option-hover" class="macro-suggestions-command-item pressable compressible min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/sig</button>
+      <button data-probe="suggestions-option-base" class="macro-suggestions-command-item pressable compressible min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/email</button>
     </div>
     <div data-probe="suggestions-footer" class="macro-suggestions-footer horizontal gap-comfortable padding-block-tight padding-inline-comfortable font-xs ink-soft ground rule ruled-top"></div>
   </div>`,
@@ -63,7 +63,7 @@ shadow(
   composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES, DELETE_STYLES] }),
   `<div data-probe="deletion" class="macro-suggestions-container delete-confirm ground rule ruled corner-lg font-md">
     <div class="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft ruled-bottom" role="listbox">
-      <button data-probe="delete-option" class="macro-suggestions-command-item delete-confirm-option elastic basis-ratio min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">Cancel</button>
+      <button data-probe="delete-option" class="macro-suggestions-command-item delete-confirm-option pressable elastic basis-ratio min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">Cancel</button>
     </div>
   </div>`,
 )
@@ -91,20 +91,20 @@ shadow(
           <div class="command-suggestion-wrapper editor-command position-relative elastic basis-ratio">
             <div data-probe="command-suggestions" class="command-suggestions position-absolute ground-subtle rule-accent-soft ruled elevated hidden">
               <div data-probe="command-suggestions-label" class="command-suggestions-label padding-block-tight padding-inline-comfortable font-sm ink-soft rule ruled-bottom">Existing</div>
-              <div data-probe="command-suggestion-item" class="command-suggestion-item hidden horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable hover:ground selected:ground-defined" aria-selected="true">
+              <div data-probe="command-suggestion-item" class="command-suggestion-item pressable hidden horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable hover:ground selected:ground-defined" aria-selected="true">
                 <span data-probe="command-suggestion-command" class="command-suggestion-command rigid font-md font-medium ink-accent">/sig</span>
                 <span class="command-suggestion-text font-sm ink-soft hidden truncate">Signature</span>
-                <button data-probe="command-suggestion-action" class="command-suggestion-action delete horizontal align-center justify-center padding-tight corner-sm ink-soft rigid concealed parent-hover:revealed parent-selected:revealed">×</button>
+                <button data-probe="command-suggestion-action" class="command-suggestion-action delete pressable horizontal align-center justify-center padding-tight corner-sm ink-soft rigid concealed parent-hover:revealed parent-selected:revealed">×</button>
               </div>
             </div>
           </div>
         </div>
         <div data-probe="content-editor" class="content-editor vertical ground-subtle hidden editor-content elastic basis-ratio">
           <div data-probe="ce-toolbar" class="ce-toolbar horizontal wrap-allowed align-center gap-tight padding-block-tight padding-inline-snug rigid ground">
-            <button data-probe="ce-toolbar-btn" class="ce-toolbar-btn horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink">B</button>
+            <button data-probe="ce-toolbar-btn" class="ce-toolbar-btn pressable horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink">B</button>
             <div data-probe="ce-style-menu" class="ce-style-menu position-relative">
               <div data-probe="ce-style-dropdown" class="ce-style-dropdown position-absolute vertical padding-tight ground rule ruled corner-md elevated">
-                <button data-probe="ce-style-option" class="ce-style-option text-start horizontal align-center gap-snug padding-block-tight padding-inline-snug corner-sm ink font-sm hover:ground-defined">
+                <button data-probe="ce-style-option" class="ce-style-option pressable text-start horizontal align-center gap-snug padding-block-tight padding-inline-snug corner-sm ink font-sm hover:ground-defined">
                   <span class="ce-style-option-short rigid font-xs font-semibold ink-soft">¶</span>
                   <span class="ce-style-option-label elastic basis-ratio">Paragraph</span>
                 </button>

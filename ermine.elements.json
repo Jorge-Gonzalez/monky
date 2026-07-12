@@ -70,12 +70,12 @@
     },
     {
       "id": "search-item-command-cell",
-      "classString": "padding-comfortable ink-accent rule-soft font-md font-medium ruled-bottom hidden truncate",
+      "classString": "pressable padding-comfortable ink-accent rule-soft font-md font-medium ruled-bottom hidden truncate",
       "backing": []
     },
     {
       "id": "search-item-text-cell",
-      "classString": "padding-comfortable ink-soft rule-soft font-md ruled-bottom hidden truncate",
+      "classString": "pressable padding-comfortable ink-soft rule-soft font-md ruled-bottom hidden truncate",
       "backing": []
     },
     {
@@ -90,7 +90,7 @@
     },
     {
       "id": "search-item-edit",
-      "classString": "position-absolute horizontal align-center justify-center padding-tight ink-soft corner-sm hover:ground-defined hover:ink-accent concealed parent-hover:revealed parent-selected:revealed",
+      "classString": "pressable position-absolute horizontal align-center justify-center padding-tight ink-soft corner-sm hover:ground-defined hover:ink-accent concealed parent-hover:revealed parent-selected:revealed",
       "backing": [],
       "context": {
         "parentClasses": "grid span-all position-relative selectable"
@@ -175,7 +175,7 @@
     },
     {
       "id": "u6-editor-button",
-      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-defined hover:ink-accent",
+      "classString": "pressable horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-defined hover:ink-accent",
       "backing": []
     },
     {
@@ -200,7 +200,7 @@
     },
     {
       "id": "u6-command-suggestion-row",
-      "classString": "horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable hover:ground selected:ground-defined hidden",
+      "classString": "pressable horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable hover:ground selected:ground-defined hidden",
       "backing": [
         "aria-selected"
       ]
@@ -227,12 +227,12 @@
     },
     {
       "id": "u6-command-suggestion-confirm-action",
-      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-fail hover:ground-fail hover:ink-inverse",
+      "classString": "pressable horizontal align-center justify-center padding-tight corner-sm ink-fail hover:ground-fail hover:ink-inverse",
       "backing": []
     },
     {
       "id": "u6-command-suggestion-delete-action",
-      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-fail-faint hover:ink-fail concealed parent-hover:revealed parent-selected:revealed",
+      "classString": "pressable horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-fail-faint hover:ink-fail concealed parent-hover:revealed parent-selected:revealed",
       "backing": [],
       "context": {
         "parentClasses": "hidden horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable"
@@ -240,7 +240,7 @@
     },
     {
       "id": "u6-command-suggestion-cancel-action",
-      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-defined hover:ink",
+      "classString": "pressable horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-defined hover:ink",
       "backing": []
     },
     {
@@ -285,7 +285,7 @@
     },
     {
       "id": "u7-suggestions-command-item",
-      "classString": "compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent ruled hidden truncate min-width-none text-center",
+      "classString": "pressable compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent ruled hidden truncate min-width-none text-center",
       "backing": [
         "aria-selected"
       ]
@@ -361,12 +361,12 @@
     },
     {
       "id": "popup-primary-button",
-      "classString": "padding-inline-snug padding-block-tight ground-accent ink-inverse corner-md font-xs font-semibold",
+      "classString": "pressable padding-inline-snug padding-block-tight ground-accent ink-inverse corner-md font-xs font-semibold",
       "backing": []
     },
     {
       "id": "popup-icon-button",
-      "classString": "padding-tight ground-subtle ink rule corner-md font-sm",
+      "classString": "pressable padding-tight ground-subtle ink rule corner-md font-sm",
       "backing": []
     },
     {

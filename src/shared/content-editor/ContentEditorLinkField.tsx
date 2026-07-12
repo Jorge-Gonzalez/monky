@@ -58,7 +58,7 @@ export function ContentEditorLinkField({
       />
       <button
         type="button"
-        className="ce-toolbar-btn horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink"
+        className="ce-toolbar-btn pressable horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink"
         onMouseDown={e => { e.preventDefault(); confirm() }}
         title="Apply (Enter)"
         aria-label="Apply link"
@@ -66,7 +66,7 @@ export function ContentEditorLinkField({
       />
       <button
         type="button"
-        className="ce-toolbar-btn horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink"
+        className="ce-toolbar-btn pressable horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink"
         onMouseDown={e => { e.preventDefault(); cancel() }}
         title="Cancel (Escape)"
         aria-label="Cancel"

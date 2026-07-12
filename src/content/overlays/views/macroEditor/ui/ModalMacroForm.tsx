@@ -113,7 +113,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           </h1>
           <button
             type="button"
-            className="editor-popout horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-defined hover:ink-accent"
+            className="editor-popout pressable horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-defined hover:ink-accent"
             onClick={openFullEditor}
             aria-label={t('macroEditor.openFullEditor')}
             title={t('macroEditor.openFullEditor')}
@@ -167,7 +167,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
       />
 
       <div className="editor-bottombar horizontal align-center justify-between gap-comfortable rigid">
-        <label className="editor-sensitive horizontal align-center gap-snug font-sm ink">
+        <label className="editor-sensitive pressable horizontal align-center gap-snug font-sm ink">
           <input
             type="checkbox"
             checked={isSensitive}
