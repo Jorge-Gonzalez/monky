@@ -12,7 +12,7 @@ export function MacroCommandResults({ commands, selectedIndex, onSelect, results
   if (commands.length === 0) {
     return (
       <div ref={resultsRef} className="macro-search-results elastic basis-ratio grid scroll-auto" role="listbox">
-        <div className="macro-search-empty span-all padding-relaxed ink-soft font-md">{t('modalSearch.noMatchingCommands')}</div>
+        <div className="macro-search-empty span-all padding-relaxed ink-soft font-md text-center">{t('modalSearch.noMatchingCommands')}</div>
       </div>
     );
   }

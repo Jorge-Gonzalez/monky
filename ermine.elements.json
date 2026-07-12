@@ -58,7 +58,7 @@
     },
     {
       "id": "search-empty",
-      "classString": "span-all padding-relaxed ink-soft font-md",
+      "classString": "span-all padding-relaxed ink-soft font-md text-center",
       "backing": []
     },
     {
@@ -277,7 +277,7 @@
     },
     {
       "id": "u7-suggestions-command-item",
-      "classString": "compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent ruled hidden truncate min-width-none",
+      "classString": "compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent ruled hidden truncate min-width-none text-center",
       "backing": [
         "aria-selected"
       ]
@@ -534,6 +534,11 @@
     {
       "id": "cycle5-settings-rows",
       "classString": "min-width-none",
+      "backing": []
+    },
+    {
+      "id": "cycle6-style-option",
+      "classString": "text-start horizontal align-center gap-snug padding-block-tight padding-inline-snug corner-sm ink font-sm hover:ground-defined",
       "backing": []
     }
   ]

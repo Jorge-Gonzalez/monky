@@ -56,7 +56,6 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  text-align: left;
   transition: background var(--transition-fast);
 }
 

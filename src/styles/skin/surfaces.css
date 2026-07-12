@@ -48,10 +48,6 @@
   margin-left: 0;
 } */
 
-.empty-state {
-  text-align: center;
-}
-
 /* Line presence comes from `ruled-top` (R-SKIN-11); the substrate resets the UA hr border. */
 .divider {
   margin: var(--spacing-2xl) 0;

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T16:17:56.267Z",
+  "generatedAt": "2026-07-12T17:54:36.126Z",
   "summary": {
     "definedClasses": 201,
     "selectorBlocks": 268,
@@ -16,24 +16,24 @@
   "cssCoverage": [
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/popup-COJAzlET.css",
+      "asset": "assets/popup-CalWD9u2.css",
       "usedBytes": 426,
-      "totalBytes": 1113,
-      "usedPercent": 38.3
+      "totalBytes": 1097,
+      "usedPercent": 38.8
     },
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-Dnbu2hzX.css",
-      "usedBytes": 12140,
-      "totalBytes": 16006,
-      "usedPercent": 75.8
+      "asset": "assets/renderPageWithTheme-B4KcwzzX.css",
+      "usedBytes": 12200,
+      "totalBytes": 16019,
+      "usedPercent": 76.2
     },
     {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-Dnbu2hzX.css",
-      "usedBytes": 12647,
-      "totalBytes": 16006,
-      "usedPercent": 79
+      "asset": "assets/renderPageWithTheme-B4KcwzzX.css",
+      "usedBytes": 12676,
+      "totalBytes": 16019,
+      "usedPercent": 79.1
     },
     {
       "page": "/src/options/index.html",
@@ -44,9 +44,9 @@
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-Dnbu2hzX.css",
-      "usedBytes": 15699,
-      "totalBytes": 16006,
+      "asset": "assets/renderPageWithTheme-B4KcwzzX.css",
+      "usedBytes": 15712,
+      "totalBytes": 16019,
       "usedPercent": 98.1
     }
   ],
@@ -356,7 +356,7 @@
         ".ce-style-option.is-active",
         ".ce-style-option.is-active .ce-style-option-short"
       ],
-      "declarations": 9,
+      "declarations": 8,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -960,24 +960,6 @@
       ],
       "supportingEvidence": [
         "bundled-app-token"
-      ]
-    },
-    {
-      "className": "empty-state",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".empty-state"
-      ],
-      "declarations": 1,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token",
-        "bundled-example-token"
       ]
     },
     {
@@ -1950,23 +1932,6 @@
       ]
     },
     {
-      "className": "macro-search-empty",
-      "files": [
-        "src/content/overlays/views/search/searchViewStyles.css"
-      ],
-      "selectors": [
-        ".macro-search-empty"
-      ],
-      "declarations": 1,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
       "className": "macro-search-input",
       "files": [
         "src/content/overlays/views/search/searchViewStyles.css"
@@ -2184,7 +2149,7 @@
         ".macro-suggestions-command-item",
         ".macro-suggestions-command-item.delete-confirm-option"
       ],
-      "declarations": 6,
+      "declarations": 5,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2872,7 +2837,7 @@
       "selectors": [
         ".popup-item-toggle"
       ],
-      "declarations": 5,
+      "declarations": 4,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -3619,6 +3584,40 @@
       ],
       "selectors": [
         ".span-all"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-center",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".text-center"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "text-start",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".text-start"
       ],
       "declarations": 1,
       "disposition": "live-static",

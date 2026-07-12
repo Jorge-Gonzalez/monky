@@ -23,11 +23,6 @@
   align-content: start;
 }
 
-/* Empty state - uses shared .empty-state pattern */
-.macro-search-empty {
-  text-align: center;
-}
-
 /* Search result items - search-specific pattern */
 .macro-search-item {
   grid-template-columns: subgrid;

@@ -52,9 +52,9 @@ shadow(
   composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES] }),
   `<div data-probe="suggestions" class="macro-suggestions-container ground rule ruled corner-lg font-md hidden" style="left: 24px; top: 24px; position: fixed;">
     <div data-probe="suggestions-list" class="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft ruled-bottom" role="listbox">
-      <button data-probe="suggestions-option" class="macro-suggestions-command-item compressible min-width-none ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">/brb</button>
-      <button data-probe="suggestions-option-hover" class="macro-suggestions-command-item compressible min-width-none ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/sig</button>
-      <button data-probe="suggestions-option-base" class="macro-suggestions-command-item compressible min-width-none ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/email</button>
+      <button data-probe="suggestions-option" class="macro-suggestions-command-item compressible min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">/brb</button>
+      <button data-probe="suggestions-option-hover" class="macro-suggestions-command-item compressible min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/sig</button>
+      <button data-probe="suggestions-option-base" class="macro-suggestions-command-item compressible min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/email</button>
     </div>
     <div data-probe="suggestions-footer" class="macro-suggestions-footer horizontal gap-comfortable padding-block-tight padding-inline-comfortable font-xs ink-soft ground rule ruled-top"></div>
   </div>`,
@@ -63,7 +63,7 @@ shadow(
   composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES, DELETE_STYLES] }),
   `<div data-probe="deletion" class="macro-suggestions-container delete-confirm ground rule ruled corner-lg font-md">
     <div class="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft ruled-bottom" role="listbox">
-      <button data-probe="delete-option" class="macro-suggestions-command-item delete-confirm-option elastic basis-ratio min-width-none ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">Cancel</button>
+      <button data-probe="delete-option" class="macro-suggestions-command-item delete-confirm-option elastic basis-ratio min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">Cancel</button>
     </div>
   </div>`,
 )
@@ -104,7 +104,7 @@ shadow(
             <button data-probe="ce-toolbar-btn" class="ce-toolbar-btn horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink">B</button>
             <div data-probe="ce-style-menu" class="ce-style-menu position-relative">
               <div data-probe="ce-style-dropdown" class="ce-style-dropdown position-absolute vertical padding-tight ground rule ruled corner-md elevated">
-                <button data-probe="ce-style-option" class="ce-style-option horizontal align-center gap-snug padding-block-tight padding-inline-snug corner-sm ink font-sm hover:ground-defined">
+                <button data-probe="ce-style-option" class="ce-style-option text-start horizontal align-center gap-snug padding-block-tight padding-inline-snug corner-sm ink font-sm hover:ground-defined">
                   <span class="ce-style-option-short rigid font-xs font-semibold ink-soft">¶</span>
                   <span class="ce-style-option-label elastic basis-ratio">Paragraph</span>
                 </button>

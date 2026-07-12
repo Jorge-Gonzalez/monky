@@ -27,7 +27,6 @@
 /* Toggle button spanning the macro card header (component identity). */
 .popup-item-toggle {
   width: 100%;
-  text-align: left;
   border: none;
   background: transparent;
   cursor: pointer;
