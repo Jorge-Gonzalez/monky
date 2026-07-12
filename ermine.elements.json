@@ -363,7 +363,7 @@
     },
     {
       "id": "popup-results",
-      "classString": "vertical gap-tight scroll-auto",
+      "classString": "vertical gap-tight scroll-auto scrollbar-subtle",
       "backing": []
     },
     {

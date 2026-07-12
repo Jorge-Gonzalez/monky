@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-12T17:54:36.126Z",
+  "generatedAt": "2026-07-12T18:01:05.824Z",
   "summary": {
-    "definedClasses": 201,
-    "selectorBlocks": 268,
+    "definedClasses": 202,
+    "selectorBlocks": 265,
     "byDisposition": {
-      "live-static": 201
+      "live-static": 202
     },
     "deadCandidateDeclarations": 0,
     "runtimePages": [
@@ -16,24 +16,24 @@
   "cssCoverage": [
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/popup-CalWD9u2.css",
-      "usedBytes": 426,
-      "totalBytes": 1097,
-      "usedPercent": 38.8
+      "asset": "assets/renderPageWithTheme-TvHr0GQ3.css",
+      "usedBytes": 12391,
+      "totalBytes": 16210,
+      "usedPercent": 76.4
     },
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-B4KcwzzX.css",
-      "usedBytes": 12200,
-      "totalBytes": 16019,
-      "usedPercent": 76.2
+      "asset": "assets/popup-B1hyioFA.css",
+      "usedBytes": 356,
+      "totalBytes": 684,
+      "usedPercent": 52
     },
     {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-B4KcwzzX.css",
-      "usedBytes": 12676,
-      "totalBytes": 16019,
-      "usedPercent": 79.1
+      "asset": "assets/renderPageWithTheme-TvHr0GQ3.css",
+      "usedBytes": 12867,
+      "totalBytes": 16210,
+      "usedPercent": 79.4
     },
     {
       "page": "/src/options/index.html",
@@ -44,9 +44,9 @@
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-B4KcwzzX.css",
-      "usedBytes": 15712,
-      "totalBytes": 16019,
+      "asset": "assets/renderPageWithTheme-TvHr0GQ3.css",
+      "usedBytes": 15903,
+      "totalBytes": 16210,
       "usedPercent": 98.1
     }
   ],
@@ -2865,13 +2865,9 @@
         "src/popup/popup.css"
       ],
       "selectors": [
-        ".popup-results",
-        ".popup-results::-webkit-scrollbar",
-        ".popup-results::-webkit-scrollbar-thumb",
-        ".popup-results::-webkit-scrollbar-thumb:hover",
-        ".popup-results::-webkit-scrollbar-track"
+        ".popup-results"
       ],
-      "declarations": 14,
+      "declarations": 4,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -3190,6 +3186,24 @@
       ],
       "selectors": [
         ".scroll-auto"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "scrollbar-subtle",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".scrollbar-subtle"
       ],
       "declarations": 2,
       "disposition": "live-static",

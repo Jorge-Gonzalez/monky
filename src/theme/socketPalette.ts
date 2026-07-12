@@ -46,6 +46,9 @@ const BRIDGE: Record<string, string> = {
   '--status-warning': 'var(--warn)', '--status-warning-wash': 'var(--warn-faint)',
   '--status-info': 'var(--note)', '--status-info-wash': 'var(--note-faint)',
   '--shadow-color': 'var(--shadow)',
+  // R-SKIN-15 scrollbar treatment sockets: Monky keeps its subtle-ground track
+  // instead of the treatment's transparent default.
+  '--scrollbar-thumb': 'var(--rule)', '--scrollbar-track': 'var(--ground-subtle)',
 };
 
 const TONES: Record<string, Record<Mode, Tones>> = {
