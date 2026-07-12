@@ -56,7 +56,6 @@
 /* Overflow comes from the composed `hidden` word on the content-editor wrapper. */
 .editor-content {
   min-height: 150px;
-  outline: none;
 }
 
 /* ===== COMPONENT PATTERNS: Buttons ===== */

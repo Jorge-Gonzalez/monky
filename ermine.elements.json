@@ -18,7 +18,7 @@
     },
     {
       "id": "modal-content",
-      "classString": "elastic basis-ratio vertical hidden",
+      "classString": "elastic basis-ratio vertical hidden min-height-none",
       "backing": []
     },
     {
@@ -48,7 +48,7 @@
     },
     {
       "id": "search-input",
-      "classString": "padding-block-snug padding-inline-comfortable ground-subtle ink rule-accent-soft corner-md font-md focus:rule-accent ruled",
+      "classString": "padding-block-snug padding-inline-comfortable ground-subtle ink rule-accent-soft corner-md font-md focus:rule-accent ruled focus:ring",
       "backing": []
     },
     {
@@ -277,7 +277,7 @@
     },
     {
       "id": "u7-suggestions-command-item",
-      "classString": "compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent ruled hidden truncate",
+      "classString": "compressible ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent ruled hidden truncate min-width-none",
       "backing": [
         "aria-selected"
       ]
@@ -478,12 +478,12 @@
     },
     {
       "id": "phase-b-content-editor-body",
-      "classString": "padding-comfortable ink font-md corner-lg rule focus:rule-accent ruled scroll-auto",
+      "classString": "padding-comfortable ink font-md corner-lg rule focus:rule-accent ruled scroll-auto focus:ring",
       "backing": []
     },
     {
       "id": "phase-b-link-input",
-      "classString": "corner-sm ground-subtle ink font-sm rule focus:rule-accent ruled",
+      "classString": "corner-sm ground-subtle ink font-sm rule focus:rule-accent ruled focus:ring",
       "backing": []
     },
     {
@@ -524,6 +524,16 @@
     {
       "id": "phase-b-scroll-straggler",
       "classString": "scroll-auto padding-tight",
+      "backing": []
+    },
+    {
+      "id": "cycle5-editor-form",
+      "classString": "position-relative elastic basis-ratio vertical gap-comfortable min-height-none",
+      "backing": []
+    },
+    {
+      "id": "cycle5-settings-rows",
+      "classString": "min-width-none",
       "backing": []
     }
   ]

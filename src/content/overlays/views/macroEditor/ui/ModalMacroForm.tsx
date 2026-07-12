@@ -105,7 +105,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   }
 
   return (
-    <form onSubmit={onSubmit} className="editor-form position-relative elastic basis-ratio vertical gap-comfortable">
+    <form onSubmit={onSubmit} className="editor-form position-relative elastic basis-ratio vertical gap-comfortable min-height-none">
       <div className="editor-topbar horizontal align-center justify-between gap-relaxed">
         <div className="editor-topbar-lead horizontal align-center gap-snug rigid">
           <h1 className="editor-title font-lg font-semibold ink">

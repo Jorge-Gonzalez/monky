@@ -20,14 +20,8 @@
 
 .popup-search-input {
   width: 100%;
-  outline: none;
   box-sizing: border-box;
   transition: border-color var(--transition-fast);
-}
-
-/* Focus border colour comes from `focus:rule-accent` (R-STATE-10); the ring stays local. */
-.popup-search-input:focus {
-  box-shadow: 0 0 0 2px var(--tone);
 }
 
 /* Toggle button spanning the macro card header (component identity). */

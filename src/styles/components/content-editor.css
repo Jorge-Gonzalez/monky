@@ -76,27 +76,15 @@
 .ce-link-input {
   height: 28px;
   padding: 0 var(--spacing-sm);
-  outline: none;
-}
-
-/* Focus border colour comes from `focus:rule-accent` (R-STATE-10); the ring stays local. */
-.ce-link-input:focus {
-  box-shadow: 0 0 0 2px var(--tone);
 }
 
 /* Editor body */
 .content-editor-body {
   min-height: 150px;
-  outline: none;
   /* Neutral font so users control styling in their own macros; overrides the
      app font inherited from :host. Children inherit this value. */
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   line-height: normal;
-}
-
-/* Focus border colour comes from `focus:rule-accent` (R-STATE-10); the ring stays local. */
-.content-editor-body:focus {
-  box-shadow: 0 0 0 2px var(--tone);
 }
 
 .content-editor-body:empty::before {

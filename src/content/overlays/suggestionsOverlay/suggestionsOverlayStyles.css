@@ -44,7 +44,6 @@ button, input, textarea, select {
 }
 
 .macro-suggestions-command-item {
-  min-width: 0;
   max-width: 8em;
   padding: 3px 6px;
   cursor: pointer;

@@ -56,7 +56,7 @@ export function ModalShell({
           theme={theme}
         />
 
-        <div className="modal-content elastic basis-ratio vertical hidden">
+        <div className="modal-content elastic basis-ratio vertical hidden min-height-none">
           {childrenWithProps}
         </div>
       </div>

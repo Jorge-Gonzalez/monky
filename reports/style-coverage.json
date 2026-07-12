@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-11T21:57:48.587Z",
+  "generatedAt": "2026-07-12T16:17:56.267Z",
   "summary": {
-    "definedClasses": 200,
-    "selectorBlocks": 271,
+    "definedClasses": 201,
+    "selectorBlocks": 268,
     "byDisposition": {
-      "live-static": 200
+      "live-static": 201
     },
     "deadCandidateDeclarations": 0,
     "runtimePages": [
@@ -16,24 +16,24 @@
   "cssCoverage": [
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-DQrE4yxC.css",
-      "usedBytes": 11965,
-      "totalBytes": 15971,
-      "usedPercent": 74.9
+      "asset": "assets/popup-COJAzlET.css",
+      "usedBytes": 426,
+      "totalBytes": 1113,
+      "usedPercent": 38.3
     },
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/popup-BI7gm1N6.css",
-      "usedBytes": 439,
-      "totalBytes": 1185,
-      "usedPercent": 37
+      "asset": "assets/renderPageWithTheme-Dnbu2hzX.css",
+      "usedBytes": 12140,
+      "totalBytes": 16006,
+      "usedPercent": 75.8
     },
     {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-DQrE4yxC.css",
-      "usedBytes": 12472,
-      "totalBytes": 15971,
-      "usedPercent": 78.1
+      "asset": "assets/renderPageWithTheme-Dnbu2hzX.css",
+      "usedBytes": 12647,
+      "totalBytes": 16006,
+      "usedPercent": 79
     },
     {
       "page": "/src/options/index.html",
@@ -44,9 +44,9 @@
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-DQrE4yxC.css",
-      "usedBytes": 15664,
-      "totalBytes": 15971,
+      "asset": "assets/renderPageWithTheme-Dnbu2hzX.css",
+      "usedBytes": 15699,
+      "totalBytes": 16006,
       "usedPercent": 98.1
     }
   ],
@@ -300,10 +300,9 @@
         "src/styles/components/content-editor.css"
       ],
       "selectors": [
-        ".ce-link-input",
-        ".ce-link-input:focus"
+        ".ce-link-input"
       ],
-      "declarations": 4,
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -669,10 +668,9 @@
         ".content-editor-body strong, .content-editor-body b",
         ".content-editor-body u",
         ".content-editor-body:empty::before",
-        ".content-editor-body:focus",
         ".editor-content .content-editor-body"
       ],
-      "declarations": 53,
+      "declarations": 51,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -853,24 +851,7 @@
         ".editor-content .content-editor-body",
         ".editor-content.content-editor"
       ],
-      "declarations": 5,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "editor-form",
-      "files": [
-        "src/content/overlays/views/macroEditor/editorViewStyles.css"
-      ],
-      "selectors": [
-        ".editor-form"
-      ],
-      "declarations": 1,
+      "declarations": 4,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -1011,6 +992,24 @@
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "focus:ring",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".focus\\:ring:focus"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source",
+        "runtime-observed"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -1973,10 +1972,9 @@
         "src/content/overlays/views/search/searchViewStyles.css"
       ],
       "selectors": [
-        ".macro-search-input",
-        ".macro-search-input:focus"
+        ".macro-search-input"
       ],
-      "declarations": 5,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2186,7 +2184,7 @@
         ".macro-suggestions-command-item",
         ".macro-suggestions-command-item.delete-confirm-option"
       ],
-      "declarations": 7,
+      "declarations": 6,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -2286,6 +2284,23 @@
       ]
     },
     {
+      "className": "min-height-none",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".min-height-none"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
       "className": "min-selected-1",
       "files": [
         "src/styles/skin/controls.css"
@@ -2300,6 +2315,23 @@
         "production-source",
         "runtime-observed",
         "test-reference"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "min-width-none",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".min-width-none"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -2346,23 +2378,6 @@
       ],
       "selectors": [
         ".modal-command-item .modal-command-description"
-      ],
-      "declarations": 1,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "modal-content",
-      "files": [
-        "src/content/overlays/modal/modalStyles.css"
-      ],
-      "selectors": [
-        ".modal-content"
       ],
       "declarations": 1,
       "disposition": "live-static",
@@ -2907,10 +2922,9 @@
         "src/popup/popup.css"
       ],
       "selectors": [
-        ".popup-search-input",
-        ".popup-search-input:focus"
+        ".popup-search-input"
       ],
-      "declarations": 5,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -3536,7 +3550,7 @@
       "selectors": [
         ".settings-rows"
       ],
-      "declarations": 2,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"

@@ -7,10 +7,6 @@
   height: 100%;
 }
 
-.editor-form {
-  min-height: 0;
-}
-
 .editor-title {
   margin: 0;
 }
@@ -35,7 +31,9 @@
   border-bottom-right-radius: var(--radius-md);
 }
 
-/* The content editor owns the remaining vertical space and scrolls internally. */
+/* The content editor owns the remaining vertical space and scrolls internally.
+   Both context rules escape recipe-base floors (min-height: 150px) that outrank
+   grammar words in the cascade layers, so the zeros stay local. */
 .editor-content.content-editor {
   min-height: 0;
 }

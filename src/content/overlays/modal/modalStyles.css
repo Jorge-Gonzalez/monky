@@ -70,7 +70,4 @@
   font-size: var(--text-base);
 }
 
-/* Content area */
-.modal-content {
-  min-height: 0;
-}
+/* Content area: min-content escape comes from `min-height-none` (R-CONSTRAINT-01). */

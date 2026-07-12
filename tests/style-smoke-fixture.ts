@@ -52,9 +52,9 @@ shadow(
   composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES] }),
   `<div data-probe="suggestions" class="macro-suggestions-container ground rule ruled corner-lg font-md hidden" style="left: 24px; top: 24px; position: fixed;">
     <div data-probe="suggestions-list" class="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft ruled-bottom" role="listbox">
-      <button data-probe="suggestions-option" class="macro-suggestions-command-item compressible ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">/brb</button>
-      <button data-probe="suggestions-option-hover" class="macro-suggestions-command-item compressible ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/sig</button>
-      <button data-probe="suggestions-option-base" class="macro-suggestions-command-item compressible ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/email</button>
+      <button data-probe="suggestions-option" class="macro-suggestions-command-item compressible min-width-none ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">/brb</button>
+      <button data-probe="suggestions-option-hover" class="macro-suggestions-command-item compressible min-width-none ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/sig</button>
+      <button data-probe="suggestions-option-base" class="macro-suggestions-command-item compressible min-width-none ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/email</button>
     </div>
     <div data-probe="suggestions-footer" class="macro-suggestions-footer horizontal gap-comfortable padding-block-tight padding-inline-comfortable font-xs ink-soft ground rule ruled-top"></div>
   </div>`,
@@ -63,7 +63,7 @@ shadow(
   composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES, DELETE_STYLES] }),
   `<div data-probe="deletion" class="macro-suggestions-container delete-confirm ground rule ruled corner-lg font-md">
     <div class="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft ruled-bottom" role="listbox">
-      <button data-probe="delete-option" class="macro-suggestions-command-item delete-confirm-option elastic basis-ratio ground-subtle ink rule-soft corner-md font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">Cancel</button>
+      <button data-probe="delete-option" class="macro-suggestions-command-item delete-confirm-option elastic basis-ratio min-width-none ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">Cancel</button>
     </div>
   </div>`,
 )
@@ -83,7 +83,7 @@ shadow(
       </div>
     </div>
     <div data-probe="editor-view" class="macro-editor-view vertical padding-loose ink">
-      <form data-probe="editor-form" class="editor-form position-relative elastic basis-ratio vertical gap-comfortable">
+      <form data-probe="editor-form" class="editor-form position-relative elastic basis-ratio vertical gap-comfortable min-height-none">
         <div data-probe="editor-topbar" class="editor-topbar horizontal align-center justify-between gap-relaxed">
           <div data-probe="editor-topbar-lead" class="editor-topbar-lead horizontal align-center gap-snug rigid">
             <button data-probe="editor-popout" class="editor-popout horizontal align-center justify-center padding-tight corner-sm ink-soft">↗</button>
@@ -111,7 +111,7 @@ shadow(
               </div>
             </div>
           </div>
-          <div data-probe="content-editor-body" class="content-editor-body padding-comfortable ink font-md corner-lg rule ruled scroll-auto focus:rule-accent"></div>
+          <div data-probe="content-editor-body" class="content-editor-body padding-comfortable ink font-md corner-lg rule ruled scroll-auto focus:rule-accent focus:ring"></div>
         </div>
       </form>
     </div>

@@ -62,7 +62,7 @@ export function SettingsView(_props: BaseModalViewProps) {
 
         <div className="settings-group grid padding-block-loose padding-inline-separated">
           <div className="settings-section-label font-xs font-medium ink-accent-soft">{t('settings.sections.general')}</div>
-          <div className="settings-rows">
+          <div className="settings-rows min-width-none">
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
               <span className="settings-row-label font-md ink rigid">{t('options.prefixEditor.title')}</span>
               <SelectableGroup
@@ -88,7 +88,7 @@ export function SettingsView(_props: BaseModalViewProps) {
 
         <div className="settings-group grid padding-block-loose padding-inline-separated">
           <div className="settings-section-label font-xs font-medium ink-accent-soft">{t('settings.sections.appearance')}</div>
-          <div className="settings-rows">
+          <div className="settings-rows min-width-none">
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
               <span className="settings-row-label font-md ink rigid">{t('settings.colorTheme')}</span>
               <div className="settings-appearance-controls horizontal align-center gap-comfortable">
@@ -119,7 +119,7 @@ export function SettingsView(_props: BaseModalViewProps) {
 
         <div className="settings-group grid padding-block-loose padding-inline-separated">
           <div className="settings-section-label font-xs font-medium ink-accent-soft">{t('settings.sections.data')}</div>
-          <div className="settings-rows">
+          <div className="settings-rows min-width-none">
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
               <span className="settings-row-label font-md ink rigid">{t('settings.importExport.title')}</span>
               <div className="horizontal gap-snug">
