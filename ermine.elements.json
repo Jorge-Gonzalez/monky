@@ -63,8 +63,10 @@
     },
     {
       "id": "search-item",
-      "classString": "grid span-all position-relative",
-      "backing": []
+      "classString": "grid span-all position-relative selectable",
+      "backing": [
+        "aria-selected"
+      ]
     },
     {
       "id": "search-item-command-cell",
@@ -88,8 +90,11 @@
     },
     {
       "id": "search-item-edit",
-      "classString": "position-absolute horizontal align-center justify-center padding-tight ink-soft corner-sm hover:ground-defined hover:ink-accent",
-      "backing": []
+      "classString": "position-absolute horizontal align-center justify-center padding-tight ink-soft corner-sm hover:ground-defined hover:ink-accent concealed parent-hover:revealed parent-selected:revealed",
+      "backing": [],
+      "context": {
+        "parentClasses": "grid span-all position-relative selectable"
+      }
     },
     {
       "id": "search-footer",
@@ -227,8 +232,11 @@
     },
     {
       "id": "u6-command-suggestion-delete-action",
-      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-fail-faint hover:ink-fail",
-      "backing": []
+      "classString": "horizontal align-center justify-center padding-tight corner-sm ink-soft hover:ground-fail-faint hover:ink-fail concealed parent-hover:revealed parent-selected:revealed",
+      "backing": [],
+      "context": {
+        "parentClasses": "hidden horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable"
+      }
     },
     {
       "id": "u6-command-suggestion-cancel-action",

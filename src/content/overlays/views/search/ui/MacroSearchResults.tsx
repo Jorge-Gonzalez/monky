@@ -70,7 +70,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
 
   return (
     <div
-      className="macro-search-item grid span-all position-relative"
+      className="macro-search-item grid span-all position-relative selectable"
       role="option"
       aria-selected={isSelected}
       data-state={isConfirmingDelete ? 'confirming-delete' : undefined}
@@ -94,7 +94,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
       )}
       {onEdit && !isConfirmingDelete && (
         <button
-          className="macro-search-item-edit position-absolute horizontal align-center justify-center padding-tight ink-soft corner-sm hover:ground-defined hover:ink-accent"
+          className="macro-search-item-edit position-absolute horizontal align-center justify-center padding-tight ink-soft corner-sm hover:ground-defined hover:ink-accent concealed parent-hover:revealed parent-selected:revealed"
           onClick={e => { e.stopPropagation(); onEdit(); }}
           aria-label={t('modalSearch.editMacro')}
           tabIndex={-1}

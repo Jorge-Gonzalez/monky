@@ -35,9 +35,9 @@ shadow(
         <input data-probe="search-input" class="macro-search-input padding-block-snug padding-inline-comfortable">
       </div>
       <div data-probe="search-results" class="macro-search-results elastic basis-ratio grid scroll-auto">
-        <div data-probe="search-item" class="macro-search-item grid span-all position-relative" aria-selected="true">
+        <div data-probe="search-item" class="macro-search-item grid span-all position-relative selectable" aria-selected="true">
           <span data-probe="search-cell" class="macro-search-item-command padding-comfortable">command</span>
-          <button data-probe="search-edit" class="macro-search-item-edit position-absolute horizontal align-center justify-center padding-tight">edit</button>
+          <button data-probe="search-edit" class="macro-search-item-edit position-absolute horizontal align-center justify-center padding-tight concealed parent-hover:revealed parent-selected:revealed">edit</button>
         </div>
       </div>
       <footer data-probe="search-footer" class="macro-search-footer padding-snug horizontal justify-between">
@@ -94,7 +94,7 @@ shadow(
               <div data-probe="command-suggestion-item" class="command-suggestion-item hidden horizontal align-center gap-comfortable padding-block-snug padding-inline-comfortable selectable hover:ground selected:ground-defined" aria-selected="true">
                 <span data-probe="command-suggestion-command" class="command-suggestion-command rigid font-md font-medium ink-accent">/sig</span>
                 <span class="command-suggestion-text font-sm ink-soft hidden truncate">Signature</span>
-                <button data-probe="command-suggestion-action" class="command-suggestion-action delete horizontal align-center justify-center padding-tight corner-sm ink-soft rigid">×</button>
+                <button data-probe="command-suggestion-action" class="command-suggestion-action delete horizontal align-center justify-center padding-tight corner-sm ink-soft rigid concealed parent-hover:revealed parent-selected:revealed">×</button>
               </div>
             </div>
           </div>

@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-12T18:01:05.824Z",
+  "generatedAt": "2026-07-12T22:24:10.791Z",
   "summary": {
-    "definedClasses": 202,
+    "definedClasses": 206,
     "selectorBlocks": 265,
     "byDisposition": {
-      "live-static": 202
+      "live-static": 206
     },
     "deadCandidateDeclarations": 0,
     "runtimePages": [
@@ -16,24 +16,24 @@
   "cssCoverage": [
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-TvHr0GQ3.css",
-      "usedBytes": 12391,
-      "totalBytes": 16210,
-      "usedPercent": 76.4
-    },
-    {
-      "page": "/src/popup/index.html",
       "asset": "assets/popup-B1hyioFA.css",
       "usedBytes": 356,
       "totalBytes": 684,
       "usedPercent": 52
     },
     {
+      "page": "/src/popup/index.html",
+      "asset": "assets/renderPageWithTheme-By97usM4.css",
+      "usedBytes": 12523,
+      "totalBytes": 16342,
+      "usedPercent": 76.6
+    },
+    {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-TvHr0GQ3.css",
-      "usedBytes": 12867,
-      "totalBytes": 16210,
-      "usedPercent": 79.4
+      "asset": "assets/renderPageWithTheme-By97usM4.css",
+      "usedBytes": 12999,
+      "totalBytes": 16342,
+      "usedPercent": 79.5
     },
     {
       "page": "/src/options/index.html",
@@ -44,9 +44,9 @@
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-TvHr0GQ3.css",
-      "usedBytes": 15903,
-      "totalBytes": 16210,
+      "asset": "assets/renderPageWithTheme-By97usM4.css",
+      "usedBytes": 16035,
+      "totalBytes": 16342,
       "usedPercent": 98.1
     }
   ],
@@ -517,11 +517,9 @@
       ],
       "selectors": [
         ".command-suggestion-action",
-        ".command-suggestion-item > .command-suggestion-action, .command-suggestion-actions",
-        ".command-suggestion-item:hover .command-suggestion-action.delete, .command-suggestion-item[aria-selected=\"true\"] .command-suggestion-action.delete",
-        ".command-suggestion-item[data-state=\"confirming-delete\"] .command-suggestion-action"
+        ".command-suggestion-item > .command-suggestion-action, .command-suggestion-actions"
       ],
-      "declarations": 7,
+      "declarations": 4,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -571,11 +569,9 @@
       ],
       "selectors": [
         ".command-suggestion-item",
-        ".command-suggestion-item > .command-suggestion-action, .command-suggestion-actions",
-        ".command-suggestion-item:hover .command-suggestion-action.delete, .command-suggestion-item[aria-selected=\"true\"] .command-suggestion-action.delete",
-        ".command-suggestion-item[data-state=\"confirming-delete\"] .command-suggestion-action"
+        ".command-suggestion-item > .command-suggestion-action, .command-suggestion-actions"
       ],
-      "declarations": 5,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -612,6 +608,23 @@
         ".compressible"
       ],
       "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "concealed",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".concealed"
+      ],
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -1955,12 +1968,11 @@
       ],
       "selectors": [
         ".macro-search-item",
-        ".macro-search-item:hover .macro-search-item-edit, .macro-search-item[aria-selected=\"true\"] .macro-search-item-edit",
         ".macro-search-item:not([data-state=\"confirming-delete\"]):hover .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"]):hover .macro-search-item-text",
         ".macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-command, .macro-search-item:not([data-state=\"confirming-delete\"])[aria-selected=\"true\"] .macro-search-item-text",
         ".macro-search-item[aria-selected=\"true\"] .macro-search-item-text"
       ],
-      "declarations": 7,
+      "declarations": 6,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -2013,10 +2025,9 @@
         "src/content/overlays/views/search/searchViewStyles.css"
       ],
       "selectors": [
-        ".macro-search-item-edit",
-        ".macro-search-item:hover .macro-search-item-edit, .macro-search-item[aria-selected=\"true\"] .macro-search-item-edit"
+        ".macro-search-item-edit"
       ],
-      "declarations": 9,
+      "declarations": 7,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -2759,6 +2770,40 @@
       ]
     },
     {
+      "className": "parent-hover:revealed",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".selectable:hover .parent-hover\\:revealed"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "parent-selected:revealed",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".selectable[aria-selected=\"true\"] .parent-selected\\:revealed"
+      ],
+      "declarations": 1,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
       "className": "popup-button",
       "files": [
         "src/popup/popup.css"
@@ -3304,6 +3349,24 @@
         ".seg-option[aria-checked=\"true\"]"
       ],
       "declarations": 13,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
+      "className": "selectable",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".selectable:hover .parent-hover\\:revealed",
+        ".selectable[aria-selected=\"true\"] .parent-selected\\:revealed"
+      ],
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"

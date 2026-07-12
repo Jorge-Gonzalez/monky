@@ -90,16 +90,8 @@
 .command-suggestion-action {
   border: none;
   cursor: pointer;
-  opacity: 0;
   transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
 }
 
-/* Reveal the trash on hover/selection, like the search view's edit icon. */
-.command-suggestion-item:hover .command-suggestion-action.delete,
-.command-suggestion-item[aria-selected="true"] .command-suggestion-action.delete {
-  opacity: 1;
-}
-
-.command-suggestion-item[data-state="confirming-delete"] .command-suggestion-action {
-  opacity: 1;
-}
+/* Reveal-on-row-state comes from `concealed parent-hover:revealed parent-selected:revealed`
+   (R-STATE-13/R-SKIN-16); the confirming actions are conditionally rendered and never concealed. */

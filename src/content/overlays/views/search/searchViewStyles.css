@@ -70,13 +70,7 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  opacity: 0;
   transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
-}
-
-.macro-search-item:hover .macro-search-item-edit,
-.macro-search-item[aria-selected="true"] .macro-search-item-edit {
-  opacity: 1;
 }
 
 .macro-search-item-text mark {
