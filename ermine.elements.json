@@ -38,7 +38,7 @@
     },
     {
       "id": "modal-navigation-tab",
-      "classString": "horizontal align-center justify-center gap-snug ink-soft hover:ground-subtle hover:ink current:ink-accent current:ground-subtle",
+      "classString": "pressable font-md font-medium horizontal align-center justify-center gap-snug ink-soft hover:ground-subtle hover:ink current:ink-accent current:ground-subtle",
       "backing": []
     },
     {
@@ -245,7 +245,7 @@
     },
     {
       "id": "u6-editor-sensitive",
-      "classString": "horizontal align-center gap-snug font-sm ink",
+      "classString": "pressable horizontal align-center gap-snug font-sm ink",
       "backing": []
     },
     {
@@ -471,7 +471,7 @@
     },
     {
       "id": "phase-b-checkbox",
-      "classString": "corner-sm rule",
+      "classString": "pressable ruled corner-sm rule focus:ring",
       "backing": []
     },
     {
@@ -501,12 +501,12 @@
     },
     {
       "id": "phase-b-input",
-      "classString": "corner-3xl font-md ground-subtle ink rule",
+      "classString": "padding-block-snug padding-inline-comfortable ruled corner-3xl font-md ground-subtle ink rule focus:rule-accent focus:ring",
       "backing": []
     },
     {
       "id": "phase-b-input-error",
-      "classString": "rule-fail padding-tight",
+      "classString": "rule-fail focus:rule-fail padding-tight",
       "backing": []
     },
     {
@@ -547,6 +547,41 @@
     {
       "id": "cycle6-style-option",
       "classString": "text-start horizontal align-center gap-snug padding-block-tight padding-inline-snug corner-sm ink font-sm hover:ground-defined",
+      "backing": []
+    },
+    {
+      "id": "phase-f-radio",
+      "classString": "pressable",
+      "backing": []
+    },
+    {
+      "id": "phase-f-button-group",
+      "classString": "horizontal inline",
+      "backing": []
+    },
+    {
+      "id": "phase-f-button-outlined",
+      "classString": "pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground ink ruled rule hover:ground-defined",
+      "backing": []
+    },
+    {
+      "id": "phase-f-button-settings-outlined",
+      "classString": "pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-subtle ink ruled rule hover:ground-defined",
+      "backing": []
+    },
+    {
+      "id": "phase-f-button-success",
+      "classString": "pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-pass ink-inverse ruled rule",
+      "backing": []
+    },
+    {
+      "id": "phase-f-button-link",
+      "classString": "ink-accent font-sm",
+      "backing": []
+    },
+    {
+      "id": "phase-f-button-link-danger",
+      "classString": "ink-fail font-sm",
       "backing": []
     }
   ]

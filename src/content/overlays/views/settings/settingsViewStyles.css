@@ -91,8 +91,3 @@
 .seg-control.is-sliding .seg-option[aria-checked="true"] {
   background: transparent;
 }
-
-/* Tone-dim background for all controls within settings view */
-.settings-view .btn-outlined:not(.is-selected, :hover, :active) {
-  background-color: var(--tone-dim);
-}

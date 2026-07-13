@@ -1,34 +1,17 @@
 /* ===== COMPONENT PATTERNS: Forms ===== */
 
-.label {
-  margin-bottom: var(--spacing-xs);
-}
-
 .input {
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-width: 1px;
-  border-style: solid;
-  outline: none;
   transition: border-color var(--transition-fast);
 }
 
-.input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--tone);
-}
-
 .input-error:focus {
-  border-color: var(--status-error);
   box-shadow: inset 0 0 0 2px var(--status-error-wash);
 }
 
 .radio {
-  margin-right: var(--spacing-sm);
-  cursor: pointer;
   width: 16px;
   height: 16px;
-  accent-color: var(--accent);
 }
 
 .radio-label {
@@ -39,18 +22,6 @@
 .checkbox {
   width: 16px;
   height: 16px;
-  border-width: 1px;
-  border-style: solid;
-  cursor: pointer;
-}
-
-.checkbox:checked {
-  accent-color: var(--accent);
-}
-
-.checkbox:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
 }
 
 /* Overflow comes from the composed `hidden` word on the content-editor wrapper. */
@@ -61,43 +32,7 @@
 /* ===== COMPONENT PATTERNS: Buttons ===== */
 
 .btn {
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--radius-md);
-  font-size: var(--text-md);
-  font-weight: 500;
-  cursor: pointer;
   transition: all var(--transition-fast);
-  border: none;
-  outline: none;
-}
-
-.btn:focus {
-  box-shadow: 0 0 0 2px var(--accent);
-}
-
-.btn-secondary {
-  background-color: var(--tone-dim);
-  color: var(--ink);
-  border: 1px solid var(--harmonic);
-}
-
-.btn-secondary:hover {
-  background-color: var(--tone);
-}
-
-.btn-outlined {
-  background-color: var(--base-tone);
-  color: var(--ink);
-  border: 1px solid var(--harmonic);
-}
-
-.btn-outlined:hover {
-  background-color: var(--tone);
-}
-
-.btn-success {
-  background-color: var(--status-success);
-  color: var(--ink-alt);
 }
 
 .btn-success:hover {
@@ -105,14 +40,7 @@
 }
 
 .btn-link {
-  background: none;
-  border: none;
-  color: var(--accent);
   text-decoration: none;
-  font-size: var(--text-sm);
-  padding: 0;
-  cursor: pointer;
-  font-weight: 400;
 }
 
 .btn-link:hover {
@@ -120,28 +48,14 @@
 }
 
 .btn-link-danger {
-  background: none;
-  border: none;
-  color: var(--status-error);
   text-decoration: none;
-  font-size: var(--text-sm);
-  padding: 0;
-  cursor: pointer;
-  font-weight: 400;
 }
 
 .btn-link-danger:hover {
   text-decoration: underline;
 }
 
-.btn:active {
-  background-color: var(--accent);
-  color: var(--ink-alt);
-}
-
 .btn:disabled {
-  background-color: var(--tone-dim);
-  color: var(--ink-soft);
   cursor: not-allowed;
   opacity: 0.6;
 }
@@ -151,17 +65,11 @@
   opacity: 0.6;
 }
 
-.button-group {
-  display: inline-flex;
-}
-
 /* Panel buttons - buttons integrated into panel/group layouts. Border/background
    stripping comes from the substrate's button reset (reset layer), which words can
    override — a later-layer transparent here was shadowing the nav tab's hover:/
    current: grounds (R-IMPL-02). */
 .panel-button {
-  cursor: pointer;
-  font-size: var(--text-base);
   transition: all var(--transition-fast);
 }
 

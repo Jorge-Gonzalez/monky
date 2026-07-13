@@ -70,7 +70,7 @@ export function SettingsView(_props: BaseModalViewProps) {
                 selected={prefixes}
                 onChange={setPrefixes}
                 className="horizontal gap-snug"
-                buttonClassName="btn btn-outlined font-mono settings-prefix-btn horizontal align-center justify-center rigid"
+                buttonClassName="btn pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-subtle ink ruled rule font-mono settings-prefix-btn horizontal align-center justify-center rigid"
               />
             </div>
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
@@ -123,10 +123,10 @@ export function SettingsView(_props: BaseModalViewProps) {
             <div className="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
               <span className="settings-row-label font-md ink rigid">{t('settings.importExport.title')}</span>
               <div className="horizontal gap-snug">
-                <button className="btn btn-outlined rigid" type="button" onClick={exportMacros}>
+                <button className="btn pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-subtle ink ruled rule hover:ground-defined rigid" type="button" onClick={exportMacros}>
                   {t('settings.importExport.exportButton')}
                 </button>
-                <button className="btn btn-outlined rigid" type="button" onClick={() => fileInputRef.current?.click()}>
+                <button className="btn pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-subtle ink ruled rule hover:ground-defined rigid" type="button" onClick={() => fileInputRef.current?.click()}>
                   {t('settings.importExport.importButton')}
                 </button>
                 <input

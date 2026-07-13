@@ -58,6 +58,11 @@ input, button, textarea, select {
   color: inherit;
 }
 
+/* Native controls follow the theme accent. */
+input, select, textarea {
+  accent-color: var(--accent);
+}
+
 button {
   background: none;
   border: none;

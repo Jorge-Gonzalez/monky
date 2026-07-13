@@ -38,6 +38,8 @@ try {
         row: pick(document.querySelector('#row'), ['display', 'flex-direction', 'gap']),
         button: pick(document.querySelector('#button'), ['display', 'padding', 'border-radius', 'background-color']),
         popup: pick(document.querySelector('#popup'), ['width', 'background-color', 'color']),
+        optionsPrefix: pick(document.querySelector('#options-prefix'), ['background-color', 'color', 'border-top-color', 'border-top-width', 'border-top-style']),
+        optionsPrefixSelected: pick(document.querySelector('#options-prefix-selected'), ['background-color', 'color', 'border-top-color', 'border-top-width', 'border-top-style']),
       },
       modal: shadowProbe('modal', ['display', 'flex-direction', 'width', 'height', 'border-radius', 'overflow']),
       search: {
@@ -58,7 +60,8 @@ try {
         row: shadowTarget('settings-row', ['display', 'align-items', 'justify-content', 'gap', 'padding-top', 'padding-bottom']),
         appearance: shadowTarget('settings-appearance', ['display', 'align-items', 'gap']),
         seg: shadowTarget('seg-control', ['display', 'position', 'overflow', 'border-radius']),
-        prefix: shadowTarget('settings-prefix', ['flex-grow', 'flex-shrink', 'width', 'height', 'display', 'align-items', 'justify-content']),
+        prefix: shadowTarget('settings-prefix', ['flex-grow', 'flex-shrink', 'width', 'height', 'display', 'align-items', 'justify-content', 'background-color', 'color', 'border-top-color', 'border-top-width', 'border-top-style']),
+        export: shadowTarget('settings-export', ['background-color', 'color', 'border-top-color', 'border-top-width', 'border-top-style']),
       },
       editor: {
         view: shadowTarget('editor-view', ['display', 'flex-direction', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left']),
@@ -75,6 +78,9 @@ try {
         menu: shadowTarget('ce-style-menu', ['position']),
         dropdown2: shadowTarget('ce-style-dropdown', ['position', 'display', 'flex-direction', 'padding', 'gap']),
         option: shadowTarget('ce-style-option', ['display', 'align-items', 'gap', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left']),
+        buttonGroup: shadowTarget('button-group', ['display']),
+        cancel: shadowTarget('button-cancel', ['background-color', 'color', 'border-top-color', 'border-top-width', 'border-top-style']),
+        save: shadowTarget('button-save', ['background-color', 'color', 'border-top-color', 'border-top-width', 'border-top-style']),
       },
       suggestions: {
         container: shadowProbe('suggestions', ['min-width', 'max-width', 'border-radius', 'overflow', 'font-size']),
@@ -115,7 +121,7 @@ try {
     },
     "button": {
       "display": "block",
-      "padding": "8px 16px",
+      "padding": "4px 8px",
       "border-radius": "6px",
       "background-color": "rgb(20, 90, 200)"
     },
@@ -123,6 +129,20 @@ try {
       "width": "320px",
       "background-color": "rgb(250, 251, 252)",
       "color": "rgb(20, 21, 22)"
+    },
+    "optionsPrefix": {
+      "background-color": "rgb(250, 251, 252)",
+      "color": "rgb(20, 21, 22)",
+      "border-top-color": "rgb(160, 161, 162)",
+      "border-top-width": "1px",
+      "border-top-style": "solid"
+    },
+    "optionsPrefixSelected": {
+      "background-color": "rgb(20, 90, 200)",
+      "color": "rgb(254, 254, 254)",
+      "border-top-color": "rgb(20, 90, 200)",
+      "border-top-width": "1px",
+      "border-top-style": "solid"
     }
   },
   "modal": {
@@ -152,7 +172,7 @@ try {
     "kbd": { "position": "relative", "display": "flex", "align-items": "center", "justify-content": "center" }
   },
   "settings": {
-    "view": { "display": "flex", "flex-direction": "column", "height": "234px", "overflow-y": "auto" },
+    "view": { "display": "flex", "flex-direction": "column", "height": "295px", "overflow-y": "auto" },
     "group": {
       "display": "grid",
       "grid-template-columns": "300px 900px",
@@ -178,7 +198,19 @@ try {
       "height": "32px",
       "display": "flex",
       "align-items": "center",
-      "justify-content": "center"
+      "justify-content": "center",
+      "background-color": "rgb(235, 236, 237)",
+      "color": "rgb(20, 21, 22)",
+      "border-top-color": "rgb(160, 161, 162)",
+      "border-top-width": "1px",
+      "border-top-style": "solid"
+    },
+    "export": {
+      "background-color": "rgb(235, 236, 237)",
+      "color": "rgb(20, 21, 22)",
+      "border-top-color": "rgb(160, 161, 162)",
+      "border-top-width": "1px",
+      "border-top-style": "solid"
     }
   },
   "editor": {
@@ -247,6 +279,23 @@ try {
       "padding-right": "8px",
       "padding-bottom": "4px",
       "padding-left": "8px"
+    },
+    "buttonGroup": {
+      "display": "flex"
+    },
+    "cancel": {
+      "background-color": "rgb(250, 251, 252)",
+      "color": "rgb(20, 21, 22)",
+      "border-top-color": "rgb(160, 161, 162)",
+      "border-top-width": "1px",
+      "border-top-style": "solid"
+    },
+    "save": {
+      "background-color": "rgb(30, 140, 80)",
+      "color": "rgb(254, 254, 254)",
+      "border-top-color": "rgb(160, 161, 162)",
+      "border-top-width": "1px",
+      "border-top-style": "solid"
     }
   },
   "suggestions": {

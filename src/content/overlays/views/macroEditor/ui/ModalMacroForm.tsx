@@ -132,7 +132,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             <input
               id="modal-macro-command"
               ref={commandInputRef}
-              className={`input corner-3xl font-md ground-subtle ink rule ${command && !commandValid ? 'input-error rule-fail input-dropdown-open' : ''} ${suggest.visible ? 'input-dropdown-open' : ''}`}
+              className={`input padding-block-snug padding-inline-comfortable ruled corner-3xl font-md ground-subtle ink rule focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail input-dropdown-open' : ''} ${suggest.visible ? 'input-dropdown-open' : ''}`}
               value={command}
               onChange={e => setCommand(e.currentTarget.value)}
               placeholder={t('macroForm.commandPlaceholder', { prefix: prefixes[0] })}
@@ -172,16 +172,16 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             type="checkbox"
             checked={isSensitive}
             onChange={e => setSensitive(e.currentTarget.checked)}
-            className="checkbox corner-sm rule"
+            className="checkbox pressable ruled corner-sm rule focus:ring"
           />
           <span>{t('macroForm.sensitiveLabel')}</span>
         </label>
 
-        <div className="button-group gap-snug">
+        <div className="button-group horizontal inline gap-snug">
           {editing && (
             <button
               type="button"
-              className="btn btn-outlined btn-secondary"
+              className="btn pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground ink ruled rule hover:ground-defined"
               onClick={onDone}
             >
               {t('macroForm.cancelButton')}
@@ -190,7 +190,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           <button
             type="submit"
             disabled={!isFormValid || savedToast !== null}
-            className="btn btn-outlined btn-success"
+            className="btn btn-success pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-pass ink-inverse ruled rule"
           >
             {editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}
           </button>

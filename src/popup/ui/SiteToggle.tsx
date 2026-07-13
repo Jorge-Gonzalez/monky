@@ -42,7 +42,7 @@ export default function SiteToggle() {
       <label className="position-relative horizontal inline align-center rigid popup-toggle-label pressable">
         <input
           type="checkbox"
-          className="checkbox corner-sm rule"
+          className="checkbox pressable ruled corner-sm rule focus:ring"
           checked={isEnabled}
           onChange={() => toggleSiteDisabled(hostname)}
           style={{ position: 'absolute', opacity: 0 }}

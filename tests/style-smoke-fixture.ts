@@ -9,10 +9,10 @@ import CONTENT_EDITOR_STYLES from '../src/styles/components/content-editor.css?r
 import SUGGESTIONS_STYLES from '../src/content/overlays/suggestionsOverlay/suggestionsOverlayStyles.css?raw'
 import DELETE_STYLES from '../src/content/overlays/deleteConfirm/deleteConfirmStyles.css?raw'
 
-const theme = '--ground: rgb(250, 251, 252); --ground-subtle: rgb(235, 236, 237); --ground-defined: rgb(220, 221, 222); --ink: rgb(20, 21, 22); --ink-soft: rgb(70, 71, 72); --ink-inverse: rgb(254, 254, 254); --accent: rgb(20, 90, 200); --accent-dim: rgb(60, 110, 200); --rule: rgb(160, 161, 162); --rule-soft: rgb(200, 201, 202); --fail: rgb(180, 0, 0); --fail-faint: rgb(255, 230, 230); --base-tone: var(--ground); --tone: var(--ground-defined); --tone-dim: var(--ground-subtle); --harmonic: var(--rule); --harmonic-minor: var(--rule-soft); --shadow-color: rgba(0, 0, 0, 0.5); --button-bg: rgb(1, 2, 3); --ink-alt: var(--ink-inverse); --button-bg-hover: rgb(4, 5, 6); --kbd-bg: rgb(230, 230, 230); --kbd-border: rgb(100, 100, 100); --status-error-wash: var(--fail-faint); --status-error: var(--fail);'
+const theme = '--ground: rgb(250, 251, 252); --ground-subtle: rgb(235, 236, 237); --ground-defined: rgb(220, 221, 222); --ink: rgb(20, 21, 22); --ink-soft: rgb(70, 71, 72); --ink-inverse: rgb(254, 254, 254); --accent: rgb(20, 90, 200); --accent-dim: rgb(60, 110, 200); --pass: rgb(30, 140, 80); --rule: rgb(160, 161, 162); --rule-soft: rgb(200, 201, 202); --fail: rgb(180, 0, 0); --fail-faint: rgb(255, 230, 230); --base-tone: var(--ground); --tone: var(--ground-defined); --tone-dim: var(--ground-subtle); --harmonic: var(--rule); --harmonic-minor: var(--rule-soft); --shadow-color: rgba(0, 0, 0, 0.5); --button-bg: rgb(1, 2, 3); --ink-alt: var(--ink-inverse); --button-bg-hover: rgb(4, 5, 6); --kbd-bg: rgb(230, 230, 230); --kbd-border: rgb(100, 100, 100); --status-error-wash: var(--fail-faint); --status-error: var(--fail); --status-success: var(--pass);'
 
 document.documentElement.setAttribute('style', theme)
-document.body.innerHTML = '<div id="page" class="page-container vertical gap-relaxed"><div id="row" class="horizontal gap-snug"><button id="button" class="btn ground-accent ink-inverse corner-md padding-block-tight padding-inline-snug">x</button></div><div id="popup" class="popup-container ground ink"></div></div>'
+document.body.innerHTML = '<div id="page" class="page-container vertical gap-relaxed"><div id="row" class="horizontal gap-snug"><button id="button" class="btn ground-accent ink-inverse corner-md padding-block-tight padding-inline-snug">x</button></div><div id="popup" class="popup-container ground ink"></div><div class="selectable-group"><button id="options-prefix" class="btn pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground ink ruled rule font-mono font-lg prefix-cell position-relative hover:ground-defined">/</button><button id="options-prefix-selected" class="btn pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground ink ruled rule font-mono font-lg prefix-cell position-relative hover:ground-defined is-selected">;</button></div></div>'
 
 function shadow(css: string, html: string): void {
   const host = document.createElement('div')
@@ -78,7 +78,8 @@ shadow(
             <button class="seg-option pressable text-center elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft rule ruled-right selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="true">One</button>
             <button class="seg-option pressable text-center elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft rule ruled-right selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="false">Two</button>
           </div>
-          <button data-probe="settings-prefix" class="btn btn-outlined font-mono settings-prefix-btn horizontal align-center justify-center rigid position-relative hover:ground-defined">/</button>
+          <button data-probe="settings-prefix" class="btn pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-subtle ink ruled rule font-mono settings-prefix-btn horizontal align-center justify-center rigid position-relative hover:ground-defined">/</button>
+          <button data-probe="settings-export" class="btn pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-subtle ink ruled rule hover:ground-defined rigid">Export</button>
         </div>
       </div>
     </div>
@@ -112,6 +113,10 @@ shadow(
             </div>
           </div>
           <div data-probe="content-editor-body" class="content-editor-body padding-comfortable ink font-md corner-lg rule ruled scroll-auto focus:rule-accent focus:ring"></div>
+        </div>
+        <div data-probe="button-group" class="button-group horizontal inline gap-snug">
+          <button data-probe="button-cancel" class="btn pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground ink ruled rule hover:ground-defined">Cancel</button>
+          <button data-probe="button-save" class="btn btn-success pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-pass ink-inverse ruled rule">Save</button>
         </div>
       </form>
     </div>
