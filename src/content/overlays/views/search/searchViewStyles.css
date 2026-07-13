@@ -12,7 +12,6 @@
 /* Search uses shared .input pattern from modalStyles */
 .macro-search-input {
   width: 100%;
-  box-sizing: border-box;
   transition: border-color var(--transition-fast);
 }
 
