@@ -34,15 +34,15 @@ export default function SiteToggle() {
   const displayHostname = hostname || t('popup.localFile');
 
   return (
-    <div className="popup-section horizontal align-center justify-between padding-snug ground-subtle rule ruled corner-md">
-      <div className="popup-site-copy font-sm hidden">
-        <p className="font-medium ink">{t('popup.macrosOnThisSite')}</p>
-        <p className="hidden truncate font-xs ink-soft" title={displayHostname}>{displayHostname}</p>
+    <div className="popup-section horizontal padding-snug align-center justify-between ground-subtle rule corner-md ruled">
+      <div className="popup-site-copy hidden font-sm">
+        <p className="ink font-medium">{t('popup.macrosOnThisSite')}</p>
+        <p className="hidden ink-soft font-xs truncate" title={displayHostname}>{displayHostname}</p>
       </div>
-      <label className="position-relative horizontal inline align-center rigid popup-toggle-label pressable">
+      <label className="popup-toggle-label horizontal inline rigid align-center position-relative pressable">
         <input
           type="checkbox"
-          className="checkbox pressable ruled corner-sm rule focus:ring"
+          className="checkbox rule corner-sm ruled pressable focus:ring"
           checked={isEnabled}
           onChange={() => toggleSiteDisabled(hostname)}
           style={{ position: 'absolute', opacity: 0 }}

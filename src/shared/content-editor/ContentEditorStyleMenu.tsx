@@ -39,7 +39,7 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
     <div ref={wrapperRef} className="ce-style-menu position-relative">
       <button
         type="button"
-        className={`ce-toolbar-btn pressable ce-style-trigger horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink font-sm font-medium ${open ? 'is-active' : ''}`}
+        className={`ce-toolbar-btn ce-style-trigger horizontal rigid align-center justify-center ink-soft corner-sm font-sm font-medium pressable hover:ground-defined hover:ink ${open ? 'is-active' : ''}`}
         onMouseDown={e => { e.preventDefault(); setOpen(o => !o) }}
         title={t('contentEditor.textStyle')}
         aria-label={t('contentEditor.textStyle')}
@@ -51,17 +51,17 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
       </button>
 
       {open && (
-        <div className="ce-style-dropdown position-absolute vertical padding-tight ground rule ruled corner-md elevated" role="listbox">
+        <div className="ce-style-dropdown vertical padding-tight position-absolute ground rule corner-md ruled elevated" role="listbox">
           {STYLE_OPTIONS.map(opt => (
             <button
               key={opt.type}
               type="button"
               role="option"
               aria-selected={blockType === opt.type}
-              className={`ce-style-option pressable text-start horizontal align-center gap-snug padding-block-tight padding-inline-snug corner-sm ink font-sm hover:ground-defined ${blockType === opt.type ? 'is-active' : ''}`}
+              className={`ce-style-option horizontal gap-snug padding-block-tight padding-inline-snug align-center ink corner-sm font-sm text-start pressable hover:ground-defined ${blockType === opt.type ? 'is-active' : ''}`}
               onMouseDown={e => { e.preventDefault(); handleSelect(opt.type) }}
             >
-              <span className="ce-style-option-short rigid font-xs font-semibold ink-soft">{opt.shortLabel}</span>
+              <span className="ce-style-option-short rigid ink-soft font-xs font-semibold">{opt.shortLabel}</span>
               <span className="ce-style-option-label elastic basis-ratio">{t(opt.labelKey as Parameters<typeof t>[0])}</span>
             </button>
           ))}

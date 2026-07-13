@@ -5,10 +5,6 @@
   flex-direction: column;
 }
 
-.position-relative {
-  position: relative;
-}
-
 .elastic {
   flex-grow: 1;
   flex-shrink: 1;
@@ -26,6 +22,10 @@
   min-height: 0;
 }
 
+.position-relative {
+  position: relative;
+}
+
 .min-width-none {
   min-width: 0;
 }
@@ -33,14 +33,6 @@
 .horizontal {
   display: flex;
   flex-direction: row;
-}
-
-.text-start {
-  text-align: start;
-}
-
-.align-center {
-  align-items: center;
 }
 
 .gap-snug {
@@ -55,28 +47,36 @@
   padding-inline: var(--spacing-snug);
 }
 
-.corner-sm {
-  border-radius: var(--radius-sm);
+.align-center {
+  align-items: center;
 }
 
 .ink {
   color: var(--ink);
 }
 
+.corner-sm {
+  border-radius: var(--radius-sm);
+}
+
 .font-sm {
   font-size: var(--type-sm);
+}
+
+.text-start {
+  text-align: start;
 }
 
 .hover\:ground-defined:hover {
   background: var(--ground-defined);
 }
 
-.position-fixed {
-  position: fixed;
-}
-
 .justify-center {
   justify-content: center;
+}
+
+.position-fixed {
+  position: fixed;
 }
 
 .hidden {
@@ -101,20 +101,20 @@
   border-style: solid;
 }
 
-.justify-between {
-  justify-content: space-between;
-}
-
 .padding-inline-relaxed {
   padding-inline: var(--spacing-relaxed);
+}
+
+.justify-between {
+  justify-content: space-between;
 }
 
 .ink-accent {
   color: var(--accent);
 }
 
-.pressable {
-  cursor: pointer;
+.ink-soft {
+  color: var(--ink-soft);
 }
 
 .font-md {
@@ -125,8 +125,8 @@
   font-weight: var(--weight-medium);
 }
 
-.ink-soft {
-  color: var(--ink-soft);
+.pressable {
+  cursor: pointer;
 }
 
 .hover\:ground-subtle:hover {
@@ -137,44 +137,44 @@
   color: var(--ink);
 }
 
-.current\:ink-accent[aria-current]:not([aria-current="false"]) {
-  color: var(--accent);
-}
-
 .current\:ground-subtle[aria-current]:not([aria-current="false"]) {
   background: var(--ground-subtle);
+}
+
+.current\:ink-accent[aria-current]:not([aria-current="false"]) {
+  color: var(--accent);
 }
 
 .padding-comfortable {
   padding: var(--spacing-comfortable);
 }
 
-.corner-md {
-  border-radius: var(--radius-md);
-}
-
 .ground-fail-faint {
   background: var(--fail-faint);
-}
-
-.rule-fail {
-  border-color: var(--fail);
 }
 
 .ink-fail {
   color: var(--fail);
 }
 
+.rule-fail {
+  border-color: var(--fail);
+}
+
+.corner-md {
+  border-radius: var(--radius-md);
+}
+
 .ground-pass-faint {
   background: var(--pass-faint);
 }
 
-.rule-pass {
-  border-color: var(--pass);
-}
-
 .ink-pass {
   color: var(--pass);
+}
+
+.rule-pass {
+  border-color: var(--pass);
 }
 
 .focus\:ring:focus {

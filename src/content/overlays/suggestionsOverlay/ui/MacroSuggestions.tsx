@@ -159,7 +159,7 @@ export function MacroSuggestions({
   return (
     <div
       ref={containerRef}
-      className="macro-suggestions-container ground rule ruled corner-lg font-md hidden"
+      className="macro-suggestions-container hidden ground rule corner-lg ruled font-md"
       style={{
         left: position.x,
         top: position.y,
@@ -167,12 +167,12 @@ export function MacroSuggestions({
       }}
     >
       <div className={`macro-suggestions-arrow position-absolute ${placement}`} />
-      <div ref={listRef} role="listbox" className="macro-suggestions-commands-list horizontal padding-tight gap-tight rule-soft ruled-bottom">
+      <div ref={listRef} role="listbox" className="macro-suggestions-commands-list horizontal gap-tight padding-tight rule-soft ruled-bottom">
         {visibleMacros.map((macro, index) => (
           <button
             key={macro.id}
             ref={(el) => { buttonRefs.current[index] = el; }}
-            className="macro-suggestions-command-item pressable compressible min-width-none text-center ground-subtle ink rule-soft ruled corner-md hidden truncate font-sm selectable hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
+            className="macro-suggestions-command-item compressible hidden min-width-none selectable ground-subtle ink rule-soft corner-md ruled font-sm text-center pressable truncate hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
             onMouseDown={(e) => {
               e.preventDefault();
               onSelectMacro(macro);
@@ -186,21 +186,21 @@ export function MacroSuggestions({
         ))}
       </div>
       {selectedMacro && (
-        <div className="macro-suggestions-text-preview padding-block-snug padding-inline-comfortable font-xs ink-soft hidden">
+        <div className="macro-suggestions-text-preview padding-block-snug padding-inline-comfortable hidden ink-soft font-xs">
           {selectedMacro.text}
         </div>
       )}
-      <div className="macro-suggestions-footer horizontal gap-comfortable padding-block-tight padding-inline-comfortable font-xs ink-soft ground rule ruled-top">
+      <div className="macro-suggestions-footer horizontal gap-comfortable padding-block-tight padding-inline-comfortable ground ink-soft rule ruled-top font-xs">
         <span>
-          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule ruled font-mono">←</kbd>
-          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule ruled font-mono">→</kbd>/
-          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule ruled font-mono">Tab</kbd> {t('macroSuggestions.footer.navigate')}
+          <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">←</kbd>
+          <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">→</kbd>/
+          <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">Tab</kbd> {t('macroSuggestions.footer.navigate')}
         </span>
         <span>
-          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule ruled font-mono">↵</kbd> {t('macroSuggestions.footer.select')}
+          <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">↵</kbd> {t('macroSuggestions.footer.select')}
         </span>
         <span>
-          <kbd className="macro-suggestions-kbd corner-sm font-xs ink ground-subtle rule ruled font-mono">Esc</kbd> {t('macroSuggestions.footer.cancel')}
+          <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">Esc</kbd> {t('macroSuggestions.footer.cancel')}
         </span>
       </div>
     </div>

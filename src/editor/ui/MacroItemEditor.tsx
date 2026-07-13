@@ -7,9 +7,9 @@ export default function MacroItemEditor({ macro, onEdit, onDelete }: {
   onDelete: (id: string) => void,
 }) {
   return (
-    <div className="card ground rule ruled corner-md padding-comfortable">
+    <div className="card padding-comfortable ground rule corner-md ruled">
       <div>
-        <span className="font-mono font-semibold">{macro.command}</span>
+        <span className="font-semibold font-mono">{macro.command}</span>
         <span style={{ marginLeft: '8px', fontSize: 'var(--text-sm)', color: 'var(--ink-soft)' }}>{macro.text.slice(0,80)}{macro.text.length>80?'…':''}</span>
       </div>
       <div className="button-group horizontal inline" style={{ marginTop: 'var(--spacing-md)' }}>

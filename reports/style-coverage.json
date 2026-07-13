@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T18:51:20.507Z",
+  "generatedAt": "2026-07-13T19:51:20.326Z",
   "summary": {
     "definedClasses": 201,
     "selectorBlocks": 249,
@@ -16,14 +16,21 @@
   "cssCoverage": [
     {
       "page": "/src/popup/index.html",
+      "asset": "assets/renderPageWithTheme-DC5smANy.css",
+      "usedBytes": 11294,
+      "totalBytes": 14530,
+      "usedPercent": 77.7
+    },
+    {
+      "page": "/src/popup/index.html",
       "asset": "assets/popup-DhhFxYmH.css",
       "usedBytes": 341,
       "totalBytes": 639,
       "usedPercent": 53.4
     },
     {
-      "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-B2Ey_zWz.css",
+      "page": "/src/options/index.html",
+      "asset": "assets/renderPageWithTheme-DC5smANy.css",
       "usedBytes": 11294,
       "totalBytes": 14530,
       "usedPercent": 77.7
@@ -36,15 +43,8 @@
       "usedPercent": 99.2
     },
     {
-      "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-B2Ey_zWz.css",
-      "usedBytes": 11294,
-      "totalBytes": 14530,
-      "usedPercent": 77.7
-    },
-    {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-B2Ey_zWz.css",
+      "asset": "assets/renderPageWithTheme-DC5smANy.css",
       "usedBytes": 14230,
       "totalBytes": 14530,
       "usedPercent": 97.9

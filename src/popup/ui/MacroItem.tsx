@@ -10,17 +10,17 @@ interface MacroItemProps {
 export default function MacroItem({ macro }: MacroItemProps) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="popup-card padding-snug ground rule ruled corner-md">
-      <button className="horizontal justify-between popup-item-toggle pressable ink text-start" onClick={()=>setOpen(!open)}>
-        <span className="font-sm font-medium ink-accent">{macro.command}</span>
+    <div className="popup-card padding-snug ground rule corner-md ruled">
+      <button className="popup-item-toggle horizontal justify-between ink text-start pressable" onClick={()=>setOpen(!open)}>
+        <span className="ink-accent font-sm font-medium">{macro.command}</span>
         <span className="ink-soft">{open ? '▲' : '▼'}</span>
       </button>
       {open && (
-        <div className="vertical gap-snug popup-item-detail rule-soft ruled-top">
-          <pre className="popup-macro-text font-sm ink ground-subtle padding-snug corner-md">{macro.text}</pre>
+        <div className="popup-item-detail vertical gap-snug rule-soft ruled-top">
+          <pre className="popup-macro-text padding-snug ground-subtle ink corner-md font-sm">{macro.text}</pre>
           <div className="horizontal gap-snug">
-            <button className="popup-button pressable padding-inline-snug padding-block-tight ground-accent ink-inverse corner-md font-sm" onClick={()=>chrome.runtime.openOptionsPage()}>{t('macroItem.edit')}</button>
-            <button className="popup-button pressable padding-inline-snug padding-block-tight ground-fail ink-inverse corner-md font-sm" onClick={()=>deleteMacro(String(macro.id))}>{t('macroItem.delete')}</button>
+            <button className="popup-button padding-block-tight padding-inline-snug ground-accent ink-inverse corner-md font-sm pressable" onClick={()=>chrome.runtime.openOptionsPage()}>{t('macroItem.edit')}</button>
+            <button className="popup-button padding-block-tight padding-inline-snug ground-fail ink-inverse corner-md font-sm pressable" onClick={()=>deleteMacro(String(macro.id))}>{t('macroItem.delete')}</button>
           </div>
         </div>
       )}

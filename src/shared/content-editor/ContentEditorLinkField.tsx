@@ -45,12 +45,12 @@ export function ContentEditorLinkField({
   }
 
   return (
-    <div className="ce-link-field horizontal align-center gap-tight elastic basis-ratio">
-      <span className="ce-toolbar-icon horizontal align-center rigid ink-soft" dangerouslySetInnerHTML={{ __html: icons.link }} />
+    <div className="ce-link-field horizontal elastic basis-ratio gap-tight align-center">
+      <span className="ce-toolbar-icon horizontal rigid align-center ink-soft" dangerouslySetInnerHTML={{ __html: icons.link }} />
       <input
         ref={inputRef}
         type="url"
-        className="ce-link-input elastic basis-ratio corner-sm ground-subtle ink font-sm rule ruled focus:rule-accent focus:ring"
+        className="ce-link-input elastic basis-ratio ground-subtle ink rule corner-sm ruled font-sm focus:rule-accent focus:ring"
         value={url}
         onChange={e => setUrl(e.currentTarget.value)}
         onKeyDown={onKeyDown}
@@ -58,7 +58,7 @@ export function ContentEditorLinkField({
       />
       <button
         type="button"
-        className="ce-toolbar-btn pressable horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink"
+        className="ce-toolbar-btn horizontal rigid align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink"
         onMouseDown={e => { e.preventDefault(); confirm() }}
         title="Apply (Enter)"
         aria-label="Apply link"
@@ -66,7 +66,7 @@ export function ContentEditorLinkField({
       />
       <button
         type="button"
-        className="ce-toolbar-btn pressable horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink"
+        className="ce-toolbar-btn horizontal rigid align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink"
         onMouseDown={e => { e.preventDefault(); cancel() }}
         title="Cancel (Escape)"
         aria-label="Cancel"

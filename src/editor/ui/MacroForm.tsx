@@ -85,13 +85,13 @@ export default function MacroForm({ editing, onDone }: {
   return (
     <form onSubmit={onSubmit} className="vertical gap-comfortable">
       <div>
-        <label htmlFor="macro-command" className="boxed font-sm font-medium ink">
+        <label htmlFor="macro-command" className="boxed ink font-sm font-medium">
           {t('macroForm.triggerLabel')}
         </label>
         <input
           id="macro-command"
           ref={commandInputRef}
-          className={`input padding-block-snug padding-inline-comfortable ruled corner-3xl font-md ground-subtle ink rule focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail' : ''}`}
+          className={`input padding-block-snug padding-inline-comfortable ground-subtle ink rule corner-3xl ruled font-md focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail' : ''}`}
           value={command}
           onChange={e => setCommand(e.currentTarget.value)}
           placeholder={`e.g., ${prefixes[0]}sig`}
@@ -105,7 +105,7 @@ export default function MacroForm({ editing, onDone }: {
       </div>
 
       <div>
-        <label htmlFor="macro-text" className="boxed font-sm font-medium ink">
+        <label htmlFor="macro-text" className="boxed ink font-sm font-medium">
           {t('macroForm.textLabel')}
         </label>
         <ContentEditor
@@ -117,7 +117,7 @@ export default function MacroForm({ editing, onDone }: {
       </div>
 
       {error && (
-        <div className="alert alert-error ruled padding-comfortable corner-md ground-fail-faint rule-fail ink-fail">
+        <div className="alert alert-error padding-comfortable ground-fail-faint ink-fail rule-fail corner-md ruled">
           <p className="font-medium">{error}</p>
         </div>
       )}
@@ -128,23 +128,23 @@ export default function MacroForm({ editing, onDone }: {
             type="checkbox"
             checked={isSensitive}
             onChange={e => setSensitive(e.currentTarget.checked)}
-            className="checkbox pressable ruled corner-sm rule focus:ring"
+            className="checkbox rule corner-sm ruled pressable focus:ring"
           />
-          <span className="boxed font-sm font-medium ink">{t('macroForm.sensitiveLabel')}</span>
+          <span className="boxed ink font-sm font-medium">{t('macroForm.sensitiveLabel')}</span>
         </label>
 
         <div className="button-group horizontal inline">
           <button
             type="submit"
             disabled={!isFormValid}
-            className="btn btn-success pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-pass ink-inverse ruled rule"
+            className="btn btn-success padding-block-snug padding-inline-relaxed ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft"
           >
             {editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}
           </button>
           {editing && (
             <button
               type="button"
-              className="btn pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground ink ruled rule hover:ground-defined"
+              className="btn padding-block-snug padding-inline-relaxed ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft"
               onClick={onDone}
             >
               {t('macroForm.cancelButton')}
