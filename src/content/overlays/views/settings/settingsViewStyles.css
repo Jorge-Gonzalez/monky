@@ -23,11 +23,6 @@
   padding: var(--spacing-md) var(--spacing-sm) 0 0;
 }
 
-.settings-rows {
-  flex: 1;
-}
-
-
 /* Line presence comes from `ruled-top` (R-SKIN-11); colour from `rule`. */
 .settings-divider {
   height: 0;
@@ -46,11 +41,7 @@
 
 /* ===== Segmented Control ===== */
 
-.seg-control {
-  border-width: 1px;
-  border-style: solid;
-  overflow: hidden;
-}
+/* Container line (`ruled`) and clip (`hidden`) are words; the sliding pill below. */
 
 /* Slide-only pill: hidden unless a selection change is animating. The checked
    button owns the resting background. */
@@ -72,13 +63,9 @@
 /* Jump the pill onto the origin button without animating, before the slide. */
 .seg-control.seg-snap::before { transition: none; }
 
+/* Centring (`text-center`), press affordance (`pressable`), and the right
+   separator (`ruled-right`) are words; the rest is identity/animation. */
 .seg-option {
-  text-align: center;
-  line-height: 1.5;
-  border-width: 0;
-  border-style: solid;
-  border-right-width: 1px;
-  cursor: pointer;
   white-space: nowrap;
   z-index: 1;
   transition: color var(--transition-fast);

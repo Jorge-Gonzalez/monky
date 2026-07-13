@@ -7,21 +7,12 @@
   height: 100%;
 }
 
-.editor-title {
-  margin: 0;
-}
-
 .editor-popout {
-  border: none;
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .editor-command {
   width: 280px;
-}
-
-.editor-command .input {
-  width: 100%;
 }
 
 .editor-command-error {
@@ -42,15 +33,11 @@
   min-height: 0;
 }
 
-.editor-sensitive {
-}
-
 /* Save/error confirmation floats above the bar so it never shifts the layout. */
 .editor-toast {
   left: 50%;
   bottom: 52px;
   transform: translateX(-50%);
-  margin: 0;
   white-space: nowrap;
   box-shadow: 0 6px 16px -4px rgb(0 0 0 / 25%);
 }
@@ -85,7 +72,6 @@
 }
 
 .command-suggestion-action {
-  border: none;
   transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
 }
 

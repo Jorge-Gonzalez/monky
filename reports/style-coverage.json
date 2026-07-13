@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-13T06:55:12.203Z",
+  "generatedAt": "2026-07-13T18:07:55.067Z",
   "summary": {
-    "definedClasses": 201,
-    "selectorBlocks": 260,
+    "definedClasses": 199,
+    "selectorBlocks": 256,
     "byDisposition": {
-      "live-static": 201
+      "live-static": 199
     },
     "deadCandidateDeclarations": 0,
     "runtimePages": [
@@ -16,24 +16,24 @@
   "cssCoverage": [
     {
       "page": "/src/popup/index.html",
+      "asset": "assets/renderPageWithTheme-Dl5WDC9h.css",
+      "usedBytes": 12555,
+      "totalBytes": 15791,
+      "usedPercent": 79.5
+    },
+    {
+      "page": "/src/popup/index.html",
       "asset": "assets/popup-DhhFxYmH.css",
       "usedBytes": 341,
       "totalBytes": 639,
       "usedPercent": 53.4
     },
     {
-      "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-DYvzAhix.css",
-      "usedBytes": 12451,
-      "totalBytes": 15687,
-      "usedPercent": 79.4
-    },
-    {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-DYvzAhix.css",
-      "usedBytes": 12451,
-      "totalBytes": 15687,
-      "usedPercent": 79.4
+      "asset": "assets/renderPageWithTheme-Dl5WDC9h.css",
+      "usedBytes": 12555,
+      "totalBytes": 15791,
+      "usedPercent": 79.5
     },
     {
       "page": "/src/options/index.html",
@@ -44,9 +44,9 @@
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-DYvzAhix.css",
-      "usedBytes": 15387,
-      "totalBytes": 15687,
+      "asset": "assets/renderPageWithTheme-Dl5WDC9h.css",
+      "usedBytes": 15491,
+      "totalBytes": 15791,
       "usedPercent": 98.1
     }
   ],
@@ -482,7 +482,7 @@
         ".command-suggestion-action",
         ".command-suggestion-item > .command-suggestion-action, .command-suggestion-actions"
       ],
-      "declarations": 3,
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -769,10 +769,9 @@
         "src/content/overlays/views/macroEditor/editorViewStyles.css"
       ],
       "selectors": [
-        ".editor-command",
-        ".editor-command .input"
+        ".editor-command"
       ],
-      "declarations": 2,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -826,40 +825,6 @@
       "selectors": [
         ".editor-popout"
       ],
-      "declarations": 2,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "editor-sensitive",
-      "files": [
-        "src/content/overlays/views/macroEditor/editorViewStyles.css"
-      ],
-      "selectors": [
-        ".editor-sensitive"
-      ],
-      "declarations": 0,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "editor-title",
-      "files": [
-        "src/content/overlays/views/macroEditor/editorViewStyles.css"
-      ],
-      "selectors": [
-        ".editor-title"
-      ],
       "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
@@ -877,7 +842,7 @@
       "selectors": [
         ".editor-toast"
       ],
-      "declarations": 6,
+      "declarations": 5,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -1721,15 +1686,13 @@
     {
       "className": "input",
       "files": [
-        "src/content/overlays/views/macroEditor/editorViewStyles.css",
         "src/styles/skin/controls.css"
       ],
       "selectors": [
-        ".editor-command .input",
         ".input",
         ".input:focus"
       ],
-      "declarations": 9,
+      "declarations": 8,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -3171,6 +3134,23 @@
       ]
     },
     {
+      "className": "ruled-right",
+      "files": [
+        "src/styles/grammar/ermine.generated.css"
+      ],
+      "selectors": [
+        ".ruled-right"
+      ],
+      "declarations": 2,
+      "disposition": "live-static",
+      "livenessEvidence": [
+        "production-source"
+      ],
+      "supportingEvidence": [
+        "bundled-app-token"
+      ]
+    },
+    {
       "className": "ruled-top",
       "files": [
         "src/styles/grammar/ermine.generated.css"
@@ -3230,13 +3210,12 @@
         "src/content/overlays/views/settings/settingsViewStyles.css"
       ],
       "selectors": [
-        ".seg-control",
         ".seg-control.is-sliding .seg-option[aria-checked=\"true\"]",
         ".seg-control.is-sliding::before",
         ".seg-control.seg-snap::before",
         ".seg-control::before"
       ],
-      "declarations": 16,
+      "declarations": 13,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -3257,7 +3236,7 @@
         ".seg-option:last-child",
         ".seg-option[aria-checked=\"true\"]"
       ],
-      "declarations": 13,
+      "declarations": 7,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -3485,23 +3464,6 @@
         ".settings-prefix-btn"
       ],
       "declarations": 3,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "settings-rows",
-      "files": [
-        "src/content/overlays/views/settings/settingsViewStyles.css"
-      ],
-      "selectors": [
-        ".settings-rows"
-      ],
-      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"

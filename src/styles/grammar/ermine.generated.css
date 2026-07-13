@@ -377,6 +377,11 @@
   padding: var(--spacing-loose);
 }
 
+.ruled-right {
+  border-right-width: var(--rule-weight, 1px);
+  border-right-style: solid;
+}
+
 .checked\:ground-accent[aria-checked="true"] {
   background: var(--accent);
 }

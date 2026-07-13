@@ -74,9 +74,9 @@ shadow(
       <div data-probe="settings-row" class="settings-row horizontal align-center justify-between gap-relaxed padding-block-snug">
         <span class="settings-row-label font-md ink rigid">Theme</span>
         <div data-probe="settings-appearance" class="settings-appearance-controls horizontal align-center gap-comfortable">
-          <div data-probe="seg-control" class="seg-control horizontal position-relative ground-subtle rule corner-md">
-            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft rule selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="true">One</button>
-            <button class="seg-option elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft rule selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="false">Two</button>
+          <div data-probe="seg-control" class="seg-control horizontal position-relative ground-subtle rule ruled corner-md hidden">
+            <button class="seg-option pressable text-center elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft rule ruled-right selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="true">One</button>
+            <button class="seg-option pressable text-center elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative font-sm ink-soft rule ruled-right selectable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="false">Two</button>
           </div>
           <button data-probe="settings-prefix" class="btn btn-outlined font-mono settings-prefix-btn horizontal align-center justify-center rigid position-relative hover:ground-defined">/</button>
         </div>
