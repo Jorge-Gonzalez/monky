@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T06:03:27.883Z",
+  "generatedAt": "2026-07-13T06:55:12.203Z",
   "summary": {
     "definedClasses": 201,
     "selectorBlocks": 260,
@@ -23,10 +23,17 @@
     },
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-jDYhx952.css",
-      "usedBytes": 12486,
-      "totalBytes": 15792,
-      "usedPercent": 79.1
+      "asset": "assets/renderPageWithTheme-DYvzAhix.css",
+      "usedBytes": 12451,
+      "totalBytes": 15687,
+      "usedPercent": 79.4
+    },
+    {
+      "page": "/src/options/index.html",
+      "asset": "assets/renderPageWithTheme-DYvzAhix.css",
+      "usedBytes": 12451,
+      "totalBytes": 15687,
+      "usedPercent": 79.4
     },
     {
       "page": "/src/options/index.html",
@@ -36,17 +43,10 @@
       "usedPercent": 99.2
     },
     {
-      "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-jDYhx952.css",
-      "usedBytes": 12486,
-      "totalBytes": 15792,
-      "usedPercent": 79.1
-    },
-    {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-jDYhx952.css",
-      "usedBytes": 15492,
-      "totalBytes": 15792,
+      "asset": "assets/renderPageWithTheme-DYvzAhix.css",
+      "usedBytes": 15387,
+      "totalBytes": 15687,
       "usedPercent": 98.1
     }
   ],
@@ -319,7 +319,7 @@
         ".ce-style-option.is-active",
         ".ce-style-option.is-active .ce-style-option-short"
       ],
-      "declarations": 7,
+      "declarations": 5,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"
@@ -373,7 +373,7 @@
         ".ce-toolbar-btn",
         ".ce-toolbar-btn.is-active"
       ],
-      "declarations": 8,
+      "declarations": 6,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -1973,7 +1973,7 @@
       "selectors": [
         ".macro-search-item-edit"
       ],
-      "declarations": 6,
+      "declarations": 4,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -2706,7 +2706,7 @@
       "selectors": [
         ".panel-button"
       ],
-      "declarations": 5,
+      "declarations": 3,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source"

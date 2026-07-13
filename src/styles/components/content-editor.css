@@ -16,8 +16,6 @@
 .ce-toolbar-btn {
   width: 28px;
   height: 28px;
-  border: none;
-  background: transparent;
   padding: 0;
   transition: background var(--transition-fast), color var(--transition-fast);
 }
@@ -52,8 +50,6 @@
 
 .ce-style-option {
   width: 100%;
-  border: none;
-  background: transparent;
   transition: background var(--transition-fast);
 }
 
