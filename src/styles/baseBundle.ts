@@ -4,14 +4,14 @@ import ERMINE_CONFIG_STYLES from './theme/ermine.config.css?raw'
 import FONT_STYLES from './theme/font.css?raw'
 import GENERATED_GRAMMAR_STYLES from './grammar/ermine.generated.css?raw'
 import CONTROL_SKIN_STYLES from './skin/controls.css?raw'
-import SURFACE_SKIN_STYLES from './skin/surfaces.css?raw'
 
 export const STYLE_LAYER_ORDER = '@layer reset, theme, grammar, skin, components, overrides;'
 
 export const BASE_SHADOW_STYLE_INPUTS = {
   reset: RESET_STYLES,
   theme: [METRIC_STYLES, ERMINE_CONFIG_STYLES, FONT_STYLES].join('\n'),
-  skin: [CONTROL_SKIN_STYLES, SURFACE_SKIN_STYLES].join('\n'),
+  // surfaces.css retired: the section/alert/card/divider families are pure words now.
+  skin: CONTROL_SKIN_STYLES,
 } as const
 
 export interface ShadowBundleOptions {

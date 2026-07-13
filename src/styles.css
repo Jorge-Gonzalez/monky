@@ -6,6 +6,5 @@
 @import url('./styles/theme/font.css') layer(theme);
 @import url('./styles/grammar/ermine.generated.css') layer(grammar);
 @import url('./styles/skin/controls.css') layer(skin);
-@import url('./styles/skin/surfaces.css') layer(skin);
 @import url('./styles/components/content-editor.css') layer(components);
 @import url('./styles/entries/pages.css') layer(components);

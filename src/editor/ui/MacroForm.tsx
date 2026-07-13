@@ -117,7 +117,7 @@ export default function MacroForm({ editing, onDone }: {
       </div>
 
       {error && (
-        <div className="alert alert-error padding-comfortable corner-md ground-fail-faint rule-fail ink-fail">
+        <div className="alert alert-error ruled padding-comfortable corner-md ground-fail-faint rule-fail ink-fail">
           <p className="font-medium">{error}</p>
         </div>
       )}

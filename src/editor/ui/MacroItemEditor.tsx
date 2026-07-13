@@ -7,7 +7,7 @@ export default function MacroItemEditor({ macro, onEdit, onDelete }: {
   onDelete: (id: string) => void,
 }) {
   return (
-    <div className="card ground rule corner-md padding-comfortable">
+    <div className="card ground rule ruled corner-md padding-comfortable">
       <div>
         <span className="font-mono font-semibold">{macro.command}</span>
         <span style={{ marginLeft: '8px', fontSize: 'var(--text-sm)', color: 'var(--ink-soft)' }}>{macro.text.slice(0,80)}{macro.text.length>80?'…':''}</span>

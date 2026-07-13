@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-13T05:55:02.917Z",
+  "generatedAt": "2026-07-13T06:03:27.883Z",
   "summary": {
-    "definedClasses": 203,
-    "selectorBlocks": 262,
+    "definedClasses": 201,
+    "selectorBlocks": 260,
     "byDisposition": {
-      "live-static": 203
+      "live-static": 201
     },
     "deadCandidateDeclarations": 0,
     "runtimePages": [
@@ -23,10 +23,10 @@
     },
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-CGp-CfQ-.css",
+      "asset": "assets/renderPageWithTheme-jDYhx952.css",
       "usedBytes": 12486,
-      "totalBytes": 15941,
-      "usedPercent": 78.3
+      "totalBytes": 15792,
+      "usedPercent": 79.1
     },
     {
       "page": "/src/options/index.html",
@@ -37,39 +37,20 @@
     },
     {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-CGp-CfQ-.css",
+      "asset": "assets/renderPageWithTheme-jDYhx952.css",
       "usedBytes": 12486,
-      "totalBytes": 15941,
-      "usedPercent": 78.3
+      "totalBytes": 15792,
+      "usedPercent": 79.1
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-CGp-CfQ-.css",
-      "usedBytes": 15634,
-      "totalBytes": 15941,
+      "asset": "assets/renderPageWithTheme-jDYhx952.css",
+      "usedBytes": 15492,
+      "totalBytes": 15792,
       "usedPercent": 98.1
     }
   ],
   "classes": [
-    {
-      "className": "alert",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".alert"
-      ],
-      "declarations": 3,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source",
-        "test-reference"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token",
-        "bundled-example-token"
-      ]
-    },
     {
       "className": "align-center",
       "files": [
@@ -267,24 +248,6 @@
         ".button-group"
       ],
       "declarations": 1,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source",
-        "runtime-observed"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "card",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".card"
-      ],
-      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
