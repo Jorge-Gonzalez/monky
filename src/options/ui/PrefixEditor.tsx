@@ -13,8 +13,8 @@ interface PrefixEditorProps {
  */
 export default function PrefixEditor({ prefixes, onChange }: PrefixEditorProps) {
   return (
-    <div className="section padding-relaxed rule corner-md ground-subtle">
-      <h3 className="section-title font-lg ink">{t('options.prefixEditor.title')}</h3>
+    <div className="section vertical gap-comfortable padding-relaxed rule corner-md ground-subtle">
+      <h3 className="section-title font-lg">{t('options.prefixEditor.title')}</h3>
       <SelectableGroup
         options={ALL_PREFIXES}
         selected={prefixes}

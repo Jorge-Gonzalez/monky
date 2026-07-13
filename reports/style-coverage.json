@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-12T22:29:44.795Z",
+  "generatedAt": "2026-07-13T05:48:09.906Z",
   "summary": {
-    "definedClasses": 207,
-    "selectorBlocks": 266,
+    "definedClasses": 205,
+    "selectorBlocks": 264,
     "byDisposition": {
-      "live-static": 207
+      "live-static": 205
     },
     "deadCandidateDeclarations": 0,
     "runtimePages": [
@@ -23,17 +23,17 @@
     },
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-Dyn3uv_z.css",
-      "usedBytes": 12549,
-      "totalBytes": 16338,
-      "usedPercent": 76.8
+      "asset": "assets/renderPageWithTheme-B2DfCHBV.css",
+      "usedBytes": 12486,
+      "totalBytes": 16049,
+      "usedPercent": 77.8
     },
     {
       "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-Dyn3uv_z.css",
-      "usedBytes": 13025,
-      "totalBytes": 16338,
-      "usedPercent": 79.7
+      "asset": "assets/renderPageWithTheme-B2DfCHBV.css",
+      "usedBytes": 12736,
+      "totalBytes": 16049,
+      "usedPercent": 79.4
     },
     {
       "page": "/src/options/index.html",
@@ -44,9 +44,9 @@
     },
     {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-Dyn3uv_z.css",
-      "usedBytes": 16031,
-      "totalBytes": 16338,
+      "asset": "assets/renderPageWithTheme-B2DfCHBV.css",
+      "usedBytes": 15742,
+      "totalBytes": 16049,
       "usedPercent": 98.1
     }
   ],
@@ -801,24 +801,6 @@
       ]
     },
     {
-      "className": "divider",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".divider"
-      ],
-      "declarations": 1,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source",
-        "runtime-observed"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
       "className": "editor-command",
       "files": [
         "src/content/overlays/views/macroEditor/editorViewStyles.css"
@@ -1238,7 +1220,8 @@
       "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
-        "production-source"
+        "production-source",
+        "runtime-observed"
       ],
       "supportingEvidence": [
         "bundled-app-token"
@@ -2742,7 +2725,7 @@
       "selectors": [
         ".page-title"
       ],
-      "declarations": 3,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -3286,7 +3269,7 @@
       "selectors": [
         ".section"
       ],
-      "declarations": 3,
+      "declarations": 2,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
@@ -3305,25 +3288,7 @@
       "selectors": [
         ".section-description"
       ],
-      "declarations": 2,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source",
-        "runtime-observed"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "section-title",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".section-title"
-      ],
-      "declarations": 2,
+      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",

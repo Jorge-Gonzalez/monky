@@ -10,8 +10,8 @@ interface ReplacementModeProps {
  */
 export default function ReplacementMode({ useCommitKeys, onChange }: ReplacementModeProps) {
   return (
-    <div className="section padding-relaxed rule corner-md ground-subtle">
-      <h3 className="section-title font-lg ink">{t('replacementMode.title')}</h3>
+    <div className="section vertical gap-comfortable padding-relaxed rule corner-md ground-subtle">
+      <h3 className="section-title font-lg">{t('replacementMode.title')}</h3>
       <div className="horizontal gap-loose mode-row">
         <label className="horizontal align-center gap-snug rigid mode-choice">
           <input

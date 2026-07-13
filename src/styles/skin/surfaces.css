@@ -1,19 +1,17 @@
 /* ===== COMPONENT PATTERNS: Sections ===== */
 
+/* Section rhythm dissolved into container words: the page column carries
+   `gap-relaxed` (was the section's bottom margin) and each section carries
+   `vertical gap-comfortable` (the collapsed title/description margins).
+   .section-title retired with it — its weight 200 was render-inert against
+   the single 300-weight face, and its ink was ambient from the themed body. */
 .section {
   border-width: 1px;
   border-style: solid;
-  margin-bottom: var(--spacing-lg);
-}
-
-.section-title {
-  font-weight: 200;
-  margin: 0 0 var(--spacing-md) 0;
 }
 
 .section-description {
   font-size: var(--text-base);
-  margin: var(--spacing-sm) 0 0 0;
 }
 
 /* ===== COMPONENT PATTERNS: Alerts ===== */
@@ -48,9 +46,8 @@
   margin-left: 0;
 } */
 
-/* Line presence comes from `ruled-top` (R-SKIN-11); the substrate resets the UA hr border. */
-.divider {
-  margin: var(--spacing-2xl) 0;
-}
+/* .divider is now pure words: `rule ruled-top` draw the line (the substrate resets
+   the UA hr border) and the page column's gap owns its rhythm — the old 24px block
+   margins would have stacked on the flex gap. */
 
 /* .text-mono retired: consumers now carry the `font-mono` word (R-SKIN-07). */
