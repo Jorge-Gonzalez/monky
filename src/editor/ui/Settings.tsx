@@ -11,7 +11,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="section vertical gap-comfortable padding-relaxed rule corner-md ground-subtle">
+    <div className="section vertical gap-comfortable padding-relaxed rule ruled corner-md ground-subtle">
       <h2 className="section-title font-lg">{t('settings.title')}</h2>
       <div className="horizontal align-center gap-comfortable">
         <label htmlFor="language-select" className="label boxed font-sm font-medium ink" style={{ marginBottom: 0 }}>

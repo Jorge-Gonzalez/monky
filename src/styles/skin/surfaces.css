@@ -1,18 +1,12 @@
 /* ===== COMPONENT PATTERNS: Sections ===== */
 
-/* Section rhythm dissolved into container words: the page column carries
-   `gap-relaxed` (was the section's bottom margin) and each section carries
-   `vertical gap-comfortable` (the collapsed title/description margins).
-   .section-title retired with it — its weight 200 was render-inert against
-   the single 300-weight face, and its ink was ambient from the themed body. */
-.section {
-  border-width: 1px;
-  border-style: solid;
-}
-
-.section-description {
-  font-size: var(--text-base);
-}
+/* The section family is now pure words. Rhythm: the page column's `gap-relaxed`
+   and the section's `vertical gap-comfortable` (the old margins, collapsed).
+   Line: `rule ruled`. Description size: `font-md` — the historical 14px was
+   stranded off-scale when --type-md was rebound to the 15px reading size, and
+   nothing supplied it ambiently (the inherited size here is the UA's 16px).
+   .section-title retired earlier: weight 200 was render-inert against the single
+   300-weight face, and ink was ambient from the themed body. */
 
 /* ===== COMPONENT PATTERNS: Alerts ===== */
 

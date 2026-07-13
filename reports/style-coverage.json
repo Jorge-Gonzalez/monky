@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-13T05:48:09.906Z",
+  "generatedAt": "2026-07-13T05:55:02.917Z",
   "summary": {
-    "definedClasses": 205,
-    "selectorBlocks": 264,
+    "definedClasses": 203,
+    "selectorBlocks": 262,
     "byDisposition": {
-      "live-static": 205
+      "live-static": 203
     },
     "deadCandidateDeclarations": 0,
     "runtimePages": [
@@ -23,17 +23,10 @@
     },
     {
       "page": "/src/popup/index.html",
-      "asset": "assets/renderPageWithTheme-B2DfCHBV.css",
+      "asset": "assets/renderPageWithTheme-CGp-CfQ-.css",
       "usedBytes": 12486,
-      "totalBytes": 16049,
-      "usedPercent": 77.8
-    },
-    {
-      "page": "/src/options/index.html",
-      "asset": "assets/renderPageWithTheme-B2DfCHBV.css",
-      "usedBytes": 12736,
-      "totalBytes": 16049,
-      "usedPercent": 79.4
+      "totalBytes": 15941,
+      "usedPercent": 78.3
     },
     {
       "page": "/src/options/index.html",
@@ -43,10 +36,17 @@
       "usedPercent": 99.2
     },
     {
+      "page": "/src/options/index.html",
+      "asset": "assets/renderPageWithTheme-CGp-CfQ-.css",
+      "usedBytes": 12486,
+      "totalBytes": 15941,
+      "usedPercent": 78.3
+    },
+    {
       "page": "/src/editor/index.html",
-      "asset": "assets/renderPageWithTheme-B2DfCHBV.css",
-      "usedBytes": 15742,
-      "totalBytes": 16049,
+      "asset": "assets/renderPageWithTheme-CGp-CfQ-.css",
+      "usedBytes": 15634,
+      "totalBytes": 15941,
       "usedPercent": 98.1
     }
   ],
@@ -3252,43 +3252,6 @@
         ".scrollbar-subtle"
       ],
       "declarations": 2,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source",
-        "runtime-observed"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "section",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".section"
-      ],
-      "declarations": 2,
-      "disposition": "live-static",
-      "livenessEvidence": [
-        "production-source",
-        "runtime-observed",
-        "test-reference"
-      ],
-      "supportingEvidence": [
-        "bundled-app-token"
-      ]
-    },
-    {
-      "className": "section-description",
-      "files": [
-        "src/styles/skin/surfaces.css"
-      ],
-      "selectors": [
-        ".section-description"
-      ],
-      "declarations": 1,
       "disposition": "live-static",
       "livenessEvidence": [
         "production-source",
