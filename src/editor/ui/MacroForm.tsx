@@ -83,7 +83,7 @@ export default function MacroForm({ editing, onDone }: {
   }
 
   return (
-    <form onSubmit={onSubmit} className="vertical gap-comfortable">
+    <form onSubmit={onSubmit} className="vertical gap-md">
       <div>
         <label htmlFor="macro-command" className="boxed ink font-sm font-medium">
           {t('macroForm.triggerLabel')}
@@ -91,7 +91,7 @@ export default function MacroForm({ editing, onDone }: {
         <input
           id="macro-command"
           ref={commandInputRef}
-          className={`input padding-block-snug padding-inline-comfortable ground-subtle ink rule corner-3xl ruled font-md focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail' : ''}`}
+          className={`input padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled font-md focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail' : ''}`}
           value={command}
           onChange={e => setCommand(e.currentTarget.value)}
           placeholder={`e.g., ${prefixes[0]}sig`}
@@ -117,7 +117,7 @@ export default function MacroForm({ editing, onDone }: {
       </div>
 
       {error && (
-        <div className="alert alert-error padding-comfortable ground-fail-faint ink-fail rule-fail corner-md ruled">
+        <div className="alert alert-error padding-md ground-fail-faint ink-fail rule-fail corner-md ruled">
           <p className="font-medium">{error}</p>
         </div>
       )}
@@ -137,14 +137,14 @@ export default function MacroForm({ editing, onDone }: {
           <button
             type="submit"
             disabled={!isFormValid}
-            className="btn btn-success padding-block-snug padding-inline-relaxed ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft"
+            className="btn btn-success padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft"
           >
             {editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}
           </button>
           {editing && (
             <button
               type="button"
-              className="btn padding-block-snug padding-inline-relaxed ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft"
+              className="btn padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft"
               onClick={onDone}
             >
               {t('macroForm.cancelButton')}

@@ -23,12 +23,12 @@
     },
     {
       "id": "modal-navigation",
-      "classString": "horizontal padding-inline-relaxed align-center justify-between",
+      "classString": "horizontal padding-inline-lg align-center justify-between",
       "backing": []
     },
     {
       "id": "modal-navigation-brand",
-      "classString": "horizontal gap-snug align-center ink-accent",
+      "classString": "horizontal gap-sm align-center ink-accent",
       "backing": []
     },
     {
@@ -38,17 +38,17 @@
     },
     {
       "id": "modal-navigation-tab",
-      "classString": "horizontal gap-snug align-center justify-center ink-soft font-md font-medium pressable hover:ground-subtle hover:ink current:ground-subtle current:ink-accent",
+      "classString": "horizontal gap-sm align-center justify-center ink-soft font-md font-medium pressable hover:ground-subtle hover:ink current:ground-subtle current:ink-accent",
       "backing": []
     },
     {
       "id": "search-input-container",
-      "classString": "padding-relaxed rule ruled-bottom",
+      "classString": "padding-lg rule ruled-bottom",
       "backing": []
     },
     {
       "id": "search-input",
-      "classString": "padding-block-snug padding-inline-comfortable ground-subtle ink rule-accent-soft corner-md ruled font-md focus:rule-accent focus:ring",
+      "classString": "padding-block-sm padding-inline-md ground-subtle ink rule-accent-soft corner-md ruled font-md focus:rule-accent focus:ring",
       "backing": []
     },
     {
@@ -58,7 +58,7 @@
     },
     {
       "id": "search-empty",
-      "classString": "span-all padding-relaxed ink-soft font-md text-center",
+      "classString": "span-all padding-lg ink-soft font-md text-center",
       "backing": []
     },
     {
@@ -70,27 +70,27 @@
     },
     {
       "id": "search-item-command-cell",
-      "classString": "padding-comfortable hidden ink-accent rule-soft ruled-bottom font-md font-medium pressable truncate",
+      "classString": "padding-md hidden ink-accent rule-soft ruled-bottom font-md font-medium pressable truncate",
       "backing": []
     },
     {
       "id": "search-item-text-cell",
-      "classString": "padding-comfortable hidden ink-soft rule-soft ruled-bottom font-md pressable truncate",
+      "classString": "padding-md hidden ink-soft rule-soft ruled-bottom font-md pressable truncate",
       "backing": []
     },
     {
       "id": "search-item-confirm-cell",
-      "classString": "padding-comfortable hidden ground-fail-faint ink-fail rule-soft ruled-bottom font-md font-medium truncate",
+      "classString": "padding-md hidden ground-fail-faint ink-fail rule-soft ruled-bottom font-md font-medium truncate",
       "backing": []
     },
     {
       "id": "search-command-name-cell",
-      "classString": "padding-comfortable hidden ink-accent rule-soft ruled-bottom font-md font-semibold font-mono truncate",
+      "classString": "padding-md hidden ink-accent rule-soft ruled-bottom font-md font-semibold font-mono truncate",
       "backing": []
     },
     {
       "id": "search-item-edit",
-      "classString": "horizontal padding-tight align-center justify-center position-absolute ink-soft corner-sm pressable concealed hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed",
+      "classString": "horizontal padding-xs align-center justify-center position-absolute ink-soft corner-sm pressable concealed hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed",
       "backing": [],
       "context": {
         "parentClasses": "grid span-all position-relative selectable"
@@ -98,12 +98,12 @@
     },
     {
       "id": "search-footer",
-      "classString": "horizontal padding-snug justify-between ground ink-soft rule ruled-top font-sm",
+      "classString": "horizontal padding-sm justify-between ground ink-soft rule ruled-top font-sm",
       "backing": []
     },
     {
       "id": "search-shortcut",
-      "classString": "horizontal inline gap-snug align-center",
+      "classString": "horizontal inline gap-sm align-center",
       "backing": []
     },
     {
@@ -113,12 +113,12 @@
     },
     {
       "id": "u6-settings-shell",
-      "classString": "padding-block-loose padding-inline-separated",
+      "classString": "padding-block-xl padding-inline-3xl",
       "backing": []
     },
     {
       "id": "u6-settings-row",
-      "classString": "horizontal gap-relaxed padding-block-snug align-center justify-between",
+      "classString": "horizontal gap-lg padding-block-sm align-center justify-between",
       "backing": []
     },
     {
@@ -143,7 +143,7 @@
     },
     {
       "id": "u6-settings-appearance",
-      "classString": "horizontal gap-comfortable align-center",
+      "classString": "horizontal gap-md align-center",
       "backing": []
     },
     {
@@ -153,14 +153,14 @@
     },
     {
       "id": "u6-segmented-option",
-      "classString": "elastic basis-ratio padding-block-tight padding-inline-comfortable position-relative selectable ink-soft rule ruled-right font-sm text-center pressable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse",
+      "classString": "elastic basis-ratio padding-block-xs padding-inline-md position-relative selectable ink-soft rule ruled-right font-sm text-center pressable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse",
       "backing": [
         "aria-checked"
       ]
     },
     {
       "id": "u6-editor-shell",
-      "classString": "vertical gap-comfortable padding-loose position-relative ink",
+      "classString": "vertical gap-md padding-xl position-relative ink",
       "backing": []
     },
     {
@@ -170,12 +170,12 @@
     },
     {
       "id": "u6-editor-bar",
-      "classString": "horizontal rigid gap-relaxed align-center justify-between",
+      "classString": "horizontal rigid gap-lg align-center justify-between",
       "backing": []
     },
     {
       "id": "u6-editor-button",
-      "classString": "horizontal padding-tight align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink-accent",
+      "classString": "horizontal padding-xs align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink-accent",
       "backing": []
     },
     {
@@ -185,7 +185,7 @@
     },
     {
       "id": "u6-editor-command-error",
-      "classString": "padding-block-tight padding-inline-snug ground-fail-faint",
+      "classString": "padding-block-xs padding-inline-sm ground-fail-faint",
       "backing": []
     },
     {
@@ -195,19 +195,19 @@
     },
     {
       "id": "u6-command-suggestions-label",
-      "classString": "padding-block-tight padding-inline-comfortable ink-soft rule ruled-bottom font-sm",
+      "classString": "padding-block-xs padding-inline-md ink-soft rule ruled-bottom font-sm",
       "backing": []
     },
     {
       "id": "u6-command-suggestion-row",
-      "classString": "horizontal gap-comfortable padding-block-snug padding-inline-comfortable align-center hidden selectable pressable hover:ground selected:ground-defined",
+      "classString": "horizontal gap-md padding-block-sm padding-inline-md align-center hidden selectable pressable hover:ground selected:ground-defined",
       "backing": [
         "aria-selected"
       ]
     },
     {
       "id": "u6-command-suggestion-row-confirming",
-      "classString": "horizontal gap-comfortable padding-block-snug padding-inline-comfortable align-center ground-fail-faint",
+      "classString": "horizontal gap-md padding-block-sm padding-inline-md align-center ground-fail-faint",
       "backing": []
     },
     {
@@ -222,35 +222,35 @@
     },
     {
       "id": "u6-command-suggestion-actions",
-      "classString": "horizontal gap-tight align-center",
+      "classString": "horizontal gap-xs align-center",
       "backing": []
     },
     {
       "id": "u6-command-suggestion-confirm-action",
-      "classString": "horizontal padding-tight align-center justify-center ink-fail corner-sm pressable hover:ground-fail hover:ink-inverse",
+      "classString": "horizontal padding-xs align-center justify-center ink-fail corner-sm pressable hover:ground-fail hover:ink-inverse",
       "backing": []
     },
     {
       "id": "u6-command-suggestion-delete-action",
-      "classString": "horizontal padding-tight align-center justify-center ink-soft corner-sm pressable concealed hover:ground-fail-faint hover:ink-fail parent-hover:revealed parent-selected:revealed",
+      "classString": "horizontal padding-xs align-center justify-center ink-soft corner-sm pressable concealed hover:ground-fail-faint hover:ink-fail parent-hover:revealed parent-selected:revealed",
       "backing": [],
       "context": {
-        "parentClasses": "horizontal gap-comfortable padding-block-snug padding-inline-comfortable align-center hidden selectable"
+        "parentClasses": "horizontal gap-md padding-block-sm padding-inline-md align-center hidden selectable"
       }
     },
     {
       "id": "u6-command-suggestion-cancel-action",
-      "classString": "horizontal padding-tight align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink",
+      "classString": "horizontal padding-xs align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink",
       "backing": []
     },
     {
       "id": "u6-editor-sensitive",
-      "classString": "horizontal gap-snug align-center ink font-sm pressable",
+      "classString": "horizontal gap-sm align-center ink font-sm pressable",
       "backing": []
     },
     {
       "id": "u6-content-toolbar",
-      "classString": "horizontal rigid gap-tight padding-block-tight padding-inline-snug align-center wrap-allowed ground",
+      "classString": "horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed ground",
       "backing": []
     },
     {
@@ -265,12 +265,12 @@
     },
     {
       "id": "u6-content-style-dropdown",
-      "classString": "vertical padding-tight position-absolute ground rule corner-md ruled elevated",
+      "classString": "vertical padding-xs position-absolute ground rule corner-md ruled elevated",
       "backing": []
     },
     {
       "id": "u6-content-style-option",
-      "classString": "horizontal gap-snug padding-block-tight padding-inline-snug align-center ink corner-sm font-sm hover:ground-defined",
+      "classString": "horizontal gap-sm padding-block-xs padding-inline-sm align-center ink corner-sm font-sm hover:ground-defined",
       "backing": []
     },
     {
@@ -280,7 +280,7 @@
     },
     {
       "id": "u7-suggestions-command-list",
-      "classString": "horizontal gap-tight padding-tight rule-soft ruled-bottom",
+      "classString": "horizontal gap-xs padding-xs rule-soft ruled-bottom",
       "backing": []
     },
     {
@@ -292,7 +292,7 @@
     },
     {
       "id": "u7-suggestions-footer",
-      "classString": "horizontal gap-comfortable padding-block-tight padding-inline-comfortable ground ink-soft rule ruled-top font-xs",
+      "classString": "horizontal gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs",
       "backing": []
     },
     {
@@ -302,12 +302,12 @@
     },
     {
       "id": "u7-suggestions-text-preview",
-      "classString": "padding-block-snug padding-inline-comfortable ink-soft font-xs",
+      "classString": "padding-block-sm padding-inline-md ink-soft font-xs",
       "backing": []
     },
     {
       "id": "u7-delete-message",
-      "classString": "padding-block-snug padding-inline-comfortable ink rule-soft ruled-bottom font-sm",
+      "classString": "padding-block-sm padding-inline-md ink rule-soft ruled-bottom font-sm",
       "backing": []
     },
     {
@@ -331,27 +331,27 @@
     },
     {
       "id": "u8-options-mode-row",
-      "classString": "horizontal gap-loose",
+      "classString": "horizontal gap-xl",
       "backing": []
     },
     {
       "id": "u8-editor-form",
-      "classString": "vertical gap-comfortable",
+      "classString": "vertical gap-md",
       "backing": []
     },
     {
       "id": "u8-popup-container",
-      "classString": "vertical gap-snug padding-snug ground ink",
+      "classString": "vertical gap-sm padding-sm ground ink",
       "backing": []
     },
     {
       "id": "u8-popup-header-titles",
-      "classString": "horizontal grow-1 gap-snug align-center",
+      "classString": "horizontal grow-1 gap-sm align-center",
       "backing": []
     },
     {
       "id": "u8-popup-search",
-      "classString": "vertical gap-snug margin-block-snug",
+      "classString": "vertical gap-sm margin-block-sm",
       "backing": []
     },
     {
@@ -361,22 +361,22 @@
     },
     {
       "id": "popup-primary-button",
-      "classString": "padding-block-tight padding-inline-snug ground-accent ink-inverse corner-md font-xs font-semibold pressable",
+      "classString": "padding-block-xs padding-inline-sm ground-accent ink-inverse corner-md font-xs font-semibold pressable",
       "backing": []
     },
     {
       "id": "popup-icon-button",
-      "classString": "padding-tight ground-subtle ink rule corner-md font-sm pressable",
+      "classString": "padding-xs ground-subtle ink rule corner-md font-sm pressable",
       "backing": []
     },
     {
       "id": "popup-results",
-      "classString": "vertical gap-tight scroll-auto scrollbar-subtle",
+      "classString": "vertical gap-xs scroll-auto scrollbar-subtle",
       "backing": []
     },
     {
       "id": "popup-result-item",
-      "classString": "padding-snug rule-soft ruled-bottom",
+      "classString": "padding-sm rule-soft ruled-bottom",
       "backing": []
     },
     {
@@ -386,7 +386,7 @@
     },
     {
       "id": "popup-card",
-      "classString": "padding-snug ground rule corner-md ruled",
+      "classString": "padding-sm ground rule corner-md ruled",
       "backing": []
     },
     {
@@ -401,27 +401,27 @@
     },
     {
       "id": "popup-item-detail",
-      "classString": "vertical gap-snug rule-soft ruled-top",
+      "classString": "vertical gap-sm rule-soft ruled-top",
       "backing": []
     },
     {
       "id": "popup-macro-text",
-      "classString": "padding-snug ground-subtle ink corner-md font-sm",
+      "classString": "padding-sm ground-subtle ink corner-md font-sm",
       "backing": []
     },
     {
       "id": "popup-secondary-button",
-      "classString": "padding-block-tight padding-inline-snug ground-accent ink-inverse corner-md font-sm",
+      "classString": "padding-block-xs padding-inline-sm ground-accent ink-inverse corner-md font-sm",
       "backing": []
     },
     {
       "id": "popup-danger-button",
-      "classString": "padding-block-tight padding-inline-snug ground-fail ink-inverse corner-md font-sm",
+      "classString": "padding-block-xs padding-inline-sm ground-fail ink-inverse corner-md font-sm",
       "backing": []
     },
     {
       "id": "popup-section",
-      "classString": "horizontal padding-snug align-center justify-between ground-subtle rule corner-md ruled",
+      "classString": "horizontal padding-sm align-center justify-between ground-subtle rule corner-md ruled",
       "backing": []
     },
     {
@@ -436,7 +436,7 @@
     },
     {
       "id": "phase-b-section",
-      "classString": "padding-relaxed ground-subtle rule corner-md",
+      "classString": "padding-lg ground-subtle rule corner-md",
       "backing": []
     },
     {
@@ -446,22 +446,22 @@
     },
     {
       "id": "phase-b-alert-error",
-      "classString": "padding-comfortable ground-fail-faint ink-fail rule-fail corner-md",
+      "classString": "padding-md ground-fail-faint ink-fail rule-fail corner-md",
       "backing": []
     },
     {
       "id": "phase-b-alert-success",
-      "classString": "padding-comfortable ground-pass-faint ink-pass rule-pass corner-md",
+      "classString": "padding-md ground-pass-faint ink-pass rule-pass corner-md",
       "backing": []
     },
     {
       "id": "phase-b-card",
-      "classString": "padding-comfortable ground rule corner-md",
+      "classString": "padding-md ground rule corner-md",
       "backing": []
     },
     {
       "id": "phase-b-empty-state",
-      "classString": "padding-relaxed ink-soft font-md",
+      "classString": "padding-lg ink-soft font-md",
       "backing": []
     },
     {
@@ -486,7 +486,7 @@
     },
     {
       "id": "phase-b-content-editor-body",
-      "classString": "padding-comfortable scroll-auto ink rule corner-lg ruled font-md focus:rule-accent focus:ring",
+      "classString": "padding-md scroll-auto ink rule corner-lg ruled font-md focus:rule-accent focus:ring",
       "backing": []
     },
     {
@@ -501,42 +501,42 @@
     },
     {
       "id": "phase-b-input",
-      "classString": "padding-block-snug padding-inline-comfortable ground-subtle ink rule corner-3xl ruled font-md focus:rule-accent focus:ring",
+      "classString": "padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled font-md focus:rule-accent focus:ring",
       "backing": []
     },
     {
       "id": "phase-b-input-error",
-      "classString": "padding-tight rule-fail focus:rule-fail",
+      "classString": "padding-xs rule-fail focus:rule-fail",
       "backing": []
     },
     {
       "id": "phase-b-icon-boxed",
-      "classString": "boxed padding-tight",
+      "classString": "boxed padding-xs",
       "backing": []
     },
     {
       "id": "phase-b-icon-boxed-inline",
-      "classString": "boxed-inline padding-tight",
+      "classString": "boxed-inline padding-xs",
       "backing": []
     },
     {
       "id": "phase-b-position-straggler",
-      "classString": "padding-tight position-absolute",
+      "classString": "padding-xs position-absolute",
       "backing": []
     },
     {
       "id": "phase-b-rigid-straggler",
-      "classString": "rigid padding-tight",
+      "classString": "rigid padding-xs",
       "backing": []
     },
     {
       "id": "phase-b-scroll-straggler",
-      "classString": "padding-tight scroll-auto",
+      "classString": "padding-xs scroll-auto",
       "backing": []
     },
     {
       "id": "cycle5-editor-form",
-      "classString": "vertical elastic basis-ratio gap-comfortable min-height-none position-relative",
+      "classString": "vertical elastic basis-ratio gap-md min-height-none position-relative",
       "backing": []
     },
     {
@@ -546,7 +546,7 @@
     },
     {
       "id": "cycle6-style-option",
-      "classString": "horizontal gap-snug padding-block-tight padding-inline-snug align-center ink corner-sm font-sm text-start hover:ground-defined",
+      "classString": "horizontal gap-sm padding-block-xs padding-inline-sm align-center ink corner-sm font-sm text-start hover:ground-defined",
       "backing": []
     },
     {
@@ -561,17 +561,17 @@
     },
     {
       "id": "phase-f-button-outlined",
-      "classString": "padding-block-snug padding-inline-relaxed ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
+      "classString": "padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
       "backing": []
     },
     {
       "id": "phase-f-button-settings-outlined",
-      "classString": "padding-block-snug padding-inline-relaxed ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
+      "classString": "padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
       "backing": []
     },
     {
       "id": "phase-f-button-success",
-      "classString": "padding-block-snug padding-inline-relaxed ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
+      "classString": "padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
       "backing": []
     },
     {
@@ -582,6 +582,11 @@
     {
       "id": "phase-f-button-link-danger",
       "classString": "ink-fail font-sm",
+      "backing": []
+    },
+    {
+      "id": "page-container",
+      "classString": "vertical gap-lg padding-2xl",
       "backing": []
     }
   ]

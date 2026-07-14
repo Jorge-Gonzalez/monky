@@ -122,7 +122,7 @@ export function SearchableListView<T>({
   } = config.search || {};
 
   const {
-    emptyState = <div className="empty-state padding-relaxed ink-soft font-md">No items found</div>,
+    emptyState = <div className="empty-state padding-lg ink-soft font-md">No items found</div>,
     selectionConfig = { mode: 'single', toggleOnClick: true }
   } = config.list || {};
 

@@ -91,7 +91,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
       <div
         ref={editorRef}
         contentEditable
-        className="content-editor-body padding-comfortable scroll-auto ink rule corner-lg ruled font-md focus:rule-accent focus:ring"
+        className="content-editor-body padding-md scroll-auto ink rule corner-lg ruled font-md focus:rule-accent focus:ring"
         data-placeholder={placeholder}
         onInput={() => {
           if (!editorRef.current || !onChange) return

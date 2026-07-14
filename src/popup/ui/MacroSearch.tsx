@@ -26,18 +26,18 @@ export function MacroSearch({ macros }: MacroSearchProps) {
   }, [query, macros])
 
   return (
-    <div className="vertical gap-snug margin-block-snug">
+    <div className="vertical gap-sm margin-block-sm">
       <input
         type="text"
         value={query}
         onChange={e => setQuery(e.target.value)}
         placeholder={t('popup.searchPlaceholder')}
-        className="popup-search-input padding-block-snug padding-inline-comfortable ground-subtle ink rule-accent-soft corner-md ruled font-md focus:rule-accent focus:ring"
+        className="popup-search-input padding-block-sm padding-inline-md ground-subtle ink rule-accent-soft corner-md ruled font-md focus:rule-accent focus:ring"
       />
-      <ul className="popup-results vertical gap-tight scroll-auto scrollbar-subtle">
+      <ul className="popup-results vertical gap-xs scroll-auto scrollbar-subtle">
         {results.length > 0 ? (
           results.map(result => (
-            <li key={result.obj.id} className="popup-result-item padding-snug rule-soft ruled-bottom">
+            <li key={result.obj.id} className="popup-result-item padding-sm rule-soft ruled-bottom">
               <>
                 <div className="ink-accent font-md font-bold">{result.obj.command}</div>
                 <p className="hidden ink-soft font-sm truncate">{result.obj.text}</p>
@@ -45,7 +45,7 @@ export function MacroSearch({ macros }: MacroSearchProps) {
             </li>
           ))
         ) : (
-          <p className="padding-snug ink-soft font-sm">{t('macroList.noMacros')}</p>
+          <p className="padding-sm ink-soft font-sm">{t('macroList.noMacros')}</p>
         )}
       </ul>
     </div>

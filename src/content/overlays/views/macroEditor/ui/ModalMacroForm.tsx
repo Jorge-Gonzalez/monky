@@ -105,15 +105,15 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   }
 
   return (
-    <form onSubmit={onSubmit} className="editor-form vertical elastic basis-ratio gap-comfortable min-height-none position-relative">
-      <div className="editor-topbar horizontal gap-relaxed align-center justify-between">
-        <div className="editor-topbar-lead horizontal rigid gap-snug align-center">
+    <form onSubmit={onSubmit} className="editor-form vertical elastic basis-ratio gap-md min-height-none position-relative">
+      <div className="editor-topbar horizontal gap-lg align-center justify-between">
+        <div className="editor-topbar-lead horizontal rigid gap-sm align-center">
           <h1 className="editor-title ink font-lg font-semibold">
             {editing ? t('macroEditor.title.editShort') : t('macroEditor.title.newShort')}
           </h1>
           <button
             type="button"
-            className="editor-popout horizontal padding-tight align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink-accent"
+            className="editor-popout horizontal padding-xs align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink-accent"
             onClick={openFullEditor}
             aria-label={t('macroEditor.openFullEditor')}
             title={t('macroEditor.openFullEditor')}
@@ -122,7 +122,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           </button>
         </div>
 
-        <div className="horizontal gap-snug align-center">
+        <div className="horizontal gap-sm align-center">
           <span className="">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16">
               <polygon fill="currentColor" points="7,9 4,9 10,0 8,7 11,7 5.417,15 "/>
@@ -132,7 +132,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             <input
               id="modal-macro-command"
               ref={commandInputRef}
-              className={`input padding-block-snug padding-inline-comfortable ground-subtle ink rule corner-3xl ruled font-md focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail input-dropdown-open' : ''} ${suggest.visible ? 'input-dropdown-open' : ''}`}
+              className={`input padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled font-md focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail input-dropdown-open' : ''} ${suggest.visible ? 'input-dropdown-open' : ''}`}
               value={command}
               onChange={e => setCommand(e.currentTarget.value)}
               placeholder={t('macroForm.commandPlaceholder', { prefix: prefixes[0] })}
@@ -142,7 +142,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
               {...suggest.inputProps}
             />
             {command && !commandValid && (
-              <div className={`validation-error editor-command-error padding-block-tight padding-inline-snug ground-fail-faint ink-fail font-xs ${suggest.visible ? 'input-dropdown-open' : ''}`}>
+              <div className={`validation-error editor-command-error padding-block-xs padding-inline-sm ground-fail-faint ink-fail font-xs ${suggest.visible ? 'input-dropdown-open' : ''}`}>
                 {t('macroForm.commandPrefixError', { prefixes: prefixes.join(', ') })}
               </div>
             )}
@@ -166,8 +166,8 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
         placeholder={t('macroForm.contentPlaceholder')}
       />
 
-      <div className="editor-bottombar horizontal rigid gap-comfortable align-center justify-between">
-        <label className="editor-sensitive horizontal gap-snug align-center ink font-sm pressable">
+      <div className="editor-bottombar horizontal rigid gap-md align-center justify-between">
+        <label className="editor-sensitive horizontal gap-sm align-center ink font-sm pressable">
           <input
             type="checkbox"
             checked={isSensitive}
@@ -177,11 +177,11 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           <span>{t('macroForm.sensitiveLabel')}</span>
         </label>
 
-        <div className="button-group horizontal inline gap-snug">
+        <div className="button-group horizontal inline gap-sm">
           {editing && (
             <button
               type="button"
-              className="btn padding-block-snug padding-inline-relaxed ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft"
+              className="btn padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft"
               onClick={onDone}
             >
               {t('macroForm.cancelButton')}
@@ -190,7 +190,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           <button
             type="submit"
             disabled={!isFormValid || savedToast !== null}
-            className="btn btn-success padding-block-snug padding-inline-relaxed ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft"
+            className="btn btn-success padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft"
           >
             {editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}
           </button>
@@ -198,7 +198,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
       </div>
 
       {(error || savedToast) && (
-        <div className={`editor-toast alert padding-comfortable position-absolute corner-md ruled ${error ? 'alert-error ground-fail-faint rule-fail ink-fail' : 'alert-success ground-pass-faint rule-pass ink-pass'}`} role="status">
+        <div className={`editor-toast alert padding-md position-absolute corner-md ruled ${error ? 'alert-error ground-fail-faint rule-fail ink-fail' : 'alert-success ground-pass-faint rule-pass ink-pass'}`} role="status">
           <p className="font-medium">{error ?? savedToast}</p>
         </div>
       )}

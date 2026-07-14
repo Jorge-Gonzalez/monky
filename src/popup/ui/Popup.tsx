@@ -14,9 +14,9 @@ export default function Popup() {
   useAppliedTheme(popupRef);
 
   return (
-    <div ref={popupRef} className="popup-container vertical gap-snug padding-snug ground ink">
-      <div className="horizontal gap-snug align-center justify-between">
-        <div className="horizontal grow-1 gap-snug align-center">
+    <div ref={popupRef} className="popup-container vertical gap-sm padding-sm ground ink">
+      <div className="horizontal gap-sm align-center justify-between">
+        <div className="horizontal grow-1 gap-sm align-center">
           <h1 className="ink font-lg font-bold">{t('popup.title')}</h1>
           <NewMacroButton />
         </div>

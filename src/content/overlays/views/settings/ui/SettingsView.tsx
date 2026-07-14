@@ -60,20 +60,20 @@ export function SettingsView(_props: BaseModalViewProps) {
     <div className="settings-view vertical scroll-auto">
       <div className="settings-body">
 
-        <div className="settings-group grid padding-block-loose padding-inline-separated">
+        <div className="settings-group grid padding-block-xl padding-inline-3xl">
           <div className="settings-section-label ink-accent-soft font-xs font-medium">{t('settings.sections.general')}</div>
           <div className="settings-rows elastic basis-ratio min-width-none">
-            <div className="settings-row horizontal gap-relaxed padding-block-snug align-center justify-between">
+            <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('options.prefixEditor.title')}</span>
               <SelectableGroup
                 options={ALL_PREFIXES}
                 selected={prefixes}
                 onChange={setPrefixes}
-                className="horizontal gap-snug"
-                buttonClassName="btn pressable padding-block-snug padding-inline-relaxed corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-subtle ink ruled rule font-mono settings-prefix-btn horizontal align-center justify-center rigid"
+                className="horizontal gap-sm"
+                buttonClassName="btn pressable padding-block-sm padding-inline-lg corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-subtle ink ruled rule font-mono settings-prefix-btn horizontal align-center justify-center rigid"
               />
             </div>
-            <div className="settings-row horizontal gap-relaxed padding-block-snug align-center justify-between">
+            <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('replacementMode.title')}</span>
               <SegmentedControl
                 options={REPLACEMENT_OPTIONS.map(o => ({ value: o.value, label: o.label() }))}
@@ -86,12 +86,12 @@ export function SettingsView(_props: BaseModalViewProps) {
 
         <div className="settings-divider rule ruled-top" />
 
-        <div className="settings-group grid padding-block-loose padding-inline-separated">
+        <div className="settings-group grid padding-block-xl padding-inline-3xl">
           <div className="settings-section-label ink-accent-soft font-xs font-medium">{t('settings.sections.appearance')}</div>
           <div className="settings-rows elastic basis-ratio min-width-none">
-            <div className="settings-row horizontal gap-relaxed padding-block-snug align-center justify-between">
+            <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('settings.colorTheme')}</span>
-              <div className="settings-appearance-controls horizontal gap-comfortable align-center">
+              <div className="settings-appearance-controls horizontal gap-md align-center">
                 <SegmentedControl
                   options={THEME_OPTIONS}
                   value={colorTheme}
@@ -104,7 +104,7 @@ export function SettingsView(_props: BaseModalViewProps) {
                 />
               </div>
             </div>
-            <div className="settings-row horizontal gap-relaxed padding-block-snug align-center justify-between">
+            <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('settings.language')}</span>
               <SegmentedControl
                 options={LANGUAGE_OPTIONS}
@@ -117,16 +117,16 @@ export function SettingsView(_props: BaseModalViewProps) {
 
         <div className="settings-divider rule ruled-top" />
 
-        <div className="settings-group grid padding-block-loose padding-inline-separated">
+        <div className="settings-group grid padding-block-xl padding-inline-3xl">
           <div className="settings-section-label ink-accent-soft font-xs font-medium">{t('settings.sections.data')}</div>
           <div className="settings-rows elastic basis-ratio min-width-none">
-            <div className="settings-row horizontal gap-relaxed padding-block-snug align-center justify-between">
+            <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('settings.importExport.title')}</span>
-              <div className="horizontal gap-snug">
-                <button className="btn rigid padding-block-snug padding-inline-relaxed ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft" type="button" onClick={exportMacros}>
+              <div className="horizontal gap-sm">
+                <button className="btn rigid padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft" type="button" onClick={exportMacros}>
                   {t('settings.importExport.exportButton')}
                 </button>
-                <button className="btn rigid padding-block-snug padding-inline-relaxed ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft" type="button" onClick={() => fileInputRef.current?.click()}>
+                <button className="btn rigid padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft" type="button" onClick={() => fileInputRef.current?.click()}>
                   {t('settings.importExport.importButton')}
                 </button>
                 <input

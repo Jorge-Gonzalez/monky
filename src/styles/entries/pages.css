@@ -8,7 +8,7 @@
 /* ===== Page Container Patterns ===== */
 
 .page-container {
-  padding: var(--spacing-2xl);
+  /* padding: assimilated to the Ermine word `padding-2xl` (authored on the element). */
   max-width: 672px; /* 2xl = 42rem = 672px */
   margin: 0 auto;
   min-height: 100vh;
@@ -16,7 +16,7 @@
 
 /* Weight 200 dissolved: the single registered face is 300 and no synthesis occurs
    between 200 and the inherited 400, so the declaration was render-inert. Rhythm
-   comes from the page column's `gap-relaxed`. */
+   comes from the page column's `gap-lg`. */
 .page-title {
   font-family: 'IBM Plex Condensed Light', sans-serif;
 }

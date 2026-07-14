@@ -51,14 +51,14 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
       </button>
 
       {open && (
-        <div className="ce-style-dropdown vertical padding-tight position-absolute ground rule corner-md ruled elevated" role="listbox">
+        <div className="ce-style-dropdown vertical padding-xs position-absolute ground rule corner-md ruled elevated" role="listbox">
           {STYLE_OPTIONS.map(opt => (
             <button
               key={opt.type}
               type="button"
               role="option"
               aria-selected={blockType === opt.type}
-              className={`ce-style-option horizontal gap-snug padding-block-tight padding-inline-snug align-center ink corner-sm font-sm text-start pressable hover:ground-defined ${blockType === opt.type ? 'is-active' : ''}`}
+              className={`ce-style-option horizontal gap-sm padding-block-xs padding-inline-sm align-center ink corner-sm font-sm text-start pressable hover:ground-defined ${blockType === opt.type ? 'is-active' : ''}`}
               onMouseDown={e => { e.preventDefault(); handleSelect(opt.type) }}
             >
               <span className="ce-style-option-short rigid ink-soft font-xs font-semibold">{opt.shortLabel}</span>

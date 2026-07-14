@@ -10,10 +10,10 @@ interface ReplacementModeProps {
  */
 export default function ReplacementMode({ useCommitKeys, onChange }: ReplacementModeProps) {
   return (
-    <div className="section vertical gap-comfortable padding-relaxed ground-subtle rule corner-md ruled">
+    <div className="section vertical gap-md padding-lg ground-subtle rule corner-md ruled">
       <h3 className="section-title font-lg">{t('replacementMode.title')}</h3>
-      <div className="mode-row horizontal gap-loose">
-        <label className="mode-choice horizontal rigid gap-snug align-center">
+      <div className="mode-row horizontal gap-xl">
+        <label className="mode-choice horizontal rigid gap-sm align-center">
           <input
             type="radio"
             name="behavior"
@@ -23,7 +23,7 @@ export default function ReplacementMode({ useCommitKeys, onChange }: Replacement
           />
           <span className="radio-label rigid ink font-md">{t('replacementMode.auto')}</span>
         </label>
-        <label className="mode-choice horizontal rigid gap-snug align-center">
+        <label className="mode-choice horizontal rigid gap-sm align-center">
           <input
             type="radio"
             name="behavior"

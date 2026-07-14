@@ -12,7 +12,7 @@ export function MacroCommandResults({ commands, selectedIndex, onSelect, results
   if (commands.length === 0) {
     return (
       <div ref={resultsRef} className="macro-search-results grid elastic basis-ratio scroll-auto" role="listbox">
-        <div className="macro-search-empty span-all padding-relaxed ink-soft font-md text-center">{t('modalSearch.noMatchingCommands')}</div>
+        <div className="macro-search-empty span-all padding-lg ink-soft font-md text-center">{t('modalSearch.noMatchingCommands')}</div>
       </div>
     );
   }
@@ -27,8 +27,8 @@ export function MacroCommandResults({ commands, selectedIndex, onSelect, results
           aria-selected={index === selectedIndex}
           onClick={() => onSelect(cmd)}
         >
-          <div className="macro-search-item-command modal-command-name padding-comfortable hidden ink-accent rule-soft ruled-bottom font-md font-semibold font-mono truncate">{cmd.command}</div>
-          <div className="macro-search-item-text modal-command-description padding-comfortable ink-soft rule-soft font-md">{cmd.description}</div>
+          <div className="macro-search-item-command modal-command-name padding-md hidden ink-accent rule-soft ruled-bottom font-md font-semibold font-mono truncate">{cmd.command}</div>
+          <div className="macro-search-item-text modal-command-description padding-md ink-soft rule-soft font-md">{cmd.description}</div>
         </div>
       ))}
     </div>

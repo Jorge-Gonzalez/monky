@@ -11,13 +11,13 @@ export default function Settings() {
   }
 
   return (
-    <div className="section vertical gap-comfortable padding-relaxed ground-subtle rule corner-md ruled">
+    <div className="section vertical gap-md padding-lg ground-subtle rule corner-md ruled">
       <h2 className="section-title font-lg">{t('settings.title')}</h2>
-      <div className="horizontal gap-comfortable align-center">
+      <div className="horizontal gap-md align-center">
         <label htmlFor="language-select" className="boxed ink font-sm font-medium">
           {t('settings.language')}
         </label>
-        <select id="language-select" value={language} onChange={handleLanguageChange} className="input padding-block-snug padding-inline-comfortable ground-subtle ink rule corner-3xl ruled font-md focus:rule-accent focus:ring" style={{ width: 'auto' }}>
+        <select id="language-select" value={language} onChange={handleLanguageChange} className="input padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled font-md focus:rule-accent focus:ring" style={{ width: 'auto' }}>
           <option value="en">English</option>
           <option value="es">Español</option>
         </select>

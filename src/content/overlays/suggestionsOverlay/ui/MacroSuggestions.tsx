@@ -167,7 +167,7 @@ export function MacroSuggestions({
       }}
     >
       <div className={`macro-suggestions-arrow position-absolute ${placement}`} />
-      <div ref={listRef} role="listbox" className="macro-suggestions-commands-list horizontal gap-tight padding-tight rule-soft ruled-bottom">
+      <div ref={listRef} role="listbox" className="macro-suggestions-commands-list horizontal gap-xs padding-xs rule-soft ruled-bottom">
         {visibleMacros.map((macro, index) => (
           <button
             key={macro.id}
@@ -186,11 +186,11 @@ export function MacroSuggestions({
         ))}
       </div>
       {selectedMacro && (
-        <div className="macro-suggestions-text-preview padding-block-snug padding-inline-comfortable hidden ink-soft font-xs">
+        <div className="macro-suggestions-text-preview padding-block-sm padding-inline-md hidden ink-soft font-xs">
           {selectedMacro.text}
         </div>
       )}
-      <div className="macro-suggestions-footer horizontal gap-comfortable padding-block-tight padding-inline-comfortable ground ink-soft rule ruled-top font-xs">
+      <div className="macro-suggestions-footer horizontal gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs">
         <span>
           <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">←</kbd>
           <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">→</kbd>/
