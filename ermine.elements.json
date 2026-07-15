@@ -331,7 +331,12 @@
     },
     {
       "id": "u8-options-mode-row",
-      "classString": "horizontal gap-xl",
+      "classString": "horizontal hug-inline gap-xl",
+      "backing": []
+    },
+    {
+      "id": "u8-options-mode-choice",
+      "classString": "horizontal rigid hug-inline gap-sm align-center",
       "backing": []
     },
     {

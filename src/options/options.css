@@ -7,8 +7,3 @@
   flex: 0 0 auto;
 }
 
-/* Rows that hug their content instead of filling the page column. */
-.mode-row,
-.mode-choice {
-  width: fit-content;
-}
