@@ -123,7 +123,7 @@
     },
     {
       "id": "u6-settings-section-label",
-      "classString": "columns-12 quarter ink-accent-soft font-xs font-medium",
+      "classString": "columns-12 quarter overline tabular ink-accent-soft font-xs font-medium",
       "backing": []
     },
     {

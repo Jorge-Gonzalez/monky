@@ -71,7 +71,7 @@ shadow(
   composeShadowBundle({ componentStyles: [SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
   `<div data-probe="settings-view" class="settings-view fill-block vertical scroll-auto">
     <div data-probe="settings-group" class="settings-group columns-12 padding-block-xl padding-inline-3xl">
-      <div data-probe="settings-label" class="settings-section-label quarter ink-accent-soft font-xs font-medium">General</div>
+      <div data-probe="settings-label" class="settings-section-label quarter overline ink-accent-soft font-xs font-medium">General</div>
       <div data-probe="settings-rows" class="settings-rows three-quarters">
       <div data-probe="settings-row" class="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
         <span class="settings-row-label rigid ink font-md">Theme</span>

@@ -11,8 +11,7 @@
 
 
 .settings-section-label {
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  /* uppercase + tracking authored as the `overline` word on the element. */
   padding: var(--spacing-md) var(--spacing-sm) 0 0;
 }
 

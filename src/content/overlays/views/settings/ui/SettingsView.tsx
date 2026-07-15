@@ -61,7 +61,7 @@ export function SettingsView(_props: BaseModalViewProps) {
       <div className="settings-body">
 
         <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
-          <div className="settings-section-label quarter ink-accent-soft font-xs font-medium">{t('settings.sections.general')}</div>
+          <div className="settings-section-label quarter overline ink-accent-soft font-xs font-medium">{t('settings.sections.general')}</div>
           <div className="settings-rows three-quarters elastic basis-ratio min-width-none">
             <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('options.prefixEditor.title')}</span>
@@ -87,7 +87,7 @@ export function SettingsView(_props: BaseModalViewProps) {
         <div className="settings-divider rule ruled-top" />
 
         <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
-          <div className="settings-section-label quarter ink-accent-soft font-xs font-medium">{t('settings.sections.appearance')}</div>
+          <div className="settings-section-label quarter overline ink-accent-soft font-xs font-medium">{t('settings.sections.appearance')}</div>
           <div className="settings-rows three-quarters elastic basis-ratio min-width-none">
             <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('settings.colorTheme')}</span>
@@ -118,7 +118,7 @@ export function SettingsView(_props: BaseModalViewProps) {
         <div className="settings-divider rule ruled-top" />
 
         <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
-          <div className="settings-section-label quarter ink-accent-soft font-xs font-medium">{t('settings.sections.data')}</div>
+          <div className="settings-section-label quarter overline ink-accent-soft font-xs font-medium">{t('settings.sections.data')}</div>
           <div className="settings-rows three-quarters elastic basis-ratio min-width-none">
             <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('settings.importExport.title')}</span>

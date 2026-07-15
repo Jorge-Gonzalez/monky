@@ -13,7 +13,7 @@ export function MacroSearchFooter({ count, isCommandMode, hasSelection }: MacroS
 
   return (
     <div className="macro-search-footer horizontal padding-sm justify-between ground ink-soft rule ruled-top font-sm">
-      <div className="macro-search-count ink-soft">
+      <div className="macro-search-count tabular ink-soft">
         {countText}
       </div>
       <div>
