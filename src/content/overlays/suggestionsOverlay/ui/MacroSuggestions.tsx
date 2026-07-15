@@ -186,7 +186,7 @@ export function MacroSuggestions({
         ))}
       </div>
       {selectedMacro && (
-        <div className="macro-suggestions-text-preview padding-block-sm padding-inline-md hidden ink-soft font-xs">
+        <div className="macro-suggestions-text-preview padding-block-sm padding-inline-md hidden clamp-3 ink-soft font-xs">
           {selectedMacro.text}
         </div>
       )}

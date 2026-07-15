@@ -49,12 +49,6 @@ button, input, textarea, select {
   transition: all 0.15s ease;
 }
 
-.macro-suggestions-text-preview {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-}
-
 .macro-suggestions-footer {
   justify-content: flex-end;
 }

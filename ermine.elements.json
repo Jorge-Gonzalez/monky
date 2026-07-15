@@ -302,7 +302,7 @@
     },
     {
       "id": "u7-suggestions-text-preview",
-      "classString": "padding-block-sm padding-inline-md ink-soft font-xs",
+      "classString": "padding-block-sm padding-inline-md hidden clamp-3 ink-soft font-xs",
       "backing": []
     },
     {
