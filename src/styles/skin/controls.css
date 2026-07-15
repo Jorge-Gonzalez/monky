@@ -126,13 +126,8 @@
   opacity: 0.95;
 }
 
-/* ===== Feedback animations (relocated verbatim, U8; keyframes live in theme/metrics.css) ===== */
-
+/* The `shake` effect atom (Ermine R-MOTION-07) owns the animation + @keyframes.
+   This suppresses the button's own transition so it doesn't fight the shake. */
 .shake {
-  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
   transition: none !important;
-}
-
-.flash {
-  animation: flash 0.3s ease;
 }

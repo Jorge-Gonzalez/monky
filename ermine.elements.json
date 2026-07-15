@@ -496,7 +496,7 @@
     },
     {
       "id": "phase-b-selectable",
-      "classString": "position-relative hover:ground-defined",
+      "classString": "position-relative hover:ground-defined shake",
       "backing": []
     },
     {
