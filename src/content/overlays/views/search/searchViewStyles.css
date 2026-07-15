@@ -57,8 +57,6 @@
 
 .macro-search-item-edit {
   right: var(--spacing-sm);
-  top: 50%;
-  transform: translateY(-50%);
   transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
 }
 

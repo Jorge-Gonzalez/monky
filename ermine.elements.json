@@ -90,7 +90,7 @@
     },
     {
       "id": "search-item-edit",
-      "classString": "horizontal padding-xs align-center justify-center position-absolute ink-soft corner-sm pressable concealed hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed",
+      "classString": "horizontal padding-xs align-center justify-center position-absolute center-y ink-soft corner-sm pressable concealed hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed",
       "backing": [],
       "context": {
         "parentClasses": "grid span-all position-relative selectable"
@@ -606,7 +606,7 @@
     },
     {
       "id": "page-container",
-      "classString": "vertical gap-lg padding-2xl",
+      "classString": "vertical gap-lg padding-2xl max-width-2xl",
       "backing": []
     }
   ]

@@ -8,8 +8,7 @@
 /* ===== Page Container Patterns ===== */
 
 .page-container {
-  /* padding: assimilated to the Ermine word `padding-2xl` (authored on the element). */
-  max-width: 672px; /* 2xl = 42rem = 672px */
+  /* padding and max-width are authored as Ermine words on the element. */
   margin: 0 auto;
   min-height: 100vh;
 }
