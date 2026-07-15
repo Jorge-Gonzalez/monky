@@ -16,7 +16,6 @@
 
 /* Backdrop - full screen overlay */
 .modal-backdrop {
-  inset: 0;
   background-color: var(--shadow-color);
   z-index: 10000;
 }

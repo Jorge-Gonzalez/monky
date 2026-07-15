@@ -38,7 +38,7 @@ export function ModalShell({
 
   return (
     <div
-      className="modal-backdrop horizontal align-center justify-center position-fixed"
+      className="modal-backdrop horizontal align-center justify-center position-fixed cover"
       onMouseDown={onClose}
       role="presentation"
     >

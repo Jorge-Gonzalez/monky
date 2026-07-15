@@ -3,7 +3,7 @@
   "elements": [
     {
       "id": "modal-backdrop",
-      "classString": "horizontal align-center justify-center position-fixed",
+      "classString": "horizontal align-center justify-center position-fixed cover",
       "backing": []
     },
     {
