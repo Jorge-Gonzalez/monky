@@ -35,7 +35,7 @@ shadow(
         <input data-probe="search-input" class="macro-search-input fill-inline padding-block-sm padding-inline-md">
       </div>
       <div data-probe="search-results" class="macro-search-results grid-fit-sm elastic basis-ratio scroll-auto">
-        <div data-probe="search-item" class="macro-search-item grid span-all position-relative selectable" aria-selected="true">
+        <div data-probe="search-item" class="macro-search-item subgrid span-all position-relative selectable" aria-selected="true">
           <span data-probe="search-cell" class="macro-search-item-command padding-md">command</span>
           <button data-probe="search-edit" class="macro-search-item-edit horizontal padding-xs align-center justify-center position-absolute pressable concealed parent-hover:revealed parent-selected:revealed">edit</button>
         </div>

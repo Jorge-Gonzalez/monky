@@ -63,7 +63,7 @@
     },
     {
       "id": "search-item",
-      "classString": "grid span-all position-relative selectable",
+      "classString": "subgrid span-all position-relative selectable",
       "backing": [
         "aria-selected"
       ]
@@ -93,7 +93,7 @@
       "classString": "horizontal padding-xs align-center justify-center position-absolute center-y ink-soft corner-sm pressable concealed hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed",
       "backing": [],
       "context": {
-        "parentClasses": "grid span-all position-relative selectable"
+        "parentClasses": "subgrid span-all position-relative selectable"
       }
     },
     {

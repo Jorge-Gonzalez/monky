@@ -70,7 +70,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
 
   return (
     <div
-      className="macro-search-item grid span-all position-relative selectable"
+      className="macro-search-item subgrid span-all position-relative selectable"
       role="option"
       aria-selected={isSelected}
       data-state={isConfirmingDelete ? 'confirming-delete' : undefined}

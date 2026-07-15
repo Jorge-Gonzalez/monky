@@ -15,10 +15,6 @@
   align-content: start;
 }
 
-/* Search result items - search-specific pattern */
-.macro-search-item {
-  grid-template-columns: subgrid;
-}
 
 .macro-search-item-command,
 .macro-search-item-text {
