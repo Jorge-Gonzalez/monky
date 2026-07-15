@@ -44,6 +44,7 @@
   --type-3xl: var(--text-3xl);
 
   /* Ermine layout size scale binding. */
+  --size-sm: 140px;
   --size-2xl: 42rem;
 
   /* Ermine weight scale binding. */

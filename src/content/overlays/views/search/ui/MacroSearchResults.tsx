@@ -30,7 +30,7 @@ export function MacroSearchResults({
 }: MacroSearchResultsProps) {
   if (macros.length === 0) {
     return (
-      <div ref={resultsRef} className="macro-search-results grid elastic basis-ratio scroll-auto" role="listbox">
+      <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio scroll-auto" role="listbox">
         <div className="macro-search-empty span-all padding-lg ink-soft font-md text-center">
           {searchQuery ? t('modalSearch.noMacrosFound') : t('modalSearch.startTypingHint')}
         </div>
@@ -39,7 +39,7 @@ export function MacroSearchResults({
   }
 
   return (
-    <div ref={resultsRef} className="macro-search-results grid elastic basis-ratio scroll-auto" role="listbox">
+    <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio scroll-auto" role="listbox">
       {macros.map((macro, index) => (
         <MacroSearchItem
           key={macro.id}

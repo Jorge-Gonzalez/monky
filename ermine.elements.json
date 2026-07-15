@@ -53,7 +53,7 @@
     },
     {
       "id": "search-results",
-      "classString": "grid elastic basis-ratio",
+      "classString": "grid-fit-sm elastic basis-ratio",
       "backing": []
     },
     {
