@@ -46,7 +46,7 @@ export function DeleteConfirmPopup({
       className="macro-suggestions-container delete-confirm ground rule corner-lg ruled font-md"
       style={{ left: position.x, top: position.y, position: 'fixed' }}
     >
-      <div className={`macro-suggestions-arrow position-absolute ${placement}`} />
+      <div className={`macro-suggestions-arrow position-absolute center-x ${placement}`} />
       <div className="delete-confirm-message padding-block-sm padding-inline-md ink rule-soft ruled-bottom font-sm">
         {t('deleteConfirm.message')}{' '}
         <span className="delete-confirm-command ink-accent font-semibold font-mono">{macro.command}</span>

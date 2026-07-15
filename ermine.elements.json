@@ -194,6 +194,21 @@
       "backing": []
     },
     {
+      "id": "u6-command-arrow",
+      "classString": "position-absolute center-x",
+      "backing": []
+    },
+    {
+      "id": "u6-editor-toast-success",
+      "classString": "padding-md position-absolute center-x corner-md ruled ground-pass-faint rule-pass ink-pass",
+      "backing": []
+    },
+    {
+      "id": "u6-editor-toast-error",
+      "classString": "padding-md position-absolute center-x corner-md ruled ground-fail-faint rule-fail ink-fail",
+      "backing": []
+    },
+    {
       "id": "u6-command-suggestions-label",
       "classString": "padding-block-xs padding-inline-md ink-soft rule ruled-bottom font-sm",
       "backing": []

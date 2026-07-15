@@ -31,15 +31,11 @@ button, input, textarea, select {
 
 .macro-suggestions-arrow.top {
   top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
   border-top-color: var(--base-tone);
 }
 
 .macro-suggestions-arrow.bottom {
   bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
   border-bottom-color: var(--base-tone);
 }
 

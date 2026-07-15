@@ -166,7 +166,7 @@ export function MacroSuggestions({
         position: 'fixed',
       }}
     >
-      <div className={`macro-suggestions-arrow position-absolute ${placement}`} />
+      <div className={`macro-suggestions-arrow position-absolute center-x ${placement}`} />
       <div ref={listRef} role="listbox" className="macro-suggestions-commands-list horizontal gap-xs padding-xs rule-soft ruled-bottom">
         {visibleMacros.map((macro, index) => (
           <button
