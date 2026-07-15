@@ -56,7 +56,9 @@ try {
       },
       settings: {
         view: shadowTarget('settings-view', ['display', 'flex-direction', 'height', 'overflow-y']),
-        group: shadowTarget('settings-group', ['display', 'grid-template-columns', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left']),
+        group: shadowTarget('settings-group', ['display', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left']),
+        label: shadowTarget('settings-label', ['width']),
+        rows: shadowTarget('settings-rows', ['width']),
         row: shadowTarget('settings-row', ['display', 'align-items', 'justify-content', 'gap', 'padding-top', 'padding-bottom']),
         appearance: shadowTarget('settings-appearance', ['display', 'align-items', 'gap']),
         seg: shadowTarget('seg-control', ['display', 'position', 'overflow', 'border-radius']),
@@ -175,12 +177,13 @@ try {
     "view": { "display": "flex", "flex-direction": "column", "height": "295px", "overflow-y": "auto" },
     "group": {
       "display": "grid",
-      "grid-template-columns": "300px 900px",
       "padding-top": "20px",
       "padding-right": "40px",
       "padding-bottom": "20px",
       "padding-left": "40px"
     },
+    "label": { "width": "300px" },
+    "rows": { "width": "900px" },
     "row": {
       "display": "flex",
       "align-items": "center",

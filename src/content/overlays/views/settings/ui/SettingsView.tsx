@@ -60,9 +60,9 @@ export function SettingsView(_props: BaseModalViewProps) {
     <div className="settings-view fill-block vertical scroll-auto">
       <div className="settings-body">
 
-        <div className="settings-group grid padding-block-xl padding-inline-3xl">
-          <div className="settings-section-label ink-accent-soft font-xs font-medium">{t('settings.sections.general')}</div>
-          <div className="settings-rows elastic basis-ratio min-width-none">
+        <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
+          <div className="settings-section-label quarter ink-accent-soft font-xs font-medium">{t('settings.sections.general')}</div>
+          <div className="settings-rows three-quarters elastic basis-ratio min-width-none">
             <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('options.prefixEditor.title')}</span>
               <SelectableGroup
@@ -86,9 +86,9 @@ export function SettingsView(_props: BaseModalViewProps) {
 
         <div className="settings-divider rule ruled-top" />
 
-        <div className="settings-group grid padding-block-xl padding-inline-3xl">
-          <div className="settings-section-label ink-accent-soft font-xs font-medium">{t('settings.sections.appearance')}</div>
-          <div className="settings-rows elastic basis-ratio min-width-none">
+        <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
+          <div className="settings-section-label quarter ink-accent-soft font-xs font-medium">{t('settings.sections.appearance')}</div>
+          <div className="settings-rows three-quarters elastic basis-ratio min-width-none">
             <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('settings.colorTheme')}</span>
               <div className="settings-appearance-controls horizontal gap-md align-center">
@@ -117,9 +117,9 @@ export function SettingsView(_props: BaseModalViewProps) {
 
         <div className="settings-divider rule ruled-top" />
 
-        <div className="settings-group grid padding-block-xl padding-inline-3xl">
-          <div className="settings-section-label ink-accent-soft font-xs font-medium">{t('settings.sections.data')}</div>
-          <div className="settings-rows elastic basis-ratio min-width-none">
+        <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
+          <div className="settings-section-label quarter ink-accent-soft font-xs font-medium">{t('settings.sections.data')}</div>
+          <div className="settings-rows three-quarters elastic basis-ratio min-width-none">
             <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('settings.importExport.title')}</span>
               <div className="horizontal gap-sm">

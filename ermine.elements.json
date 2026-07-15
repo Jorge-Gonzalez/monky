@@ -123,7 +123,7 @@
     },
     {
       "id": "u6-settings-section-label",
-      "classString": "ink-accent-soft font-xs font-medium",
+      "classString": "columns-12 quarter ink-accent-soft font-xs font-medium",
       "backing": []
     },
     {
@@ -561,7 +561,7 @@
     },
     {
       "id": "cycle5-settings-rows",
-      "classString": "elastic basis-ratio min-width-none",
+      "classString": "three-quarters elastic basis-ratio min-width-none",
       "backing": []
     },
     {

@@ -70,7 +70,9 @@ shadow(
 shadow(
   composeShadowBundle({ componentStyles: [SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
   `<div data-probe="settings-view" class="settings-view fill-block vertical scroll-auto">
-    <div data-probe="settings-group" class="settings-group grid padding-block-xl padding-inline-3xl">
+    <div data-probe="settings-group" class="settings-group columns-12 padding-block-xl padding-inline-3xl">
+      <div data-probe="settings-label" class="settings-section-label quarter ink-accent-soft font-xs font-medium">General</div>
+      <div data-probe="settings-rows" class="settings-rows three-quarters">
       <div data-probe="settings-row" class="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
         <span class="settings-row-label rigid ink font-md">Theme</span>
         <div data-probe="settings-appearance" class="settings-appearance-controls horizontal gap-md align-center">
@@ -81,6 +83,7 @@ shadow(
           <button data-probe="settings-prefix" class="btn settings-prefix-btn horizontal rigid padding-block-sm padding-inline-lg align-center justify-center position-relative ground-subtle ink rule corner-md ruled font-md font-medium font-mono pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft">/</button>
           <button data-probe="settings-export" class="btn rigid padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft">Export</button>
         </div>
+      </div>
       </div>
     </div>
     <div data-probe="editor-view" class="macro-editor-view fill-block vertical padding-xl ink">

@@ -9,9 +9,6 @@
   padding: var(--spacing-2xl) 0 var(--spacing-xl);
 }
 
-.settings-group {
-  grid-template-columns: 1fr 3fr;
-}
 
 .settings-section-label {
   letter-spacing: 0.07em;
