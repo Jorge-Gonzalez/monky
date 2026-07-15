@@ -20,7 +20,7 @@ export default function PrefixEditor({ prefixes, onChange }: PrefixEditorProps) 
         selected={prefixes}
         onChange={onChange}
         className="horizontal gap-sm wrap-allowed"
-        buttonClassName="btn pressable padding-block-sm padding-inline-lg corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground ink ruled rule font-mono font-lg prefix-cell"
+        buttonClassName="btn pressable padding-block-sm padding-inline-lg corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground ink ruled rule font-mono font-lg prefix-cell square"
       />
       <p className="section-description ink-soft font-md">{t('options.prefixEditor.description')}</p>
     </div>

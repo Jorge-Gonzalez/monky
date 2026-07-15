@@ -108,7 +108,7 @@
     },
     {
       "id": "search-kbd",
-      "classString": "horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono",
+      "classString": "square horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono",
       "backing": []
     },
     {
