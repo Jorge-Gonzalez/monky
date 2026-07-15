@@ -606,7 +606,7 @@
     },
     {
       "id": "page-container",
-      "classString": "vertical gap-lg padding-2xl max-width-2xl centered flush-block",
+      "classString": "fill-viewport vertical gap-lg padding-2xl max-width-2xl centered flush-block",
       "backing": []
     }
   ]

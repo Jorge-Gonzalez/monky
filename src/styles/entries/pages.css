@@ -5,13 +5,6 @@
  * Shared component patterns are delivered by the skin and components layers.
  */
 
-/* ===== Page Container Patterns ===== */
-
-.page-container {
-  /* padding, max-width, and flow centering are authored as Ermine words on the element. */
-  min-height: 100vh;
-}
-
 /* Weight 200 dissolved: the single registered face is 300 and no synthesis occurs
    between 200 and the inherited 400, so the declaration was render-inert. Rhythm
    comes from the page column's `gap-lg`. */
