@@ -4,14 +4,8 @@
  * Uses shared patterns from modalStyles.ts where possible
  * Only defines search-specific styles here
  */
-/* Search view container */
-.macro-search-view {
-  height: 100%;
-}
-
 /* Search uses shared .input pattern from modalStyles */
 .macro-search-input {
-  width: 100%;
   transition: border-color var(--transition-fast);
 }
 

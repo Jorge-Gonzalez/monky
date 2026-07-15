@@ -18,14 +18,12 @@
 }
 
 .popup-search-input {
-  width: 100%;
   box-sizing: border-box;
   transition: border-color var(--transition-fast);
 }
 
 /* Toggle button spanning the macro card header (component identity). */
 .popup-item-toggle {
-  width: 100%;
   border: none;
   background: transparent;
 }

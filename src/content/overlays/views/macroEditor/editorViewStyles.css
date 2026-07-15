@@ -3,10 +3,6 @@
  * Styles for the macro editor view — a compact, full-height modal layout:
  * top bar (title + popout + command) / editor body (fills) / bottom action bar.
  */
-.macro-editor-view {
-  height: 100%;
-}
-
 .editor-popout {
   transition: background-color var(--transition-fast), color var(--transition-fast);
 }

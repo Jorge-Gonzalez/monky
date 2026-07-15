@@ -189,7 +189,7 @@ export function MacroSearchView({
   const hasSelection = showMacros && navigation.selectedIndex >= 0;
 
   return (
-    <div className="macro-search-view vertical">
+    <div className="macro-search-view fill-block vertical">
       <MacroSearchInput
         value={searchQuery}
         onChange={setSearchQuery}

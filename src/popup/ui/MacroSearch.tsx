@@ -32,7 +32,7 @@ export function MacroSearch({ macros }: MacroSearchProps) {
         value={query}
         onChange={e => setQuery(e.target.value)}
         placeholder={t('popup.searchPlaceholder')}
-        className="popup-search-input padding-block-sm padding-inline-md ground-subtle ink rule-accent-soft corner-md ruled font-md focus:rule-accent focus:ring"
+        className="popup-search-input fill-inline padding-block-sm padding-inline-md ground-subtle ink rule-accent-soft corner-md ruled font-md focus:rule-accent focus:ring"
       />
       <ul className="popup-results vertical gap-xs scroll-auto scrollbar-subtle">
         {results.length > 0 ? (

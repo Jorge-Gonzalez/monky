@@ -49,7 +49,6 @@
 }
 
 .ce-style-option {
-  width: 100%;
   transition: background var(--transition-fast);
 }
 

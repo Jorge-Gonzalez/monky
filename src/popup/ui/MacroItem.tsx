@@ -11,7 +11,7 @@ export default function MacroItem({ macro }: MacroItemProps) {
   const [open, setOpen] = useState(false)
   return (
     <div className="popup-card padding-sm ground rule corner-md ruled">
-      <button className="popup-item-toggle horizontal justify-between ink text-start pressable" onClick={()=>setOpen(!open)}>
+      <button className="popup-item-toggle fill-inline horizontal justify-between ink text-start pressable" onClick={()=>setOpen(!open)}>
         <span className="ink-accent font-sm font-medium">{macro.command}</span>
         <span className="ink-soft">{open ? '▲' : '▼'}</span>
       </button>

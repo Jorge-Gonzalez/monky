@@ -30,9 +30,9 @@ function shadow(css: string, html: string): void {
 shadow(
   composeShadowBundle({ componentStyles: [MODAL_STYLES, SEARCH_STYLES, SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
   `<div data-probe="modal" class="modal-dialog vertical hidden ground rule corner-lg ruled">
-    <div data-probe="search-view" class="macro-search-view vertical">
+    <div data-probe="search-view" class="macro-search-view fill-block vertical">
       <div data-probe="search-input-container" class="macro-search-input-container padding-lg rule ruled-bottom">
-        <input data-probe="search-input" class="macro-search-input padding-block-sm padding-inline-md">
+        <input data-probe="search-input" class="macro-search-input fill-inline padding-block-sm padding-inline-md">
       </div>
       <div data-probe="search-results" class="macro-search-results grid elastic basis-ratio scroll-auto">
         <div data-probe="search-item" class="macro-search-item grid span-all position-relative selectable" aria-selected="true">
@@ -69,7 +69,7 @@ shadow(
 )
 shadow(
   composeShadowBundle({ componentStyles: [SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
-  `<div data-probe="settings-view" class="settings-view vertical scroll-auto">
+  `<div data-probe="settings-view" class="settings-view fill-block vertical scroll-auto">
     <div data-probe="settings-group" class="settings-group grid padding-block-xl padding-inline-3xl">
       <div data-probe="settings-row" class="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
         <span class="settings-row-label rigid ink font-md">Theme</span>
@@ -83,7 +83,7 @@ shadow(
         </div>
       </div>
     </div>
-    <div data-probe="editor-view" class="macro-editor-view vertical padding-xl ink">
+    <div data-probe="editor-view" class="macro-editor-view fill-block vertical padding-xl ink">
       <form data-probe="editor-form" class="editor-form vertical elastic basis-ratio gap-md min-height-none position-relative">
         <div data-probe="editor-topbar" class="editor-topbar horizontal gap-lg align-center justify-between">
           <div data-probe="editor-topbar-lead" class="editor-topbar-lead horizontal rigid gap-sm align-center">
@@ -105,7 +105,7 @@ shadow(
             <button data-probe="ce-toolbar-btn" class="ce-toolbar-btn horizontal rigid align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink">B</button>
             <div data-probe="ce-style-menu" class="ce-style-menu position-relative">
               <div data-probe="ce-style-dropdown" class="ce-style-dropdown vertical padding-xs position-absolute ground rule corner-md ruled elevated">
-                <button data-probe="ce-style-option" class="ce-style-option horizontal gap-sm padding-block-xs padding-inline-sm align-center ink corner-sm font-sm text-start pressable hover:ground-defined">
+                <button data-probe="ce-style-option" class="ce-style-option fill-inline horizontal gap-sm padding-block-xs padding-inline-sm align-center ink corner-sm font-sm text-start pressable hover:ground-defined">
                   <span class="ce-style-option-short rigid ink-soft font-xs font-semibold">¶</span>
                   <span class="ce-style-option-label elastic basis-ratio">Paragraph</span>
                 </button>
