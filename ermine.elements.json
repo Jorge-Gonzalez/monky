@@ -222,7 +222,7 @@
     },
     {
       "id": "u6-command-suggestion-actions",
-      "classString": "horizontal gap-xs align-center",
+      "classString": "horizontal push gap-xs align-center",
       "backing": []
     },
     {
@@ -232,7 +232,7 @@
     },
     {
       "id": "u6-command-suggestion-delete-action",
-      "classString": "horizontal padding-xs align-center justify-center ink-soft corner-sm pressable concealed hover:ground-fail-faint hover:ink-fail parent-hover:revealed parent-selected:revealed",
+      "classString": "horizontal push padding-xs align-center justify-center ink-soft corner-sm pressable concealed hover:ground-fail-faint hover:ink-fail parent-hover:revealed parent-selected:revealed",
       "backing": [],
       "context": {
         "parentClasses": "horizontal gap-md padding-block-sm padding-inline-md align-center hidden selectable"

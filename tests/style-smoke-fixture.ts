@@ -95,7 +95,7 @@ shadow(
               <div data-probe="command-suggestion-item" class="command-suggestion-item horizontal gap-md padding-block-sm padding-inline-md align-center hidden selectable pressable hover:ground selected:ground-defined" aria-selected="true">
                 <span data-probe="command-suggestion-command" class="command-suggestion-command rigid ink-accent font-md font-medium">/sig</span>
                 <span class="command-suggestion-text hidden ink-soft font-sm truncate">Signature</span>
-                <button data-probe="command-suggestion-action" class="command-suggestion-action delete horizontal rigid padding-xs align-center justify-center ink-soft corner-sm pressable concealed parent-hover:revealed parent-selected:revealed">×</button>
+                <button data-probe="command-suggestion-action" class="command-suggestion-action delete horizontal rigid push padding-xs align-center justify-center ink-soft corner-sm pressable concealed parent-hover:revealed parent-selected:revealed">×</button>
               </div>
             </div>
           </div>

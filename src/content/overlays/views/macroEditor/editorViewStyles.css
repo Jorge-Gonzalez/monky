@@ -61,12 +61,6 @@
   white-space: nowrap;
 }
 
-/* Per-row delete: trash arms the row, then confirm (check) / cancel (x). */
-.command-suggestion-item > .command-suggestion-action,
-.command-suggestion-actions {
-  margin-left: auto;
-}
-
 .command-suggestion-action {
   transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
 }
