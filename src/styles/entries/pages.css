@@ -8,8 +8,7 @@
 /* ===== Page Container Patterns ===== */
 
 .page-container {
-  /* padding and max-width are authored as Ermine words on the element. */
-  margin: 0 auto;
+  /* padding, max-width, and flow centering are authored as Ermine words on the element. */
   min-height: 100vh;
 }
 
