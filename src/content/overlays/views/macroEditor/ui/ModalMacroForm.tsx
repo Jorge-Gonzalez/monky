@@ -198,7 +198,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
       </div>
 
       {(error || savedToast) && (
-        <div className={`editor-toast alert padding-md position-absolute center-x corner-md ruled ${error ? 'alert-error ground-fail-faint rule-fail ink-fail' : 'alert-success ground-pass-faint rule-pass ink-pass'}`} role="status">
+        <div className={`editor-toast alert padding-md position-absolute center-x text-nowrap corner-md ruled ${error ? 'alert-error ground-fail-faint rule-fail ink-fail' : 'alert-success ground-pass-faint rule-pass ink-pass'}`} role="status">
           <p className="font-medium">{error ?? savedToast}</p>
         </div>
       )}

@@ -57,7 +57,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
             data-state={confirming ? 'confirming-delete' : undefined}
             onMouseDown={e => { e.preventDefault(); onSelect(macro); }}
           >
-            <span className="command-suggestion-command rigid ink-accent font-md font-medium">{macro.command}</span>
+            <span className="command-suggestion-command rigid text-nowrap ink-accent font-md font-medium">{macro.command}</span>
             <span className="command-suggestion-text hidden ink-soft font-sm truncate">{macro.text}</span>
             {confirming ? (
               <span className="command-suggestion-actions horizontal rigid push gap-xs align-center">

@@ -172,7 +172,7 @@
     },
     {
       "id": "u6-segmented-option",
-      "classString": "elastic basis-ratio padding-block-xs padding-inline-md position-relative selectable ink-soft rule ruled-right font-sm text-center pressable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse",
+      "classString": "elastic basis-ratio text-nowrap padding-block-xs padding-inline-md position-relative selectable ink-soft rule ruled-right font-sm text-center pressable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse",
       "backing": [
         "aria-checked"
       ]
@@ -219,12 +219,12 @@
     },
     {
       "id": "u6-editor-toast-success",
-      "classString": "padding-md position-absolute center-x corner-md ruled ground-pass-faint rule-pass ink-pass",
+      "classString": "padding-md position-absolute center-x text-nowrap corner-md ruled ground-pass-faint rule-pass ink-pass",
       "backing": []
     },
     {
       "id": "u6-editor-toast-error",
-      "classString": "padding-md position-absolute center-x corner-md ruled ground-fail-faint rule-fail ink-fail",
+      "classString": "padding-md position-absolute center-x text-nowrap corner-md ruled ground-fail-faint rule-fail ink-fail",
       "backing": []
     },
     {
@@ -246,7 +246,7 @@
     },
     {
       "id": "u6-command-suggestion-command",
-      "classString": "rigid ink-accent font-md font-medium",
+      "classString": "rigid text-nowrap ink-accent font-md font-medium",
       "backing": []
     },
     {
@@ -450,7 +450,7 @@
     },
     {
       "id": "popup-macro-text",
-      "classString": "padding-sm ground-subtle ink corner-md font-sm",
+      "classString": "padding-sm text-pre-wrap ground-subtle ink corner-md font-sm",
       "backing": []
     },
     {
