@@ -59,14 +59,20 @@
     {
       "id": "search-empty",
       "classString": "span-all padding-lg ink-soft font-md text-center",
-      "backing": []
+      "backing": [],
+      "context": {
+        "parentClasses": "grid-fit-sm elastic basis-ratio scroll-auto"
+      }
     },
     {
       "id": "search-item",
       "classString": "subgrid span-all position-relative selectable",
       "backing": [
         "aria-selected"
-      ]
+      ],
+      "context": {
+        "parentClasses": "grid-fit-sm elastic basis-ratio scroll-auto"
+      }
     },
     {
       "id": "search-item-command-cell",
@@ -102,6 +108,11 @@
       "backing": []
     },
     {
+      "id": "search-count",
+      "classString": "tabular ink-soft",
+      "backing": []
+    },
+    {
       "id": "search-shortcut",
       "classString": "horizontal inline gap-sm align-center",
       "backing": []
@@ -122,9 +133,17 @@
       "backing": []
     },
     {
-      "id": "u6-settings-section-label",
-      "classString": "columns-12 quarter overline tabular ink-accent-soft font-xs font-medium",
+      "id": "settings-group",
+      "classString": "columns-12 padding-block-xl padding-inline-3xl",
       "backing": []
+    },
+    {
+      "id": "u6-settings-section-label",
+      "classString": "quarter overline ink-accent-soft font-xs font-medium",
+      "backing": [],
+      "context": {
+        "parentClasses": "columns-12 padding-block-xl padding-inline-3xl"
+      }
     },
     {
       "id": "u6-settings-row-label",
@@ -562,7 +581,10 @@
     {
       "id": "cycle5-settings-rows",
       "classString": "three-quarters elastic basis-ratio min-width-none",
-      "backing": []
+      "backing": [],
+      "context": {
+        "parentClasses": "columns-12 padding-block-xl padding-inline-3xl"
+      }
     },
     {
       "id": "cycle6-style-option",
