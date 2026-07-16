@@ -8,20 +8,10 @@
 /* Toolbar row */
 .ce-toolbar-sep {
   background-color: var(--harmonic);
-  margin: 0 var(--spacing-xs);
-}
-
-.ce-toolbar-btn {
-  padding: 0;
-}
-
-.ce-toolbar-icon {
-  padding: 0 var(--spacing-xs);
 }
 
 /* Style menu (¶▾ dropdown) */
 .ce-style-trigger {
-  padding: 0 var(--spacing-xs);
   gap: 2px;
 }
 
@@ -32,10 +22,6 @@
   top: calc(100% + 4px);
   left: 0;
   gap: 2px;
-}
-
-.ce-link-input {
-  padding: 0 var(--spacing-sm);
 }
 
 /* Editor body */

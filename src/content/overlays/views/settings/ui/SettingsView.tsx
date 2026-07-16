@@ -58,10 +58,10 @@ export function SettingsView(_props: BaseModalViewProps) {
 
   return (
     <div className="settings-view fill-block vertical scroll-auto">
-      <div className="settings-body">
+      <div className="settings-body padding-top-2xl padding-right-none padding-bottom-xl padding-left-none">
 
         <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
-          <div className="settings-section-label quarter overline ink-accent-soft font-xs font-medium">{t('settings.sections.general')}</div>
+          <div className="settings-section-label quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">{t('settings.sections.general')}</div>
           <div className="settings-rows three-quarters elastic basis-ratio min-width-none">
             <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('options.prefixEditor.title')}</span>
@@ -70,7 +70,7 @@ export function SettingsView(_props: BaseModalViewProps) {
                 selected={prefixes}
                 onChange={setPrefixes}
                 className="horizontal gap-sm"
-                buttonClassName="btn pressable padding-block-sm padding-inline-lg corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-subtle ink ruled rule font-mono settings-prefix-btn horizontal control-box-xl align-center justify-center rigid"
+                buttonClassName="btn pressable padding-none corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-subtle ink ruled rule font-mono settings-prefix-btn horizontal control-box-xl align-center justify-center rigid"
               />
             </div>
             <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
@@ -87,7 +87,7 @@ export function SettingsView(_props: BaseModalViewProps) {
         <div className="settings-divider height-none rule ruled-top margin-block-sm margin-inline-xl" />
 
         <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
-          <div className="settings-section-label quarter overline ink-accent-soft font-xs font-medium">{t('settings.sections.appearance')}</div>
+          <div className="settings-section-label quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">{t('settings.sections.appearance')}</div>
           <div className="settings-rows three-quarters elastic basis-ratio min-width-none">
             <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('settings.colorTheme')}</span>
@@ -118,7 +118,7 @@ export function SettingsView(_props: BaseModalViewProps) {
         <div className="settings-divider height-none rule ruled-top margin-block-sm margin-inline-xl" />
 
         <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
-          <div className="settings-section-label quarter overline ink-accent-soft font-xs font-medium">{t('settings.sections.data')}</div>
+          <div className="settings-section-label quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">{t('settings.sections.data')}</div>
           <div className="settings-rows three-quarters elastic basis-ratio min-width-none">
             <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('settings.importExport.title')}</span>

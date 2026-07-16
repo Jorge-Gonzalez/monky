@@ -34,7 +34,7 @@ export function MacroSearch({ macros }: MacroSearchProps) {
         placeholder={t('popup.searchPlaceholder')}
         className="popup-search-input fill-inline padding-block-sm padding-inline-md ground-subtle ink rule-accent-soft corner-md ruled font-md tween-rule-quick focus:rule-accent focus:ring"
       />
-      <ul className="popup-results vertical gap-xs max-height-results-sm scroll-auto scrollbar-subtle">
+      <ul className="popup-results vertical gap-xs padding-block-sm padding-inline-none margin-none max-height-results-sm scroll-auto scrollbar-subtle">
         {results.length > 0 ? (
           results.map(result => (
             <li key={result.obj.id} className="popup-result-item padding-sm rule-soft ruled-bottom">

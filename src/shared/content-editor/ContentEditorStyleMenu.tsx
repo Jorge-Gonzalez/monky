@@ -39,7 +39,7 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
     <div ref={wrapperRef} className="ce-style-menu position-relative">
       <button
         type="button"
-        className="ce-toolbar-btn ce-style-trigger horizontal rigid width-auto min-width-control-2xl control-block-lg align-center justify-center ink-soft corner-sm font-sm font-medium pressable tween-ground-ink-quick hover:ground-defined hover:ink expanded:ground-defined expanded:ink-accent"
+        className="ce-toolbar-btn ce-style-trigger padding-block-none padding-inline-xs horizontal rigid width-auto min-width-control-2xl control-block-lg align-center justify-center ink-soft corner-sm font-sm font-medium pressable tween-ground-ink-quick hover:ground-defined hover:ink expanded:ground-defined expanded:ink-accent"
         onMouseDown={e => { e.preventDefault(); setOpen(o => !o) }}
         title={t('contentEditor.textStyle')}
         aria-label={t('contentEditor.textStyle')}

@@ -28,7 +28,7 @@ function Btn({ icon, title, active, onAction }: BtnProps) {
   return (
     <button
       type="button"
-      className="ce-toolbar-btn pressable horizontal align-center justify-center rigid control-box-lg corner-sm ink-soft tween-ground-ink-quick hover:ground-defined hover:ink pressed:ground-defined pressed:ink-accent"
+      className="ce-toolbar-btn pressable padding-none horizontal align-center justify-center rigid control-box-lg corner-sm ink-soft tween-ground-ink-quick hover:ground-defined hover:ink pressed:ground-defined pressed:ink-accent"
       onMouseDown={e => { e.preventDefault(); onAction() }}
       title={title}
       aria-label={title}
@@ -39,7 +39,7 @@ function Btn({ icon, title, active, onAction }: BtnProps) {
 }
 
 function Sep() {
-  return <span className="ce-toolbar-sep separator-mark-xs rigid" aria-hidden />
+  return <span className="ce-toolbar-sep separator-mark-xs margin-block-none margin-inline-xs rigid" aria-hidden />
 }
 
 export function ContentEditorToolbar({

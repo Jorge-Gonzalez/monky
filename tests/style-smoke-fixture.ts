@@ -71,7 +71,7 @@ shadow(
   composeShadowBundle({ componentStyles: [SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
   `<div data-probe="settings-view" class="settings-view fill-block vertical scroll-auto">
     <div data-probe="settings-group" class="settings-group columns-12 padding-block-xl padding-inline-3xl">
-      <div data-probe="settings-label" class="settings-section-label quarter overline ink-accent-soft font-xs font-medium">General</div>
+      <div data-probe="settings-label" class="settings-section-label quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">General</div>
       <div data-probe="settings-rows" class="settings-rows three-quarters">
       <div data-probe="settings-row" class="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
         <span class="settings-row-label rigid ink font-md">Theme</span>
@@ -80,7 +80,7 @@ shadow(
             <button class="seg-option elastic basis-ratio padding-block-xs padding-inline-md position-relative selectable ink-soft rule font-sm text-center pressable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="true">One</button>
             <button class="seg-option elastic basis-ratio padding-block-xs padding-inline-md position-relative selectable ink-soft rule font-sm text-center pressable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="false">Two</button>
           </div>
-          <button data-probe="settings-prefix" class="btn settings-prefix-btn horizontal rigid control-box-xl padding-block-sm padding-inline-lg align-center justify-center position-relative ground-subtle ink rule corner-md ruled font-md font-medium font-mono pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft">/</button>
+          <button data-probe="settings-prefix" class="btn settings-prefix-btn padding-none horizontal rigid control-box-xl align-center justify-center position-relative ground-subtle ink rule corner-md ruled font-md font-medium font-mono pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft">/</button>
           <button data-probe="settings-export" class="btn rigid padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft">Export</button>
         </div>
       </div>
@@ -105,7 +105,7 @@ shadow(
         </div>
         <div data-probe="content-editor" class="content-editor editor-content vertical elastic basis-ratio hidden min-height-none ground-subtle">
           <div data-probe="ce-toolbar" class="ce-toolbar horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed ground">
-            <button data-probe="ce-toolbar-btn" class="ce-toolbar-btn horizontal rigid control-box-lg align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink pressed:ground-defined pressed:ink-accent" aria-pressed="true">B</button>
+            <button data-probe="ce-toolbar-btn" class="ce-toolbar-btn padding-none horizontal rigid control-box-lg align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink pressed:ground-defined pressed:ink-accent" aria-pressed="true">B</button>
             <div data-probe="ce-style-menu" class="ce-style-menu position-relative">
               <div data-probe="ce-style-dropdown" class="ce-style-dropdown vertical padding-xs position-absolute min-width-sm ground rule corner-md ruled elevated">
                 <button data-probe="ce-style-option" class="ce-style-option fill-inline horizontal gap-sm padding-block-xs padding-inline-sm align-center selectable ink corner-sm font-sm text-start pressable hover:ground-defined selected:ground-defined selected:ink-accent" aria-selected="true">

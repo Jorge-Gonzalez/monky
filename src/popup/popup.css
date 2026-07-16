@@ -6,15 +6,3 @@
 .popup-icon-button:hover {
   opacity: 0.9;
 }
-
-.popup-macro-text {
-  margin: 0;
-}
-
-/* Scrollbar prominence comes from `scrollbar-subtle` (R-SKIN-15); the theme binds
-   the thumb/track sockets. The engine-drawn fallback blocks are retired — both
-   target engines honour the standard properties. */
-.popup-results {
-  padding: var(--spacing-sm) 0;
-  margin: 0;
-}
