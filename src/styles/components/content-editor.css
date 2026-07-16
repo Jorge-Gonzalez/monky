@@ -17,7 +17,6 @@
   width: 28px;
   height: 28px;
   padding: 0;
-  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .ce-toolbar-btn.is-active {
@@ -44,10 +43,6 @@
   top: calc(100% + 4px);
   left: 0;
   gap: 2px;
-}
-
-.ce-style-option {
-  transition: background var(--transition-fast);
 }
 
 .ce-style-option.is-active {

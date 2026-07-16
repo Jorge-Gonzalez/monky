@@ -64,7 +64,7 @@ interface MacroSearchItemProps {
 
 function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdit }: MacroSearchItemProps) {
   const commandClassName = [
-    'macro-search-item-command pressable padding-top-md padding-right-xs padding-bottom-md padding-left-md rule-soft ruled-bottom font-md font-medium hidden truncate',
+    'macro-search-item-command pressable padding-top-md padding-right-xs padding-bottom-md padding-left-md rule-soft ruled-bottom font-md font-medium hidden truncate tween-ground-quick',
     isConfirmingDelete ? 'ground-fail-faint ink-fail' : 'ink-accent',
   ].join(' ');
 
@@ -82,7 +82,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
           {t('modalSearch.confirmDelete')}
         </div>
       ) : (
-        <div className="macro-search-item-text padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ink-soft rule-soft ruled-bottom font-md pressable truncate">
+        <div className="macro-search-item-text padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ink-soft rule-soft ruled-bottom font-md pressable truncate tween-ground-quick">
           {!hasPlaceholders(macro.text)
             ? macro.text
             : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>
@@ -94,7 +94,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
       )}
       {onEdit && !isConfirmingDelete && (
         <button
-          className="macro-search-item-edit horizontal padding-xs align-center justify-center position-absolute center-y ink-soft corner-sm pressable concealed hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed"
+          className="macro-search-item-edit horizontal padding-xs align-center justify-center position-absolute center-y ink-soft corner-sm pressable concealed tween-opacity-ground-ink-quick hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed"
           onClick={e => { e.stopPropagation(); onEdit(); }}
           aria-label={t('modalSearch.editMacro')}
           tabIndex={-1}

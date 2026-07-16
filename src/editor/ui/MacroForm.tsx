@@ -91,7 +91,7 @@ export default function MacroForm({ editing, onDone }: {
         <input
           id="macro-command"
           ref={commandInputRef}
-          className={`input fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled font-md focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail' : ''}`}
+          className={`input fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled font-md tween-rule-quick focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail' : ''}`}
           value={command}
           onChange={e => setCommand(e.currentTarget.value)}
           placeholder={`e.g., ${prefixes[0]}sig`}

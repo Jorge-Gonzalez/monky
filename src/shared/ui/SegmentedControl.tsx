@@ -68,7 +68,7 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
           role="radio"
           aria-checked={opt.value === value}
           aria-label={opt.ariaLabel}
-          className="seg-option elastic basis-ratio content text-nowrap padding-block-xs padding-inline-md position-relative selectable ink-soft rule ruled-right font-sm text-center pressable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse"
+          className="seg-option elastic basis-ratio content text-nowrap padding-block-xs padding-inline-md position-relative selectable ink-soft rule ruled-right font-sm text-center pressable tween-ink-quick hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse"
           onClick={() => onChange(opt.value)}
         >
           {opt.label}

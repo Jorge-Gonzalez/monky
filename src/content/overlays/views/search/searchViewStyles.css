@@ -4,22 +4,12 @@
  * Uses shared patterns from modalStyles.ts where possible
  * Only defines search-specific styles here
  */
-/* Search uses shared .input pattern from modalStyles */
-.macro-search-input {
-  transition: border-color var(--transition-fast);
-}
-
 /* Results container - extends .scrollable pattern */
 .macro-search-results {
   max-height: 400px;
   align-content: start;
 }
 
-
-.macro-search-item-command,
-.macro-search-item-text {
-  transition: background-color var(--transition-fast);
-}
 
 .macro-search-item[aria-selected="true"] .macro-search-item-text {
   white-space: normal;
@@ -40,7 +30,6 @@
 /* Armed-for-delete row: danger tint + the confirm prompt in the text column. */
 .macro-search-item-edit {
   right: var(--spacing-sm);
-  transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .macro-search-item-text mark {

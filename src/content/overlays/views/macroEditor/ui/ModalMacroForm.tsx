@@ -113,7 +113,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           </h1>
           <button
             type="button"
-            className="editor-popout horizontal padding-xs align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink-accent"
+            className="editor-popout horizontal padding-xs align-center justify-center ink-soft corner-sm pressable tween-ground-ink-quick hover:ground-defined hover:ink-accent"
             onClick={openFullEditor}
             aria-label={t('macroEditor.openFullEditor')}
             title={t('macroEditor.openFullEditor')}
@@ -132,7 +132,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             <input
               id="modal-macro-command"
               ref={commandInputRef}
-              className={`input fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled font-md focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail input-dropdown-open' : ''} ${suggest.visible ? 'input-dropdown-open' : ''}`}
+              className={`input fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled font-md tween-rule-quick focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail input-dropdown-open' : ''} ${suggest.visible ? 'input-dropdown-open' : ''}`}
               value={command}
               onChange={e => setCommand(e.currentTarget.value)}
               placeholder={t('macroForm.commandPlaceholder', { prefix: prefixes[0] })}

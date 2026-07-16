@@ -3,10 +3,6 @@
  * Styles for the macro editor view — a compact, full-height modal layout:
  * top bar (title + popout + command) / editor body (fills) / bottom action bar.
  */
-.editor-popout {
-  transition: background-color var(--transition-fast), color var(--transition-fast);
-}
-
 .editor-command {
   width: 280px;
 }
@@ -47,14 +43,6 @@
   top: 100%;
   border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
-}
-
-.command-suggestion-item {
-  transition: background-color var(--transition-fast);
-}
-
-.command-suggestion-action {
-  transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
 }
 
 /* Reveal-on-row-state comes from `concealed parent-hover:revealed parent-selected:revealed`

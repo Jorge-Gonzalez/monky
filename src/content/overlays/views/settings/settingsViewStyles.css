@@ -50,12 +50,6 @@
 /* Jump the pill onto the origin button without animating, before the slide. */
 .seg-control.seg-snap::before { transition: none; }
 
-/* Centring (`text-center`), press affordance (`pressable`), and the right
-   separator (`ruled-right`) are words; the rest is identity/animation. */
-.seg-option {
-  transition: color var(--transition-fast);
-}
-
 /* Inline so an icon-only option occupies the same text line box (= same height)
    as the text options, sitting on the line's middle. */
 .seg-option svg {

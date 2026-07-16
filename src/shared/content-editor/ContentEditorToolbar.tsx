@@ -28,7 +28,7 @@ function Btn({ icon, title, active, onAction }: BtnProps) {
   return (
     <button
       type="button"
-      className={`ce-toolbar-btn pressable horizontal align-center justify-center rigid corner-sm ink-soft hover:ground-defined hover:ink${active ? ' is-active' : ''}`}
+      className={`ce-toolbar-btn pressable horizontal align-center justify-center rigid corner-sm ink-soft tween-ground-ink-quick hover:ground-defined hover:ink${active ? ' is-active' : ''}`}
       onMouseDown={e => { e.preventDefault(); onAction() }}
       title={title}
       aria-label={title}
