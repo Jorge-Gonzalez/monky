@@ -1,7 +1,6 @@
 /* ===== COMPONENT PATTERNS: Forms ===== */
 
 .input {
-  width: 100%;
   transition: border-color var(--transition-fast);
 }
 

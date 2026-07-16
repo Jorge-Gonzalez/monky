@@ -17,7 +17,7 @@ export default function Settings() {
         <label htmlFor="language-select" className="boxed ink font-sm font-medium">
           {t('settings.language')}
         </label>
-        <select id="language-select" value={language} onChange={handleLanguageChange} className="input padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled font-md focus:rule-accent focus:ring" style={{ width: 'auto' }}>
+        <select id="language-select" value={language} onChange={handleLanguageChange} className="input fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled font-md focus:rule-accent focus:ring" style={{ width: 'auto' }}>
           <option value="en">English</option>
           <option value="es">Español</option>
         </select>

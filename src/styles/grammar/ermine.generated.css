@@ -260,6 +260,10 @@
   display: inline-block;
 }
 
+.fill-inline {
+  inline-size: 100%;
+}
+
 .padding-block-sm {
   padding-block: var(--spacing-sm);
 }
@@ -391,10 +395,6 @@
 
 .text-center {
   text-align: center;
-}
-
-.fill-inline {
-  inline-size: 100%;
 }
 
 .rule-accent-soft {
