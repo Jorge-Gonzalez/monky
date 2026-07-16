@@ -9,13 +9,6 @@
   align-content: start;
 }
 
-
-.macro-search-item[aria-selected="true"] .macro-search-item-text {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
-}
-
 .macro-search-item:not([data-state="confirming-delete"]):hover .macro-search-item-command,
 .macro-search-item:not([data-state="confirming-delete"]):hover .macro-search-item-text {
   background-color: var(--tone-dim);

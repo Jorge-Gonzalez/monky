@@ -82,7 +82,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
           {t('modalSearch.confirmDelete')}
         </div>
       ) : (
-        <div className="macro-search-item-text padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ink-soft rule-soft ruled-bottom font-md pressable truncate tween-ground-quick">
+        <div className="macro-search-item-text padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ink-soft rule-soft ruled-bottom font-md pressable truncate parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick">
           {!hasPlaceholders(macro.text)
             ? macro.text
             : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>

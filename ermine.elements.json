@@ -86,8 +86,11 @@
     },
     {
       "id": "search-item-text-cell",
-      "classString": "padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ink-soft rule-soft ruled-bottom font-md pressable truncate tween-ground-quick",
-      "backing": []
+      "classString": "padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ink-soft rule-soft ruled-bottom font-md pressable truncate parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick",
+      "backing": [],
+      "context": {
+        "parentClasses": "subgrid span-all position-relative selectable"
+      }
     },
     {
       "id": "search-item-confirm-cell",
