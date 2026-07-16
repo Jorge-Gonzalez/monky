@@ -13,10 +13,5 @@
   box-shadow: 0 6px 16px -4px rgb(0 0 0 / 25%);
 }
 
-/* Cast shadow comes from `elevated` (R-SKIN-09); the dropdown tier shares one shadow. */
-.command-suggestions {
-  border-top: none;
-}
-
 /* Reveal-on-row-state comes from `concealed parent-hover:revealed parent-selected:revealed`
    (R-STATE-13/R-SKIN-16); the confirming actions are conditionally rendered and never concealed. */

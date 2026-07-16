@@ -77,8 +77,8 @@ shadow(
         <span class="settings-row-label rigid ink font-md">Theme</span>
         <div data-probe="settings-appearance" class="settings-appearance-controls horizontal gap-md align-center">
           <div data-probe="seg-control" class="seg-control horizontal hidden position-relative ground-subtle rule corner-md ruled">
-            <button class="seg-option elastic basis-ratio padding-block-xs padding-inline-md position-relative selectable ink-soft rule ruled-right font-sm text-center pressable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="true">One</button>
-            <button class="seg-option elastic basis-ratio padding-block-xs padding-inline-md position-relative selectable ink-soft rule ruled-right font-sm text-center pressable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="false">Two</button>
+            <button class="seg-option elastic basis-ratio padding-block-xs padding-inline-md position-relative selectable ink-soft rule font-sm text-center pressable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="true">One</button>
+            <button class="seg-option elastic basis-ratio padding-block-xs padding-inline-md position-relative selectable ink-soft rule font-sm text-center pressable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="false">Two</button>
           </div>
           <button data-probe="settings-prefix" class="btn settings-prefix-btn horizontal rigid control-box-xl padding-block-sm padding-inline-lg align-center justify-center position-relative ground-subtle ink rule corner-md ruled font-md font-medium font-mono pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft">/</button>
           <button data-probe="settings-export" class="btn rigid padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft">Export</button>
@@ -93,7 +93,7 @@ shadow(
             <button data-probe="editor-popout" class="editor-popout horizontal padding-xs align-center justify-center ink-soft corner-sm">↗</button>
           </div>
           <div class="command-suggestion-wrapper editor-command elastic basis-ratio width-popover-lg position-relative">
-            <div data-probe="command-suggestions" class="command-suggestions hidden position-absolute attach-below stretch-inline dropdown ground-subtle rule-accent-soft corner-bottom-md ruled elevated">
+            <div data-probe="command-suggestions" class="command-suggestions hidden position-absolute attach-below stretch-inline dropdown ground-subtle rule-accent-soft corner-bottom-md ruled-left ruled-right ruled-bottom elevated">
               <div data-probe="command-suggestions-label" class="command-suggestions-label padding-block-xs padding-inline-md ink-soft rule ruled-bottom font-sm">Existing</div>
               <div data-probe="command-suggestion-item" class="command-suggestion-item horizontal gap-md padding-block-sm padding-inline-md align-center hidden selectable pressable hover:ground selected:ground-defined" aria-selected="true">
                 <span data-probe="command-suggestion-command" class="command-suggestion-command rigid ink-accent font-md font-medium">/sig</span>

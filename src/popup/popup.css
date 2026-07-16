@@ -2,24 +2,9 @@
    Structure and shared skin come from generated Ermine grammar and the skin layer;
    this sheet holds only what is specific to the popup page. */
 
-.popup-button,
-.popup-icon-button {
-  border: none;
-}
-
 .popup-button:hover,
 .popup-icon-button:hover {
   opacity: 0.9;
-}
-
-.popup-search-input {
-  box-sizing: border-box;
-}
-
-/* Toggle button spanning the macro card header (component identity). */
-.popup-item-toggle {
-  border: none;
-  background: transparent;
 }
 
 .popup-macro-text {
@@ -32,5 +17,4 @@
 .popup-results {
   padding: var(--spacing-sm) 0;
   margin: 0;
-  list-style: none;
 }

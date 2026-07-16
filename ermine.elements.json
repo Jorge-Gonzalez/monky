@@ -177,6 +177,13 @@
     },
     {
       "id": "u6-segmented-option",
+      "classString": "elastic basis-ratio content text-nowrap padding-block-xs padding-inline-md position-relative selectable ink-soft rule font-sm text-center pressable tween-ink-quick hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse",
+      "backing": [
+        "aria-checked"
+      ]
+    },
+    {
+      "id": "u6-segmented-option-with-rule",
       "classString": "elastic basis-ratio content text-nowrap padding-block-xs padding-inline-md position-relative selectable ink-soft rule ruled-right font-sm text-center pressable tween-ink-quick hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse",
       "backing": [
         "aria-checked"
@@ -219,7 +226,7 @@
     },
     {
       "id": "u6-command-dropdown",
-      "classString": "hidden position-absolute attach-below stretch-inline dropdown ground-subtle rule-accent-soft corner-bottom-md ruled",
+      "classString": "hidden position-absolute attach-below stretch-inline dropdown ground-subtle rule-accent-soft corner-bottom-md ruled-left ruled-right ruled-bottom elevated",
       "backing": []
     },
     {

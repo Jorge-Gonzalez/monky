@@ -50,15 +50,6 @@
   vertical-align: middle;
 }
 
-/* Color-theme and light/dark selectors sit side by side in the appearance row. */
-.seg-option:last-child {
-  border-right: none;
-}
-
-.seg-option[aria-checked="true"] {
-  border-right-color: transparent;
-}
-
 /* While the pill is sliding in, it is the only fill — suppress the destination
    button's background so the two don't double up, then swap back on landing. */
 .seg-control.is-sliding .seg-option[aria-checked="true"] {

@@ -61,19 +61,23 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
         if (e.target === containerRef.current) setSliding(false)
       }}
     >
-      {options.map(opt => (
+      {options.map((opt, index) => {
+        const checked = opt.value === value;
+        const drawRightRule = !checked && index < options.length - 1;
+        return (
         <button
           key={opt.value}
           type="button"
           role="radio"
           aria-checked={opt.value === value}
           aria-label={opt.ariaLabel}
-          className="seg-option elastic basis-ratio content text-nowrap padding-block-xs padding-inline-md position-relative selectable ink-soft rule ruled-right font-sm text-center pressable tween-ink-quick hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse"
+          className={`seg-option elastic basis-ratio content text-nowrap padding-block-xs padding-inline-md position-relative selectable ink-soft rule ${drawRightRule ? 'ruled-right ' : ''}font-sm text-center pressable tween-ink-quick hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse`}
           onClick={() => onChange(opt.value)}
         >
           {opt.label}
         </button>
-      ))}
+        );
+      })}
     </div>
   );
 }

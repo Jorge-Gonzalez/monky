@@ -6,16 +6,6 @@
   z-index: 2147483646 !important;
 }
 
-#macro-suggestions * {
-  box-sizing: border-box;
-}
-
-/* Form controls don't inherit font-family by default; opt them in so buttons
-   use the app font instead of the browser default. */
-button, input, textarea, select {
-  font-family: inherit;
-}
-
 .macro-suggestions-container {
   box-shadow: 0 10px 25px -5px var(--shadow-color);
 }
