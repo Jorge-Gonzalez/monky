@@ -48,10 +48,6 @@ button, input, textarea, select {
   max-width: 8em;
 }
 
-.macro-suggestions-footer {
-  justify-content: flex-end;
-}
-
 /* Key typeface comes from `font-mono` (R-SKIN-07). */
 .macro-suggestions-kbd {
   padding: 1px 4px;

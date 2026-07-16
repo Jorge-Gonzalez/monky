@@ -71,7 +71,7 @@ export function DeleteConfirmPopup({
           {t('deleteConfirm.delete')}
         </button>
       </div>
-      <div className="macro-suggestions-footer horizontal gap-md padding-block-xs padding-inline-md ground ink-soft rule font-xs">
+      <div className="macro-suggestions-footer horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule font-xs">
         <span><kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">Tab</kbd> {t('deleteConfirm.footer.switch')}</span>
         <span><kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">↵</kbd> {t('deleteConfirm.footer.select')}</span>
         <span><kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">Esc</kbd> {t('deleteConfirm.footer.cancel')}</span>

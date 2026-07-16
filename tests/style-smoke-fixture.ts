@@ -56,7 +56,7 @@ shadow(
       <button data-probe="suggestions-option-hover" class="macro-suggestions-command-item compressible hidden min-width-none selectable ground-subtle ink rule-soft corner-md ruled font-sm text-center pressable truncate hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/sig</button>
       <button data-probe="suggestions-option-base" class="macro-suggestions-command-item compressible hidden min-width-none selectable ground-subtle ink rule-soft corner-md ruled font-sm text-center pressable truncate hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="false">/email</button>
     </div>
-    <div data-probe="suggestions-footer" class="macro-suggestions-footer horizontal gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs"></div>
+    <div data-probe="suggestions-footer" class="macro-suggestions-footer horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs"></div>
   </div>`,
 )
 shadow(

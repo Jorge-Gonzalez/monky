@@ -326,7 +326,7 @@
     },
     {
       "id": "u7-suggestions-footer",
-      "classString": "horizontal gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs",
+      "classString": "horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs",
       "backing": []
     },
     {
@@ -347,6 +347,11 @@
     {
       "id": "u7-delete-command",
       "classString": "ink-accent font-semibold",
+      "backing": []
+    },
+    {
+      "id": "u7-delete-footer",
+      "classString": "horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule font-xs",
       "backing": []
     },
     {

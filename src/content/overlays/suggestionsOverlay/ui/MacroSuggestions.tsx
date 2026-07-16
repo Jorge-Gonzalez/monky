@@ -190,7 +190,7 @@ export function MacroSuggestions({
           {selectedMacro.text}
         </div>
       )}
-      <div className="macro-suggestions-footer horizontal gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs">
+      <div className="macro-suggestions-footer horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs">
         <span>
           <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">←</kbd>
           <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">→</kbd>/
