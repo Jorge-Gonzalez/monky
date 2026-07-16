@@ -78,14 +78,7 @@
   transform: scale(0.98);
 }
 
-.selectable-group > .is-selected {
-  background-color: var(--accent);
-  color: var(--ink-alt);
-  border-color: var(--accent);
-}
-
 .selectable-group > .is-selected:hover {
-  background-color: var(--accent);
   opacity: 0.9;
 }
 

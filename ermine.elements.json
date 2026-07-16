@@ -681,6 +681,13 @@
       "backing": []
     },
     {
+      "id": "selectable-group-checked-skin",
+      "classString": "selectable checked:ground-accent checked:ink-inverse checked:rule-accent",
+      "backing": [
+        "aria-checked"
+      ]
+    },
+    {
       "id": "phase-f-radio",
       "classString": "control-size-lg pressable",
       "backing": []

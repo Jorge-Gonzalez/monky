@@ -588,6 +588,18 @@
   margin-right: var(--spacing-xl);
 }
 
+.checked\:ground-accent[aria-checked="true"] {
+  background: var(--accent);
+}
+
+.checked\:ink-inverse[aria-checked="true"] {
+  color: var(--ink-inverse);
+}
+
+.checked\:rule-accent[aria-checked="true"] {
+  border-color: var(--accent);
+}
+
 .columns-12 {
   display: grid;
   grid-auto-flow: row;
@@ -708,14 +720,6 @@
 .tween-ink-quick {
   transition-property: color;
   transition-duration: var(--duration-quick);
-}
-
-.checked\:ground-accent[aria-checked="true"] {
-  background: var(--accent);
-}
-
-.checked\:ink-inverse[aria-checked="true"] {
-  color: var(--ink-inverse);
 }
 
 .height-none {
