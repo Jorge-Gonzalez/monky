@@ -33,7 +33,12 @@
     },
     {
       "id": "modal-navigation-brand",
-      "classString": "horizontal gap-sm align-center ink-accent",
+      "classString": "horizontal gap-sm margin-right-lg align-center ink-accent",
+      "backing": []
+    },
+    {
+      "id": "modal-navigation-label",
+      "classString": "rigid font-md",
       "backing": []
     },
     {

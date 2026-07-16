@@ -246,12 +246,20 @@
   justify-content: space-between;
 }
 
+.margin-right-lg {
+  margin-right: var(--spacing-lg);
+}
+
 .ink-accent {
   color: var(--accent);
 }
 
 .control-block-sm {
   height: var(--control-size-sm);
+}
+
+.font-md {
+  font-size: var(--type-md);
 }
 
 .tween-quick {
@@ -265,10 +273,6 @@
 
 .padding-inline-2xl {
   padding-inline: var(--spacing-2xl);
-}
-
-.font-md {
-  font-size: var(--type-md);
 }
 
 .ruled-bottom {

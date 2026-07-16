@@ -28,10 +28,6 @@
   mix-blend-mode: multiply;
 }
 
-.modal-nav-branding {
-  margin-right: 1rem;
-}
-
 /* Preserved for the wordmark restoration path; currently not emitted by the modal markup.
 .monky-logo-word {
   display: block;
@@ -39,9 +35,5 @@
   height: 26px;
 }
 */
-
-.modal-nav-label {
-  font-size: var(--text-base);
-}
 
 /* Content area: min-content escape comes from `min-height-none` (R-CONSTRAINT-01). */

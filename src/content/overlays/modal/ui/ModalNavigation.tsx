@@ -57,7 +57,7 @@ export function ModalNavigation({ currentView, onViewChange, theme }: ModalNavig
 
   return (
     <nav className="modal-nav-container horizontal padding-inline-lg min-height-control-3xl align-center justify-between" style={{ borderBottom: '1px solid var(--harmonic)' }}>
-      <div className="modal-nav-branding horizontal gap-sm align-center ink-accent">
+      <div className="modal-nav-branding horizontal gap-sm margin-right-lg align-center ink-accent">
         {/* <Logo /> */}
         <MonkyLogoWord />
       </div>
@@ -71,7 +71,7 @@ export function ModalNavigation({ currentView, onViewChange, theme }: ModalNavig
             aria-current={currentView === tab.view ? 'page' : undefined}
           >
             {tab.icon && <span className="modal-nav-icon rigid control-block-sm">{tab.icon}</span>}
-            <span className="modal-nav-label rigid">{tab.label}</span>
+            <span className="modal-nav-label rigid font-md">{tab.label}</span>
           </button>
         ))}
       </div>
