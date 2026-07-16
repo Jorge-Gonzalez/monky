@@ -642,15 +642,17 @@
     },
     {
       "id": "cycle6-style-option",
-      "classString": "horizontal gap-sm padding-block-xs padding-inline-sm align-center selectable ink corner-sm font-sm text-start tween-ground-quick hover:ground-defined selected:ground-defined selected:ink-accent",
+      "classString": "horizontal gap-sm padding-block-xs padding-inline-sm align-center selectable ink corner-sm font-sm text-start pressable tween-ground-quick hover:ground-defined selected:ground-defined selected:ink-accent",
       "backing": [
         "aria-selected"
       ]
     },
     {
       "id": "cycle6-toolbar-button",
-      "classString": "horizontal rigid control-box-lg align-center justify-center ink-soft corner-sm tween-ground-ink-quick hover:ground-defined hover:ink",
-      "backing": []
+      "classString": "horizontal rigid control-box-lg align-center justify-center ink-soft corner-sm pressable tween-ground-ink-quick hover:ground-defined hover:ink pressed:ground-defined pressed:ink-accent",
+      "backing": [
+        "aria-pressed"
+      ]
     },
     {
       "id": "cycle6-toolbar-separator",
@@ -659,8 +661,10 @@
     },
     {
       "id": "cycle6-style-trigger",
-      "classString": "horizontal rigid width-auto min-width-control-2xl control-block-lg align-center justify-center ink-soft corner-sm font-sm font-medium pressable tween-ground-ink-quick hover:ground-defined hover:ink",
-      "backing": []
+      "classString": "horizontal rigid width-auto min-width-control-2xl control-block-lg align-center justify-center ink-soft corner-sm font-sm font-medium pressable tween-ground-ink-quick hover:ground-defined hover:ink expanded:ground-defined expanded:ink-accent",
+      "backing": [
+        "aria-expanded"
+      ]
     },
     {
       "id": "cycle6-style-option-short",
