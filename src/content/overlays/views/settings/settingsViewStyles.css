@@ -58,7 +58,6 @@
 /* Centring (`text-center`), press affordance (`pressable`), and the right
    separator (`ruled-right`) are words; the rest is identity/animation. */
 .seg-option {
-  z-index: 1;
   transition: color var(--transition-fast);
 }
 

@@ -461,6 +461,10 @@
   transform: translateX(-50%);
 }
 
+.dropdown {
+  z-index: var(--z-dropdown);
+}
+
 .push {
   margin-inline-start: auto;
 }
@@ -507,6 +511,10 @@
 
 .padding-xl {
   padding: var(--spacing-xl);
+}
+
+.content {
+  z-index: var(--z-content);
 }
 
 .ruled-right {

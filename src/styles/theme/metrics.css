@@ -47,6 +47,10 @@
   --size-sm: 140px;
   --size-2xl: 42rem;
 
+  /* Ermine z-scale binding. */
+  --z-content: 1;
+  --z-dropdown: 10;
+
   /* Ermine weight scale binding. */
   --weight-medium: 500;
   --weight-semibold: 600;

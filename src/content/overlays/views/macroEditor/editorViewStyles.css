@@ -47,7 +47,6 @@
   top: 100%;
   border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
-  z-index: 10;
 }
 
 .command-suggestion-item {

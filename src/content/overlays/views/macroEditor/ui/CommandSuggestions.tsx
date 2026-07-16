@@ -43,7 +43,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
   useEffect(() => { setConfirmingId(null); }, [suggestions]);
 
   return (
-    <div className="command-suggestions hidden position-absolute ground-subtle rule-accent-soft ruled elevated">
+    <div className="command-suggestions hidden position-absolute dropdown ground-subtle rule-accent-soft ruled elevated">
       <div className="command-suggestions-label padding-block-xs padding-inline-md ink-soft rule ruled-bottom font-sm">
         {t('macroEditor.commandSuggestionsLabel')}
       </div>

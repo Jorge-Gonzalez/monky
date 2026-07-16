@@ -43,7 +43,6 @@
 .ce-style-dropdown {
   top: calc(100% + 4px);
   left: 0;
-  z-index: 10;
   gap: 2px;
 }
 
