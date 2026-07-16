@@ -64,7 +64,7 @@ interface MacroSearchItemProps {
 
 function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdit }: MacroSearchItemProps) {
   const commandClassName = [
-    'macro-search-item-command pressable padding-md rule-soft ruled-bottom font-md font-medium hidden truncate',
+    'macro-search-item-command pressable padding-top-md padding-right-xs padding-bottom-md padding-left-md rule-soft ruled-bottom font-md font-medium hidden truncate',
     isConfirmingDelete ? 'ground-fail-faint ink-fail' : 'ink-accent',
   ].join(' ');
 
@@ -78,11 +78,11 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
     >
       <div className={commandClassName}>{macro.command}</div>
       {isConfirmingDelete ? (
-        <div className="macro-search-item-confirm padding-md hidden ground-fail-faint ink-fail rule-soft ruled-bottom font-md font-medium truncate" role="alert">
+        <div className="macro-search-item-confirm padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ground-fail-faint ink-fail rule-soft ruled-bottom font-md font-medium truncate" role="alert">
           {t('modalSearch.confirmDelete')}
         </div>
       ) : (
-        <div className="macro-search-item-text padding-md hidden ink-soft rule-soft ruled-bottom font-md pressable truncate">
+        <div className="macro-search-item-text padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ink-soft rule-soft ruled-bottom font-md pressable truncate">
           {!hasPlaceholders(macro.text)
             ? macro.text
             : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>

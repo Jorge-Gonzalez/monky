@@ -36,12 +36,12 @@ shadow(
       </div>
       <div data-probe="search-results" class="macro-search-results grid-fit-sm elastic basis-ratio scroll-auto">
         <div data-probe="search-item" class="macro-search-item subgrid span-all position-relative selectable" aria-selected="true">
-          <span data-probe="search-cell" class="macro-search-item-command padding-md">command</span>
+          <span data-probe="search-cell" class="macro-search-item-command padding-top-md padding-right-xs padding-bottom-md padding-left-md">command</span>
           <button data-probe="search-edit" class="macro-search-item-edit horizontal padding-xs align-center justify-center position-absolute pressable concealed parent-hover:revealed parent-selected:revealed">edit</button>
         </div>
       </div>
       <footer data-probe="search-footer" class="macro-search-footer horizontal padding-sm justify-between">
-        <div><span data-probe="search-shortcut" class="macro-search-shortcut horizontal inline gap-sm align-center">
+        <div><span data-probe="search-shortcut" class="macro-search-shortcut horizontal inline gap-sm align-center margin-right-xl">
           <kbd data-probe="search-kbd" class="macro-search-kbd horizontal align-center justify-center position-relative">Esc</kbd>
         </span></div>
       </footer>

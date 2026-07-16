@@ -147,7 +147,7 @@ export function SettingsView(_props: BaseModalViewProps) {
         </div>
 
         {importStatus && (
-          <div className={`settings-import-status font-sm ${importStatus.ok ? 'import-status--ok ink-accent' : 'import-status--error ink-fail'}`}>
+          <div className={`settings-import-status font-sm padding-top-xs padding-inline-xl padding-bottom-sm ${importStatus.ok ? 'import-status--ok ink-accent' : 'import-status--error ink-fail'}`}>
             {importStatus.message}
           </div>
         )}

@@ -26,10 +26,6 @@
   padding: 0;
 }
 
-.settings-import-status {
-  padding: var(--spacing-xs) var(--spacing-xl) var(--spacing-sm);
-}
-
 /* ===== Segmented Control ===== */
 
 /* Container line (`ruled`) and clip (`hidden`) are words; the sliding pill below. */

@@ -16,7 +16,7 @@ export default function MacroItem({ macro }: MacroItemProps) {
         <span className="ink-soft">{open ? '▲' : '▼'}</span>
       </button>
       {open && (
-        <div className="popup-item-detail vertical gap-sm rule-soft ruled-top">
+        <div className="popup-item-detail vertical gap-sm margin-top-sm padding-top-sm rule-soft ruled-top">
           <pre className="popup-macro-text padding-sm text-pre-wrap ground-subtle ink corner-md font-sm">{macro.text}</pre>
           <div className="horizontal gap-sm">
             <button className="popup-button padding-block-xs padding-inline-sm ground-accent ink-inverse corner-md font-sm pressable" onClick={()=>chrome.runtime.openOptionsPage()}>{t('macroItem.edit')}</button>

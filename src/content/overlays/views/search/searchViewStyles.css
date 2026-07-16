@@ -21,14 +21,6 @@
   transition: background-color var(--transition-fast);
 }
 
-.macro-search-item-command {
-  padding-right: var(--spacing-xs);
-}
-
-.macro-search-item-text {
-  padding-left: var(--spacing-xs);
-}
-
 .macro-search-item[aria-selected="true"] .macro-search-item-text {
   white-space: normal;
   overflow: visible;
@@ -46,10 +38,6 @@
 }
 
 /* Armed-for-delete row: danger tint + the confirm prompt in the text column. */
-.macro-search-item-confirm {
-  padding-left: var(--spacing-xs);
-}
-
 .macro-search-item-edit {
   right: var(--spacing-sm);
   transition: opacity var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
@@ -83,10 +71,6 @@
   margin-left: var(--spacing-md);
   margin-right: var(--spacing-xs);
 } */
-
-.macro-search-shortcut {
-  margin-right: var(--spacing-xl);
-}
 
 /* Key typeface comes from `font-mono` (R-SKIN-07). */
 .macro-search-kbd {

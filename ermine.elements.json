@@ -76,22 +76,22 @@
     },
     {
       "id": "search-item-command-cell",
-      "classString": "padding-md hidden ink-accent rule-soft ruled-bottom font-md font-medium pressable truncate",
+      "classString": "padding-top-md padding-right-xs padding-bottom-md padding-left-md hidden ink-accent rule-soft ruled-bottom font-md font-medium pressable truncate",
       "backing": []
     },
     {
       "id": "search-item-text-cell",
-      "classString": "padding-md hidden ink-soft rule-soft ruled-bottom font-md pressable truncate",
+      "classString": "padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ink-soft rule-soft ruled-bottom font-md pressable truncate",
       "backing": []
     },
     {
       "id": "search-item-confirm-cell",
-      "classString": "padding-md hidden ground-fail-faint ink-fail rule-soft ruled-bottom font-md font-medium truncate",
+      "classString": "padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ground-fail-faint ink-fail rule-soft ruled-bottom font-md font-medium truncate",
       "backing": []
     },
     {
       "id": "search-command-name-cell",
-      "classString": "padding-md hidden ink-accent rule-soft ruled-bottom font-md font-semibold font-mono truncate",
+      "classString": "padding-top-md padding-right-xs padding-bottom-md padding-left-md hidden ink-accent rule-soft ruled-bottom font-md font-semibold font-mono truncate",
       "backing": []
     },
     {
@@ -114,7 +114,7 @@
     },
     {
       "id": "search-shortcut",
-      "classString": "horizontal inline gap-sm align-center",
+      "classString": "horizontal inline gap-sm align-center margin-right-xl",
       "backing": []
     },
     {
@@ -157,7 +157,7 @@
     },
     {
       "id": "u6-settings-import-status",
-      "classString": "font-sm",
+      "classString": "font-sm padding-top-xs padding-inline-xl padding-bottom-sm",
       "backing": []
     },
     {
@@ -445,7 +445,7 @@
     },
     {
       "id": "popup-item-detail",
-      "classString": "vertical gap-sm rule-soft ruled-top",
+      "classString": "vertical gap-sm margin-top-sm padding-top-sm rule-soft ruled-top",
       "backing": []
     },
     {

@@ -28,19 +28,8 @@
   background: transparent;
 }
 
-/* Expanded macro detail: single-side rhythm the grammar does not express. */
-.popup-item-detail {
-  margin-top: var(--spacing-sm);
-  padding-top: var(--spacing-sm);
-}
-
 .popup-macro-text {
   margin: 0;
-}
-
-/* Site-toggle label: left offset from the description block. */
-.popup-toggle-label {
-  margin-left: var(--spacing-sm);
 }
 
 /* Scrollbar prominence comes from `scrollbar-subtle` (R-SKIN-15); the theme binds
