@@ -25,12 +25,6 @@
 }
 
 
-/* Command typeface comes from `font-mono` (R-SKIN-07). */
-
-.modal-command-item .modal-command-description {
-  font-style: italic;
-}
-
 /* Keyboard hints - uses shared .kbd pattern */
 /* .macro-search-kbd {
   padding: 2px var(--spacing-xs);
