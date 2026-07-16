@@ -40,18 +40,6 @@
 }
 */
 
-/* Navigation tabs: spacing comes from Ermine words; the transparent bottom sentinel stays local. */
-.modal-nav-tab {
-  border-bottom: 2px solid transparent;
-}
-
-/* Current-tab ink and ground come from `current:` words (R-STATE-12). The bottom-rule
-   colour stays local: the base transparent sentinel lives in this (components) layer,
-   which outranks the grammar layer, so a grammar word could never win it back. */
-.modal-nav-tab[aria-current="page"] {
-  border-bottom-color: var(--accent);
-}
-
 .modal-nav-label {
   font-size: var(--text-base);
 }

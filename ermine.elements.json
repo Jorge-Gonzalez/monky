@@ -43,7 +43,7 @@
     },
     {
       "id": "modal-navigation-tab",
-      "classString": "tween-quick horizontal padding-block-md padding-inline-2xl gap-sm align-center justify-center ink-soft font-md font-medium pressable hover:ground-subtle hover:ink current:ground-subtle current:ink-accent",
+      "classString": "tween-quick horizontal padding-block-md padding-inline-2xl gap-sm align-center justify-center ink-soft font-md font-medium pressable ruled-bottom rule-bottom-transparent hover:ground-subtle hover:ink current:ground-subtle current:ink-accent current:rule-bottom-accent",
       "backing": []
     },
     {
@@ -81,12 +81,15 @@
     },
     {
       "id": "search-item-command-cell",
-      "classString": "padding-top-md padding-right-xs padding-bottom-md padding-left-md hidden ink-accent rule-soft ruled-bottom font-md font-medium pressable truncate tween-ground-quick",
-      "backing": []
+      "classString": "padding-top-md padding-right-xs padding-bottom-md padding-left-md hidden ink-accent rule-soft ruled-bottom font-md font-medium pressable truncate parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick",
+      "backing": [],
+      "context": {
+        "parentClasses": "subgrid span-all position-relative selectable"
+      }
     },
     {
       "id": "search-item-text-cell",
-      "classString": "padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ink-soft rule-soft ruled-bottom font-md pressable truncate parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick",
+      "classString": "padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ink-soft rule-soft ruled-bottom font-md pressable truncate parent-hover:ground-subtle parent-selected:ground-defined parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -99,8 +102,19 @@
     },
     {
       "id": "search-command-name-cell",
-      "classString": "padding-top-md padding-right-xs padding-bottom-md padding-left-md hidden ink-accent rule-soft ruled-bottom font-md font-semibold font-mono truncate tween-ground-quick",
-      "backing": []
+      "classString": "padding-top-md padding-right-xs padding-bottom-md padding-left-md hidden ink-accent rule-soft ruled-bottom font-md font-semibold font-mono truncate parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick",
+      "backing": [],
+      "context": {
+        "parentClasses": "subgrid span-all position-relative selectable"
+      }
+    },
+    {
+      "id": "search-command-description-cell",
+      "classString": "padding-top-md padding-right-md padding-bottom-md padding-left-xs ink-soft rule-soft font-md parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick",
+      "backing": [],
+      "context": {
+        "parentClasses": "subgrid span-all position-relative selectable"
+      }
     },
     {
       "id": "search-item-edit",

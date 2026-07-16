@@ -65,7 +65,7 @@ export function ModalNavigation({ currentView, onViewChange, theme }: ModalNavig
         {tabs.map(tab => (
           <button
             key={tab.view}
-            className="modal-nav-tab panel-button tween-quick horizontal padding-block-md padding-inline-2xl gap-sm align-center justify-center ink-soft font-md font-medium pressable hover:ground-subtle hover:ink current:ground-subtle current:ink-accent"
+            className="modal-nav-tab panel-button tween-quick horizontal padding-block-md padding-inline-2xl gap-sm align-center justify-center ink-soft font-md font-medium pressable ruled-bottom rule-bottom-transparent hover:ground-subtle hover:ink current:ground-subtle current:ink-accent current:rule-bottom-accent"
             onClick={() => onViewChange(tab.view)}
             aria-label={t('modalNavigation.switchTo', { view: tab.label })}
             aria-current={currentView === tab.view ? 'page' : undefined}

@@ -22,13 +22,13 @@ export function MacroCommandResults({ commands, selectedIndex, onSelect, results
       {commands.map((cmd, index) => (
         <div
           key={cmd.id}
-          className="macro-search-item modal-command-item subgrid span-all position-relative"
+          className="macro-search-item modal-command-item subgrid span-all position-relative selectable"
           role="option"
           aria-selected={index === selectedIndex}
           onClick={() => onSelect(cmd)}
         >
-          <div className="macro-search-item-command modal-command-name padding-top-md padding-right-xs padding-bottom-md padding-left-md hidden ink-accent rule-soft ruled-bottom font-md font-semibold font-mono truncate tween-ground-quick">{cmd.command}</div>
-          <div className="macro-search-item-text modal-command-description padding-top-md padding-right-md padding-bottom-md padding-left-xs ink-soft rule-soft font-md tween-ground-quick">{cmd.description}</div>
+          <div className="macro-search-item-command modal-command-name padding-top-md padding-right-xs padding-bottom-md padding-left-md hidden ink-accent rule-soft ruled-bottom font-md font-semibold font-mono truncate parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick">{cmd.command}</div>
+          <div className="macro-search-item-text modal-command-description padding-top-md padding-right-md padding-bottom-md padding-left-xs ink-soft rule-soft font-md parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick">{cmd.description}</div>
         </div>
       ))}
     </div>

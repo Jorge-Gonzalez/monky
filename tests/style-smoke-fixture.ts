@@ -36,7 +36,7 @@ shadow(
       </div>
       <div data-probe="search-results" class="macro-search-results grid-fit-sm elastic basis-ratio max-height-results-md scroll-auto">
         <div data-probe="search-item" class="macro-search-item subgrid span-all position-relative selectable" aria-selected="true">
-          <span data-probe="search-cell" class="macro-search-item-command padding-top-md padding-right-xs padding-bottom-md padding-left-md">command</span>
+          <span data-probe="search-cell" class="macro-search-item-command padding-top-md padding-right-xs padding-bottom-md padding-left-md parent-selected:ground-defined">command</span>
           <button data-probe="search-edit" class="macro-search-item-edit horizontal padding-xs align-center justify-center position-absolute pressable concealed parent-hover:revealed parent-selected:revealed">edit</button>
         </div>
       </div>

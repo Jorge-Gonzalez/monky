@@ -9,16 +9,6 @@
   align-content: start;
 }
 
-.macro-search-item:not([data-state="confirming-delete"]):hover .macro-search-item-command,
-.macro-search-item:not([data-state="confirming-delete"]):hover .macro-search-item-text {
-  background-color: var(--tone-dim);
-}
-
-.macro-search-item:not([data-state="confirming-delete"])[aria-selected="true"] .macro-search-item-command,
-.macro-search-item:not([data-state="confirming-delete"])[aria-selected="true"] .macro-search-item-text {
-  background-color: var(--tone);
-}
-
 /* Armed-for-delete row: danger tint + the confirm prompt in the text column. */
 .macro-search-item-edit {
   right: var(--spacing-sm);

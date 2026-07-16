@@ -65,7 +65,7 @@ interface MacroSearchItemProps {
 function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdit }: MacroSearchItemProps) {
   const commandClassName = [
     'macro-search-item-command pressable padding-top-md padding-right-xs padding-bottom-md padding-left-md rule-soft ruled-bottom font-md font-medium hidden truncate tween-ground-quick',
-    isConfirmingDelete ? 'ground-fail-faint ink-fail' : 'ink-accent',
+    isConfirmingDelete ? 'ground-fail-faint ink-fail' : 'ink-accent parent-hover:ground-subtle parent-selected:ground-defined',
   ].join(' ');
 
   return (
@@ -82,7 +82,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
           {t('modalSearch.confirmDelete')}
         </div>
       ) : (
-        <div className="macro-search-item-text padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ink-soft rule-soft ruled-bottom font-md pressable truncate parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick">
+        <div className="macro-search-item-text padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ink-soft rule-soft ruled-bottom font-md pressable truncate parent-hover:ground-subtle parent-selected:ground-defined parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick">
           {!hasPlaceholders(macro.text)
             ? macro.text
             : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>
