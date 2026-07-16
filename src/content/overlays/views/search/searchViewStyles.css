@@ -4,11 +4,6 @@
  * Uses shared patterns from modalStyles.ts where possible
  * Only defines search-specific styles here
  */
-/* Results container - extends .scrollable pattern */
-.macro-search-results {
-  align-content: start;
-}
-
 /* Armed-for-delete row: danger tint + the confirm prompt in the text column. */
 .macro-search-item-edit {
   right: var(--spacing-sm);

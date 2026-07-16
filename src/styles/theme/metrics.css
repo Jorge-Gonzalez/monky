@@ -84,7 +84,8 @@
   --transition-fast: 0.15s;
   --transition-medium: 0.3s;
 
-  /* Custom scrollbar styles */
-  /* scrollbar-width: thin; */
-  scrollbar-color: var(--tone) var(--tone-dim);
+  /* Ermine scrollbar treatment sockets. Browser-specific scrollbar pseudo rules
+     remain in the Monky skin layer and the app build output. */
+  --scrollbar-thumb: var(--tone);
+  --scrollbar-track: var(--tone-dim);
 }

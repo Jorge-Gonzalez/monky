@@ -63,7 +63,7 @@
     },
     {
       "id": "search-results",
-      "classString": "grid-fit-sm elastic basis-ratio max-height-results-md",
+      "classString": "grid-fit-sm elastic basis-ratio max-height-results-md scroll-auto content-align-start scrollbar-subtle",
       "backing": []
     },
     {
@@ -71,7 +71,7 @@
       "classString": "span-all padding-lg ink-soft font-md text-center",
       "backing": [],
       "context": {
-        "parentClasses": "grid-fit-sm elastic basis-ratio scroll-auto"
+        "parentClasses": "grid-fit-sm elastic basis-ratio max-height-results-md scroll-auto content-align-start scrollbar-subtle"
       }
     },
     {
@@ -81,7 +81,7 @@
         "aria-selected"
       ],
       "context": {
-        "parentClasses": "grid-fit-sm elastic basis-ratio scroll-auto"
+        "parentClasses": "grid-fit-sm elastic basis-ratio max-height-results-md scroll-auto content-align-start scrollbar-subtle"
       }
     },
     {
@@ -599,7 +599,7 @@
     },
     {
       "id": "phase-b-content-editor-body",
-      "classString": "padding-md min-height-editor scroll-auto ink rule corner-lg ruled font-md focus:rule-accent focus:ring",
+      "classString": "padding-md min-height-editor scroll-auto scrollbar-subtle ink rule corner-lg ruled font-md focus:rule-accent focus:ring",
       "backing": []
     },
     {
@@ -649,7 +649,7 @@
     },
     {
       "id": "phase-b-scroll-straggler",
-      "classString": "padding-xs scroll-auto",
+      "classString": "padding-xs scroll-auto scrollbar-subtle",
       "backing": []
     },
     {

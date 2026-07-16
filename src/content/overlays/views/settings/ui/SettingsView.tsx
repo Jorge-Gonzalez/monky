@@ -57,7 +57,7 @@ export function SettingsView(_props: BaseModalViewProps) {
   ];
 
   return (
-    <div className="settings-view fill-block vertical scroll-auto">
+    <div className="settings-view fill-block vertical scroll-auto scrollbar-subtle">
       <div className="settings-body padding-top-2xl padding-right-none padding-bottom-xl padding-left-none">
 
         <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
