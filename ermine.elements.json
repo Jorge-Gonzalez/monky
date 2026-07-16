@@ -642,8 +642,10 @@
     },
     {
       "id": "cycle6-style-option",
-      "classString": "horizontal gap-sm padding-block-xs padding-inline-sm align-center ink corner-sm font-sm text-start tween-ground-quick hover:ground-defined",
-      "backing": []
+      "classString": "horizontal gap-sm padding-block-xs padding-inline-sm align-center selectable ink corner-sm font-sm text-start tween-ground-quick hover:ground-defined selected:ground-defined selected:ink-accent",
+      "backing": [
+        "aria-selected"
+      ]
     },
     {
       "id": "cycle6-toolbar-button",
@@ -662,8 +664,11 @@
     },
     {
       "id": "cycle6-style-option-short",
-      "classString": "rigid control-inline-md ink-soft font-xs font-semibold",
-      "backing": []
+      "classString": "rigid control-inline-md ink-soft font-xs font-semibold parent-selected:ink-accent",
+      "backing": [],
+      "context": {
+        "parentClasses": "fill-inline horizontal gap-sm padding-block-xs padding-inline-sm align-center selectable"
+      }
     },
     {
       "id": "u6-settings-prefix-button",

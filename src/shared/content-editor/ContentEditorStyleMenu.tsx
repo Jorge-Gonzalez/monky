@@ -58,10 +58,10 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
               type="button"
               role="option"
               aria-selected={blockType === opt.type}
-              className={`ce-style-option fill-inline horizontal gap-sm padding-block-xs padding-inline-sm align-center ink corner-sm font-sm text-start pressable tween-ground-quick hover:ground-defined ${blockType === opt.type ? 'is-active' : ''}`}
+              className={`ce-style-option fill-inline horizontal gap-sm padding-block-xs padding-inline-sm align-center selectable ink corner-sm font-sm text-start pressable tween-ground-quick hover:ground-defined selected:ground-defined selected:ink-accent ${blockType === opt.type ? 'is-active' : ''}`}
               onMouseDown={e => { e.preventDefault(); handleSelect(opt.type) }}
             >
-              <span className="ce-style-option-short rigid control-inline-md ink-soft font-xs font-semibold">{opt.shortLabel}</span>
+              <span className="ce-style-option-short rigid control-inline-md ink-soft font-xs font-semibold parent-selected:ink-accent">{opt.shortLabel}</span>
               <span className="ce-style-option-label elastic basis-ratio">{t(opt.labelKey as Parameters<typeof t>[0])}</span>
             </button>
           ))}

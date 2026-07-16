@@ -39,15 +39,6 @@
   gap: 2px;
 }
 
-.ce-style-option.is-active {
-  color: var(--accent);
-  background-color: var(--tone);
-}
-
-.ce-style-option.is-active .ce-style-option-short {
-  color: var(--accent);
-}
-
 .ce-link-input {
   padding: 0 var(--spacing-sm);
 }

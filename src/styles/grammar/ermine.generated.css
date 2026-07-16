@@ -87,6 +87,14 @@
   background: var(--ground-defined);
 }
 
+.selected\:ground-defined[aria-selected="true"] {
+  background: var(--ground-defined);
+}
+
+.selected\:ink-accent[aria-selected="true"] {
+  color: var(--accent);
+}
+
 .rigid {
   flex-grow: 0;
   flex-shrink: 0;
@@ -106,6 +114,10 @@
 
 .font-semibold {
   font-weight: var(--weight-semibold);
+}
+
+.selectable[aria-selected="true"] .parent-selected\:ink-accent {
+  color: var(--accent);
 }
 
 .width-auto {
@@ -693,10 +705,6 @@
   background: var(--ground);
 }
 
-.selected\:ground-defined[aria-selected="true"] {
-  background: var(--ground-defined);
-}
-
 .wrap-allowed {
   flex-wrap: wrap;
 }
@@ -803,10 +811,6 @@
 
 .hover\:rule:hover {
   border-color: var(--rule);
-}
-
-.selected\:ink-accent[aria-selected="true"] {
-  color: var(--accent);
 }
 
 .selected\:rule-accent[aria-selected="true"] {
