@@ -9,19 +9,9 @@
   box-shadow: inset 0 0 0 2px var(--status-error-wash);
 }
 
-.radio {
-  width: 16px;
-  height: 16px;
-}
-
 .radio-label {
   cursor: pointer;
   user-select: none;
-}
-
-.checkbox {
-  width: 16px;
-  height: 16px;
 }
 
 /* Overflow comes from the composed `hidden` word on the content-editor wrapper. */

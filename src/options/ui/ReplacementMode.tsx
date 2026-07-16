@@ -19,7 +19,7 @@ export default function ReplacementMode({ useCommitKeys, onChange }: Replacement
             name="behavior"
             checked={!useCommitKeys}
             onChange={() => onChange(false)}
-            className="radio rigid pressable"
+            className="radio control-size-lg rigid pressable"
           />
           <span className="radio-label rigid ink font-md">{t('replacementMode.auto')}</span>
         </label>
@@ -29,7 +29,7 @@ export default function ReplacementMode({ useCommitKeys, onChange }: Replacement
             name="behavior"
             checked={useCommitKeys}
             onChange={() => onChange(true)}
-            className="radio rigid pressable"
+            className="radio control-size-lg rigid pressable"
           />
           <span className="radio-label rigid ink font-md">{t('replacementMode.manual')}</span>
         </label>

@@ -172,7 +172,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             type="checkbox"
             checked={isSensitive}
             onChange={e => setSensitive(e.currentTarget.checked)}
-            className="checkbox rule corner-sm ruled pressable focus:ring"
+            className="checkbox control-size-lg rule corner-sm ruled pressable focus:ring"
           />
           <span>{t('macroForm.sensitiveLabel')}</span>
         </label>

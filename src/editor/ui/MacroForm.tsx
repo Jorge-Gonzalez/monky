@@ -128,7 +128,7 @@ export default function MacroForm({ editing, onDone }: {
             type="checkbox"
             checked={isSensitive}
             onChange={e => setSensitive(e.currentTarget.checked)}
-            className="checkbox rule corner-sm ruled pressable focus:ring"
+            className="checkbox control-size-lg rule corner-sm ruled pressable focus:ring"
           />
           <span className="boxed ink font-sm font-medium">{t('macroForm.sensitiveLabel')}</span>
         </label>

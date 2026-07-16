@@ -510,7 +510,7 @@
     },
     {
       "id": "phase-b-checkbox",
-      "classString": "rule corner-sm ruled pressable focus:ring",
+      "classString": "control-size-lg rule corner-sm ruled pressable focus:ring",
       "backing": []
     },
     {
@@ -593,7 +593,7 @@
     },
     {
       "id": "phase-f-radio",
-      "classString": "pressable",
+      "classString": "control-size-lg pressable",
       "backing": []
     },
     {
