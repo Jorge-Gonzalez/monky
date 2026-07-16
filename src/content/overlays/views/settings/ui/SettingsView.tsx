@@ -84,7 +84,7 @@ export function SettingsView(_props: BaseModalViewProps) {
           </div>
         </div>
 
-        <div className="settings-divider rule ruled-top" />
+        <div className="settings-divider rule ruled-top margin-block-sm margin-inline-xl" />
 
         <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
           <div className="settings-section-label quarter overline ink-accent-soft font-xs font-medium">{t('settings.sections.appearance')}</div>
@@ -115,7 +115,7 @@ export function SettingsView(_props: BaseModalViewProps) {
           </div>
         </div>
 
-        <div className="settings-divider rule ruled-top" />
+        <div className="settings-divider rule ruled-top margin-block-sm margin-inline-xl" />
 
         <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
           <div className="settings-section-label quarter overline ink-accent-soft font-xs font-medium">{t('settings.sections.data')}</div>

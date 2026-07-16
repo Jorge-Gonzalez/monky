@@ -47,10 +47,8 @@
 }
 */
 
-/* Navigation tabs - appearance only, all layout/behavior handled by semantic classes */
+/* Navigation tabs: spacing comes from Ermine words; the transparent bottom sentinel stays local. */
 .modal-nav-tab {
-  /* 24px inline padding has no Ermine density step (2xl); kept as tab identity (U8). */
-  padding: var(--spacing-md) var(--spacing-2xl);
   border-bottom: 2px solid transparent;
 }
 

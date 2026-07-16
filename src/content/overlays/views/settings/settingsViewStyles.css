@@ -15,10 +15,9 @@
   padding: var(--spacing-md) var(--spacing-sm) 0 0;
 }
 
-/* Line presence comes from `ruled-top` (R-SKIN-11); colour from `rule`. */
+/* Line presence comes from `ruled-top` (R-SKIN-11); colour and rhythm from words. */
 .settings-divider {
   height: 0;
-  margin: var(--spacing-sm) var(--spacing-xl);
 }
 
 .settings-prefix-btn {

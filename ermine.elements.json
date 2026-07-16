@@ -38,7 +38,7 @@
     },
     {
       "id": "modal-navigation-tab",
-      "classString": "tween-quick horizontal gap-sm align-center justify-center ink-soft font-md font-medium pressable hover:ground-subtle hover:ink current:ground-subtle current:ink-accent",
+      "classString": "tween-quick horizontal padding-block-md padding-inline-2xl gap-sm align-center justify-center ink-soft font-md font-medium pressable hover:ground-subtle hover:ink current:ground-subtle current:ink-accent",
       "backing": []
     },
     {
@@ -152,7 +152,7 @@
     },
     {
       "id": "u6-settings-divider",
-      "classString": "rule ruled-top",
+      "classString": "rule ruled-top margin-block-sm margin-inline-xl",
       "backing": []
     },
     {

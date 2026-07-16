@@ -133,6 +133,14 @@
   transition-duration: var(--duration-quick);
 }
 
+.padding-block-md {
+  padding-block: var(--spacing-md);
+}
+
+.padding-inline-2xl {
+  padding-inline: var(--spacing-2xl);
+}
+
 .ink-soft {
   color: var(--ink-soft);
 }
@@ -530,6 +538,14 @@
   color: var(--ink-inverse);
 }
 
+.margin-block-sm {
+  margin-block: var(--spacing-sm);
+}
+
+.margin-inline-xl {
+  margin-inline: var(--spacing-xl);
+}
+
 .quarter {
   grid-column: span 3;
 }
@@ -600,10 +616,6 @@
 
 .grow-1 {
   flex-grow: 1;
-}
-
-.margin-block-sm {
-  margin-block: var(--spacing-sm);
 }
 
 /* not CSS — integration hints:
