@@ -40,9 +40,12 @@ button, input, textarea, select {
 }
 
 .macro-suggestions-command-item {
-  max-width: 8em;
   padding: 3px 6px;
   transition: all 0.15s ease;
+}
+
+.macro-suggestions-command-item:not(.delete-confirm-option) {
+  max-width: 8em;
 }
 
 .macro-suggestions-footer {

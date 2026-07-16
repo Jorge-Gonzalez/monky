@@ -351,14 +351,14 @@
     },
     {
       "id": "u7-delete-option",
-      "classString": "elastic basis-ratio selectable ground-subtle ink rule-soft corner-md font-sm hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent",
+      "classString": "elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled font-sm text-center pressable truncate hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent",
       "backing": [
         "aria-selected"
       ]
     },
     {
       "id": "u7-delete-danger-option",
-      "classString": "elastic basis-ratio selectable ground-subtle ink rule-soft corner-md font-sm hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail",
+      "classString": "elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled font-sm text-center pressable truncate hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail",
       "backing": [
         "aria-selected"
       ]
