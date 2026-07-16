@@ -209,12 +209,17 @@
     },
     {
       "id": "u6-command-dropdown",
-      "classString": "hidden position-absolute dropdown ground-subtle rule-accent-soft ruled",
+      "classString": "hidden position-absolute attach-below stretch-inline dropdown ground-subtle rule-accent-soft ruled",
       "backing": []
     },
     {
-      "id": "u6-command-arrow",
-      "classString": "position-absolute center-x",
+      "id": "u6-command-arrow-top",
+      "classString": "position-absolute center-x attach-below",
+      "backing": []
+    },
+    {
+      "id": "u6-command-arrow-bottom",
+      "classString": "position-absolute center-x attach-above",
       "backing": []
     },
     {

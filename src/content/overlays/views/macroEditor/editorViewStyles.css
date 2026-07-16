@@ -38,9 +38,6 @@
 
 /* Cast shadow comes from `elevated` (R-SKIN-09); the dropdown tier shares one shadow. */
 .command-suggestions {
-  left: 0;
-  right: 0;
-  top: 100%;
   border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
 }

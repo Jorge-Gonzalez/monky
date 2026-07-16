@@ -29,12 +29,10 @@ button, input, textarea, select {
 }
 
 .macro-suggestions-arrow.top {
-  top: 100%;
   border-top-color: var(--base-tone);
 }
 
 .macro-suggestions-arrow.bottom {
-  bottom: 100%;
   border-bottom-color: var(--base-tone);
 }
 
