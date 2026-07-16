@@ -204,12 +204,17 @@
     },
     {
       "id": "u6-editor-command-error",
-      "classString": "padding-block-xs padding-inline-sm ground-fail-faint",
+      "classString": "padding-block-xs padding-inline-sm corner-bottom-md ground-fail-faint",
+      "backing": []
+    },
+    {
+      "id": "u6-editor-command-error-joined",
+      "classString": "padding-block-xs padding-inline-sm corner-bottom-none ground-fail-faint",
       "backing": []
     },
     {
       "id": "u6-command-dropdown",
-      "classString": "hidden position-absolute attach-below stretch-inline dropdown ground-subtle rule-accent-soft ruled",
+      "classString": "hidden position-absolute attach-below stretch-inline dropdown ground-subtle rule-accent-soft corner-bottom-md ruled",
       "backing": []
     },
     {
@@ -551,6 +556,11 @@
     {
       "id": "phase-b-input",
       "classString": "fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled font-md tween-rule-quick focus:rule-accent focus:ring",
+      "backing": []
+    },
+    {
+      "id": "u6-command-input-joined",
+      "classString": "fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-top-3xl corner-bottom-none ruled font-md tween-rule-quick focus:rule-accent focus:ring",
       "backing": []
     },
     {

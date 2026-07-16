@@ -93,7 +93,7 @@ shadow(
             <button data-probe="editor-popout" class="editor-popout horizontal padding-xs align-center justify-center ink-soft corner-sm">↗</button>
           </div>
           <div class="command-suggestion-wrapper editor-command elastic basis-ratio position-relative">
-            <div data-probe="command-suggestions" class="command-suggestions hidden position-absolute ground-subtle rule-accent-soft ruled elevated">
+            <div data-probe="command-suggestions" class="command-suggestions hidden position-absolute attach-below stretch-inline dropdown ground-subtle rule-accent-soft corner-bottom-md ruled elevated">
               <div data-probe="command-suggestions-label" class="command-suggestions-label padding-block-xs padding-inline-md ink-soft rule ruled-bottom font-sm">Existing</div>
               <div data-probe="command-suggestion-item" class="command-suggestion-item horizontal gap-md padding-block-sm padding-inline-md align-center hidden selectable pressable hover:ground selected:ground-defined" aria-selected="true">
                 <span data-probe="command-suggestion-command" class="command-suggestion-command rigid ink-accent font-md font-medium">/sig</span>

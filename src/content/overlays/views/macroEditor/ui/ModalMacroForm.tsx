@@ -37,6 +37,8 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   const contentEditorRef = useRef<ContentEditorRef>(null)
 
   const suggest = useCommandSuggestions(command, !editing, onLoadMacro)
+  const commandValid = isCommandValid(command, prefixes)
+  const commandJoined = Boolean((command && !commandValid) || suggest.visible)
 
   useEffect(() => {
     if (editing) {
@@ -59,7 +61,6 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
     commandInputRef.current?.focus()
   }, [editing?.id])
 
-  const commandValid = isCommandValid(command, prefixes)
   const isTextValid = text.trim() !== ''
   const isDirty = !editing ||
     command !== editing.command ||
@@ -132,7 +133,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             <input
               id="modal-macro-command"
               ref={commandInputRef}
-              className={`input fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled font-md tween-rule-quick focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail input-dropdown-open' : ''} ${suggest.visible ? 'input-dropdown-open' : ''}`}
+              className={`input fill-inline padding-block-sm padding-inline-md ground-subtle ink rule ${commandJoined ? 'corner-top-3xl corner-bottom-none' : 'corner-3xl'} ruled font-md tween-rule-quick focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail' : ''}`}
               value={command}
               onChange={e => setCommand(e.currentTarget.value)}
               placeholder={t('macroForm.commandPlaceholder', { prefix: prefixes[0] })}
@@ -142,7 +143,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
               {...suggest.inputProps}
             />
             {command && !commandValid && (
-              <div className={`validation-error editor-command-error padding-block-xs padding-inline-sm ground-fail-faint ink-fail font-xs ${suggest.visible ? 'input-dropdown-open' : ''}`}>
+              <div className={`validation-error editor-command-error padding-block-xs padding-inline-sm ${suggest.visible ? 'corner-bottom-none' : 'corner-bottom-md'} ground-fail-faint ink-fail font-xs`}>
                 {t('macroForm.commandPrefixError', { prefixes: prefixes.join(', ') })}
               </div>
             )}

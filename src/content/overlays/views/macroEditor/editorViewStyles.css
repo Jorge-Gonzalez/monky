@@ -7,12 +7,6 @@
   width: 280px;
 }
 
-.editor-command-error {
-  /* border: 1px solid var(--status-error); */
-  border-bottom-left-radius: var(--radius-md);
-  border-bottom-right-radius: var(--radius-md);
-}
-
 /* The content editor owns the remaining vertical space and scrolls internally.
    Both context rules escape recipe-base floors (min-height: 150px) that outrank
    grammar words in the cascade layers, so the zeros stay local. */
@@ -31,15 +25,9 @@
   box-shadow: 0 6px 16px -4px rgb(0 0 0 / 25%);
 }
 
-.input-dropdown-open {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
 /* Cast shadow comes from `elevated` (R-SKIN-09); the dropdown tier shares one shadow. */
 .command-suggestions {
   border-top: none;
-  border-radius: 0 0 var(--radius-md) var(--radius-md);
 }
 
 /* Reveal-on-row-state comes from `concealed parent-hover:revealed parent-selected:revealed`
