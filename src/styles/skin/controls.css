@@ -9,11 +9,6 @@
   user-select: none;
 }
 
-/* Overflow comes from the composed `hidden` word on the content-editor wrapper. */
-.editor-content {
-  min-height: 150px;
-}
-
 /* ===== COMPONENT PATTERNS: Buttons ===== */
 
 .btn-success:hover {

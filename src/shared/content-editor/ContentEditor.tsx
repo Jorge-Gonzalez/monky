@@ -77,9 +77,12 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
   }
 
   useEditorShortcuts(editorRef, formatState, handleLinkRequest)
+  const collapseMinHeight = className.includes('min-height-none')
+  const shellMinHeight = collapseMinHeight ? '' : ' min-height-editor'
+  const bodyMinHeight = collapseMinHeight ? 'min-height-none' : 'min-height-editor'
 
   return (
-    <div className={`content-editor vertical hidden ground-subtle ${className}`}>
+    <div className={`content-editor vertical hidden${shellMinHeight} ground-subtle ${className}`}>
       <ContentEditorToolbar
         formatState={formatState}
         linkMode={linkMode}
@@ -91,7 +94,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
       <div
         ref={editorRef}
         contentEditable
-        className="content-editor-body padding-md scroll-auto ink rule corner-lg ruled font-md focus:rule-accent focus:ring"
+        className={`content-editor-body padding-md ${bodyMinHeight} scroll-auto ink rule corner-lg ruled font-md focus:rule-accent focus:ring`}
         data-placeholder={placeholder}
         onInput={() => {
           if (!editorRef.current || !onChange) return

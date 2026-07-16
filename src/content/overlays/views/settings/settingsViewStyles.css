@@ -16,13 +16,7 @@
 }
 
 /* Line presence comes from `ruled-top` (R-SKIN-11); colour and rhythm from words. */
-.settings-divider {
-  height: 0;
-}
-
 .settings-prefix-btn {
-  width: 2rem;
-  height: 2rem;
   padding: 0;
 }
 

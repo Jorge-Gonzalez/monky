@@ -18,13 +18,10 @@ button, input, textarea, select {
 
 .macro-suggestions-container {
   box-shadow: 0 10px 25px -5px var(--shadow-color);
-  min-width: 200px;
-  max-width: 360px;
 }
 
 .macro-suggestions-arrow {
   width: 0;
-  height: 0;
   border: 6px solid transparent;
 }
 
@@ -38,10 +35,6 @@ button, input, textarea, select {
 
 .macro-suggestions-command-item {
   padding: 3px 6px;
-}
-
-.macro-suggestions-command-item:not(.delete-confirm-option) {
-  max-width: 8em;
 }
 
 /* Key typeface comes from `font-mono` (R-SKIN-07). */

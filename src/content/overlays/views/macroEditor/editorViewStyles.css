@@ -3,20 +3,8 @@
  * Styles for the macro editor view — a compact, full-height modal layout:
  * top bar (title + popout + command) / editor body (fills) / bottom action bar.
  */
-.editor-command {
-  width: 280px;
-}
-
-/* The content editor owns the remaining vertical space and scrolls internally.
-   Both context rules escape recipe-base floors (min-height: 150px) that outrank
-   grammar words in the cascade layers, so the zeros stay local. */
-.editor-content.content-editor {
-  min-height: 0;
-}
-
 .editor-content .content-editor-body {
   flex: 1;
-  min-height: 0;
 }
 
 /* Save/error confirmation floats above the bar so it never shifts the layout. */

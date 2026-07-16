@@ -50,7 +50,7 @@ export function ContentEditorLinkField({
       <input
         ref={inputRef}
         type="url"
-        className="ce-link-input elastic basis-ratio ground-subtle ink rule corner-sm ruled font-sm focus:rule-accent focus:ring"
+        className="ce-link-input elastic basis-ratio control-block-lg ground-subtle ink rule corner-sm ruled font-sm focus:rule-accent focus:ring"
         value={url}
         onChange={e => setUrl(e.currentTarget.value)}
         onKeyDown={onKeyDown}
@@ -58,7 +58,7 @@ export function ContentEditorLinkField({
       />
       <button
         type="button"
-        className="ce-toolbar-btn horizontal rigid align-center justify-center ink-soft corner-sm pressable tween-ground-ink-quick hover:ground-defined hover:ink"
+        className="ce-toolbar-btn horizontal rigid control-box-lg align-center justify-center ink-soft corner-sm pressable tween-ground-ink-quick hover:ground-defined hover:ink"
         onMouseDown={e => { e.preventDefault(); confirm() }}
         title="Apply (Enter)"
         aria-label="Apply link"
@@ -66,7 +66,7 @@ export function ContentEditorLinkField({
       />
       <button
         type="button"
-        className="ce-toolbar-btn horizontal rigid align-center justify-center ink-soft corner-sm pressable tween-ground-ink-quick hover:ground-defined hover:ink"
+        className="ce-toolbar-btn horizontal rigid control-box-lg align-center justify-center ink-soft corner-sm pressable tween-ground-ink-quick hover:ground-defined hover:ink"
         onMouseDown={e => { e.preventDefault(); cancel() }}
         title="Cancel (Escape)"
         aria-label="Cancel"

@@ -129,7 +129,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
               <polygon fill="currentColor" points="7,9 4,9 10,0 8,7 11,7 5.417,15 "/>
             </svg>
           </span>
-          <div className="command-suggestion-wrapper editor-command elastic basis-ratio position-relative">
+          <div className="command-suggestion-wrapper editor-command elastic basis-ratio width-popover-lg position-relative">
             <input
               id="modal-macro-command"
               ref={commandInputRef}
@@ -161,7 +161,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
 
       <ContentEditor
         ref={contentEditorRef}
-        className="editor-content elastic basis-ratio"
+        className="editor-content elastic basis-ratio min-height-none"
         value={text}
         onChange={setText}
         placeholder={t('macroForm.contentPlaceholder')}

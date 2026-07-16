@@ -6,7 +6,6 @@
  */
 /* Results container - extends .scrollable pattern */
 .macro-search-results {
-  max-height: 400px;
   align-content: start;
 }
 

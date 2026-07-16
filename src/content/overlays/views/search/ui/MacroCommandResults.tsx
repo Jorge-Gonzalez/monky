@@ -11,14 +11,14 @@ interface MacroCommandResultsProps {
 export function MacroCommandResults({ commands, selectedIndex, onSelect, resultsRef }: MacroCommandResultsProps) {
   if (commands.length === 0) {
     return (
-      <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio scroll-auto" role="listbox">
+      <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio max-height-results-md scroll-auto" role="listbox">
         <div className="macro-search-empty span-all padding-lg ink-soft font-md text-center">{t('modalSearch.noMatchingCommands')}</div>
       </div>
     );
   }
 
   return (
-    <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio scroll-auto" role="listbox">
+    <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio max-height-results-md scroll-auto" role="listbox">
       {commands.map((cmd, index) => (
         <div
           key={cmd.id}

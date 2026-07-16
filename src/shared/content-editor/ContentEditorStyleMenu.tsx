@@ -39,7 +39,7 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
     <div ref={wrapperRef} className="ce-style-menu position-relative">
       <button
         type="button"
-        className={`ce-toolbar-btn ce-style-trigger horizontal rigid align-center justify-center ink-soft corner-sm font-sm font-medium pressable tween-ground-ink-quick hover:ground-defined hover:ink ${open ? 'is-active' : ''}`}
+        className={`ce-toolbar-btn ce-style-trigger horizontal rigid width-auto min-width-control-2xl control-block-lg align-center justify-center ink-soft corner-sm font-sm font-medium pressable tween-ground-ink-quick hover:ground-defined hover:ink ${open ? 'is-active' : ''}`}
         onMouseDown={e => { e.preventDefault(); setOpen(o => !o) }}
         title={t('contentEditor.textStyle')}
         aria-label={t('contentEditor.textStyle')}
@@ -61,7 +61,7 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
               className={`ce-style-option fill-inline horizontal gap-sm padding-block-xs padding-inline-sm align-center ink corner-sm font-sm text-start pressable tween-ground-quick hover:ground-defined ${blockType === opt.type ? 'is-active' : ''}`}
               onMouseDown={e => { e.preventDefault(); handleSelect(opt.type) }}
             >
-              <span className="ce-style-option-short rigid ink-soft font-xs font-semibold">{opt.shortLabel}</span>
+              <span className="ce-style-option-short rigid control-inline-md ink-soft font-xs font-semibold">{opt.shortLabel}</span>
               <span className="ce-style-option-label elastic basis-ratio">{t(opt.labelKey as Parameters<typeof t>[0])}</span>
             </button>
           ))}

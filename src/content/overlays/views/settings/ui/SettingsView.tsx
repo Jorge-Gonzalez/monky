@@ -70,7 +70,7 @@ export function SettingsView(_props: BaseModalViewProps) {
                 selected={prefixes}
                 onChange={setPrefixes}
                 className="horizontal gap-sm"
-                buttonClassName="btn pressable padding-block-sm padding-inline-lg corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-subtle ink ruled rule font-mono settings-prefix-btn horizontal align-center justify-center rigid"
+                buttonClassName="btn pressable padding-block-sm padding-inline-lg corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft ground-subtle ink ruled rule font-mono settings-prefix-btn horizontal control-box-xl align-center justify-center rigid"
               />
             </div>
             <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
@@ -84,7 +84,7 @@ export function SettingsView(_props: BaseModalViewProps) {
           </div>
         </div>
 
-        <div className="settings-divider rule ruled-top margin-block-sm margin-inline-xl" />
+        <div className="settings-divider height-none rule ruled-top margin-block-sm margin-inline-xl" />
 
         <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
           <div className="settings-section-label quarter overline ink-accent-soft font-xs font-medium">{t('settings.sections.appearance')}</div>
@@ -115,7 +115,7 @@ export function SettingsView(_props: BaseModalViewProps) {
           </div>
         </div>
 
-        <div className="settings-divider rule ruled-top margin-block-sm margin-inline-xl" />
+        <div className="settings-divider height-none rule ruled-top margin-block-sm margin-inline-xl" />
 
         <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
           <div className="settings-section-label quarter overline ink-accent-soft font-xs font-medium">{t('settings.sections.data')}</div>

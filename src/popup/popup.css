@@ -2,10 +2,6 @@
    Structure and shared skin come from generated Ermine grammar and the skin layer;
    this sheet holds only what is specific to the popup page. */
 
-.popup-container {
-  width: 320px;
-}
-
 .popup-button,
 .popup-icon-button {
   border: none;
@@ -34,7 +30,6 @@
    the thumb/track sockets. The engine-drawn fallback blocks are retired — both
    target engines honour the standard properties. */
 .popup-results {
-  max-height: 256px;
   padding: var(--spacing-sm) 0;
   margin: 0;
   list-style: none;

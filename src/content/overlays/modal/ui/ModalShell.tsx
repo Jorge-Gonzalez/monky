@@ -44,7 +44,7 @@ export function ModalShell({
     >
       <div
         ref={modalRef}
-        className="modal-dialog vertical hidden ground rule corner-lg ruled"
+        className="modal-dialog vertical hidden dialog-measure ground rule corner-lg ruled"
         role="dialog"
         aria-modal="true"
         aria-label="Monky Modal"

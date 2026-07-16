@@ -1,8 +1,3 @@
 /* Options page identity. Structural layout comes from generated Ermine grammar. */
 
-/* The prefix toggle cells: fixed 3rem squares (component identity, not grammar). */
-.prefix-cell {
-  width: 3rem;
-  height: 3rem;
-}
-
+/* The prefix toggle cell size comes from `control-box-3xl`. */

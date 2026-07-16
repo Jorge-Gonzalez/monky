@@ -47,6 +47,28 @@
   --size-sm: 140px;
   --size-2xl: 42rem;
 
+  /* Ermine role-measured dimension bindings. */
+  --measure-dialog-inline: 600px;
+  --measure-dialog-block: 560px;
+  --measure-dialog-gutter: 2rem;
+  --measure-dialog-max-block: 85vh;
+  --measure-popover-sm: 200px;
+  --measure-popover-md: 240px;
+  --measure-popover-lg: 280px;
+  --measure-popover-xl: 320px;
+  --measure-popover-2xl: 360px;
+  --measure-command-inline: 8em;
+  --measure-results-sm: 256px;
+  --measure-results-md: 400px;
+  --measure-editor-min-block: 150px;
+  --control-size-xs: 16px;
+  --control-size-sm: 18px;
+  --control-size-md: 24px;
+  --control-size-lg: 28px;
+  --control-size-xl: 32px;
+  --control-size-2xl: 36px;
+  --control-size-3xl: 48px;
+
   /* Ermine z-scale binding. */
   --z-content: 1;
   --z-dropdown: 10;
