@@ -38,7 +38,7 @@
     },
     {
       "id": "modal-navigation-tab",
-      "classString": "horizontal gap-sm align-center justify-center ink-soft font-md font-medium pressable hover:ground-subtle hover:ink current:ground-subtle current:ink-accent",
+      "classString": "tween-quick horizontal gap-sm align-center justify-center ink-soft font-md font-medium pressable hover:ground-subtle hover:ink current:ground-subtle current:ink-accent",
       "backing": []
     },
     {
@@ -515,7 +515,7 @@
     },
     {
       "id": "phase-b-selectable",
-      "classString": "position-relative hover:ground-defined shake",
+      "classString": "tween-quick position-relative hover:ground-defined shake",
       "backing": []
     },
     {
@@ -603,17 +603,17 @@
     },
     {
       "id": "phase-f-button-outlined",
-      "classString": "padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
+      "classString": "tween-quick padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
       "backing": []
     },
     {
       "id": "phase-f-button-settings-outlined",
-      "classString": "padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
+      "classString": "tween-quick padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
       "backing": []
     },
     {
       "id": "phase-f-button-success",
-      "classString": "padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
+      "classString": "tween-quick padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
       "backing": []
     },
     {

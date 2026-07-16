@@ -123,10 +123,10 @@ export function SettingsView(_props: BaseModalViewProps) {
             <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
               <span className="settings-row-label rigid ink font-md">{t('settings.importExport.title')}</span>
               <div className="horizontal gap-sm">
-                <button className="btn rigid padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft" type="button" onClick={exportMacros}>
+                <button className="btn rigid tween-quick padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft" type="button" onClick={exportMacros}>
                   {t('settings.importExport.exportButton')}
                 </button>
-                <button className="btn rigid padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft" type="button" onClick={() => fileInputRef.current?.click()}>
+                <button className="btn rigid tween-quick padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft" type="button" onClick={() => fileInputRef.current?.click()}>
                   {t('settings.importExport.importButton')}
                 </button>
                 <input

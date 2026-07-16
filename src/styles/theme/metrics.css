@@ -53,6 +53,8 @@
   --weight-bold: 700;
 
   /* Transition timing */
+  --duration-quick: 0.15s;
+  --duration-settled: 0.3s;
   --transition-fast: 0.15s;
   --transition-medium: 0.3s;
 
