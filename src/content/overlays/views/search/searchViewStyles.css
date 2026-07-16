@@ -15,11 +15,6 @@
   font-style: normal;
 }
 
-.macro-search-item-text mark span {
-  opacity: 0.35;
-}
-
-
 /* Keyboard hints - uses shared .kbd pattern */
 /* .macro-search-kbd {
   padding: 2px var(--spacing-xs);

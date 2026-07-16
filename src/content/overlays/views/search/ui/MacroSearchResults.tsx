@@ -87,7 +87,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
             ? macro.text
             : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>
                 part.startsWith('{{')
-                  ? <mark key={i}><span>{'{{'}</span>{part.slice(2, -2)}<span>{'}}'}</span></mark>
+                  ? <mark key={i}><span className="alpha-35">{'{{'}</span>{part.slice(2, -2)}<span className="alpha-35">{'}}'}</span></mark>
                   : part
               )}
         </div>

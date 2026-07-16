@@ -47,7 +47,7 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
         aria-haspopup="listbox"
       >
         <span>{current.shortLabel}</span>
-        <span className="ce-style-caret horizontal align-center" dangerouslySetInnerHTML={{ __html: icons.chevronDown }} />
+        <span className="ce-style-caret horizontal align-center alpha-60" dangerouslySetInnerHTML={{ __html: icons.chevronDown }} />
       </button>
 
       {open && (

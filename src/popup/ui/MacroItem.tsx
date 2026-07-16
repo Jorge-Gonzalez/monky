@@ -19,8 +19,8 @@ export default function MacroItem({ macro }: MacroItemProps) {
         <div className="popup-item-detail vertical gap-sm margin-top-sm padding-top-sm rule-soft ruled-top">
           <pre className="popup-macro-text padding-sm margin-none text-pre-wrap ground-subtle ink corner-md font-sm">{macro.text}</pre>
           <div className="horizontal gap-sm">
-            <button className="popup-button padding-block-xs padding-inline-sm ground-accent ink-inverse corner-md font-sm pressable tween-opacity-ground-quick" onClick={()=>chrome.runtime.openOptionsPage()}>{t('macroItem.edit')}</button>
-            <button className="popup-button padding-block-xs padding-inline-sm ground-fail ink-inverse corner-md font-sm pressable tween-opacity-ground-quick" onClick={()=>deleteMacro(String(macro.id))}>{t('macroItem.delete')}</button>
+            <button className="popup-button padding-block-xs padding-inline-sm ground-accent ink-inverse corner-md font-sm pressable tween-opacity-ground-quick hover:alpha-90" onClick={()=>chrome.runtime.openOptionsPage()}>{t('macroItem.edit')}</button>
+            <button className="popup-button padding-block-xs padding-inline-sm ground-fail ink-inverse corner-md font-sm pressable tween-opacity-ground-quick hover:alpha-90" onClick={()=>deleteMacro(String(macro.id))}>{t('macroItem.delete')}</button>
           </div>
         </div>
       )}

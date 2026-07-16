@@ -101,6 +101,11 @@
       }
     },
     {
+      "id": "search-placeholder-brace",
+      "classString": "alpha-35",
+      "backing": []
+    },
+    {
       "id": "search-item-confirm-cell",
       "classString": "padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ground-fail-faint ink-fail rule-soft ruled-bottom font-md font-medium truncate",
       "backing": []
@@ -474,12 +479,12 @@
     },
     {
       "id": "popup-primary-button",
-      "classString": "padding-block-xs padding-inline-sm ground-accent ink-inverse corner-md font-xs font-semibold pressable tween-opacity-ground-quick",
+      "classString": "padding-block-xs padding-inline-sm ground-accent ink-inverse corner-md font-xs font-semibold pressable tween-opacity-ground-quick hover:alpha-90",
       "backing": []
     },
     {
       "id": "popup-icon-button",
-      "classString": "padding-xs ground-subtle ink rule corner-md font-sm pressable tween-opacity-ground-quick",
+      "classString": "padding-xs ground-subtle ink rule corner-md font-sm pressable tween-opacity-ground-quick hover:alpha-90",
       "backing": []
     },
     {
@@ -600,6 +605,11 @@
     {
       "id": "phase-b-content-editor-body",
       "classString": "padding-md min-height-editor scroll-auto scrollbar-subtle ink rule corner-lg ruled font-md focus:rule-accent focus:ring",
+      "backing": []
+    },
+    {
+      "id": "phase-b-content-editor-style-caret",
+      "classString": "alpha-60",
       "backing": []
     },
     {

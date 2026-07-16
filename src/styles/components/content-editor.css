@@ -15,8 +15,6 @@
   gap: 2px;
 }
 
-.ce-style-caret { opacity: 0.6; }
-
 /* Cast shadow comes from `elevated` (R-SKIN-09). */
 .ce-style-dropdown {
   top: calc(100% + 4px);
