@@ -52,7 +52,7 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
   return (
     <div
       ref={containerRef}
-      className={`seg-control horizontal hidden position-relative ground-subtle rule corner-md ruled ${sliding ? 'is-sliding' : ''}`}
+      className={`seg-control sf-segmented-pill horizontal hidden position-relative ground-subtle rule corner-md ruled ${sliding ? 'is-sliding' : ''}`}
       role="radiogroup"
       onTransitionEnd={e => {
         // Only the pill's own (::before) transition lands on the container; button
@@ -71,7 +71,7 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
           role="radio"
           aria-checked={opt.value === value}
           aria-label={opt.ariaLabel}
-          className={`seg-option elastic basis-ratio content text-nowrap padding-block-xs padding-inline-md position-relative selectable ink-soft rule ${drawRightRule ? 'ruled-right ' : ''}font-sm text-center pressable tween-ink-quick hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse`}
+          className={`seg-option sf-segmented-control-option elastic basis-ratio content text-nowrap padding-block-xs padding-inline-md position-relative selectable ink-soft rule ${drawRightRule ? 'ruled-right ' : ''}font-sm text-center pressable tween-ink-quick hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse`}
           onClick={() => onChange(opt.value)}
         >
           {opt.label}

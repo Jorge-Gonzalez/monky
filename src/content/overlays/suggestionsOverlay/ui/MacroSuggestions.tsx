@@ -166,7 +166,7 @@ export function MacroSuggestions({
         position: 'fixed',
       }}
     >
-      <div className={`macro-suggestions-arrow position-absolute center-x height-none ${placement === 'top' ? 'top attach-below' : 'bottom attach-above'}`} />
+      <div className={`macro-suggestions-arrow sf-callout-arrow position-absolute center-x height-none ${placement === 'top' ? 'top sf-callout-arrow-top attach-below' : 'bottom sf-callout-arrow-bottom attach-above'}`} />
       <div ref={listRef} role="listbox" className="macro-suggestions-commands-list horizontal gap-xs padding-xs rule-soft ruled-bottom">
         {visibleMacros.map((macro, index) => (
           <button
@@ -192,15 +192,15 @@ export function MacroSuggestions({
       )}
       <div className="macro-suggestions-footer horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs">
         <span>
-          <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">←</kbd>
-          <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">→</kbd>/
-          <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">Tab</kbd> {t('macroSuggestions.footer.navigate')}
+          <kbd className="macro-suggestions-kbd sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">←</kbd>
+          <kbd className="macro-suggestions-kbd sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">→</kbd>/
+          <kbd className="macro-suggestions-kbd sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">Tab</kbd> {t('macroSuggestions.footer.navigate')}
         </span>
         <span>
-          <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">↵</kbd> {t('macroSuggestions.footer.select')}
+          <kbd className="macro-suggestions-kbd sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">↵</kbd> {t('macroSuggestions.footer.select')}
         </span>
         <span>
-          <kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">Esc</kbd> {t('macroSuggestions.footer.cancel')}
+          <kbd className="macro-suggestions-kbd sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">Esc</kbd> {t('macroSuggestions.footer.cancel')}
         </span>
       </div>
     </div>

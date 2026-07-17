@@ -46,7 +46,7 @@ export function DeleteConfirmPopup({
       className="macro-suggestions-container delete-confirm min-width-popover-md max-width-popover-2xl ground rule corner-lg ruled font-md tween-opacity-transform-quick"
       style={{ left: position.x, top: position.y, position: 'fixed' }}
     >
-      <div className={`macro-suggestions-arrow position-absolute center-x height-none ${placement === 'top' ? 'top attach-below' : 'bottom attach-above'}`} />
+      <div className={`macro-suggestions-arrow sf-callout-arrow position-absolute center-x height-none ${placement === 'top' ? 'top sf-callout-arrow-top attach-below' : 'bottom sf-callout-arrow-bottom attach-above'}`} />
       <div className="delete-confirm-message padding-block-sm padding-inline-md ink rule-soft ruled-bottom font-sm">
         {t('deleteConfirm.message')}{' '}
         <span className="delete-confirm-command ink-accent font-semibold font-mono">{macro.command}</span>
@@ -72,9 +72,9 @@ export function DeleteConfirmPopup({
         </button>
       </div>
       <div className="macro-suggestions-footer horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule font-xs">
-        <span><kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">Tab</kbd> {t('deleteConfirm.footer.switch')}</span>
-        <span><kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">↵</kbd> {t('deleteConfirm.footer.select')}</span>
-        <span><kbd className="macro-suggestions-kbd ground-subtle ink rule corner-sm ruled font-xs font-mono">Esc</kbd> {t('deleteConfirm.footer.cancel')}</span>
+        <span><kbd className="macro-suggestions-kbd sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">Tab</kbd> {t('deleteConfirm.footer.switch')}</span>
+        <span><kbd className="macro-suggestions-kbd sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">↵</kbd> {t('deleteConfirm.footer.select')}</span>
+        <span><kbd className="macro-suggestions-kbd sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">Esc</kbd> {t('deleteConfirm.footer.cancel')}</span>
       </div>
     </div>
   )

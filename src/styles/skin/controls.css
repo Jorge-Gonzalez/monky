@@ -30,26 +30,6 @@
    override — a later-layer transparent here was shadowing the nav tab's hover:/
    current: grounds (R-IMPL-02). */
 
-::-webkit-scrollbar {
-  width: var(--spacing-md) !important;
-  height: var(--spacing-md) !important;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--tone-dim) !important;
-  border-radius: var(--radius-md) !important;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--tone) !important;
-  border-radius: var(--radius-md) !important;
-  border: 1px solid var(--tone-dim) !important;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-dim) !important;
-}
-
 /* ===== Selectable group pattern (relocated verbatim from the retired legacy sheet, U8).
    Consumed by options PrefixEditor and the modal settings view. ===== */
 

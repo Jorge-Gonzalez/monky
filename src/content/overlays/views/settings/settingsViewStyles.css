@@ -4,39 +4,3 @@
  * This file contains ONLY styles distinctive to the settings view.
  * Shared patterns are now handled by the semantic compositional CSS system.
  */
-
-/* ===== Segmented Control ===== */
-
-/* Container line (`ruled`) and clip (`hidden`) are words; the sliding pill below. */
-
-/* Slide-only pill: hidden unless a selection change is animating. The checked
-   button owns the resting background. */
-.seg-control::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: var(--pill-left, 0);
-  width: var(--pill-width, 0);
-  background: var(--accent);
-  opacity: 0;
-  transition: left 0.1s ease, width 0.1s ease;
-  pointer-events: none;
-}
-
-.seg-control.is-sliding::before { opacity: 1; }
-
-/* Jump the pill onto the origin button without animating, before the slide. */
-.seg-control.seg-snap::before { transition: none; }
-
-/* Inline so an icon-only option occupies the same text line box (= same height)
-   as the text options, sitting on the line's middle. */
-.seg-option svg {
-  vertical-align: middle;
-}
-
-/* While the pill is sliding in, it is the only fill — suppress the destination
-   button's background so the two don't double up, then swap back on landing. */
-.seg-control.is-sliding .seg-option[aria-checked="true"] {
-  background: transparent;
-}

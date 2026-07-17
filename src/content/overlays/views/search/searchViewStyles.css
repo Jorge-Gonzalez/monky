@@ -26,27 +26,3 @@
   margin-left: var(--spacing-md);
   margin-right: var(--spacing-xs);
 } */
-
-/* Key typeface comes from `font-mono` (R-SKIN-07). */
-.macro-search-kbd {
-  line-height: 1;
-  padding: 3px 6px 6px;
-  min-width: 26px;
-  border-radius: 4px;
-  z-index: 0;
-}
-
-.macro-search-kbd::after {
-  content: '';
-  position: absolute;
-  background: var(--tone-dim);
-  inset: 0 2px 4px;
-  border: 1px solid var(--harmonic-minor);
-  border-radius: 2px;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.macro-search-kbd:first-child {
-  margin-left: 0;
-}

@@ -10,24 +10,6 @@
   box-shadow: 0 10px 25px -5px var(--shadow-color);
 }
 
-.macro-suggestions-arrow {
-  width: 0;
-  border: 6px solid transparent;
-}
-
-.macro-suggestions-arrow.top {
-  border-top-color: var(--base-tone);
-}
-
-.macro-suggestions-arrow.bottom {
-  border-bottom-color: var(--base-tone);
-}
-
 .macro-suggestions-command-item {
   padding: 3px 6px;
-}
-
-/* Key typeface comes from `font-mono` (R-SKIN-07). */
-.macro-suggestions-kbd {
-  padding: 1px 4px;
 }
