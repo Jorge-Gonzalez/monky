@@ -1,11 +1,10 @@
 import '../src/styles.css'
 import { composeShadowBundle } from '../src/styles/baseBundle'
-import CONTENT_EDITOR_STYLES from '../src/styles/components/content-editor.css?raw'
 
 const theme = '--ground: rgb(250, 251, 252); --ground-subtle: rgb(235, 236, 237); --ground-defined: rgb(220, 221, 222); --ink: rgb(20, 21, 22); --ink-soft: rgb(70, 71, 72); --ink-inverse: rgb(254, 254, 254); --accent: rgb(20, 90, 200); --accent-dim: rgb(60, 110, 200); --pass: rgb(30, 140, 80); --rule: rgb(160, 161, 162); --rule-soft: rgb(200, 201, 202); --fail: rgb(180, 0, 0); --fail-faint: rgb(255, 230, 230); --base-tone: var(--ground); --tone: var(--ground-defined); --tone-dim: var(--ground-subtle); --harmonic: var(--rule); --harmonic-minor: var(--rule-soft); --shadow-color: rgba(0, 0, 0, 0.5); --button-bg: rgb(1, 2, 3); --ink-alt: var(--ink-inverse); --button-bg-hover: rgb(4, 5, 6); --kbd-bg: rgb(230, 230, 230); --kbd-border: rgb(100, 100, 100); --status-error-wash: var(--fail-faint); --status-error: var(--fail); --status-success: var(--pass); --size-sm: 140px; --size-2xl: 42rem;'
 
 document.documentElement.setAttribute('style', theme)
-document.body.innerHTML = '<div id="page" class="page-container fill-viewport vertical gap-lg padding-2xl max-width-2xl centered flush-block"><div id="row" class="horizontal gap-sm"><button id="button" class="btn padding-block-xs padding-inline-sm ground-accent ink-inverse corner-md">x</button></div><div id="popup" class="width-popover-xl ground ink"></div><div class="selectable-group"><button id="options-prefix" class="btn prefix-cell control-box-3xl square padding-block-sm padding-inline-lg position-relative selectable ground ink rule corner-md ruled font-lg font-md font-medium font-mono pressable hover:ground-defined checked:ground-accent checked:ink-inverse checked:rule-accent focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft" aria-checked="false">/</button><button id="options-prefix-selected" class="btn prefix-cell control-box-3xl square is-selected padding-block-sm padding-inline-lg position-relative selectable ground ink rule corner-md ruled font-lg font-md font-medium font-mono pressable hover:ground-defined checked:ground-accent checked:ink-inverse checked:rule-accent focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft" aria-checked="true">;</button></div></div>'
+document.body.innerHTML = '<div id="page" class="page-container fill-viewport vertical gap-lg padding-2xl max-width-2xl centered flush-block"><div id="row" class="horizontal gap-sm"><button id="button" class="btn padding-block-xs padding-inline-sm ground-accent ink-inverse corner-md">x</button></div><div id="popup" class="width-popover-xl ground ink"></div><div class="selectable-group"><button id="options-prefix" class="btn prefix-cell control-box-3xl square padding-block-sm padding-inline-lg position-relative selectable ground ink rule corner-md ruled font-lg font-md font-medium font-mono pressable hover:ground-defined checked:ground-accent checked:ink-inverse checked:rule-accent focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft disabled:alpha-60" aria-checked="false">/</button><button id="options-prefix-selected" class="btn prefix-cell control-box-3xl square is-selected padding-block-sm padding-inline-lg position-relative selectable ground ink rule corner-md ruled font-lg font-md font-medium font-mono pressable hover:ground-defined hover:alpha-90 checked:ground-accent checked:ink-inverse checked:rule-accent focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft disabled:alpha-60" aria-checked="true">;</button></div></div>'
 
 function shadow(css: string, html: string): void {
   const host = document.createElement('div')
@@ -21,7 +20,7 @@ function shadow(css: string, html: string): void {
 }
 
 shadow(
-  composeShadowBundle({ componentStyles: [CONTENT_EDITOR_STYLES] }),
+  composeShadowBundle(),
   `<div data-probe="modal" class="modal-dialog vertical hidden dialog-measure ground rule corner-lg ruled elevated-soft">
     <div data-probe="search-view" class="macro-search-view fill-block vertical">
       <div data-probe="search-input-container" class="macro-search-input-container padding-lg rule ruled-bottom">
@@ -61,7 +60,7 @@ shadow(
   </div>`,
 )
 shadow(
-  composeShadowBundle({ componentStyles: [CONTENT_EDITOR_STYLES] }),
+  composeShadowBundle(),
   `<div data-probe="settings-view" class="settings-view fill-block vertical scroll-auto">
     <div data-probe="settings-group" class="settings-group columns-12 padding-block-xl padding-inline-3xl">
       <div data-probe="settings-label" class="settings-section-label quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">General</div>
@@ -73,8 +72,8 @@ shadow(
             <button class="seg-option elastic basis-ratio padding-block-xs padding-inline-md position-relative selectable ink-soft rule font-sm text-center pressable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="true">One</button>
             <button class="seg-option elastic basis-ratio padding-block-xs padding-inline-md position-relative selectable ink-soft rule font-sm text-center pressable hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse" aria-checked="false">Two</button>
           </div>
-          <button data-probe="settings-prefix" class="btn settings-prefix-btn padding-none horizontal rigid control-box-xl align-center justify-center position-relative ground-subtle ink rule corner-md ruled font-md font-medium font-mono pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft">/</button>
-          <button data-probe="settings-export" class="btn rigid padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft">Export</button>
+          <button data-probe="settings-prefix" class="btn settings-prefix-btn padding-none horizontal rigid control-box-xl align-center justify-center position-relative ground-subtle ink rule corner-md ruled font-md font-medium font-mono pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft disabled:alpha-60">/</button>
+          <button data-probe="settings-export" class="btn rigid padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft disabled:alpha-60">Export</button>
         </div>
       </div>
       </div>
@@ -100,7 +99,7 @@ shadow(
           <div data-probe="ce-toolbar" class="ce-toolbar horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed ground">
             <button data-probe="ce-toolbar-btn" class="ce-toolbar-btn padding-none horizontal rigid control-box-lg align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink pressed:ground-defined pressed:ink-accent" aria-pressed="true">B</button>
             <div data-probe="ce-style-menu" class="ce-style-menu position-relative">
-              <div data-probe="ce-style-dropdown" class="ce-style-dropdown vertical padding-xs position-absolute attach-below-xs attach-left min-width-sm ground rule corner-md ruled elevated">
+              <div data-probe="ce-style-dropdown" class="ce-style-dropdown vertical gap-xs padding-xs position-absolute attach-below-xs attach-left min-width-sm ground rule corner-md ruled elevated">
                 <button data-probe="ce-style-option" class="ce-style-option fill-inline horizontal gap-sm padding-block-xs padding-inline-sm align-center selectable ink corner-sm font-sm text-start pressable hover:ground-defined selected:ground-defined selected:ink-accent" aria-selected="true">
                   <span class="ce-style-option-short rigid control-inline-md ink-soft font-xs font-semibold parent-selected:ink-accent">¶</span>
                   <span class="ce-style-option-label elastic basis-ratio">Paragraph</span>
@@ -111,8 +110,8 @@ shadow(
           <div data-probe="content-editor-body" class="content-editor-body padding-md elastic basis-ratio min-height-none scroll-auto ink rule corner-lg ruled font-md focus:rule-accent focus:ring"></div>
         </div>
         <div data-probe="button-group" class="button-group horizontal inline gap-sm">
-          <button data-probe="button-cancel" class="btn padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft">Cancel</button>
-          <button data-probe="button-save" class="btn btn-success padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft">Save</button>
+          <button data-probe="button-cancel" class="btn padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft disabled:alpha-60">Cancel</button>
+          <button data-probe="button-save" class="btn btn-success padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable hover:ground-pass focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft disabled:alpha-60">Save</button>
         </div>
       </form>
     </div>

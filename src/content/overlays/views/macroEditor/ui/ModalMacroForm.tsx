@@ -182,7 +182,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           {editing && (
             <button
               type="button"
-              className="btn tween-quick padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft"
+              className="btn tween-quick padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft disabled:alpha-60"
               onClick={onDone}
             >
               {t('macroForm.cancelButton')}
@@ -191,7 +191,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           <button
             type="submit"
             disabled={!isFormValid || savedToast !== null}
-            className="btn btn-success tween-quick padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft"
+            className="btn btn-success tween-quick padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable hover:ground-pass focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft disabled:alpha-60"
           >
             {editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}
           </button>

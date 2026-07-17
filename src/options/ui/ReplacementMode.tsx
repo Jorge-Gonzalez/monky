@@ -21,7 +21,7 @@ export default function ReplacementMode({ useCommitKeys, onChange }: Replacement
             onChange={() => onChange(false)}
             className="radio control-size-lg rigid pressable"
           />
-          <span className="radio-label rigid ink font-md">{t('replacementMode.auto')}</span>
+          <span className="radio-label rigid ink font-md pressable">{t('replacementMode.auto')}</span>
         </label>
         <label className="mode-choice horizontal rigid hug-inline gap-sm align-center">
           <input
@@ -31,7 +31,7 @@ export default function ReplacementMode({ useCommitKeys, onChange }: Replacement
             onChange={() => onChange(true)}
             className="radio control-size-lg rigid pressable"
           />
-          <span className="radio-label rigid ink font-md">{t('replacementMode.manual')}</span>
+          <span className="radio-label rigid ink font-md pressable">{t('replacementMode.manual')}</span>
         </label>
       </div>
       <p className="section-description ink-soft font-md">

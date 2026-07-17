@@ -5,24 +5,13 @@
 }
 
 .radio-label {
-  cursor: pointer;
   user-select: none;
 }
 
 /* ===== COMPONENT PATTERNS: Buttons ===== */
 
-.btn-success:hover {
-  background-color: color-mix(in oklch, var(--status-success) 82%, var(--shadow-color));
-}
-
 .btn:disabled {
   cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.btn:disabled:hover {
-  background-color: var(--tone-dim);
-  opacity: 0.6;
 }
 
 /* Panel buttons - buttons integrated into panel/group layouts. Border/background
@@ -34,16 +23,11 @@
    Consumed by options PrefixEditor and the modal settings view. ===== */
 
 .selectable-group > * {
-  cursor: pointer;
   user-select: none;
 }
 
 .selectable-group > *:active {
   transform: scale(0.98);
-}
-
-.selectable-group > .is-selected:hover {
-  opacity: 0.9;
 }
 
 .min-selected-1 > .is-selected:only-of-type {

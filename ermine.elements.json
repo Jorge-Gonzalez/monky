@@ -363,12 +363,12 @@
     },
     {
       "id": "u6-content-style-trigger-spacing",
-      "classString": "padding-block-none padding-inline-xs",
+      "classString": "padding-block-none padding-inline-xs gap-xs",
       "backing": []
     },
     {
       "id": "u6-content-style-dropdown",
-      "classString": "vertical padding-xs position-absolute attach-below-xs attach-left dropdown ground rule corner-md ruled elevated",
+      "classString": "vertical gap-xs padding-xs position-absolute attach-below-xs attach-left dropdown ground rule corner-md ruled elevated",
       "backing": []
     },
     {
@@ -696,12 +696,12 @@
     },
     {
       "id": "cycle6-toolbar-separator",
-      "classString": "separator-mark-xs margin-block-none margin-inline-xs rigid",
+      "classString": "separator-mark-xs margin-block-none margin-inline-xs rigid rule ruled-left",
       "backing": []
     },
     {
       "id": "cycle6-style-trigger",
-      "classString": "padding-block-none padding-inline-xs horizontal rigid width-auto min-width-control-2xl control-block-lg align-center justify-center ink-soft corner-sm font-sm font-medium pressable tween-ground-ink-quick hover:ground-defined hover:ink expanded:ground-defined expanded:ink-accent",
+      "classString": "padding-block-none padding-inline-xs horizontal rigid width-auto min-width-control-2xl control-block-lg gap-xs align-center justify-center ink-soft corner-sm font-sm font-medium pressable tween-ground-ink-quick hover:ground-defined hover:ink expanded:ground-defined expanded:ink-accent",
       "backing": [
         "aria-expanded"
       ]
@@ -748,17 +748,17 @@
     },
     {
       "id": "phase-f-button-outlined",
-      "classString": "tween-quick padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
+      "classString": "tween-quick padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft disabled:alpha-60",
       "backing": []
     },
     {
       "id": "phase-f-button-settings-outlined",
-      "classString": "tween-quick padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
+      "classString": "tween-quick padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft disabled:alpha-60",
       "backing": []
     },
     {
       "id": "phase-f-button-success",
-      "classString": "tween-quick padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft",
+      "classString": "tween-quick padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable hover:ground-pass focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft disabled:alpha-60",
       "backing": []
     },
     {

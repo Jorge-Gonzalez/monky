@@ -39,7 +39,7 @@ function Btn({ icon, title, active, onAction }: BtnProps) {
 }
 
 function Sep() {
-  return <span className="ce-toolbar-sep separator-mark-xs margin-block-none margin-inline-xs rigid" aria-hidden />
+  return <span className="ce-toolbar-sep separator-mark-xs margin-block-none margin-inline-xs rigid rule ruled-left" aria-hidden />
 }
 
 export function ContentEditorToolbar({

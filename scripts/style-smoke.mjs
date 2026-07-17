@@ -273,7 +273,7 @@ try {
     },
     "toolbarBtn": { "display": "flex", "align-items": "center", "justify-content": "center", "flex-grow": "0", "flex-shrink": "0" },
     "menu": { "position": "relative" },
-    "dropdown2": { "position": "absolute", "display": "flex", "flex-direction": "column", "padding": "4px", "gap": "2px" },
+    "dropdown2": { "position": "absolute", "display": "flex", "flex-direction": "column", "padding": "4px", "gap": "4px" },
     "option": {
       "display": "flex",
       "align-items": "center",

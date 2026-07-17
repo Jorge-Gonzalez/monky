@@ -11,15 +11,12 @@ import { createStyleInjector } from '../services/styleInjector';
 import { ensureAppFontFace } from '../services/appFont';
 import { getActiveEditable } from '../../macroEngine/replacement/editableUtils';
 import { composeShadowBundle } from '../../../styles/baseBundle';
-import CONTENT_EDITOR_STYLES from '../../../styles/components/content-editor.css?raw';
 
 export function createModalManager() {
   const renderer = createReactRenderer('monky-modal', true);
   const focusManager = createFocusManager();
 
-  const allStyles = composeShadowBundle({
-    componentStyles: [CONTENT_EDITOR_STYLES],
-  });
+  const allStyles = composeShadowBundle();
 
   let styleInjector: ReturnType<typeof createStyleInjector>;
   let isVisible = false;
