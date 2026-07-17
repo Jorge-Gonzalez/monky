@@ -829,6 +829,10 @@
   padding: var(--spacing-xl);
 }
 
+.inset-bottom-3xl {
+  bottom: var(--spacing-3xl);
+}
+
 .content {
   z-index: var(--z-content);
 }

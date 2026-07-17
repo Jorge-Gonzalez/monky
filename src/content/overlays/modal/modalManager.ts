@@ -14,7 +14,6 @@ import { composeShadowBundle } from '../../../styles/baseBundle';
 import MODAL_STYLES from './modalStyles.css?raw';
 import SEARCH_VIEW_STYLES from '../views/search/searchViewStyles.css?raw';
 import SETTINGS_VIEW_STYLES from '../views/settings/settingsViewStyles.css?raw';
-import EDITOR_VIEW_STYLES from '../views/macroEditor/editorViewStyles.css?raw';
 import CONTENT_EDITOR_STYLES from '../../../styles/components/content-editor.css?raw';
 
 export function createModalManager() {
@@ -22,7 +21,7 @@ export function createModalManager() {
   const focusManager = createFocusManager();
 
   const allStyles = composeShadowBundle({
-    componentStyles: [MODAL_STYLES, SEARCH_VIEW_STYLES, SETTINGS_VIEW_STYLES, EDITOR_VIEW_STYLES, CONTENT_EDITOR_STYLES],
+    componentStyles: [MODAL_STYLES, SEARCH_VIEW_STYLES, SETTINGS_VIEW_STYLES, CONTENT_EDITOR_STYLES],
   });
 
   let styleInjector: ReturnType<typeof createStyleInjector>;

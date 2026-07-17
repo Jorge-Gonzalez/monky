@@ -3,7 +3,6 @@ import { composeShadowBundle } from '../src/styles/baseBundle'
 import MODAL_STYLES from '../src/content/overlays/modal/modalStyles.css?raw'
 import SEARCH_STYLES from '../src/content/overlays/views/search/searchViewStyles.css?raw'
 import SETTINGS_STYLES from '../src/content/overlays/views/settings/settingsViewStyles.css?raw'
-import EDITOR_STYLES from '../src/content/overlays/views/macroEditor/editorViewStyles.css?raw'
 import CONTENT_EDITOR_STYLES from '../src/styles/components/content-editor.css?raw'
 import DELETE_STYLES from '../src/content/overlays/deleteConfirm/deleteConfirmStyles.css?raw'
 
@@ -26,7 +25,7 @@ function shadow(css: string, html: string): void {
 }
 
 shadow(
-  composeShadowBundle({ componentStyles: [MODAL_STYLES, SEARCH_STYLES, SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
+  composeShadowBundle({ componentStyles: [MODAL_STYLES, SEARCH_STYLES, SETTINGS_STYLES, CONTENT_EDITOR_STYLES] }),
   `<div data-probe="modal" class="modal-dialog vertical hidden dialog-measure ground rule corner-lg ruled elevated-soft">
     <div data-probe="search-view" class="macro-search-view fill-block vertical">
       <div data-probe="search-input-container" class="macro-search-input-container padding-lg rule ruled-bottom">
@@ -66,7 +65,7 @@ shadow(
   </div>`,
 )
 shadow(
-  composeShadowBundle({ componentStyles: [SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
+  composeShadowBundle({ componentStyles: [SETTINGS_STYLES, CONTENT_EDITOR_STYLES] }),
   `<div data-probe="settings-view" class="settings-view fill-block vertical scroll-auto">
     <div data-probe="settings-group" class="settings-group columns-12 padding-block-xl padding-inline-3xl">
       <div data-probe="settings-label" class="settings-section-label quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">General</div>
@@ -113,7 +112,7 @@ shadow(
               </div>
             </div>
           </div>
-          <div data-probe="content-editor-body" class="content-editor-body padding-md min-height-none scroll-auto ink rule corner-lg ruled font-md focus:rule-accent focus:ring"></div>
+          <div data-probe="content-editor-body" class="content-editor-body padding-md elastic basis-ratio min-height-none scroll-auto ink rule corner-lg ruled font-md focus:rule-accent focus:ring"></div>
         </div>
         <div data-probe="button-group" class="button-group horizontal inline gap-sm">
           <button data-probe="button-cancel" class="btn padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:ground-subtle disabled:ink-soft">Cancel</button>

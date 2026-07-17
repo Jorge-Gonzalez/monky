@@ -278,12 +278,12 @@
     },
     {
       "id": "u6-editor-toast-success",
-      "classString": "padding-md position-absolute center-x text-nowrap corner-md ruled ground-pass-faint rule-pass ink-pass",
+      "classString": "padding-md position-absolute center-x inset-bottom-3xl text-nowrap corner-md ruled elevated-soft ground-pass-faint rule-pass ink-pass",
       "backing": []
     },
     {
       "id": "u6-editor-toast-error",
-      "classString": "padding-md position-absolute center-x text-nowrap corner-md ruled ground-fail-faint rule-fail ink-fail",
+      "classString": "padding-md position-absolute center-x inset-bottom-3xl text-nowrap corner-md ruled elevated-soft ground-fail-faint rule-fail ink-fail",
       "backing": []
     },
     {

@@ -80,6 +80,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
   const collapseMinHeight = className.includes('min-height-none')
   const shellMinHeight = collapseMinHeight ? '' : ' min-height-editor'
   const bodyMinHeight = collapseMinHeight ? 'min-height-none' : 'min-height-editor'
+  const bodyFlex = className.includes('editor-content') ? 'elastic basis-ratio ' : ''
 
   return (
     <div className={`content-editor vertical hidden${shellMinHeight} ground-subtle ${className}`}>
@@ -94,7 +95,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
       <div
         ref={editorRef}
         contentEditable
-        className={`content-editor-body sf-authored-content sf-generated-placeholder padding-md ${bodyMinHeight} scroll-auto scrollbar-subtle ink rule corner-lg ruled font-md focus:rule-accent focus:ring`}
+        className={`content-editor-body sf-authored-content sf-generated-placeholder padding-md ${bodyFlex}${bodyMinHeight} scroll-auto scrollbar-subtle ink rule corner-lg ruled font-md focus:rule-accent focus:ring`}
         data-placeholder={placeholder}
         onInput={() => {
           if (!editorRef.current || !onChange) return
