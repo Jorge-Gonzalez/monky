@@ -29,7 +29,8 @@ interface SelectableGroupProps {
 /**
  * SelectableGroup — a row of toggle buttons that always keeps at least
  * `minSelected` selected; a rejected removal shakes the button. Pairs with the
- * `.selectable-group` / `.min-selected-1` CSS pattern.
+ * `.selectable-group` / `.min-selected-1` CSS pattern and the
+ * `sf-shake-suppression` effect-composition fragment.
  */
 export function SelectableGroup({
   options,
@@ -64,7 +65,7 @@ export function SelectableGroup({
             role="switch"
             aria-checked={isSelected}
             onClick={() => handleClick(option)}
-            className={`${buttonClassName ?? ''} tween-quick position-relative pressable selectable hover:ground-defined checked:ground-accent checked:ink-inverse checked:rule-accent ${isSelected ? 'is-selected hover:alpha-90' : ''} ${shake === option ? 'shake' : ''}`}
+            className={`${buttonClassName ?? ''} tween-quick position-relative pressable selectable hover:ground-defined checked:ground-accent checked:ink-inverse checked:rule-accent ${isSelected ? 'is-selected hover:alpha-90' : ''} ${shake === option ? 'shake sf-shake-suppression' : ''}`}
           >
             {option}
           </button>

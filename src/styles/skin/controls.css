@@ -38,9 +38,3 @@
 .min-selected-1 > .is-selected:only-of-type:hover {
   opacity: 0.95;
 }
-
-/* The `shake` effect atom (Ermine R-MOTION-07) owns the animation + @keyframes.
-   This suppresses the button's own transition so it doesn't fight the shake. */
-.shake {
-  transition: none !important;
-}

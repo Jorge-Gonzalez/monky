@@ -200,6 +200,11 @@
   background: transparent;
 }
 
+/* sf-shake-suppression: lets Ermine's shake effect own the frame. */
+.sf-shake-suppression {
+  transition: none !important;
+}
+
 /* sf-engine-scrollbar: browser-engine scrollbar adapter after standard sockets. */
 ::-webkit-scrollbar {
   width: var(--spacing-md) !important;
