@@ -107,7 +107,7 @@ try {
   "generatedGrammarPresent": true,
   "page": {
     "body": {
-      "font-family": "ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial",
+      "font-family": "\"IBM Plex Condensed Light\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
       "margin": "0px",
       "padding": "0px"
     },

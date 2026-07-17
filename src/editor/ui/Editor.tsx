@@ -12,7 +12,7 @@ export default function Editor() {
 
   return (
     <div className="page-container fill-viewport vertical gap-lg padding-2xl max-width-2xl centered flush-block">
-      <h1 className="page-title font-2xl">{t('editor.title')}</h1>
+      <h1 className="font-2xl">{t('editor.title')}</h1>
       <MacroForm editing={editingMacro} onDone={resetForm} />
       <hr className="divider rule ruled-top" />
       <Settings />

@@ -7,4 +7,3 @@
 @import url('./styles/grammar/ermine.generated.css') layer(grammar);
 @import url('./styles/skin/controls.css') layer(skin);
 @import url('./styles/fragments/semantic-fragments.css') layer(fragments);
-@import url('./styles/entries/pages.css') layer(components);
