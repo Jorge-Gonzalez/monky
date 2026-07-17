@@ -106,7 +106,7 @@ shadow(
           <div data-probe="ce-toolbar" class="ce-toolbar horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed ground">
             <button data-probe="ce-toolbar-btn" class="ce-toolbar-btn padding-none horizontal rigid control-box-lg align-center justify-center ink-soft corner-sm pressable hover:ground-defined hover:ink pressed:ground-defined pressed:ink-accent" aria-pressed="true">B</button>
             <div data-probe="ce-style-menu" class="ce-style-menu position-relative">
-              <div data-probe="ce-style-dropdown" class="ce-style-dropdown vertical padding-xs position-absolute min-width-sm ground rule corner-md ruled elevated">
+              <div data-probe="ce-style-dropdown" class="ce-style-dropdown vertical padding-xs position-absolute attach-below-xs attach-left min-width-sm ground rule corner-md ruled elevated">
                 <button data-probe="ce-style-option" class="ce-style-option fill-inline horizontal gap-sm padding-block-xs padding-inline-sm align-center selectable ink corner-sm font-sm text-start pressable hover:ground-defined selected:ground-defined selected:ink-accent" aria-selected="true">
                   <span class="ce-style-option-short rigid control-inline-md ink-soft font-xs font-semibold parent-selected:ink-accent">¶</span>
                   <span class="ce-style-option-label elastic basis-ratio">Paragraph</span>

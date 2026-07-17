@@ -368,7 +368,7 @@
     },
     {
       "id": "u6-content-style-dropdown",
-      "classString": "vertical padding-xs position-absolute dropdown ground rule corner-md ruled elevated",
+      "classString": "vertical padding-xs position-absolute attach-below-xs attach-left dropdown ground rule corner-md ruled elevated",
       "backing": []
     },
     {

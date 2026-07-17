@@ -17,7 +17,5 @@
 
 /* Cast shadow comes from `elevated` (R-SKIN-09). */
 .ce-style-dropdown {
-  top: calc(100% + 4px);
-  left: 0;
   gap: 2px;
 }
