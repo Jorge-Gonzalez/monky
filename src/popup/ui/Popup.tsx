@@ -14,7 +14,7 @@ export default function Popup() {
   useAppliedTheme(popupRef);
 
   return (
-    <div ref={popupRef} className="popup-container vertical width-popover-xl gap-sm padding-sm ground ink">
+    <div ref={popupRef} className="vertical width-popover-xl gap-sm padding-sm ground ink">
       <div className="horizontal gap-sm align-center justify-between">
         <div className="horizontal grow-1 gap-sm align-center">
           <h1 className="ink font-lg font-bold">{t('popup.title')}</h1>

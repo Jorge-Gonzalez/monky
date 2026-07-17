@@ -34,40 +34,18 @@ export default function SiteToggle() {
   const displayHostname = hostname || t('popup.localFile');
 
   return (
-    <div className="popup-section horizontal padding-sm align-center justify-between ground-subtle rule corner-md ruled">
-      <div className="popup-site-copy hidden font-sm">
+    <div className="horizontal padding-sm align-center justify-between ground-subtle rule corner-md ruled">
+      <div className="hidden font-sm">
         <p className="ink font-medium">{t('popup.macrosOnThisSite')}</p>
         <p className="hidden ink-soft font-xs truncate" title={displayHostname}>{displayHostname}</p>
       </div>
-      <label className="popup-toggle-label horizontal inline rigid margin-left-sm align-center position-relative pressable">
+      <label className="horizontal inline rigid margin-left-sm align-center gap-xs pressable">
         <input
           type="checkbox"
           className="checkbox control-size-lg rule corner-sm ruled pressable focus:ring"
           checked={isEnabled}
           onChange={() => toggleSiteDisabled(hostname)}
-          style={{ position: 'absolute', opacity: 0 }}
         />
-        <div style={{
-          width: '44px',
-          height: '24px',
-          borderRadius: '9999px',
-          backgroundColor: isEnabled ? 'var(--accent)' : 'var(--harmonic)',
-          position: 'relative',
-          transition: 'background-color 0.15s'
-        }}>
-          <div style={{
-            content: '',
-            position: 'absolute',
-            top: '2px',
-            left: isEnabled ? 'calc(100% - 22px)' : '2px',
-            width: '20px',
-            height: '20px',
-            borderRadius: '9999px',
-            backgroundColor: 'white',
-            transition: 'left 0.15s',
-            border: '1px solid var(--harmonic)'
-          }} />
-        </div>
       </label>
     </div>
   );
