@@ -128,7 +128,7 @@
     },
     {
       "id": "search-item-edit",
-      "classString": "horizontal padding-xs align-center justify-center position-absolute center-y ink-soft corner-sm pressable concealed tween-opacity-ground-ink-quick hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed",
+      "classString": "horizontal padding-xs align-center justify-center position-absolute center-y inset-right-sm ink-soft corner-sm pressable concealed tween-opacity-ground-ink-quick hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"

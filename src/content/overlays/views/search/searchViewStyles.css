@@ -4,17 +4,6 @@
  * Uses shared patterns from modalStyles.ts where possible
  * Only defines search-specific styles here
  */
-/* Armed-for-delete row: danger tint + the confirm prompt in the text column. */
-.macro-search-item-edit {
-  right: var(--spacing-sm);
-}
-
-.macro-search-item-text mark {
-  background: transparent;
-  color: inherit;
-  font-style: normal;
-}
-
 /* Keyboard hints - uses shared .kbd pattern */
 /* .macro-search-kbd {
   padding: 2px var(--spacing-xs);

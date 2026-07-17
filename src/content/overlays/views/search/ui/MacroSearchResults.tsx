@@ -87,14 +87,14 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
             ? macro.text
             : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>
                 part.startsWith('{{')
-                  ? <mark key={i}><span className="alpha-35">{'{{'}</span>{part.slice(2, -2)}<span className="alpha-35">{'}}'}</span></mark>
+                  ? <span key={i}><span className="alpha-35">{'{{'}</span>{part.slice(2, -2)}<span className="alpha-35">{'}}'}</span></span>
                   : part
               )}
         </div>
       )}
       {onEdit && !isConfirmingDelete && (
         <button
-          className="macro-search-item-edit horizontal padding-xs align-center justify-center position-absolute center-y ink-soft corner-sm pressable concealed tween-opacity-ground-ink-quick hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed"
+          className="macro-search-item-edit horizontal padding-xs align-center justify-center position-absolute center-y inset-right-sm ink-soft corner-sm pressable concealed tween-opacity-ground-ink-quick hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed"
           onClick={e => { e.stopPropagation(); onEdit(); }}
           aria-label={t('modalSearch.editMacro')}
           tabIndex={-1}
