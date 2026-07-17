@@ -29,7 +29,7 @@ const POPUP_ESTIMATED_WIDTH = 300;
 const POPUP_ESTIMATED_HEIGHT = 75; // Adjust based on your typical popup height
 
 export function createSuggestionsOverlayManager(macros: Macro[]) {
-  const renderer = createReactRenderer('macro-suggestions');
+  const renderer = createReactRenderer('macro-suggestions', true, 'sf-foreign-overlay-host');
   let styleInjector: ReturnType<typeof createStyleInjector>;
 
   let currentMacros = macros;

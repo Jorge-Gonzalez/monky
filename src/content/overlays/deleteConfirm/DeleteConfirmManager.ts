@@ -4,7 +4,6 @@ import { DeleteConfirmPopup } from './DeleteConfirmPopup'
 import { createReactRenderer } from '../services/reactRenderer'
 import { createStyleInjector } from '../services/styleInjector'
 import { ensureAppFontFace } from '../services/appFont'
-import { SUGGESTIONS_OVERLAY_STYLES } from '../suggestionsOverlay/SuggestionsOverlayStyles'
 import { DELETE_CONFIRM_STYLES } from './deleteConfirmStyles'
 import { composeShadowBundle } from '../../../styles/baseBundle'
 import { getActiveEditable } from '../../macroEngine/replacement/editableUtils'
@@ -15,14 +14,14 @@ const POPUP_ESTIMATED_WIDTH = 260
 const POPUP_ESTIMATED_HEIGHT = 110
 
 const DELETE_CONFIRM_BUNDLE = composeShadowBundle({
-  componentStyles: [SUGGESTIONS_OVERLAY_STYLES, DELETE_CONFIRM_STYLES],
+  componentStyles: [DELETE_CONFIRM_STYLES],
 })
 
 // Cursor-anchored confirmation for the in-page :delete/macro command. Reuses the
 // suggestions overlay's renderer, styles and caret positioning; the actual delete
 // is supplied by the caller via setOnConfirm so this stays UI-only.
 export function createDeleteConfirmManager() {
-  const renderer = createReactRenderer('macro-delete-confirm')
+  const renderer = createReactRenderer('macro-delete-confirm', true, 'sf-foreign-overlay-host')
   let styleInjector: ReturnType<typeof createStyleInjector>
   let onConfirm: ((macro: Macro) => void) | null = null
   let pending: Macro | null = null

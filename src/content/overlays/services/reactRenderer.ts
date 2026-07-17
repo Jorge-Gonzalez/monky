@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 
-export function createReactRenderer(containerId: string, useShadowDOM = true) {
+export function createReactRenderer(containerId: string, useShadowDOM = true, hostClassName?: string) {
   let container: HTMLDivElement | null = null;
   let shadowRoot: ShadowRoot | null = null;
   let root: Root | null = null;
@@ -11,6 +11,7 @@ export function createReactRenderer(containerId: string, useShadowDOM = true) {
 
     container = document.createElement('div');
     container.id = containerId;
+    if (hostClassName) container.className = hostClassName;
     document.body.appendChild(container);
 
     if (useShadowDOM) {

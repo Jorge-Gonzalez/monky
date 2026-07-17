@@ -5,7 +5,6 @@ import SEARCH_STYLES from '../src/content/overlays/views/search/searchViewStyles
 import SETTINGS_STYLES from '../src/content/overlays/views/settings/settingsViewStyles.css?raw'
 import EDITOR_STYLES from '../src/content/overlays/views/macroEditor/editorViewStyles.css?raw'
 import CONTENT_EDITOR_STYLES from '../src/styles/components/content-editor.css?raw'
-import SUGGESTIONS_STYLES from '../src/content/overlays/suggestionsOverlay/suggestionsOverlayStyles.css?raw'
 import DELETE_STYLES from '../src/content/overlays/deleteConfirm/deleteConfirmStyles.css?raw'
 
 const theme = '--ground: rgb(250, 251, 252); --ground-subtle: rgb(235, 236, 237); --ground-defined: rgb(220, 221, 222); --ink: rgb(20, 21, 22); --ink-soft: rgb(70, 71, 72); --ink-inverse: rgb(254, 254, 254); --accent: rgb(20, 90, 200); --accent-dim: rgb(60, 110, 200); --pass: rgb(30, 140, 80); --rule: rgb(160, 161, 162); --rule-soft: rgb(200, 201, 202); --fail: rgb(180, 0, 0); --fail-faint: rgb(255, 230, 230); --base-tone: var(--ground); --tone: var(--ground-defined); --tone-dim: var(--ground-subtle); --harmonic: var(--rule); --harmonic-minor: var(--rule-soft); --shadow-color: rgba(0, 0, 0, 0.5); --button-bg: rgb(1, 2, 3); --ink-alt: var(--ink-inverse); --button-bg-hover: rgb(4, 5, 6); --kbd-bg: rgb(230, 230, 230); --kbd-border: rgb(100, 100, 100); --status-error-wash: var(--fail-faint); --status-error: var(--fail); --status-success: var(--pass); --size-sm: 140px; --size-2xl: 42rem;'
@@ -48,7 +47,7 @@ shadow(
   </div>`,
 )
 shadow(
-  composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES] }),
+  composeShadowBundle(),
   `<div data-probe="suggestions" class="macro-suggestions-container hidden min-width-popover-sm max-width-popover-2xl ground rule corner-lg ruled elevated-soft font-md" style="left: 24px; top: 24px; position: fixed;">
     <div data-probe="suggestions-list" class="macro-suggestions-commands-list horizontal gap-xs padding-xs rule-soft ruled-bottom" role="listbox">
       <button data-probe="suggestions-option" class="macro-suggestions-command-item compressible hidden min-width-none max-width-command selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">/brb</button>
@@ -59,7 +58,7 @@ shadow(
   </div>`,
 )
 shadow(
-  composeShadowBundle({ componentStyles: [SUGGESTIONS_STYLES, DELETE_STYLES] }),
+  composeShadowBundle({ componentStyles: [DELETE_STYLES] }),
   `<div data-probe="deletion" class="macro-suggestions-container delete-confirm min-width-popover-md max-width-popover-2xl ground rule corner-lg ruled elevated-soft font-md">
     <div class="macro-suggestions-commands-list horizontal gap-xs padding-xs rule-soft ruled-bottom" role="listbox">
       <button data-probe="delete-option" class="macro-suggestions-command-item delete-confirm-option elastic basis-ratio hidden min-width-none selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent" role="option" aria-selected="true">Cancel</button>

@@ -119,6 +119,14 @@
   pointer-events: none;
 }
 
+/* sf-foreign-overlay-host: content-script host above ordinary page/framework layers.
+   This is a foreign-page boundary, not an Ermine z-scale word or platform top layer. */
+:host(.sf-foreign-overlay-host),
+.sf-foreign-overlay-host {
+  position: fixed !important;
+  z-index: var(--monky-foreign-overlay-z, 10000) !important;
+}
+
 /* sf-callout-arrow: border-triangle callout pointer. */
 .sf-callout-arrow {
   width: 0;
