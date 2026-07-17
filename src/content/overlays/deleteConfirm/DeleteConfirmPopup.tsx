@@ -43,7 +43,7 @@ export function DeleteConfirmPopup({
   return (
     <div
       ref={containerRef}
-      className="macro-suggestions-container delete-confirm min-width-popover-md max-width-popover-2xl ground rule corner-lg ruled font-md tween-opacity-transform-quick"
+      className="macro-suggestions-container delete-confirm min-width-popover-md max-width-popover-2xl ground rule corner-lg ruled elevated-soft font-md tween-opacity-transform-quick"
       style={{ left: position.x, top: position.y, position: 'fixed' }}
     >
       <div className={`macro-suggestions-arrow sf-callout-arrow position-absolute center-x height-none ${placement === 'top' ? 'top sf-callout-arrow-top attach-below' : 'bottom sf-callout-arrow-bottom attach-above'}`} />
@@ -54,7 +54,7 @@ export function DeleteConfirmPopup({
       <div className="macro-suggestions-commands-list horizontal gap-xs padding-xs rule-soft ruled-bottom" role="listbox">
         <button
           type="button"
-          className="macro-suggestions-command-item delete-confirm-option elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled font-sm text-center pressable truncate tween-quick hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
+          className="macro-suggestions-command-item delete-confirm-option elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
           role="option"
           aria-selected={nav.selectedIndex === 0}
           onMouseDown={e => { e.preventDefault(); onCancel() }}
@@ -63,7 +63,7 @@ export function DeleteConfirmPopup({
         </button>
         <button
           type="button"
-          className="macro-suggestions-command-item delete-confirm-option delete-confirm-danger elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled font-sm text-center pressable truncate tween-quick hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail"
+          className="macro-suggestions-command-item delete-confirm-option delete-confirm-danger elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail"
           role="option"
           aria-selected={nav.selectedIndex === 1}
           onMouseDown={e => { e.preventDefault(); onConfirm() }}

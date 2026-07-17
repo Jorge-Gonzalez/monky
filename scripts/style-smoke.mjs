@@ -323,10 +323,10 @@ try {
     "option": {
       "flex-grow": "0",
       "flex-shrink": "1",
-      "padding-top": "3px",
-      "padding-right": "6px",
-      "padding-bottom": "3px",
-      "padding-left": "6px",
+      "padding-top": "4px",
+      "padding-right": "8px",
+      "padding-bottom": "4px",
+      "padding-left": "8px",
       "background-color": "rgb(220, 221, 222)",
       "color": "rgb(20, 90, 200)",
       "border-color": "rgb(20, 90, 200)"

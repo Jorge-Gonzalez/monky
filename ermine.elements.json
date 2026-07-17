@@ -383,7 +383,7 @@
     },
     {
       "id": "u7-suggestions-container",
-      "classString": "hidden min-width-popover-sm max-width-popover-2xl ground rule corner-lg ruled font-md tween-opacity-transform-quick",
+      "classString": "hidden min-width-popover-sm max-width-popover-2xl ground rule corner-lg ruled elevated-soft font-md tween-opacity-transform-quick",
       "backing": []
     },
     {
@@ -393,7 +393,7 @@
     },
     {
       "id": "u7-suggestions-command-item",
-      "classString": "compressible hidden min-width-none max-width-command selectable ground-subtle ink rule-soft corner-md ruled font-sm text-center pressable truncate tween-quick hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent",
+      "classString": "compressible hidden min-width-none max-width-command selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent",
       "backing": [
         "aria-selected"
       ]
@@ -430,14 +430,14 @@
     },
     {
       "id": "u7-delete-option",
-      "classString": "elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled font-sm text-center pressable truncate tween-quick hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent",
+      "classString": "elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent",
       "backing": [
         "aria-selected"
       ]
     },
     {
       "id": "u7-delete-danger-option",
-      "classString": "elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled font-sm text-center pressable truncate tween-quick hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail",
+      "classString": "elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail",
       "backing": [
         "aria-selected"
       ]
