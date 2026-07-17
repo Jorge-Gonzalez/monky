@@ -38,7 +38,7 @@ export function ModalShell({
 
   return (
     <div
-      className="modal-backdrop horizontal align-center justify-center position-fixed cover scrim"
+      className="modal-backdrop sf-foreign-overlay-host horizontal align-center justify-center cover scrim"
       onMouseDown={onClose}
       role="presentation"
     >

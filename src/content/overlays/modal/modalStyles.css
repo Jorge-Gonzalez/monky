@@ -12,13 +12,6 @@
  * - Modal-specific root styling
  */
 
-/* ===== Modal Infrastructure ===== */
-
-/* Backdrop - full screen overlay */
-.modal-backdrop {
-  z-index: 10000;
-}
-
 /* Preserved for the wordmark restoration path; currently not emitted by the modal markup.
 .monky-logo-word {
   display: block;
