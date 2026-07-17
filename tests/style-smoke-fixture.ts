@@ -28,7 +28,7 @@ function shadow(css: string, html: string): void {
 
 shadow(
   composeShadowBundle({ componentStyles: [MODAL_STYLES, SEARCH_STYLES, SETTINGS_STYLES, EDITOR_STYLES, CONTENT_EDITOR_STYLES] }),
-  `<div data-probe="modal" class="modal-dialog vertical hidden dialog-measure ground rule corner-lg ruled">
+  `<div data-probe="modal" class="modal-dialog vertical hidden dialog-measure ground rule corner-lg ruled elevated-soft">
     <div data-probe="search-view" class="macro-search-view fill-block vertical">
       <div data-probe="search-input-container" class="macro-search-input-container padding-lg rule ruled-bottom">
         <input data-probe="search-input" class="macro-search-input fill-inline padding-block-sm padding-inline-md">
