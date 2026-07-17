@@ -5,5 +5,4 @@
 @import url('./styles/theme/font-face.css') layer(theme);
 @import url('./styles/theme/font.css') layer(theme);
 @import url('./styles/grammar/ermine.generated.css') layer(grammar);
-@import url('./styles/skin/controls.css') layer(skin);
 @import url('./styles/fragments/semantic-fragments.css') layer(fragments);
