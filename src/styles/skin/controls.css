@@ -15,22 +15,6 @@
   background-color: color-mix(in oklch, var(--status-success) 82%, var(--shadow-color));
 }
 
-.btn-link {
-  text-decoration: none;
-}
-
-.btn-link:hover {
-  text-decoration: underline;
-}
-
-.btn-link-danger {
-  text-decoration: none;
-}
-
-.btn-link-danger:hover {
-  text-decoration: underline;
-}
-
 .btn:disabled {
   cursor: not-allowed;
   opacity: 0.6;

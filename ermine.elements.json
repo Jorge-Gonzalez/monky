@@ -763,12 +763,12 @@
     },
     {
       "id": "phase-f-button-link",
-      "classString": "ink-accent font-sm",
+      "classString": "ink-accent font-sm undecorated hover:underlined",
       "backing": []
     },
     {
       "id": "phase-f-button-link-danger",
-      "classString": "ink-fail font-sm",
+      "classString": "ink-fail font-sm undecorated hover:underlined",
       "backing": []
     },
     {
