@@ -133,11 +133,12 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             <input
               id="modal-macro-command"
               ref={commandInputRef}
-              className={`input fill-inline padding-block-sm padding-inline-md ground-subtle ink rule ${commandJoined ? 'corner-top-3xl corner-bottom-none' : 'corner-3xl'} ruled font-md tween-rule-quick focus:rule-accent focus:ring ${command && !commandValid ? 'input-error rule-fail focus:rule-fail' : ''}`}
+              className={`input fill-inline padding-block-sm padding-inline-md ground-subtle ink rule ${commandJoined ? 'corner-top-3xl corner-bottom-none' : 'corner-3xl'} ruled font-md tween-rule-quick focus:rule-accent focus:ring ${command && !commandValid ? 'rule-fail focus:rule-fail focus:recessed-fail' : ''}`}
               value={command}
               onChange={e => setCommand(e.currentTarget.value)}
               placeholder={t('macroForm.commandPlaceholder', { prefix: prefixes[0] })}
               aria-label={t('macroForm.triggerLabel')}
+              aria-invalid={command && !commandValid ? true : undefined}
               maxLength={50}
               autoComplete="off"
               {...suggest.inputProps}

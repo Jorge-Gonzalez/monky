@@ -634,7 +634,7 @@
     },
     {
       "id": "phase-b-input-error",
-      "classString": "padding-xs rule-fail focus:rule-fail",
+      "classString": "padding-xs rule-fail focus:rule-fail focus:recessed-fail",
       "backing": []
     },
     {

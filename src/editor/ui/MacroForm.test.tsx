@@ -234,7 +234,8 @@ describe('MacroForm Component', () => {
       expect(submitButton).toBeDisabled()
 
       expect(commandInput).toHaveClass('input')
-      expect(commandInput).not.toHaveClass('input-error')
+      expect(commandInput).not.toHaveClass('focus:recessed-fail')
+      expect(commandInput).not.toHaveAttribute('aria-invalid')
       expect(commandInput).not.toHaveClass('border-red-300')
     })
 
@@ -270,13 +271,15 @@ describe('MacroForm Component', () => {
       expect(screen.getByText(/Command must start with:/)).toBeInTheDocument()
     })
 
-    it('shows red border for invalid command input', () => {
+    it('shows fail treatment for invalid command input', () => {
       render(<MacroForm editing={null} onDone={mockOnDone} />)
 
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: 'invalidcommand' } })
 
-      expect(commandInput).toHaveClass('input-error')
+      expect(commandInput).toHaveClass('rule-fail')
+      expect(commandInput).toHaveClass('focus:recessed-fail')
+      expect(commandInput).toHaveAttribute('aria-invalid', 'true')
     })
 
     it('shows normal border for valid command input', () => {
@@ -286,7 +289,8 @@ describe('MacroForm Component', () => {
       fireEvent.change(commandInput, { target: { value: '/validcommand' } })
 
       expect(commandInput).toHaveClass('input')
-      expect(commandInput).not.toHaveClass('input-error')
+      expect(commandInput).not.toHaveClass('focus:recessed-fail')
+      expect(commandInput).not.toHaveAttribute('aria-invalid')
     })
 
     it('prevents form submission with validation error message when command is invalid', async () => {
