@@ -4,7 +4,6 @@ import { DeleteConfirmPopup } from './DeleteConfirmPopup'
 import { createReactRenderer } from '../services/reactRenderer'
 import { createStyleInjector } from '../services/styleInjector'
 import { ensureAppFontFace } from '../services/appFont'
-import { DELETE_CONFIRM_STYLES } from './deleteConfirmStyles'
 import { composeShadowBundle } from '../../../styles/baseBundle'
 import { getActiveEditable } from '../../macroEngine/replacement/editableUtils'
 import { getCaretCoordinates } from '../suggestionsOverlay/utils/caretPosition'
@@ -13,9 +12,7 @@ import { calculateOptimalPosition } from '../suggestionsOverlay/utils/popupPosit
 const POPUP_ESTIMATED_WIDTH = 260
 const POPUP_ESTIMATED_HEIGHT = 110
 
-const DELETE_CONFIRM_BUNDLE = composeShadowBundle({
-  componentStyles: [DELETE_CONFIRM_STYLES],
-})
+const DELETE_CONFIRM_BUNDLE = composeShadowBundle()
 
 // Cursor-anchored confirmation for the in-page :delete/macro command. Reuses the
 // suggestions overlay's renderer, styles and caret positioning; the actual delete
