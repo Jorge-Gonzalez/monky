@@ -59,8 +59,8 @@ describe('SelectableGroup', () => {
     expect(slash).not.toHaveClass('shake')
   })
 
-  it('applies the min-selected-1 class when minSelected is 1', () => {
+  it('applies the sf-min-selected-1 fragment when minSelected is 1', () => {
     const { container } = render(<SelectableGroup options={['/']} selected={['/']} onChange={vi.fn()} />)
-    expect(container.querySelector('.selectable-group')).toHaveClass('min-selected-1')
+    expect(container.querySelector('.sf-selectable-group')).toHaveClass('sf-min-selected-1')
   })
 })

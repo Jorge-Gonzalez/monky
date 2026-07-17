@@ -29,7 +29,7 @@ interface SelectableGroupProps {
 /**
  * SelectableGroup — a row of toggle buttons that always keeps at least
  * `minSelected` selected; a rejected removal shakes the button. Pairs with the
- * `.selectable-group` / `.min-selected-1` CSS pattern and the
+ * `sf-selectable-group` / `sf-min-selected-1` semantic fragments and the
  * `sf-shake-suppression` effect-composition fragment.
  */
 export function SelectableGroup({
@@ -52,10 +52,10 @@ export function SelectableGroup({
     onChange(next);
   };
 
-  const minClass = minSelected === 1 ? 'min-selected-1' : '';
+  const minClass = minSelected === 1 ? 'sf-min-selected-1' : '';
 
   return (
-    <div className={`selectable-group ${minClass} ${className ?? ''}`} role="group">
+    <div className={`sf-selectable-group ${minClass} ${className ?? ''}`} role="group">
       {options.map(option => {
         const isSelected = selected.includes(option);
         return (

@@ -4,33 +4,7 @@
   user-select: none;
 }
 
-/* ===== COMPONENT PATTERNS: Buttons ===== */
-
-.btn:disabled {
-  cursor: not-allowed;
-}
-
 /* Panel buttons - buttons integrated into panel/group layouts. Border/background
    stripping comes from the substrate's button reset (reset layer), which words can
    override — a later-layer transparent here was shadowing the nav tab's hover:/
    current: grounds (R-IMPL-02). */
-
-/* ===== Selectable group pattern (relocated verbatim from the retired legacy sheet, U8).
-   Consumed by options PrefixEditor and the modal settings view. ===== */
-
-.selectable-group > * {
-  user-select: none;
-}
-
-.selectable-group > *:active {
-  transform: scale(0.98);
-}
-
-.min-selected-1 > .is-selected:only-of-type {
-  cursor: not-allowed;
-  opacity: 0.95;
-}
-
-.min-selected-1 > .is-selected:only-of-type:hover {
-  opacity: 0.95;
-}

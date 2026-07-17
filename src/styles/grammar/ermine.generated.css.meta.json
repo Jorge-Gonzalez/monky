@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "ermineCommit": "24eef502d00a129c9f171e2d0f5429152c75afec",
-  "manifestSha256": "9474d36c89aac5cc1a4071cd12db26a7a0b04f5f961614a876f54203d34cfb53",
-  "outputSha256": "66f9de4fb165cf58a547e2270bfe36adad49ee413d0b170b2f2e373572d42036",
+  "ermineCommit": "f87be063e15466bf92cdbca0fab012d079e82bc5",
+  "manifestSha256": "252d9a50372a9324d9013d126f59f696897b63dd5c219863daade4a7d48628e1",
+  "outputSha256": "e3dd3dbda6f2c3adadbbe3c44b240d3947c409660499ef6059f50f871cf1e6b2",
   "entryCount": 144,
-  "distinctWordCount": 235,
+  "distinctWordCount": 236,
   "reproductionCommand": "node --import tsx adoption/build-css.ts --manifest '../monky/ermine.elements.json' --out '../monky/src/styles/grammar/ermine.generated.css'"
 }

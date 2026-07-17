@@ -205,6 +205,25 @@
   transition: none !important;
 }
 
+/* sf-selectable-group: selectable toggle group child mechanics. */
+.sf-selectable-group > * {
+  user-select: none;
+}
+
+.sf-selectable-group > *:active {
+  transform: scale(0.98);
+}
+
+/* sf-min-selected-1: minimum-selection guard for selectable groups. */
+.sf-min-selected-1 > .is-selected:only-of-type {
+  cursor: not-allowed;
+  opacity: 0.95;
+}
+
+.sf-min-selected-1 > .is-selected:only-of-type:hover {
+  opacity: 0.95;
+}
+
 /* sf-engine-scrollbar: browser-engine scrollbar adapter after standard sockets. */
 ::-webkit-scrollbar {
   width: var(--spacing-md) !important;
