@@ -20,7 +20,8 @@ const server = http.createServer(app);
 // Create WebSocket server for live reload
 const wss = new WebSocketServer({ port: WS_PORT });
 
-// Serve static files from public directory
+// Serve dev test pages and public assets (test pages live outside public/ so they never ship in dist)
+app.use(express.static(path.join(__dirname, '..', 'dev', 'pages')));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Inject live reload script into HTML pages
@@ -63,7 +64,8 @@ const watchPaths = [
   'src/**/*.jsx',
   'src/**/*.css',
   'dist/**/*',
-  'public/**/*'
+  'public/**/*',
+  'dev/pages/**/*'
 ];
 
 const watcher = chokidar.watch(watchPaths, {
