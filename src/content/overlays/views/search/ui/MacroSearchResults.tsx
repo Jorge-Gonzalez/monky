@@ -64,7 +64,7 @@ interface MacroSearchItemProps {
 
 function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdit }: MacroSearchItemProps) {
   const commandClassName = [
-    'macro-search-item-command pressable padding-top-lg padding-right-xs padding-bottom-lg padding-left-none rule-soft ruled-bottom font-lg font-medium hidden truncate tween-ground-quick',
+    'pressable padding-top-lg padding-right-xs padding-bottom-lg padding-left-none rule-soft ruled-bottom font-lg font-medium hidden truncate tween-ground-quick',
     isConfirmingDelete ? 'ground-fail-faint ink-fail' : 'ink-accent parent-hover:ground-subtle parent-selected:ground-defined',
   ].join(' ');
 
@@ -94,7 +94,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
       )}
       {onEdit && !isConfirmingDelete && (
         <button
-          className="macro-search-item-edit horizontal padding-xs align-center justify-center position-absolute center-y inset-right-sm ink-soft corner-sm pressable concealed tween-opacity-ground-ink-quick hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed"
+          className="horizontal padding-xs align-center justify-center position-absolute center-y inset-right-sm ink-soft corner-sm pressable concealed tween-opacity-ground-ink-quick hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed"
           onClick={e => { e.stopPropagation(); onEdit(); }}
           aria-label={t('modalSearch.editMacro')}
           tabIndex={-1}

@@ -42,7 +42,7 @@ export default function SiteToggle() {
       <label className="horizontal inline rigid align-center gap-xs pressable">
         <input
           type="checkbox"
-          className="checkbox control-size-lg rule corner-sm ruled pressable focus:ring"
+          className="control-size-lg rule corner-sm ruled pressable focus:ring"
           checked={isEnabled}
           onChange={() => toggleSiteDisabled(hostname)}
         />

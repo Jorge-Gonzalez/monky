@@ -175,7 +175,7 @@ describe('MacroSuggestions', () => {
     test('applies correct positioning styles', () => {
       const { container } = render(<MacroSuggestions {...defaultProps} />);
 
-      const suggestionContainer = container.querySelector('.macro-suggestions-container');
+      const suggestionContainer = container.firstChild as HTMLElement;
       expect(suggestionContainer).toHaveStyle({
         left: '100px',
         top: '100px',
@@ -186,8 +186,8 @@ describe('MacroSuggestions', () => {
     test('renders with correct placement class', () => {
       const { container } = render(<MacroSuggestions {...defaultProps} />);
 
-      const arrow = container.querySelector('.macro-suggestions-arrow');
-      expect(arrow).toHaveClass('bottom');
+      const arrow = container.querySelector('.sf-callout-arrow');
+      expect(arrow).toHaveClass('sf-callout-arrow-bottom');
     });
 
     test('highlights selected macro', () => {
@@ -277,7 +277,7 @@ describe('MacroSuggestions', () => {
     test('keyboard hints contain correct keys', () => {
       const { container } = render(<MacroSuggestions {...defaultProps} />);
 
-      const kbdElements = container.querySelectorAll('.macro-suggestions-kbd');
+      const kbdElements = container.querySelectorAll('kbd');
       expect(kbdElements.length).toBeGreaterThan(0);
     });
   });
@@ -324,7 +324,7 @@ describe('MacroSuggestions', () => {
         />
       );
 
-      const suggestionContainer = container.querySelector('.macro-suggestions-container');
+      const suggestionContainer = container.firstChild as HTMLElement;
       expect(suggestionContainer).toBeInTheDocument();
     });
 

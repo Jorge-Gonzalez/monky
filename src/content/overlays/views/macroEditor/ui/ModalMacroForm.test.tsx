@@ -38,7 +38,7 @@ vi.mock('../../../../../store/macroCrud', () => ({
 }))
 
 function setEditorContent(html: string) {
-  const el = document.querySelector('.content-editor-body') as HTMLElement
+  const el = document.querySelector('[contenteditable]') as HTMLElement
   if (el) { el.innerHTML = html; fireEvent.input(el) }
 }
 
@@ -70,7 +70,7 @@ describe('ModalMacroForm', () => {
       render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
 
       expect(screen.getByLabelText('macroForm.triggerLabel')).toBeInTheDocument()
-      expect(document.querySelector('.content-editor-body')).toBeInTheDocument()
+      expect(document.querySelector('[contenteditable]')).toBeInTheDocument()
       expect(screen.getByRole('checkbox')).toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'macroForm.saveButton' })).toBeInTheDocument()
     })
@@ -121,7 +121,7 @@ describe('ModalMacroForm', () => {
       // '/' matches all 6 macros, but we cap at 5
       focusAndType(getCommandInput(), '/')
 
-      const items = document.querySelectorAll('.command-suggestion-item')
+      const items = document.querySelectorAll('[aria-selected]')
       expect(items.length).toBeLessThanOrEqual(5)
     })
 
@@ -131,7 +131,7 @@ describe('ModalMacroForm', () => {
 
       focusAndType(getCommandInput(), '/si')
 
-      expect(document.querySelector('.command-suggestions')).not.toBeInTheDocument()
+      expect(screen.queryByText('macroEditor.commandSuggestionsLabel')).not.toBeInTheDocument()
     })
 
     // Note: blur → close is not reliably testable in jsdom (fireEvent.blur doesn't
@@ -173,12 +173,12 @@ describe('ModalMacroForm', () => {
       const input = getCommandInput()
 
       focusAndType(input, '/si')
-      expect(document.querySelector('.command-suggestions')).toBeInTheDocument()
+      expect(screen.queryByText('macroEditor.commandSuggestionsLabel')).toBeInTheDocument()
 
       fireEvent.keyDown(input, { key: 'Enter' })
 
       expect(onLoadMacro).not.toHaveBeenCalled()
-      expect(document.querySelector('.command-suggestions')).not.toBeInTheDocument()
+      expect(screen.queryByText('macroEditor.commandSuggestionsLabel')).not.toBeInTheDocument()
     })
 
     it('closes suggestions on Escape without propagating the event', () => {
@@ -191,7 +191,7 @@ describe('ModalMacroForm', () => {
 
       fireEvent.keyDown(input, { key: 'Escape' })
 
-      expect(document.querySelector('.command-suggestions')).not.toBeInTheDocument()
+      expect(screen.queryByText('macroEditor.commandSuggestionsLabel')).not.toBeInTheDocument()
       expect(parentHandler).not.toHaveBeenCalled()
 
       input.parentElement!.removeEventListener('keydown', parentHandler)
@@ -203,11 +203,11 @@ describe('ModalMacroForm', () => {
 
       focusAndType(input, '/si')
       fireEvent.keyDown(input, { key: 'Escape' })
-      expect(document.querySelector('.command-suggestions')).not.toBeInTheDocument()
+      expect(screen.queryByText('macroEditor.commandSuggestionsLabel')).not.toBeInTheDocument()
 
       // Typing a new character resets dismissal
       focusAndType(input, '/sil')
-      expect(document.querySelector('.command-suggestions')).toBeInTheDocument()
+      expect(screen.queryByText('macroEditor.commandSuggestionsLabel')).toBeInTheDocument()
     })
   })
 

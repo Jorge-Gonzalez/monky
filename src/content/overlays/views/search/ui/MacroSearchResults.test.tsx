@@ -65,26 +65,26 @@ describe('MacroSearchResults', () => {
         <MacroSearchResults {...baseProps} onEdit={onEdit} confirmingDeleteId={2} />
       );
       const items = container.querySelectorAll('.macro-search-item');
-      expect(items[1].querySelector('.macro-search-item-edit')).toBeNull();
-      expect(items[0].querySelector('.macro-search-item-edit')).not.toBeNull();
+      expect(items[1].querySelector('[aria-label="modalSearch.editMacro"]')).toBeNull();
+      expect(items[0].querySelector('[aria-label="modalSearch.editMacro"]')).not.toBeNull();
     });
   });
 
   describe('edit button', () => {
     it('does not render edit buttons when onEdit is not provided', () => {
       const { container } = render(<MacroSearchResults {...baseProps} />);
-      expect(container.querySelectorAll('.macro-search-item-edit')).toHaveLength(0);
+      expect(container.querySelectorAll('[aria-label="modalSearch.editMacro"]')).toHaveLength(0);
     });
 
     it('renders an edit button on each row when onEdit is provided', () => {
       const { container } = render(<MacroSearchResults {...baseProps} onEdit={vi.fn()} />);
-      expect(container.querySelectorAll('.macro-search-item-edit')).toHaveLength(macros.length);
+      expect(container.querySelectorAll('[aria-label="modalSearch.editMacro"]')).toHaveLength(macros.length);
     });
 
     it('calls onEdit with the correct macro when the edit button is clicked', () => {
       const onEdit = vi.fn();
       const { container } = render(<MacroSearchResults {...baseProps} onEdit={onEdit} />);
-      const editButtons = container.querySelectorAll('.macro-search-item-edit');
+      const editButtons = container.querySelectorAll('[aria-label="modalSearch.editMacro"]');
       fireEvent.click(editButtons[1]);
       expect(onEdit).toHaveBeenCalledWith(macros[1]);
       expect(onEdit).toHaveBeenCalledTimes(1);
@@ -94,7 +94,7 @@ describe('MacroSearchResults', () => {
       const onSelect = vi.fn();
       const onEdit = vi.fn();
       const { container } = render(<MacroSearchResults {...baseProps} onSelect={onSelect} onEdit={onEdit} />);
-      fireEvent.click(container.querySelectorAll('.macro-search-item-edit')[0]);
+      fireEvent.click(container.querySelectorAll('[aria-label="modalSearch.editMacro"]')[0]);
       expect(onSelect).not.toHaveBeenCalled();
     });
   });

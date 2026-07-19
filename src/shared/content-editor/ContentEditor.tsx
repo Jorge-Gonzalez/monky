@@ -97,7 +97,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
         <div
           ref={editorRef}
           contentEditable
-          className="content-editor-body sf-authored-content sf-generated-placeholder sf-focus-proxy padding-top-md padding-right-xl padding-bottom-md padding-left-md elastic basis-ratio min-height-none margin-right-xs scroll-auto ink font-md"
+          className="sf-authored-content sf-generated-placeholder sf-focus-proxy padding-top-md padding-right-xl padding-bottom-md padding-left-md elastic basis-ratio min-height-none margin-right-xs scroll-auto ink font-md"
           data-placeholder={placeholder}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}

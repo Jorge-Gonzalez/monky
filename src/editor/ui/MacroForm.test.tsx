@@ -28,7 +28,7 @@ vi.mock('../../store/useMacroStore', () => ({
 }))
 
 function setEditorContent(html: string) {
-  const editorDiv = document.querySelector('.content-editor-body') as HTMLElement
+  const editorDiv = document.querySelector('[contenteditable]') as HTMLElement
   if (editorDiv) {
     editorDiv.innerHTML = html
     act(() => { fireEvent.input(editorDiv) })
@@ -68,7 +68,7 @@ describe('MacroForm Component', () => {
 
   it('renders the content editor body', () => {
     render(<MacroForm editing={null} onDone={mockOnDone} />)
-    expect(document.querySelector('.content-editor-body')).toBeInTheDocument()
+    expect(document.querySelector('[contenteditable]')).toBeInTheDocument()
   })
 
   it('allows user to input command', () => {
@@ -233,7 +233,6 @@ describe('MacroForm Component', () => {
       fireEvent.change(commandInput, { target: { value: '/validcommand' } })
       expect(submitButton).toBeDisabled()
 
-      expect(commandInput).toHaveClass('input')
       expect(commandInput).not.toHaveClass('focus:recessed-fail')
       expect(commandInput).not.toHaveAttribute('aria-invalid')
       expect(commandInput).not.toHaveClass('border-red-300')
@@ -288,7 +287,6 @@ describe('MacroForm Component', () => {
       const commandInput = screen.getByLabelText('macroForm.triggerLabel')
       fireEvent.change(commandInput, { target: { value: '/validcommand' } })
 
-      expect(commandInput).toHaveClass('input')
       expect(commandInput).not.toHaveClass('focus:recessed-fail')
       expect(commandInput).not.toHaveAttribute('aria-invalid')
     })

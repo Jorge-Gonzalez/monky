@@ -91,7 +91,7 @@ export default function MacroForm({ editing, onDone }: {
         <input
           id="macro-command"
           ref={commandInputRef}
-          className={`input fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled recessed-soft font-md tween-rule-quick focus:rule-accent-soft focus:ring-accent-soft ${command && !commandValid ? 'rule-fail focus:rule-fail focus:recessed-fail' : ''}`}
+          className={`fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled recessed-soft font-md tween-rule-quick focus:rule-accent-soft focus:ring-accent-soft ${command && !commandValid ? 'rule-fail focus:rule-fail focus:recessed-fail' : ''}`}
           value={command}
           onChange={e => setCommand(e.currentTarget.value)}
           placeholder={`e.g., ${prefixes[0]}sig`}
@@ -118,7 +118,7 @@ export default function MacroForm({ editing, onDone }: {
       </div>
 
       {error && (
-        <div className="alert padding-md ground-fail-faint ink-fail rule-fail corner-md ruled">
+        <div className="padding-md ground-fail-faint ink-fail rule-fail corner-md ruled">
           <p className="font-medium">{error}</p>
         </div>
       )}
@@ -129,7 +129,7 @@ export default function MacroForm({ editing, onDone }: {
             type="checkbox"
             checked={isSensitive}
             onChange={e => setSensitive(e.currentTarget.checked)}
-            className="checkbox control-size-lg rule corner-sm ruled pressable focus:ring"
+            className="control-size-lg rule corner-sm ruled pressable focus:ring"
           />
           <span className="boxed ink font-sm font-medium">{t('macroForm.sensitiveLabel')}</span>
         </label>

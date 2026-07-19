@@ -32,7 +32,7 @@ describe('CommandSuggestions', () => {
 
   it('arming a row swaps trash for confirm/cancel and tints only that row', () => {
     const { container } = setup()
-    const rows = container.querySelectorAll('.command-suggestion-item')
+    const rows = container.querySelectorAll('[aria-selected]')
     fireEvent.mouseDown(trashOf(rows[1]))
 
     expect(rows[1]).toHaveAttribute('data-state', 'confirming-delete')
@@ -45,7 +45,7 @@ describe('CommandSuggestions', () => {
 
   it('confirming deletes that macro; the row click never fires select', () => {
     const { container, onDelete, onSelect } = setup()
-    const rows = container.querySelectorAll('.command-suggestion-item')
+    const rows = container.querySelectorAll('[aria-selected]')
     fireEvent.mouseDown(trashOf(rows[1]))
     fireEvent.mouseDown(screen.getByLabelText('macroEditor.confirmDelete'))
 
@@ -55,7 +55,7 @@ describe('CommandSuggestions', () => {
 
   it('cancel disarms without deleting', () => {
     const { container, onDelete } = setup()
-    const rows = container.querySelectorAll('.command-suggestion-item')
+    const rows = container.querySelectorAll('[aria-selected]')
     fireEvent.mouseDown(trashOf(rows[1]))
     fireEvent.mouseDown(screen.getByLabelText('macroEditor.cancelDelete'))
 
@@ -66,14 +66,14 @@ describe('CommandSuggestions', () => {
 
   it('backs the selected suggestion with aria-selected', () => {
     const { container } = setup()
-    const rows = container.querySelectorAll('.command-suggestion-item')
+    const rows = container.querySelectorAll('[aria-selected]')
     expect(rows[0]).toHaveAttribute('aria-selected', 'true')
     expect(rows[1]).toHaveAttribute('aria-selected', 'false')
   })
 
   it('clicking a row body selects it', () => {
     const { container, onSelect } = setup()
-    const rows = container.querySelectorAll('.command-suggestion-item')
+    const rows = container.querySelectorAll('[aria-selected]')
     fireEvent.mouseDown(rows[0])
     expect(onSelect).toHaveBeenCalledWith(suggestions[0])
   })

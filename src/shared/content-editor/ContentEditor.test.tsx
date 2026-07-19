@@ -36,7 +36,7 @@ function setSelectionInEditor(body: HTMLElement, text: string) {
 }
 
 function getBody() {
-  return document.querySelector('.content-editor-body') as HTMLElement
+  return document.querySelector('[contenteditable]') as HTMLElement
 }
 
 // ─── editorCommands ──────────────────────────────────────────────────────────
@@ -356,7 +356,7 @@ describe('ContentEditor keyboard shortcuts', () => {
 
   it('Ctrl+K enters link mode (toolbar shows URL input)', () => {
     keyDown({ key: 'k', ctrlKey: true })
-    expect(document.querySelector('.ce-link-field')).toBeInTheDocument()
+    expect(document.querySelector('input[type="url"]')).toBeInTheDocument()
   })
 })
 

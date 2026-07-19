@@ -43,7 +43,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
   useEffect(() => { setConfirmingId(null); }, [suggestions]);
 
   return (
-    <div className="command-suggestions hidden position-absolute attach-below stretch-inline dropdown ground-subtle rule-accent-soft corner-bottom-md ruled-left ruled-right ruled-bottom elevated">
+    <div className="hidden position-absolute attach-below stretch-inline dropdown ground-subtle rule-accent-soft corner-bottom-md ruled-left ruled-right ruled-bottom elevated">
       <div className="padding-block-xs padding-inline-md ink-soft rule ruled-bottom font-sm">
         {t('macroEditor.commandSuggestionsLabel')}
       </div>
@@ -52,7 +52,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
         return (
           <div
             key={macro.id}
-            className={`command-suggestion-item horizontal gap-md padding-block-sm padding-inline-md align-center hidden pressable tween-ground-quick ${confirming ? 'ground-fail-faint' : 'selectable hover:ground selected:ground-defined'}`}
+            className={`horizontal gap-md padding-block-sm padding-inline-md align-center hidden pressable tween-ground-quick ${confirming ? 'ground-fail-faint' : 'selectable hover:ground selected:ground-defined'}`}
             aria-selected={i === selectedIndex ? 'true' : 'false'}
             data-state={confirming ? 'confirming-delete' : undefined}
             onMouseDown={e => { e.preventDefault(); onSelect(macro); }}
@@ -63,7 +63,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
               <span className="horizontal rigid push gap-xs align-center">
                 <button
                   type="button"
-                  className="confirm horizontal rigid padding-xs align-center justify-center ink-fail corner-sm pressable tween-opacity-ground-ink-quick hover:ground-fail hover:ink-inverse"
+                  className="horizontal rigid padding-xs align-center justify-center ink-fail corner-sm pressable tween-opacity-ground-ink-quick hover:ground-fail hover:ink-inverse"
                   aria-label={t('macroEditor.confirmDelete')}
                   onMouseDown={e => { e.preventDefault(); e.stopPropagation(); onDelete(macro); setConfirmingId(null); }}
                 >
@@ -71,7 +71,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
                 </button>
                 <button
                   type="button"
-                  className="cancel horizontal rigid padding-xs align-center justify-center ink-soft corner-sm pressable tween-opacity-ground-ink-quick hover:ground-defined hover:ink"
+                  className="horizontal rigid padding-xs align-center justify-center ink-soft corner-sm pressable tween-opacity-ground-ink-quick hover:ground-defined hover:ink"
                   aria-label={t('macroEditor.cancelDelete')}
                   onMouseDown={e => { e.preventDefault(); e.stopPropagation(); setConfirmingId(null); }}
                 >
@@ -81,7 +81,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
             ) : (
               <button
                 type="button"
-                className="delete horizontal rigid push padding-xs align-center justify-center ink-soft corner-sm pressable concealed tween-opacity-ground-ink-quick hover:ground-fail-faint hover:ink-fail parent-hover:revealed parent-selected:revealed"
+                className="horizontal rigid push padding-xs align-center justify-center ink-soft corner-sm pressable concealed tween-opacity-ground-ink-quick hover:ground-fail-faint hover:ink-fail parent-hover:revealed parent-selected:revealed"
                 aria-label={t('macroEditor.deleteMacro')}
                 onMouseDown={e => { e.preventDefault(); e.stopPropagation(); setConfirmingId(macro.id); }}
               >

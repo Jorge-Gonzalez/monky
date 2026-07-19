@@ -45,7 +45,7 @@ export function ContentEditorLinkField({
   }
 
   return (
-    <div className="ce-link-field horizontal elastic basis-ratio gap-xs align-center">
+    <div className="horizontal elastic basis-ratio gap-xs align-center">
       <span className="padding-block-none padding-inline-xs horizontal rigid align-center ink-soft" dangerouslySetInnerHTML={{ __html: icons.link }} />
       <input
         ref={inputRef}

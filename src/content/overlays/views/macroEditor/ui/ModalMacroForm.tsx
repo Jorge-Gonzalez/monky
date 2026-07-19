@@ -133,7 +133,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             <input
               id="modal-macro-command"
               ref={commandInputRef}
-              className={`input fill-inline padding-block-sm padding-inline-md ground-subtle ink rule ${commandJoined ? 'corner-top-3xl corner-bottom-none' : 'corner-3xl'} ruled recessed-soft font-md tween-rule-quick focus:rule-accent-soft focus:ring-accent-soft ${command && !commandValid ? 'rule-fail focus:rule-fail focus:recessed-fail' : ''}`}
+              className={`fill-inline padding-block-sm padding-inline-md ground-subtle ink rule ${commandJoined ? 'corner-top-3xl corner-bottom-none' : 'corner-3xl'} ruled recessed-soft font-md tween-rule-quick focus:rule-accent-soft focus:ring-accent-soft ${command && !commandValid ? 'rule-fail focus:rule-fail focus:recessed-fail' : ''}`}
               value={command}
               onChange={e => setCommand(e.currentTarget.value)}
               placeholder={t('macroForm.commandPlaceholder', { prefix: prefixes[0] })}
@@ -174,7 +174,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             type="checkbox"
             checked={isSensitive}
             onChange={e => setSensitive(e.currentTarget.checked)}
-            className="checkbox control-size-lg rule corner-sm ruled pressable focus:ring"
+            className="control-size-lg rule corner-sm ruled pressable focus:ring"
           />
           <span>{t('macroForm.sensitiveLabel')}</span>
         </label>
@@ -200,7 +200,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
       </div>
 
       {(error || savedToast) && (
-        <div className={`alert padding-md position-absolute center-x inset-bottom-3xl text-nowrap corner-md ruled elevated-soft ${error ? 'ground-fail-faint rule-fail ink-fail' : 'ground-pass-faint rule-pass ink-pass'}`} role="status">
+        <div className={`padding-md position-absolute center-x inset-bottom-3xl text-nowrap corner-md ruled elevated-soft ${error ? 'ground-fail-faint rule-fail ink-fail' : 'ground-pass-faint rule-pass ink-pass'}`} role="status">
           <p className="font-medium">{error ?? savedToast}</p>
         </div>
       )}
