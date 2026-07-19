@@ -75,6 +75,8 @@ const translations = {
         select: 'select',
         edit: 'edit',
         close: 'close',
+        showShortcuts: 'Show keyboard shortcuts',
+        hideShortcuts: 'Hide keyboard shortcuts',
       },
     },
 
@@ -247,6 +249,8 @@ const translations = {
         select: 'seleccionar',
         edit: 'editar',
         close: 'cerrar',
+        showShortcuts: 'Mostrar atajos de teclado',
+        hideShortcuts: 'Ocultar atajos de teclado',
       },
     },
 

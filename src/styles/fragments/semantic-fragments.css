@@ -119,6 +119,12 @@
   pointer-events: none;
 }
 
+/* sf-focus-proxy: the focused editable delegates its visible focus contour to
+   its stateful parent frame. The parent remains visibly outlined while focused. */
+.sf-focus-proxy:focus-visible {
+  outline: none;
+}
+
 /* sf-foreign-overlay-host: content-script host above ordinary page/framework layers.
    This is a foreign-page boundary, not an Ermine z-scale word or platform top layer. */
 :host(.sf-foreign-overlay-host),
@@ -226,21 +232,22 @@
 
 /* sf-engine-scrollbar: browser-engine scrollbar adapter after standard sockets. */
 ::-webkit-scrollbar {
-  width: var(--spacing-md) !important;
-  height: var(--spacing-md) !important;
+  width: var(--spacing-lg) !important;
+  height: var(--spacing-lg) !important;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--tone-dim) !important;
-  border-radius: var(--radius-md) !important;
+  background: transparent !important;
+  border-radius: var(--radius-3xl) !important;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--tone) !important;
-  border-radius: var(--radius-md) !important;
-  border: 1px solid var(--tone-dim) !important;
+  background-color: var(--tone) !important;
+  background-clip: padding-box !important;
+  border-radius: var(--radius-3xl) !important;
+  border: 3px solid transparent !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-dim) !important;
+  background-color: var(--accent-dim) !important;
 }

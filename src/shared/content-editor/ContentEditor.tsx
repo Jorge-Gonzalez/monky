@@ -28,6 +28,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
 }, ref) => {
   const editorRef = useRef<HTMLDivElement>(null)
   const [linkMode, setLinkMode] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
   const savedRangeRef = useRef<Range | null>(null)
   const isInitialMount = useRef(true)
   // The last HTML we emitted via onChange. The controlled value echoes back as this
@@ -83,7 +84,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
   const bodyFlex = className.includes('editor-content') ? 'elastic basis-ratio ' : ''
 
   return (
-    <div className={`content-editor vertical hidden${shellMinHeight} ground-subtle ${className}`}>
+    <div className={`content-editor vertical${shellMinHeight} ${className}`}>
       <ContentEditorToolbar
         formatState={formatState}
         linkMode={linkMode}
@@ -92,18 +93,22 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
         onLinkRequest={handleLinkRequest}
         onLinkClose={() => { setLinkMode(false); editorRef.current?.focus() }}
       />
-      <div
-        ref={editorRef}
-        contentEditable
-        className={`content-editor-body sf-authored-content sf-generated-placeholder padding-md ${bodyFlex}${bodyMinHeight} scroll-auto scrollbar-subtle ink rule corner-lg ruled font-md focus:rule-accent focus:ring`}
-        data-placeholder={placeholder}
-        onInput={() => {
-          if (!editorRef.current || !onChange) return
-          const html = normalizeEditorHTML(editorRef.current.innerHTML)
-          lastEmittedRef.current = html
-          onChange(html)
-        }}
-      />
+      <div className={`content-editor-frame vertical hidden ${bodyFlex}${bodyMinHeight} ground-subtle ink ${isFocused ? 'rule-accent-soft ring-accent-soft' : 'rule'} corner-xl ruled recessed-soft`}>
+        <div
+          ref={editorRef}
+          contentEditable
+          className="content-editor-body sf-authored-content sf-generated-placeholder sf-focus-proxy padding-top-md padding-right-xl padding-bottom-md padding-left-md elastic basis-ratio min-height-none margin-right-xs scroll-auto ink font-md"
+          data-placeholder={placeholder}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          onInput={() => {
+            if (!editorRef.current || !onChange) return
+            const html = normalizeEditorHTML(editorRef.current.innerHTML)
+            lastEmittedRef.current = html
+            onChange(html)
+          }}
+        />
+      </div>
     </div>
   )
 })

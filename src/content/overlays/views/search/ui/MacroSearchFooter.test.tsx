@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/preact';
+import { fireEvent, render, screen } from '@testing-library/preact';
 import { MacroSearchFooter } from './MacroSearchFooter';
 
 describe('MacroSearchFooter — count label', () => {
@@ -35,8 +35,19 @@ describe('MacroSearchFooter — count label', () => {
 });
 
 describe('MacroSearchFooter — keyboard hints', () => {
+  const revealShortcuts = () => fireEvent.click(screen.getByRole('button', { name: 'Show keyboard shortcuts' }));
+
+  it('hides shortcuts by default and exposes an icon-only disclosure button', () => {
+    render(<MacroSearchFooter count={2} isCommandMode={false} />);
+    const button = screen.getByRole('button', { name: 'Show keyboard shortcuts' });
+    expect(button.textContent).toBe('');
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(screen.queryByText(':')).toBeNull();
+  });
+
   it('shows ":" commands hint in macro mode', () => {
     const { container } = render(<MacroSearchFooter count={2} isCommandMode={false} />);
+    revealShortcuts();
     // The colon is its own <kbd> element
     expect(screen.getByText(':')).toBeTruthy();
     expect(container.textContent).toContain('select');
@@ -44,42 +55,57 @@ describe('MacroSearchFooter — keyboard hints', () => {
 
   it('does not show ":" commands hint in command mode', () => {
     render(<MacroSearchFooter count={2} isCommandMode={true} />);
+    revealShortcuts();
     // In command mode the <kbd>:</kbd> element is absent
     expect(screen.queryByText(':')).toBeNull();
   });
 
   it('shows "run" hint in command mode', () => {
     const { container } = render(<MacroSearchFooter count={2} isCommandMode={true} />);
+    revealShortcuts();
     expect(container.textContent).toContain('run');
   });
 
   it('shows "Tab" and "edit" hint in macro mode when hasSelection is true', () => {
     const { container } = render(<MacroSearchFooter count={2} isCommandMode={false} hasSelection={true} />);
+    revealShortcuts();
     expect(screen.getByText('Tab')).toBeTruthy();
     expect(container.textContent).toContain('edit');
   });
 
   it('does not show "Tab" hint when hasSelection is false', () => {
     render(<MacroSearchFooter count={2} isCommandMode={false} hasSelection={false} />);
+    revealShortcuts();
     expect(screen.queryByText('Tab')).toBeNull();
   });
 
   it('does not show "Tab" hint when hasSelection is omitted', () => {
     render(<MacroSearchFooter count={2} isCommandMode={false} />);
+    revealShortcuts();
     expect(screen.queryByText('Tab')).toBeNull();
   });
 
   it('does not show "Tab" hint in command mode even when hasSelection is true', () => {
     render(<MacroSearchFooter count={2} isCommandMode={true} hasSelection={true} />);
+    revealShortcuts();
     expect(screen.queryByText('Tab')).toBeNull();
   });
 
   it('shows "close" hint in both modes', () => {
     const { container, unmount } = render(<MacroSearchFooter count={1} isCommandMode={false} />);
+    revealShortcuts();
     expect(container.textContent).toContain('close');
     unmount();
 
     const { container: c2 } = render(<MacroSearchFooter count={1} isCommandMode={true} />);
+    revealShortcuts();
     expect(c2.textContent).toContain('close');
+  });
+
+  it('hides the shortcuts again when toggled', () => {
+    render(<MacroSearchFooter count={2} isCommandMode={false} />);
+    revealShortcuts();
+    fireEvent.click(screen.getByRole('button', { name: 'Hide keyboard shortcuts' }));
+    expect(screen.queryByText(':')).toBeNull();
   });
 });

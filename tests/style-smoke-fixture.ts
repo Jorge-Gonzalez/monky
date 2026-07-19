@@ -21,18 +21,18 @@ function shadow(css: string, html: string): void {
 
 shadow(
   composeShadowBundle(),
-  `<div data-probe="modal" class="modal-dialog vertical hidden dialog-measure ground rule corner-lg ruled elevated-soft">
+  `<div data-probe="modal" class="modal-dialog vertical hidden dialog-measure ground rule corner-3xl ruled elevated-soft">
     <div data-probe="search-view" class="macro-search-view fill-block vertical">
-      <div data-probe="search-input-container" class="macro-search-input-container padding-lg rule ruled-bottom">
-        <input data-probe="search-input" class="macro-search-input fill-inline padding-block-sm padding-inline-md">
+      <div data-probe="search-input-container" class="macro-search-input-container padding-top-xs padding-right-xl padding-bottom-md padding-left-xl">
+        <input data-probe="search-input" class="macro-search-input fill-inline padding-block-sm padding-inline-lg recessed-soft">
       </div>
-      <div data-probe="search-results" class="macro-search-results grid-fit-sm elastic basis-ratio max-height-results-md scroll-auto">
+      <div data-probe="search-results" class="macro-search-results grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto">
         <div data-probe="search-item" class="macro-search-item subgrid span-all position-relative selectable" aria-selected="true">
-          <span data-probe="search-cell" class="macro-search-item-command padding-top-md padding-right-xs padding-bottom-md padding-left-md parent-selected:ground-defined">command</span>
+          <span data-probe="search-cell" class="macro-search-item-command padding-top-lg padding-right-xs padding-bottom-lg padding-left-none parent-selected:ground-defined">command</span>
           <button data-probe="search-edit" class="macro-search-item-edit horizontal padding-xs align-center justify-center position-absolute center-y inset-right-sm pressable concealed parent-hover:revealed parent-selected:revealed">edit</button>
         </div>
       </div>
-      <footer data-probe="search-footer" class="macro-search-footer horizontal padding-sm justify-between">
+      <footer data-probe="search-footer" class="macro-search-footer horizontal padding-block-sm padding-inline-xl justify-between">
         <div><span data-probe="search-shortcut" class="macro-search-shortcut horizontal inline gap-sm align-center margin-right-xl">
           <kbd data-probe="search-kbd" class="macro-search-kbd horizontal align-center justify-center position-relative">Esc</kbd>
         </span></div>

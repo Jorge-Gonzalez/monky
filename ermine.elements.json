@@ -8,7 +8,7 @@
     },
     {
       "id": "modal-dialog",
-      "classString": "vertical hidden dialog-measure ground rule corner-lg ruled elevated-soft",
+      "classString": "vertical hidden dialog-measure ground rule corner-3xl ruled elevated-soft",
       "backing": []
     },
     {
@@ -23,7 +23,7 @@
     },
     {
       "id": "modal-navigation",
-      "classString": "horizontal padding-inline-lg min-height-control-3xl align-center justify-between",
+      "classString": "horizontal padding-block-sm padding-inline-xl min-height-control-3xl align-center justify-between",
       "backing": []
     },
     {
@@ -33,37 +33,32 @@
     },
     {
       "id": "modal-navigation-brand",
-      "classString": "horizontal gap-sm margin-right-lg align-center ink-accent",
-      "backing": []
-    },
-    {
-      "id": "modal-navigation-label",
-      "classString": "rigid font-md",
+      "classString": "horizontal align-center ink-accent",
       "backing": []
     },
     {
       "id": "modal-navigation-tabs",
-      "classString": "horizontal",
+      "classString": "horizontal gap-sm padding-xs ground-subtle corner-3xl",
       "backing": []
     },
     {
       "id": "modal-navigation-tab",
-      "classString": "tween-quick horizontal padding-block-md padding-inline-2xl gap-sm align-center justify-center ink-soft font-md font-medium pressable ruled-bottom rule-bottom-transparent hover:ground-subtle hover:ink current:ground-subtle current:ink-accent current:rule-bottom-accent",
+      "classString": "tween-ground-ink-quick horizontal padding-none control-box-lg align-center justify-center ink-soft corner-3xl pressable hover:ink current:ground-defined current:ink-accent",
       "backing": []
     },
     {
       "id": "search-input-container",
-      "classString": "padding-lg rule ruled-bottom",
+      "classString": "padding-top-xs padding-right-xl padding-bottom-md padding-left-xl",
       "backing": []
     },
     {
       "id": "search-input",
-      "classString": "fill-inline padding-block-sm padding-inline-md ground-subtle ink rule-accent-soft corner-md ruled font-md tween-rule-quick focus:rule-accent focus:ring",
+      "classString": "fill-inline padding-block-sm padding-inline-lg ground-subtle ink rule corner-2xl ruled recessed-soft font-md tween-rule-quick focus:rule-accent-soft focus:ring-accent-soft",
       "backing": []
     },
     {
       "id": "search-results",
-      "classString": "grid-fit-sm elastic basis-ratio max-height-results-md scroll-auto content-align-start scrollbar-subtle",
+      "classString": "grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start",
       "backing": []
     },
     {
@@ -71,7 +66,7 @@
       "classString": "span-all padding-lg ink-soft font-md text-center",
       "backing": [],
       "context": {
-        "parentClasses": "grid-fit-sm elastic basis-ratio max-height-results-md scroll-auto content-align-start scrollbar-subtle"
+        "parentClasses": "grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start"
       }
     },
     {
@@ -81,12 +76,12 @@
         "aria-selected"
       ],
       "context": {
-        "parentClasses": "grid-fit-sm elastic basis-ratio max-height-results-md scroll-auto content-align-start scrollbar-subtle"
+        "parentClasses": "grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start"
       }
     },
     {
       "id": "search-item-command-cell",
-      "classString": "padding-top-md padding-right-xs padding-bottom-md padding-left-md hidden ink-accent rule-soft ruled-bottom font-md font-medium pressable truncate parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick",
+      "classString": "padding-top-lg padding-right-xs padding-bottom-lg padding-left-none hidden ink-accent rule-soft ruled-bottom font-lg font-medium pressable truncate parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -94,7 +89,7 @@
     },
     {
       "id": "search-item-text-cell",
-      "classString": "padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ink-soft rule-soft ruled-bottom font-md pressable truncate parent-hover:ground-subtle parent-selected:ground-defined parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick",
+      "classString": "padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ink rule-soft ruled-bottom font-lg pressable truncate parent-hover:ground-subtle parent-selected:ground-defined parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -107,12 +102,12 @@
     },
     {
       "id": "search-item-confirm-cell",
-      "classString": "padding-top-md padding-right-md padding-bottom-md padding-left-xs hidden ground-fail-faint ink-fail rule-soft ruled-bottom font-md font-medium truncate",
+      "classString": "padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ground-fail-faint ink-fail rule-soft ruled-bottom font-lg font-medium truncate",
       "backing": []
     },
     {
       "id": "search-command-name-cell",
-      "classString": "padding-top-md padding-right-xs padding-bottom-md padding-left-md hidden ink-accent rule-soft ruled-bottom font-md font-semibold font-mono truncate parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick",
+      "classString": "padding-top-lg padding-right-xs padding-bottom-lg padding-left-none hidden ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -120,7 +115,7 @@
     },
     {
       "id": "search-command-description-cell",
-      "classString": "padding-top-md padding-right-md padding-bottom-md padding-left-xs ink-soft rule-soft font-md parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick",
+      "classString": "padding-top-lg padding-right-md padding-bottom-lg padding-left-xs ink rule-soft font-lg parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -136,23 +131,35 @@
     },
     {
       "id": "search-footer",
-      "classString": "horizontal padding-sm justify-between ground ink-soft rule ruled-top font-sm",
+      "classString": "horizontal padding-block-sm padding-inline-xl justify-between ground ink-soft font-sm",
       "backing": []
     },
     {
       "id": "search-count",
-      "classString": "tabular ink-soft",
+      "classString": "rigid text-nowrap tabular ink-soft",
       "backing": []
     },
     {
       "id": "search-shortcut",
-      "classString": "horizontal inline gap-sm align-center margin-right-xl",
+      "classString": "horizontal inline gap-sm align-center margin-right-lg",
+      "backing": []
+    },
+    {
+      "id": "search-shortcut-last",
+      "classString": "horizontal inline gap-sm align-center",
       "backing": []
     },
     {
       "id": "search-kbd",
       "classString": "square horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono",
       "backing": []
+    },
+    {
+      "id": "search-help",
+      "classString": "horizontal rigid control-box-lg align-center justify-center ink-soft corner-3xl pressable hover:ground-defined hover:ink expanded:ground-defined expanded:ink-accent",
+      "backing": [
+        "aria-expanded"
+      ]
     },
     {
       "id": "u6-settings-shell",
@@ -599,12 +606,22 @@
     },
     {
       "id": "phase-b-content-editor-shell",
-      "classString": "min-height-editor ground-subtle",
+      "classString": "min-height-editor",
+      "backing": []
+    },
+    {
+      "id": "phase-b-content-editor-frame",
+      "classString": "vertical hidden min-height-editor ground-subtle ink rule corner-xl ruled recessed-soft",
+      "backing": []
+    },
+    {
+      "id": "phase-b-content-editor-frame-focused",
+      "classString": "vertical hidden min-height-editor ground-subtle ink rule-accent-soft ring-accent-soft corner-xl ruled recessed-soft",
       "backing": []
     },
     {
       "id": "phase-b-content-editor-body",
-      "classString": "padding-md min-height-editor scroll-auto scrollbar-subtle ink rule corner-lg ruled font-md focus:rule-accent focus:ring",
+      "classString": "padding-top-md padding-right-xl padding-bottom-md padding-left-md elastic basis-ratio min-height-none margin-right-xs scroll-auto ink font-md",
       "backing": []
     },
     {
@@ -624,12 +641,12 @@
     },
     {
       "id": "phase-b-input",
-      "classString": "fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled font-md tween-rule-quick focus:rule-accent focus:ring",
+      "classString": "fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-3xl ruled recessed-soft font-md tween-rule-quick focus:rule-accent-soft focus:ring-accent-soft",
       "backing": []
     },
     {
       "id": "u6-command-input-joined",
-      "classString": "fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-top-3xl corner-bottom-none ruled font-md tween-rule-quick focus:rule-accent focus:ring",
+      "classString": "fill-inline padding-block-sm padding-inline-md ground-subtle ink rule corner-top-3xl corner-bottom-none ruled recessed-soft font-md tween-rule-quick focus:rule-accent-soft focus:ring-accent-soft",
       "backing": []
     },
     {

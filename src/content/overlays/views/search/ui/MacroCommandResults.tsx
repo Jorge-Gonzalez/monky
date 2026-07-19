@@ -11,14 +11,14 @@ interface MacroCommandResultsProps {
 export function MacroCommandResults({ commands, selectedIndex, onSelect, resultsRef }: MacroCommandResultsProps) {
   if (commands.length === 0) {
     return (
-      <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio max-height-results-md scroll-auto content-align-start scrollbar-subtle" role="listbox">
+      <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
         <div className="macro-search-empty span-all padding-lg ink-soft font-md text-center">{t('modalSearch.noMatchingCommands')}</div>
       </div>
     );
   }
 
   return (
-    <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio max-height-results-md scroll-auto content-align-start scrollbar-subtle" role="listbox">
+    <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
       {commands.map((cmd, index) => (
         <div
           key={cmd.id}
@@ -27,8 +27,8 @@ export function MacroCommandResults({ commands, selectedIndex, onSelect, results
           aria-selected={index === selectedIndex}
           onClick={() => onSelect(cmd)}
         >
-          <div className="macro-search-item-command modal-command-name padding-top-md padding-right-xs padding-bottom-md padding-left-md hidden ink-accent rule-soft ruled-bottom font-md font-semibold font-mono truncate parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick">{cmd.command}</div>
-          <em className="macro-search-item-text modal-command-description padding-top-md padding-right-md padding-bottom-md padding-left-xs ink-soft rule-soft font-md parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick">{cmd.description}</em>
+          <div className="macro-search-item-command modal-command-name padding-top-lg padding-right-xs padding-bottom-lg padding-left-none hidden ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick">{cmd.command}</div>
+          <em className="macro-search-item-text modal-command-description padding-top-lg padding-right-md padding-bottom-lg padding-left-xs ink rule-soft font-lg parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick">{cmd.description}</em>
         </div>
       ))}
     </div>

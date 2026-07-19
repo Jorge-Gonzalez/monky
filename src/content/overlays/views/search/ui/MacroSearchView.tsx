@@ -161,7 +161,7 @@ export function MacroSearchView({
     }
     if (parsed.mode === 'awaiting') {
       return (
-        <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio max-height-results-md scroll-auto content-align-start scrollbar-subtle">
+        <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start">
           <div className="macro-search-empty modal-command-hint span-all padding-lg font-md text-center">
             {t('modalSearch.awaitingHint')}
           </div>

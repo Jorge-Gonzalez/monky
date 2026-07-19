@@ -17,12 +17,6 @@ const MonkyLogoLight = () => (
   </svg>
 );
 
-const MonkyLogoWord = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="100" height="25" viewBox="0 0 100 25">
-    <path fill="currentColor" d="M14.2 2.9 8 18.9H5l6.1-16zM47 6.3c-3.6 0-6.4 2.9-6.4 6.4s2.9 6.4 6.4 6.4 6.4-2.9 6.4-6.4-2.9-6.4-6.4-6.4zm0 10.3c-1.9 0-3.5-1.7-3.5-3.9s1.6-3.9 3.5-3.9 3.5 1.7 3.5 3.9-1.6 3.9-3.5 3.9zM61.3 6.3c-1.4 0-2.5.6-3.3 1.7V6.6h-3v12.2h3V12c.2-1.8 1.2-3.1 2.9-3.1 1.9 0 3 1.6 3 3.7v6.3h3v-6.3c0-3.6-2.1-6.3-5.6-6.3zM33.6 6.3c-2 0-3.4.9-4.3 2.4-.8-1.5-2.2-2.4-4.2-2.4-1.3 0-2.4.6-3.1 1.5V6.6h-3v12.2h3v-6.9c.2-1.8 1.1-3 2.8-3 1.9 0 2.8 1.6 2.8 3.7v6.3h3v-6.3c0-2.1.9-3.7 2.8-3.7s2.8 1.6 2.8 3.7v6.3h3v-6.3c-.2-3.6-2.1-6.3-5.6-6.3zM91.6 6.6l-3.5 9.1L85 6.6h-3.1l4.3 12.3h.7l-1.4 3.7h3.1l6.1-16zM80.9 6.6h-3.4l-4.3 6.1 4.3 6.2h3.4l-4.3-6.2zM69.3 2.9h3v16h-3z"/>
-  </svg>
-);
-
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16" fill="none" stroke="currentColor">
     <circle cx="7" cy="7" r="4"/>
@@ -56,22 +50,20 @@ export function ModalNavigation({ currentView, onViewChange, theme }: ModalNavig
   const Logo = isDarkMode ? MonkyLogoDark : MonkyLogoLight;
 
   return (
-    <nav className="modal-nav-container horizontal padding-inline-lg min-height-control-3xl align-center justify-between" style={{ borderBottom: '1px solid var(--harmonic)' }}>
-      <div className="modal-nav-branding horizontal gap-sm margin-right-lg align-center ink-accent">
-        {/* <Logo /> */}
-        <MonkyLogoWord />
+    <nav className="modal-nav-container horizontal padding-block-sm padding-inline-xl min-height-control-3xl align-center justify-between">
+      <div className="modal-nav-branding horizontal align-center ink-accent">
+        <Logo />
       </div>
-      <div className="horizontal">
+      <div className="horizontal gap-sm padding-xs ground-subtle corner-3xl">
         {tabs.map(tab => (
           <button
             key={tab.view}
-            className="modal-nav-tab panel-button tween-quick horizontal padding-block-md padding-inline-2xl gap-sm align-center justify-center ink-soft font-md font-medium pressable ruled-bottom rule-bottom-transparent hover:ground-subtle hover:ink current:ground-subtle current:ink-accent current:rule-bottom-accent"
+            className="modal-nav-tab panel-button tween-ground-ink-quick horizontal padding-none control-box-lg align-center justify-center ink-soft corner-3xl pressable hover:ink current:ground-defined current:ink-accent"
             onClick={() => onViewChange(tab.view)}
             aria-label={t('modalNavigation.switchTo', { view: tab.label })}
             aria-current={currentView === tab.view ? 'page' : undefined}
           >
             {tab.icon && <span className="modal-nav-icon rigid control-block-sm">{tab.icon}</span>}
-            <span className="modal-nav-label rigid font-md">{tab.label}</span>
           </button>
         ))}
       </div>
