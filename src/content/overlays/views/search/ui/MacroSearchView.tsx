@@ -3,7 +3,7 @@ import { Macro } from '../../../../../types';
 import { t } from '../../../../../lib/i18n';
 import { useMacroStore } from '../../../../../store/useMacroStore';
 import { deleteMacro } from '../../../../../store/macroCrud';
-import { useMacroSearch } from '../hooks/useMacroSearch';
+import { useMacroSearch } from '../../../../../shared/useMacroSearch';
 import { useListNavigation } from '../hooks/useListNavigation';
 import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
 import { useScrollIntoView } from '../hooks/useScrollIntoView';
