@@ -2,7 +2,6 @@ import { defineConfig, type ConfigEnv, type UserConfig } from 'vite'
 import preact from '@preact/preset-vite'
 import { crx } from '@crxjs/vite-plugin'
 import manifest from './manifest.config'
-import type { TerserOptions } from 'terser'
 import devtoolsJson from 'vite-plugin-devtools-json';
 
 function isProdBuild(mode: string) {

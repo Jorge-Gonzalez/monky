@@ -17,7 +17,7 @@ describe('useAutoFocus Hook', () => {
     const focusSpy = vi.spyOn(input, 'focus');
     const inputRef = { current: input };
 
-    const { rerender } = renderHook(({ isActive }) => useAutoFocus(inputRef, isActive, 50), {
+    const { rerender } = renderHook(({ isActive }) => useAutoFocus(inputRef, isActive), {
       initialProps: { isActive: false },
     });
 

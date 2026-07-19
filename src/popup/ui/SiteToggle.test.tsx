@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/preact'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest'
 import SiteToggle from './SiteToggle'
 import { useMacroStore } from '../../store/useMacroStore'
 import { t } from '../../lib/i18n'
@@ -30,7 +30,7 @@ describe('SiteToggle Component', () => {
     vi.clearAllMocks()
     
     // Setup default mock store implementation
-    ;(useMacroStore as vi.Mock).mockImplementation(selector => 
+    ;(useMacroStore as unknown as Mock).mockImplementation(selector => 
       selector({
         config: {
           disabledSites: mockDisabledSites
@@ -40,7 +40,7 @@ describe('SiteToggle Component', () => {
     )
     
     // Mock default translation
-    ;(t as vi.Mock).mockImplementation((key) => key)
+    ;(t as Mock).mockImplementation((key) => key)
   })
 
   it('does not render when hostname cannot be determined', () => {
@@ -68,7 +68,7 @@ describe('SiteToggle Component', () => {
       callback([{ url: 'file:///path/to/file.html' }])
     })
     
-    ;(t as vi.Mock).mockImplementation((key) => {
+    ;(t as Mock).mockImplementation((key) => {
       return key === 'popup.localFile' ? 'Local file' : key
     })
     
@@ -91,7 +91,7 @@ describe('SiteToggle Component', () => {
   })
 
   it('displays disabled state when site is disabled', () => {
-    ;(useMacroStore as vi.Mock).mockImplementation(selector => 
+    ;(useMacroStore as unknown as Mock).mockImplementation(selector => 
       selector({
         config: {
           disabledSites: ['example.com']

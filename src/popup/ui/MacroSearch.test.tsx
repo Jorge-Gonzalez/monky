@@ -10,9 +10,9 @@ vi.mock('../../lib/i18n', () => ({
 }))
 
 const mockMacros: Macro[] = [
-  { id: '1', command: '/brb', text: 'Be right back', sensitive: false },
-  { id: '2', command: '/omw', text: 'On my way', sensitive: false },
-  { id: '3', command: '/meeting-notes', text: 'Here are the meeting notes.', sensitive: false },
+  { id: '1', command: '/brb', text: 'Be right back', is_sensitive: false },
+  { id: '2', command: '/omw', text: 'On my way', is_sensitive: false },
+  { id: '3', command: '/meeting-notes', text: 'Here are the meeting notes.', is_sensitive: false },
 ]
 
 describe('MacroSearch Component', () => {

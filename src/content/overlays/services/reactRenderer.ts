@@ -1,5 +1,7 @@
 import { createElement } from 'react';
-import { createRoot, type Root } from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
+
+type Root = ReturnType<typeof createRoot>;
 
 export function createReactRenderer(containerId: string, useShadowDOM = true, hostClassName?: string) {
   let container: HTMLDivElement | null = null;
@@ -32,7 +34,7 @@ export function createReactRenderer(containerId: string, useShadowDOM = true, ho
   };
 
   const clear = (): void => {
-    root?.render(createElement('div'));
+    root?.render(createElement('div', null));
   };
 
   const destroy = (): void => {

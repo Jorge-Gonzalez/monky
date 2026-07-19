@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "lib": ["dom", "es2021"],
-    "types": ["chrome", "vitest/globals"],
+    "skipLibCheck": true,
+    "lib": ["dom", "dom.iterable", "es2022"],
+    "types": ["chrome", "node", "vitest/globals"],
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
     "baseUrl": ".",

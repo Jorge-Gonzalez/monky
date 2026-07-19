@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vitest'
 import { createMacroDetector, MacroDetector } from './macroDetector'
 import { useMacroStore } from '../../store/useMacroStore'
 import { defaultMacroConfig } from '../../config/defaults'
@@ -51,7 +51,7 @@ describe('createMacroDetector', () => {
     vi.clearAllMocks()
     
     // Setup default mocks
-    ;(useMacroStore.getState as vi.Mock).mockReturnValue({
+    ;(useMacroStore.getState as Mock).mockReturnValue({
       config: {
         useCommitKeys: false,
         prefixes: defaultMacroConfig.prefixes,
