@@ -12,19 +12,3 @@ export function useAutoFocus<T extends FocusableElement>(
     }
   }, [isActive, inputRef]);
 }
-
-export function useAutoFocusB<T extends FocusableElement>(
-  ref: RefObject<T>,
-  enabled: boolean = true
-) {
-  useEffect(() => {
-    if (!enabled) return;
-
-    const el = ref.current;
-    if (el && typeof el.focus === "function") {
-      // If the element can’t normally receive focus, ensure it can
-      if (el.tabIndex === -1) el.tabIndex = 0;
-      el.focus();
-    }
-  }, [enabled]);
-}
