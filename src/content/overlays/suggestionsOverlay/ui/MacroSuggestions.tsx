@@ -110,7 +110,7 @@ export function MacroSuggestions({
 
     const list = listRef.current;
     if (!list) return;
-    const buttons = list.querySelectorAll('.macro-suggestions-command-item');
+    const buttons = list.querySelectorAll('[role="option"]');
     const anySqueezed = Array.from(buttons).some(btn => {
       if (btn.scrollWidth <= btn.clientWidth) return false;
       const maxWidth = parseFloat(getComputedStyle(btn).maxWidth);
@@ -172,7 +172,7 @@ export function MacroSuggestions({
           <button
             key={macro.id}
             ref={(el) => { buttonRefs.current[index] = el; }}
-            className="macro-suggestions-command-item compressible hidden min-width-none max-width-command selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
+            className="compressible hidden min-width-none max-width-command selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
             onMouseDown={(e) => {
               e.preventDefault();
               onSelectMacro(macro);

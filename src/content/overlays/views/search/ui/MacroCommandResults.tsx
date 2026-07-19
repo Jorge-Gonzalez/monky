@@ -22,7 +22,7 @@ export function MacroCommandResults({ commands, selectedIndex, onSelect, results
       {commands.map((cmd, index) => (
         <div
           key={cmd.id}
-          className="macro-search-item subgrid span-all position-relative selectable"
+          className="subgrid span-all position-relative selectable"
           role="option"
           aria-selected={index === selectedIndex}
           onClick={() => onSelect(cmd)}

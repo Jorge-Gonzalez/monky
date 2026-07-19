@@ -59,7 +59,7 @@ export function createModalCoordinator(
     const target = e.target as Element;
     const modalElement = document.getElementById('monky-modal');
     const isInsideModal = modalElement && modalElement.contains(target);
-    const isToolbar = !!target.closest('.ce-toolbar');
+    const isToolbar = !!target.closest('[data-region="ce-toolbar"]');
 
     if (isInsideModal || isToolbar) return;
 

@@ -35,7 +35,7 @@ describe('MacroSearchResults', () => {
 
     it('backs the selected row with aria-selected', () => {
       const { container } = render(<MacroSearchResults {...baseProps} selectedIndex={1} />);
-      const items = container.querySelectorAll('.macro-search-item');
+      const items = container.querySelectorAll('[role="option"]');
       expect(items[1]).toHaveAttribute('aria-selected', 'true');
       expect(items[0]).toHaveAttribute('aria-selected', 'false');
     });
@@ -49,7 +49,7 @@ describe('MacroSearchResults', () => {
   describe('delete confirmation', () => {
     it('shows the confirm prompt on the armed row, the normal text on the rest', () => {
       const { container } = render(<MacroSearchResults {...baseProps} confirmingDeleteId={2} />);
-      const items = container.querySelectorAll('.macro-search-item');
+      const items = container.querySelectorAll('[role="option"]');
       expect(items[1]).toHaveAttribute('data-state', 'confirming-delete');
       expect(items[0]).not.toHaveAttribute('data-state');
       // Armed row swaps its text for the confirm prompt.
@@ -64,7 +64,7 @@ describe('MacroSearchResults', () => {
       const { container } = render(
         <MacroSearchResults {...baseProps} onEdit={onEdit} confirmingDeleteId={2} />
       );
-      const items = container.querySelectorAll('.macro-search-item');
+      const items = container.querySelectorAll('[role="option"]');
       expect(items[1].querySelector('[aria-label="modalSearch.editMacro"]')).toBeNull();
       expect(items[0].querySelector('[aria-label="modalSearch.editMacro"]')).not.toBeNull();
     });

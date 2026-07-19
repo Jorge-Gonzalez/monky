@@ -28,7 +28,7 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
     if (prevIndex.current === selectedIndex) return
     const container = containerRef.current
     if (!container) return
-    const buttons = container.querySelectorAll<HTMLElement>('.seg-option')
+    const buttons = container.querySelectorAll<HTMLElement>('[role="radio"]')
     const from = buttons[prevIndex.current]
     const to = buttons[selectedIndex]
     prevIndex.current = selectedIndex
@@ -71,7 +71,7 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
           role="radio"
           aria-checked={opt.value === value}
           aria-label={opt.ariaLabel}
-          className={`seg-option sf-segmented-control-option elastic basis-ratio content text-nowrap padding-block-xs padding-inline-md position-relative selectable ink-soft rule ${drawRightRule ? 'ruled-right ' : ''}font-sm text-center pressable tween-ink-quick hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse`}
+          className={`sf-segmented-control-option elastic basis-ratio content text-nowrap padding-block-xs padding-inline-md position-relative selectable ink-soft rule ${drawRightRule ? 'ruled-right ' : ''}font-sm text-center pressable tween-ink-quick hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse`}
           onClick={() => onChange(opt.value)}
         >
           {opt.label}

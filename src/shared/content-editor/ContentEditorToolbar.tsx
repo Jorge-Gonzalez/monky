@@ -52,7 +52,7 @@ export function ContentEditorToolbar({
 }: ContentEditorToolbarProps) {
   if (linkMode) {
     return (
-      <div className="ce-toolbar horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed ground">
+      <div data-region="ce-toolbar" className="horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed ground">
         <ContentEditorLinkField
           savedRange={savedRange}
           existingHref={formatState.linkHref}
@@ -64,7 +64,7 @@ export function ContentEditorToolbar({
   }
 
   return (
-    <div className="ce-toolbar horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed ground" role="toolbar" aria-label="Formatting">
+    <div data-region="ce-toolbar" className="horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed ground" role="toolbar" aria-label="Formatting">
       <Btn icon={icons.undo} title="Undo (Ctrl+Z)" onAction={undo} />
       <Btn icon={icons.redo} title="Redo (Ctrl+Y)" onAction={redo} />
 

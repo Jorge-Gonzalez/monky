@@ -124,7 +124,7 @@ export function MacroSearchView({
       handleCommandSelect, handleParametricSelect, handleMacroSelect]);
 
   useAutoFocus(inputRef, true);
-  useScrollIntoView(resultsRef, navigation.selectedIndex, '.macro-search-item[aria-selected="true"]');
+  useScrollIntoView(resultsRef, navigation.selectedIndex, '[role="option"][aria-selected="true"]');
   useKeyboardNavigation({
     isActive: true,
     itemCount: listLength,

@@ -219,7 +219,7 @@ describe('ContentEditor component', () => {
 
   it('renders a toolbar and a contenteditable body', () => {
     render(<ContentEditor />)
-    expect(document.querySelector('.ce-toolbar')).toBeInTheDocument()
+    expect(document.querySelector('[role="toolbar"]')).toBeInTheDocument()
     expect(getBody()).toBeInTheDocument()
     expect(getBody()).toHaveAttribute('contenteditable', 'true')
   })
