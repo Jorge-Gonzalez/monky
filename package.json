@@ -11,6 +11,7 @@
     "build:firefox:prod": "vite build --config vite.firefox.config.ts --mode production",
     "preview": "vite preview",
     "test": "vitest run",
+    "typecheck": "tsc --noEmit",
     "test:verbose": "vitest run --reporter=verbose",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "lint:css": "stylelint \"src/**/*.css\"",
@@ -30,19 +31,18 @@
     "styles:reconcile": "node scripts/reconcile-styles.mjs"
   },
   "dependencies": {
-    "@preact/preset-vite": "^2.10.5",
-    "dompurify": "^3.2.7",
     "fuzzysort": "^3.1.0",
     "preact": "^10.29.1",
     "zustand": "^5.0.13"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0",
+    "@preact/preset-vite": "^2.10.5",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/preact": "^3.2.4",
     "@testing-library/user-event": "^14.6.1",
     "@types/chrome": "^0.1.4",
-    "@types/dompurify": "^3.0.5",
+    "@types/node": "^26.1.1",
     "@vitest/coverage-v8": "3.2.4",
     "autoprefixer": "^10.4.21",
     "chokidar": "^3.6.0",
