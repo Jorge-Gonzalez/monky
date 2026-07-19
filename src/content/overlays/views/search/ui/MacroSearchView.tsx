@@ -4,8 +4,8 @@ import { t } from '../../../../../lib/i18n';
 import { useMacroStore } from '../../../../../store/useMacroStore';
 import { deleteMacro } from '../../../../../store/macroCrud';
 import { useMacroSearch } from '../../../../../shared/useMacroSearch';
-import { useListNavigation } from '../hooks/useListNavigation';
-import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
+import { useListNavigation } from '../../../hooks/useListNavigation';
+import { useKeyboardNavigation } from '../../../hooks/useKeyboardNavigation';
 import { useScrollIntoView } from '../hooks/useScrollIntoView';
 import { useAutoFocus } from '../../../hooks/useAutoFocus';
 import { MacroSearchInput } from './MacroSearchInput';
@@ -49,7 +49,7 @@ export function MacroSearchView({
   const visibleCommands = showCommands ? parsed.commands : [];
 
   const listLength = showMacros ? filteredMacros.length : visibleCommands.length;
-  const navigation = useListNavigation(listLength);
+  const navigation = useListNavigation(listLength, { allowEmpty: true });
 
   // Reset selection on mode switches (e.g. search ↔ command discovery)
   useEffect(() => { navigation.reset(); }, [parsed.mode]);
@@ -127,13 +127,12 @@ export function MacroSearchView({
   useScrollIntoView(resultsRef, navigation.selectedIndex, '[role="option"][aria-selected="true"]');
   useKeyboardNavigation({
     isActive: true,
-    itemCount: listLength,
-    selectedIndex: navigation.selectedIndex,
+    axis: 'vertical',
     onSelect: handleSelect,
     onClose,
-    onNavigateUp: navigation.navigateUp,
-    onNavigateDown: navigation.navigateDown,
-    onEdit: showMacros ? handleEdit : undefined,
+    onNavigatePrev: navigation.navigatePrev,
+    onNavigateNext: navigation.navigateNext,
+    onTab: showMacros && navigation.selectedIndex >= 0 ? handleEdit : undefined,
   });
 
   // --- Render helpers ---

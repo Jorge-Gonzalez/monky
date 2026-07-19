@@ -3,8 +3,8 @@ import fuzzysort from 'fuzzysort';
 import { Macro } from '../../../../types';
 import { t } from '../../../../lib/i18n';
 import { useAppliedTheme } from '../../../../theme/hooks/useAppliedTheme';
-import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation';
-import { useListNavigation } from '../hooks/useListNavigation';
+import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation';
+import { useListNavigation } from '../../hooks/useListNavigation';
 
 export interface MacroSuggestionsProps {
   macros: Macro[];
@@ -142,11 +142,12 @@ export function MacroSuggestions({
 
   useKeyboardNavigation({
     isActive: isVisible,
+    axis: 'horizontal',
     onSelect: handleSelect,
     onClose,
-    onNavigateLeft: navigation.navigateLeft,
-    onNavigateRight: navigation.navigateRight,
-    preventTabHandling: false,
+    onNavigatePrev: navigation.navigatePrev,
+    onNavigateNext: navigation.navigateNext,
+    onTab: 'cycle',
   });
 
   const shouldShow = isVisible && visibleMacros.length > 0;

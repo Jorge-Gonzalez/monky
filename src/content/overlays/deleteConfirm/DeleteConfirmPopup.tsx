@@ -2,8 +2,8 @@ import { useRef } from 'react'
 import { Macro } from '../../../types'
 import { t } from '../../../lib/i18n'
 import { useAppliedTheme } from '../../../theme/hooks/useAppliedTheme'
-import { useListNavigation } from '../suggestionsOverlay/hooks/useListNavigation'
-import { useKeyboardNavigation } from '../suggestionsOverlay/hooks/useKeyboardNavigation'
+import { useListNavigation } from '../hooks/useListNavigation'
+import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation'
 
 export interface DeleteConfirmPopupProps {
   macro: Macro
@@ -32,10 +32,12 @@ export function DeleteConfirmPopup({
 
   useKeyboardNavigation({
     isActive: isVisible,
+    axis: 'horizontal',
     onSelect: activate,
     onClose: onCancel,
-    onNavigateLeft: nav.navigateLeft,
-    onNavigateRight: nav.navigateRight,
+    onNavigatePrev: nav.navigatePrev,
+    onNavigateNext: nav.navigateNext,
+    onTab: 'cycle',
   })
 
   if (!isVisible) return null
