@@ -53,8 +53,6 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           popup: 'src/popup/index.html',
           options: 'src/options/index.html',
           editor: 'src/editor/index.html',
-          // Example pages
-          macroList: 'examples/macro-list.html',
         },
       },
     },
