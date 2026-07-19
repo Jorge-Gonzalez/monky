@@ -167,7 +167,7 @@ export function MacroSuggestions({
       }}
     >
       <div className={`macro-suggestions-arrow sf-callout-arrow position-absolute center-x height-none ${placement === 'top' ? 'top sf-callout-arrow-top attach-below' : 'bottom sf-callout-arrow-bottom attach-above'}`} />
-      <div ref={listRef} role="listbox" className="macro-suggestions-commands-list horizontal gap-xs padding-xs rule-soft ruled-bottom">
+      <div ref={listRef} role="listbox" className="horizontal gap-xs padding-xs rule-soft ruled-bottom">
         {visibleMacros.map((macro, index) => (
           <button
             key={macro.id}
@@ -186,11 +186,11 @@ export function MacroSuggestions({
         ))}
       </div>
       {selectedMacro && (
-        <div className="macro-suggestions-text-preview padding-block-sm padding-inline-md hidden clamp-3 ink-soft font-xs">
+        <div className="padding-block-sm padding-inline-md hidden clamp-3 ink-soft font-xs">
           {selectedMacro.text}
         </div>
       )}
-      <div className="macro-suggestions-footer horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs">
+      <div className="horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs">
         <span>
           <kbd className="macro-suggestions-kbd sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">←</kbd>
           <kbd className="macro-suggestions-kbd sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">→</kbd>/

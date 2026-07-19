@@ -122,7 +122,7 @@ export function SearchableListView<T>({
   } = config.search || {};
 
   const {
-    emptyState = <div className="empty-state padding-lg ink-soft font-md">No items found</div>,
+    emptyState = <div className="padding-lg ink-soft font-md">No items found</div>,
     selectionConfig = { mode: 'single', toggleOnClick: true }
   } = config.list || {};
 
@@ -173,7 +173,7 @@ export function SearchableListView<T>({
         return <div className="search-focused-item">{content}</div>;
       }
 
-      return <div className="">{content}</div>;
+      return <div>{content}</div>;
     };
   }, [renderItem, smartNavigation, state.mode, state.focusedIndex]);
 
@@ -198,13 +198,11 @@ export function SearchableListView<T>({
           dataSource={items}
           autoFocus={focusOnMount}
           onSearch={handlers.onSearch}
-          className="search-field"
         />
       </div>
 
       {/* List */}
       <div
-        className="searchable-list-container"
         ref={listRef}
         onFocus={handlers.onListFocus}
       >

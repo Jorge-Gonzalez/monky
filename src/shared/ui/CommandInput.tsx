@@ -140,9 +140,9 @@ export function CommandInput({
   // ============================================================================
 
   return (
-    <div className={`command-input-container ${className}`}>
+    <div className={`${className}`}>
       {label && (
-        <label htmlFor="command-input" className="command-input-label">
+        <label htmlFor="command-input">
           {label}
         </label>
       )}
@@ -164,13 +164,13 @@ export function CommandInput({
       />
 
       {showError && validationResult.error && (
-        <p id="command-input-error" className="command-input-error-message" role="alert">
+        <p id="command-input-error" role="alert">
           {validationResult.error}
         </p>
       )}
 
       {!showError && prefixes.length > 0 && value === '' && (
-        <p className="command-input-hint">
+        <p>
           Example: {placeholder || `${prefixes[0]}example`}
         </p>
       )}

@@ -43,18 +43,18 @@ export function DeleteConfirmPopup({
   return (
     <div
       ref={containerRef}
-      className="macro-suggestions-container delete-confirm min-width-popover-md max-width-popover-2xl ground rule corner-lg ruled elevated-soft font-md tween-opacity-transform-quick"
+      className="macro-suggestions-container min-width-popover-md max-width-popover-2xl ground rule corner-lg ruled elevated-soft font-md tween-opacity-transform-quick"
       style={{ left: position.x, top: position.y, position: 'fixed' }}
     >
       <div className={`macro-suggestions-arrow sf-callout-arrow position-absolute center-x height-none ${placement === 'top' ? 'top sf-callout-arrow-top attach-below' : 'bottom sf-callout-arrow-bottom attach-above'}`} />
-      <div className="delete-confirm-message padding-block-sm padding-inline-md ink rule-soft ruled-bottom font-sm">
+      <div className="padding-block-sm padding-inline-md ink rule-soft ruled-bottom font-sm">
         {t('deleteConfirm.message')}{' '}
-        <span className="delete-confirm-command ink-accent font-semibold font-mono">{macro.command}</span>
+        <span className="ink-accent font-semibold font-mono">{macro.command}</span>
       </div>
-      <div className="macro-suggestions-commands-list horizontal gap-xs padding-xs rule-soft ruled-bottom" role="listbox">
+      <div className="horizontal gap-xs padding-xs rule-soft ruled-bottom" role="listbox">
         <button
           type="button"
-          className="macro-suggestions-command-item delete-confirm-option elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
+          className="macro-suggestions-command-item elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
           role="option"
           aria-selected={nav.selectedIndex === 0}
           onMouseDown={e => { e.preventDefault(); onCancel() }}
@@ -63,7 +63,7 @@ export function DeleteConfirmPopup({
         </button>
         <button
           type="button"
-          className="macro-suggestions-command-item delete-confirm-option delete-confirm-danger elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail"
+          className="macro-suggestions-command-item elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail"
           role="option"
           aria-selected={nav.selectedIndex === 1}
           onMouseDown={e => { e.preventDefault(); onConfirm() }}
@@ -71,7 +71,7 @@ export function DeleteConfirmPopup({
           {t('deleteConfirm.delete')}
         </button>
       </div>
-      <div className="macro-suggestions-footer horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule font-xs">
+      <div className="horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule font-xs">
         <span><kbd className="macro-suggestions-kbd sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">Tab</kbd> {t('deleteConfirm.footer.switch')}</span>
         <span><kbd className="macro-suggestions-kbd sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">↵</kbd> {t('deleteConfirm.footer.select')}</span>
         <span><kbd className="macro-suggestions-kbd sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">Esc</kbd> {t('deleteConfirm.footer.cancel')}</span>

@@ -12,7 +12,7 @@ export default function Settings() {
 
   return (
     <div className="section vertical gap-md padding-lg ground-subtle rule corner-md ruled">
-      <h2 className="section-title font-lg">{t('settings.title')}</h2>
+      <h2 className="font-lg">{t('settings.title')}</h2>
       <div className="horizontal gap-md align-center">
         <label htmlFor="language-select" className="boxed ink font-sm font-medium">
           {t('settings.language')}

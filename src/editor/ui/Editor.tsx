@@ -11,10 +11,10 @@ export default function Editor() {
   const { editingMacro, setEditingMacro, resetForm } = useMacroEditor()
 
   return (
-    <div className="page-container fill-viewport vertical gap-lg padding-2xl max-width-2xl centered flush-block">
+    <div className="fill-viewport vertical gap-lg padding-2xl max-width-2xl centered flush-block">
       <h1 className="font-2xl">{t('editor.title')}</h1>
       <MacroForm editing={editingMacro} onDone={resetForm} />
-      <hr className="divider rule ruled-top" />
+      <hr className="rule ruled-top" />
       <Settings />
       <MacroListEditor macros={macros} onEdit={setEditingMacro} onDelete={deleteMacro} />
     </div>

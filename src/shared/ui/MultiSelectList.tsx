@@ -239,7 +239,7 @@ export function MultiSelectList<T>({
     return (
       <div className={`multi-select-list empty ${className}`} role="status">
         {typeof emptyState === 'string' ? (
-          <div className="empty-state padding-lg ink-soft font-md">{emptyState}</div>
+          <div className="padding-lg ink-soft font-md">{emptyState}</div>
         ) : emptyState}
       </div>
     );

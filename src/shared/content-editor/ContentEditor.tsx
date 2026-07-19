@@ -84,7 +84,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
   const bodyFlex = className.includes('editor-content') ? 'elastic basis-ratio ' : ''
 
   return (
-    <div className={`content-editor vertical${shellMinHeight} ${className}`}>
+    <div className={`vertical ${shellMinHeight} ${className}`}>
       <ContentEditorToolbar
         formatState={formatState}
         linkMode={linkMode}
@@ -93,7 +93,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
         onLinkRequest={handleLinkRequest}
         onLinkClose={() => { setLinkMode(false); editorRef.current?.focus() }}
       />
-      <div className={`content-editor-frame vertical hidden ${bodyFlex}${bodyMinHeight} ground-subtle ink ${isFocused ? 'rule-accent-soft ring-accent-soft' : 'rule'} corner-xl ruled recessed-soft`}>
+      <div className={`vertical hidden ${bodyFlex}${bodyMinHeight} ground-subtle ink ${isFocused ? 'rule-accent-soft ring-accent-soft' : 'rule'} corner-xl ruled recessed-soft`}>
         <div
           ref={editorRef}
           contentEditable

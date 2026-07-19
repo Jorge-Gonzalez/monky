@@ -252,11 +252,10 @@ export function FuzzySearchField<T>({
 
   return (
     <div className={`fuzzy-search-field ${className}`} role="search">
-      <div className="search-input-wrapper">
+      <div>
         <input
           ref={inputRef}
           type="search"
-          className="search-input"
           placeholder={placeholder}
           value={query}
           onChange={handleInputChange}
@@ -267,7 +266,6 @@ export function FuzzySearchField<T>({
         {clearButton && query && (
           <button
             type="button"
-            className="clear-button"
             onClick={handleClear}
             aria-label="Clear search"
           >
@@ -275,7 +273,7 @@ export function FuzzySearchField<T>({
           </button>
         )}
         {isSearching && (
-          <div className="search-spinner" aria-label="Searching...">
+          <div aria-label="Searching...">
             ⏳
           </div>
         )}

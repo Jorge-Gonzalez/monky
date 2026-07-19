@@ -57,14 +57,14 @@ export function SettingsView(_props: BaseModalViewProps) {
   ];
 
   return (
-    <div className="settings-view fill-block vertical scroll-auto scrollbar-subtle">
-      <div className="settings-body padding-top-2xl padding-right-none padding-bottom-xl padding-left-none">
+    <div className="fill-block vertical scroll-auto scrollbar-subtle">
+      <div className="padding-top-2xl padding-right-none padding-bottom-xl padding-left-none">
 
-        <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
-          <div className="settings-section-label quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">{t('settings.sections.general')}</div>
-          <div className="settings-rows three-quarters elastic basis-ratio min-width-none">
-            <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
-              <span className="settings-row-label rigid ink font-md">{t('options.prefixEditor.title')}</span>
+        <div className="columns-12 padding-block-xl padding-inline-3xl">
+          <div className="quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">{t('settings.sections.general')}</div>
+          <div className="three-quarters elastic basis-ratio min-width-none">
+            <div className="horizontal gap-lg padding-block-sm align-center justify-between">
+              <span className="rigid ink font-md">{t('options.prefixEditor.title')}</span>
               <SelectableGroup
                 options={ALL_PREFIXES}
                 selected={prefixes}
@@ -73,8 +73,8 @@ export function SettingsView(_props: BaseModalViewProps) {
                 buttonClassName="btn pressable padding-none corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60 ground-subtle ink ruled rule font-mono settings-prefix-btn horizontal control-box-xl align-center justify-center rigid"
               />
             </div>
-            <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
-              <span className="settings-row-label rigid ink font-md">{t('replacementMode.title')}</span>
+            <div className="horizontal gap-lg padding-block-sm align-center justify-between">
+              <span className="rigid ink font-md">{t('replacementMode.title')}</span>
               <SegmentedControl
                 options={REPLACEMENT_OPTIONS.map(o => ({ value: o.value, label: o.label() }))}
                 value={replacementValue}
@@ -84,14 +84,14 @@ export function SettingsView(_props: BaseModalViewProps) {
           </div>
         </div>
 
-        <div className="settings-divider height-none rule ruled-top margin-block-sm margin-inline-xl" />
+        <div className="height-none rule ruled-top margin-block-sm margin-inline-xl" />
 
-        <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
-          <div className="settings-section-label quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">{t('settings.sections.appearance')}</div>
-          <div className="settings-rows three-quarters elastic basis-ratio min-width-none">
-            <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
-              <span className="settings-row-label rigid ink font-md">{t('settings.colorTheme')}</span>
-              <div className="settings-appearance-controls horizontal gap-md align-center">
+        <div className="columns-12 padding-block-xl padding-inline-3xl">
+          <div className="quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">{t('settings.sections.appearance')}</div>
+          <div className="three-quarters elastic basis-ratio min-width-none">
+            <div className="horizontal gap-lg padding-block-sm align-center justify-between">
+              <span className="rigid ink font-md">{t('settings.colorTheme')}</span>
+              <div className="horizontal gap-md align-center">
                 <SegmentedControl
                   options={THEME_OPTIONS}
                   value={colorTheme}
@@ -104,8 +104,8 @@ export function SettingsView(_props: BaseModalViewProps) {
                 />
               </div>
             </div>
-            <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
-              <span className="settings-row-label rigid ink font-md">{t('settings.language')}</span>
+            <div className="horizontal gap-lg padding-block-sm align-center justify-between">
+              <span className="rigid ink font-md">{t('settings.language')}</span>
               <SegmentedControl
                 options={LANGUAGE_OPTIONS}
                 value={language}
@@ -115,18 +115,18 @@ export function SettingsView(_props: BaseModalViewProps) {
           </div>
         </div>
 
-        <div className="settings-divider height-none rule ruled-top margin-block-sm margin-inline-xl" />
+        <div className="height-none rule ruled-top margin-block-sm margin-inline-xl" />
 
-        <div className="settings-group columns-12 padding-block-xl padding-inline-3xl">
-          <div className="settings-section-label quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">{t('settings.sections.data')}</div>
-          <div className="settings-rows three-quarters elastic basis-ratio min-width-none">
-            <div className="settings-row horizontal gap-lg padding-block-sm align-center justify-between">
-              <span className="settings-row-label rigid ink font-md">{t('settings.importExport.title')}</span>
+        <div className="columns-12 padding-block-xl padding-inline-3xl">
+          <div className="quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">{t('settings.sections.data')}</div>
+          <div className="three-quarters elastic basis-ratio min-width-none">
+            <div className="horizontal gap-lg padding-block-sm align-center justify-between">
+              <span className="rigid ink font-md">{t('settings.importExport.title')}</span>
               <div className="horizontal gap-sm">
-                <button className="btn rigid tween-quick padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60" type="button" onClick={exportMacros}>
+                <button className="rigid tween-quick padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60" type="button" onClick={exportMacros}>
                   {t('settings.importExport.exportButton')}
                 </button>
-                <button className="btn rigid tween-quick padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60" type="button" onClick={() => fileInputRef.current?.click()}>
+                <button className="rigid tween-quick padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60" type="button" onClick={() => fileInputRef.current?.click()}>
                   {t('settings.importExport.importButton')}
                 </button>
                 <input
@@ -147,7 +147,7 @@ export function SettingsView(_props: BaseModalViewProps) {
         </div>
 
         {importStatus && (
-          <div className={`settings-import-status font-sm padding-top-xs padding-inline-xl padding-bottom-sm ${importStatus.ok ? 'import-status--ok ink-accent' : 'import-status--error ink-fail'}`}>
+          <div className={`font-sm padding-top-xs padding-inline-xl padding-bottom-sm ${importStatus.ok ? 'ink-accent' : 'ink-fail'}`}>
             {importStatus.message}
           </div>
         )}

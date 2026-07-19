@@ -30,8 +30,8 @@ export function MacroSearchResults({
 }: MacroSearchResultsProps) {
   if (macros.length === 0) {
     return (
-      <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
-        <div className="macro-search-empty span-all padding-lg ink-soft font-md text-center">
+      <div ref={resultsRef} className="grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
+        <div className="span-all padding-lg ink-soft font-md text-center">
           {searchQuery ? t('modalSearch.noMacrosFound') : t('modalSearch.startTypingHint')}
         </div>
       </div>
@@ -39,7 +39,7 @@ export function MacroSearchResults({
   }
 
   return (
-    <div ref={resultsRef} className="macro-search-results grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
+    <div ref={resultsRef} className="grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
       {macros.map((macro, index) => (
         <MacroSearchItem
           key={macro.id}
@@ -78,11 +78,11 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
     >
       <div className={commandClassName}>{macro.command}</div>
       {isConfirmingDelete ? (
-        <div className="macro-search-item-confirm padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ground-fail-faint ink-fail rule-soft ruled-bottom font-lg font-medium truncate" role="alert">
+        <div className="padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ground-fail-faint ink-fail rule-soft ruled-bottom font-lg font-medium truncate" role="alert">
           {t('modalSearch.confirmDelete')}
         </div>
       ) : (
-        <div className="macro-search-item-text padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ink rule-soft ruled-bottom font-lg pressable truncate parent-hover:ground-subtle parent-selected:ground-defined parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick">
+        <div className="padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ink rule-soft ruled-bottom font-lg pressable truncate parent-hover:ground-subtle parent-selected:ground-defined parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick">
           {!hasPlaceholders(macro.text)
             ? macro.text
             : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>

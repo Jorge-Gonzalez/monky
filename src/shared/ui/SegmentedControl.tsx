@@ -52,7 +52,7 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
   return (
     <div
       ref={containerRef}
-      className={`seg-control sf-segmented-pill horizontal hidden position-relative ground-subtle rule corner-md ruled ${sliding ? 'is-sliding' : ''}`}
+      className={`sf-segmented-pill horizontal hidden position-relative ground-subtle rule corner-md ruled ${sliding ? 'is-sliding' : ''}`}
       role="radiogroup"
       onTransitionEnd={e => {
         // Only the pill's own (::before) transition lands on the container; button

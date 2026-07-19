@@ -11,9 +11,9 @@ interface ReplacementModeProps {
 export default function ReplacementMode({ useCommitKeys, onChange }: ReplacementModeProps) {
   return (
     <div className="section vertical gap-md padding-lg ground-subtle rule corner-md ruled">
-      <h3 className="section-title font-lg">{t('replacementMode.title')}</h3>
-      <div className="mode-row horizontal hug-inline gap-xl">
-        <label className="mode-choice horizontal rigid hug-inline gap-sm align-center">
+      <h3 className="font-lg">{t('replacementMode.title')}</h3>
+      <div className="horizontal hug-inline gap-xl">
+        <label className="horizontal rigid hug-inline gap-sm align-center">
           <input
             type="radio"
             name="behavior"
@@ -23,7 +23,7 @@ export default function ReplacementMode({ useCommitKeys, onChange }: Replacement
           />
           <span className="rigid ink font-md pressable">{t('replacementMode.auto')}</span>
         </label>
-        <label className="mode-choice horizontal rigid hug-inline gap-sm align-center">
+        <label className="horizontal rigid hug-inline gap-sm align-center">
           <input
             type="radio"
             name="behavior"
@@ -34,7 +34,7 @@ export default function ReplacementMode({ useCommitKeys, onChange }: Replacement
           <span className="rigid ink font-md pressable">{t('replacementMode.manual')}</span>
         </label>
       </div>
-      <p className="section-description ink-soft font-md">
+      <p className="ink-soft font-md">
         {t('replacementMode.description')}
       </p>
     </div>

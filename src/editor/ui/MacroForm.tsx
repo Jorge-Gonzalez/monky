@@ -99,7 +99,7 @@ export default function MacroForm({ editing, onDone }: {
           aria-invalid={command && !commandValid ? true : undefined}
         />
         {command && !commandValid && (
-          <p className="validation-error ink-fail font-xs">
+          <p className="ink-fail font-xs">
             Command must start with: {prefixes.join(', ')}
           </p>
         )}
@@ -118,7 +118,7 @@ export default function MacroForm({ editing, onDone }: {
       </div>
 
       {error && (
-        <div className="alert alert-error padding-md ground-fail-faint ink-fail rule-fail corner-md ruled">
+        <div className="alert padding-md ground-fail-faint ink-fail rule-fail corner-md ruled">
           <p className="font-medium">{error}</p>
         </div>
       )}
@@ -134,18 +134,18 @@ export default function MacroForm({ editing, onDone }: {
           <span className="boxed ink font-sm font-medium">{t('macroForm.sensitiveLabel')}</span>
         </label>
 
-        <div className="button-group horizontal inline">
+        <div className="horizontal inline">
           <button
             type="submit"
             disabled={!isFormValid}
-            className="btn btn-success tween-quick padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable hover:ground-pass focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60"
+            className="tween-quick padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable hover:ground-pass focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60"
           >
             {editing ? t('macroForm.updateButton') : t('macroForm.saveButton')}
           </button>
           {editing && (
             <button
               type="button"
-              className="btn tween-quick padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60"
+              className="tween-quick padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60"
               onClick={onDone}
             >
               {t('macroForm.cancelButton')}

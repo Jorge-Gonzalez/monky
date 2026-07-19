@@ -38,13 +38,13 @@ export function ModalShell({
 
   return (
     <div
-      className="modal-backdrop sf-foreign-overlay-host horizontal align-center justify-center cover scrim"
+      className="sf-foreign-overlay-host horizontal align-center justify-center cover scrim"
       onMouseDown={onClose}
       role="presentation"
     >
       <div
         ref={modalRef}
-        className="modal-dialog vertical hidden dialog-measure ground rule corner-3xl ruled elevated-soft"
+        className="vertical hidden dialog-measure ground rule corner-3xl ruled elevated-soft"
         role="dialog"
         aria-modal="true"
         aria-label="Monky Modal"
@@ -56,7 +56,7 @@ export function ModalShell({
           theme={theme}
         />
 
-        <div className="modal-content vertical elastic basis-ratio hidden min-height-none">
+        <div className="vertical elastic basis-ratio hidden min-height-none">
           {childrenWithProps}
         </div>
       </div>

@@ -14,7 +14,7 @@ interface PrefixEditorProps {
 export default function PrefixEditor({ prefixes, onChange }: PrefixEditorProps) {
   return (
     <div className="section vertical gap-md padding-lg ground-subtle rule corner-md ruled">
-      <h3 className="section-title font-lg">{t('options.prefixEditor.title')}</h3>
+      <h3 className="font-lg">{t('options.prefixEditor.title')}</h3>
       <SelectableGroup
         options={ALL_PREFIXES}
         selected={prefixes}
@@ -22,7 +22,7 @@ export default function PrefixEditor({ prefixes, onChange }: PrefixEditorProps) 
         className="horizontal gap-sm wrap-allowed"
         buttonClassName="btn pressable padding-block-sm padding-inline-lg corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60 ground ink ruled rule font-mono font-lg rigid prefix-cell control-box-3xl square"
       />
-      <p className="section-description ink-soft font-md">{t('options.prefixEditor.description')}</p>
+      <p className="ink-soft font-md">{t('options.prefixEditor.description')}</p>
     </div>
   );
 }

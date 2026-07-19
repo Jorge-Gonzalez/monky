@@ -244,7 +244,7 @@ export function ActionToolbar<T = any>({
           <button
             key={button.id}
             type="button"
-            className={`toolbar-button ${button.className || ''} ${enabled ? 'enabled' : 'disabled'}`}
+            className={`${button.className || ''} ${enabled ? 'enabled' : 'disabled'}`}
             disabled={!enabled}
             onClick={() => handleButtonClick(button)}
             aria-label={`${button.label}${shortcutHint}`}
@@ -252,7 +252,7 @@ export function ActionToolbar<T = any>({
             title={`${button.label}${shortcutHint}`}
           >
             {renderIcon(button.icon)}
-            <span className="button-label">{button.label}</span>
+            <span>{button.label}</span>
           </button>
         );
       })}
