@@ -4,7 +4,7 @@ import { ModalView } from './types';
 import { ModalShell } from './ui/ModalShell';
 import { MacroSearchView } from '../views/search/ui/MacroSearchView';
 import { SettingsView } from '../views/settings/ui/SettingsView';
-import { MacroEditorView } from '../views/macroEditor/ui/MacroEditorView';
+import { MacroEditorView } from '../views/editor/ui/MacroEditorView';
 import { createReactRenderer } from '../services/reactRenderer';
 import { createFocusManager } from '../services/focusManager';
 import { createStyleInjector } from '../services/styleInjector';
