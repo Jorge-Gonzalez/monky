@@ -27,8 +27,8 @@ shadow(
         <input data-probe="search-input" class="fill-inline padding-block-sm padding-inline-lg recessed-soft">
       </div>
       <div data-probe="search-results" class="grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto">
-        <div data-probe="search-item" class="subgrid span-all position-relative selectable" aria-selected="true">
-          <span data-probe="search-cell" class="padding-top-lg padding-right-xs padding-bottom-lg padding-left-none parent-selected:ground-defined">command</span>
+        <div data-probe="search-item" class="subgrid span-all position-relative selectable corner-md hover:ground-subtle selected:ground-defined" aria-selected="true">
+          <span data-probe="search-cell" class="padding-top-lg padding-right-xs padding-bottom-lg padding-left-none">command</span>
           <button data-probe="search-edit" class="horizontal padding-xs align-center justify-center position-absolute center-y inset-right-sm pressable concealed parent-hover:revealed parent-selected:revealed">edit</button>
         </div>
       </div>

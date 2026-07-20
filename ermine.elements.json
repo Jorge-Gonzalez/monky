@@ -71,7 +71,7 @@
     },
     {
       "id": "search-item",
-      "classString": "subgrid span-all position-relative selectable",
+      "classString": "subgrid span-all position-relative selectable corner-md hover:ground-subtle selected:ground-defined",
       "backing": [
         "aria-selected"
       ],
@@ -81,7 +81,7 @@
     },
     {
       "id": "search-item-command-cell",
-      "classString": "padding-top-lg padding-right-xs padding-bottom-lg padding-left-none hidden ink-accent rule-soft ruled-bottom font-lg font-medium pressable truncate parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick",
+      "classString": "padding-top-lg padding-right-xs padding-bottom-lg padding-left-none hidden ink-accent rule-soft ruled-bottom font-lg font-medium pressable truncate tween-ground-quick",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -89,7 +89,7 @@
     },
     {
       "id": "search-item-text-cell",
-      "classString": "padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ink rule-soft ruled-bottom font-lg pressable truncate parent-hover:ground-subtle parent-selected:ground-defined parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick",
+      "classString": "padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ink rule-soft ruled-bottom font-lg pressable truncate parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -102,12 +102,12 @@
     },
     {
       "id": "search-item-confirm-cell",
-      "classString": "padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ground-fail-faint ink-fail rule-soft ruled-bottom font-lg font-medium truncate",
+      "classString": "padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ink-fail rule-soft ruled-bottom font-lg font-medium truncate",
       "backing": []
     },
     {
       "id": "search-command-name-cell",
-      "classString": "padding-top-lg padding-right-xs padding-bottom-lg padding-left-none hidden ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick",
+      "classString": "padding-top-lg padding-right-xs padding-bottom-lg padding-left-none hidden ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate tween-ground-quick",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -115,7 +115,7 @@
     },
     {
       "id": "search-command-description-cell",
-      "classString": "padding-top-lg padding-right-md padding-bottom-lg padding-left-xs ink rule-soft font-lg parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick",
+      "classString": "padding-top-lg padding-right-md padding-bottom-lg padding-left-xs ink rule-soft font-lg tween-ground-quick",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"

@@ -614,14 +614,6 @@
   padding-left: var(--spacing-xs);
 }
 
-.selectable:hover .parent-hover\:ground-subtle {
-  background: var(--ground-subtle);
-}
-
-.selectable[aria-selected="true"] .parent-selected\:ground-defined {
-  background: var(--ground-defined);
-}
-
 .padding-right-xs {
   padding-right: var(--spacing-xs);
 }
@@ -671,6 +663,10 @@
   display: grid;
   grid-auto-flow: row;
   grid-template-columns: subgrid;
+}
+
+.hover\:ground-subtle:hover {
+  background: var(--ground-subtle);
 }
 
 .center-y {
