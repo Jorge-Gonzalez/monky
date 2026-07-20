@@ -12,7 +12,18 @@ const translations = {
 
     // Editor
     editor: {
-      title: 'Macro Editor',
+      pageTitle: 'Macro Editor',
+      title: {
+        new: 'New Macro',
+        edit: 'Edit: {{command}}',
+        newShort: 'New',
+        editShort: 'Edit',
+      },
+      openFullEditor: 'Open in full editor',
+      commandSuggestionsLabel: 'Existing macros',
+      deleteMacro: 'Delete macro',
+      confirmDelete: 'Confirm delete',
+      cancelDelete: 'Cancel',
     },
     macroListEditor: {
       noMacros: 'No macros found.'
@@ -99,20 +110,6 @@ const translations = {
       },
     },
 
-    macroEditor: {
-      title: {
-        new: 'New Macro',
-        edit: 'Edit: {{command}}',
-        newShort: 'New',
-        editShort: 'Edit',
-      },
-      openFullEditor: 'Open in full editor',
-      commandSuggestionsLabel: 'Existing macros',
-      deleteMacro: 'Delete macro',
-      confirmDelete: 'Confirm delete',
-      cancelDelete: 'Cancel',
-    },
-
     // Popup
     popup: {
       title: '📑 My Macros',
@@ -185,7 +182,18 @@ const translations = {
 
     // Editor
     editor: {
-      title: 'Editor de Macros',
+      pageTitle: 'Editor de Macros',
+      title: {
+        new: 'Nuevo macro',
+        edit: 'Editar: {{command}}',
+        newShort: 'Nuevo',
+        editShort: 'Editar',
+      },
+      openFullEditor: 'Abrir en editor completo',
+      commandSuggestionsLabel: 'Macros existentes',
+      deleteMacro: 'Borrar macro',
+      confirmDelete: 'Confirmar borrado',
+      cancelDelete: 'Cancelar',
     },
 
     macroListEditor: {
@@ -271,20 +279,6 @@ const translations = {
         select: 'seleccionar',
         cancel: 'cancelar',
       },
-    },
-
-    macroEditor: {
-      title: {
-        new: 'Nuevo macro',
-        edit: 'Editar: {{command}}',
-        newShort: 'Nuevo',
-        editShort: 'Editar',
-      },
-      openFullEditor: 'Abrir en editor completo',
-      commandSuggestionsLabel: 'Macros existentes',
-      deleteMacro: 'Borrar macro',
-      confirmDelete: 'Confirmar borrado',
-      cancelDelete: 'Cancelar',
     },
 
     // Popup

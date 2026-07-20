@@ -45,7 +45,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
   return (
     <div className="hidden position-absolute attach-below stretch-inline dropdown ground-subtle rule-accent-soft corner-bottom-md ruled-left ruled-right ruled-bottom elevated">
       <div className="padding-block-xs padding-inline-md ink-soft rule ruled-bottom font-sm">
-        {t('macroEditor.commandSuggestionsLabel')}
+        {t('editor.commandSuggestionsLabel')}
       </div>
       {suggestions.map((macro, i) => {
         const confirming = macro.id === confirmingId;
@@ -64,7 +64,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
                 <button
                   type="button"
                   className="horizontal rigid padding-xs align-center justify-center ink-fail corner-sm pressable tween-opacity-ground-ink-quick hover:ground-fail hover:ink-inverse"
-                  aria-label={t('macroEditor.confirmDelete')}
+                  aria-label={t('editor.confirmDelete')}
                   onMouseDown={e => { e.preventDefault(); e.stopPropagation(); onDelete(macro); setConfirmingId(null); }}
                 >
                   <CheckIcon />
@@ -72,7 +72,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
                 <button
                   type="button"
                   className="horizontal rigid padding-xs align-center justify-center ink-soft corner-sm pressable tween-opacity-ground-ink-quick hover:ground-defined hover:ink"
-                  aria-label={t('macroEditor.cancelDelete')}
+                  aria-label={t('editor.cancelDelete')}
                   onMouseDown={e => { e.preventDefault(); e.stopPropagation(); setConfirmingId(null); }}
                 >
                   <CloseIcon />
@@ -82,7 +82,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
               <button
                 type="button"
                 className="horizontal rigid push padding-xs align-center justify-center ink-soft corner-sm pressable concealed tween-opacity-ground-ink-quick hover:ground-fail-faint hover:ink-fail parent-hover:revealed parent-selected:revealed"
-                aria-label={t('macroEditor.deleteMacro')}
+                aria-label={t('editor.deleteMacro')}
                 onMouseDown={e => { e.preventDefault(); e.stopPropagation(); setConfirmingId(macro.id); }}
               >
                 <TrashIcon />

@@ -131,7 +131,7 @@ describe('ModalMacroForm', () => {
 
       focusAndType(getCommandInput(), '/si')
 
-      expect(screen.queryByText('macroEditor.commandSuggestionsLabel')).not.toBeInTheDocument()
+      expect(screen.queryByText('editor.commandSuggestionsLabel')).not.toBeInTheDocument()
     })
 
     // Note: blur → close is not reliably testable in jsdom (fireEvent.blur doesn't
@@ -173,12 +173,12 @@ describe('ModalMacroForm', () => {
       const input = getCommandInput()
 
       focusAndType(input, '/si')
-      expect(screen.queryByText('macroEditor.commandSuggestionsLabel')).toBeInTheDocument()
+      expect(screen.queryByText('editor.commandSuggestionsLabel')).toBeInTheDocument()
 
       fireEvent.keyDown(input, { key: 'Enter' })
 
       expect(onLoadMacro).not.toHaveBeenCalled()
-      expect(screen.queryByText('macroEditor.commandSuggestionsLabel')).not.toBeInTheDocument()
+      expect(screen.queryByText('editor.commandSuggestionsLabel')).not.toBeInTheDocument()
     })
 
     it('closes suggestions on Escape without propagating the event', () => {
@@ -191,7 +191,7 @@ describe('ModalMacroForm', () => {
 
       fireEvent.keyDown(input, { key: 'Escape' })
 
-      expect(screen.queryByText('macroEditor.commandSuggestionsLabel')).not.toBeInTheDocument()
+      expect(screen.queryByText('editor.commandSuggestionsLabel')).not.toBeInTheDocument()
       expect(parentHandler).not.toHaveBeenCalled()
 
       input.parentElement!.removeEventListener('keydown', parentHandler)
@@ -203,11 +203,11 @@ describe('ModalMacroForm', () => {
 
       focusAndType(input, '/si')
       fireEvent.keyDown(input, { key: 'Escape' })
-      expect(screen.queryByText('macroEditor.commandSuggestionsLabel')).not.toBeInTheDocument()
+      expect(screen.queryByText('editor.commandSuggestionsLabel')).not.toBeInTheDocument()
 
       // Typing a new character resets dismissal
       focusAndType(input, '/sil')
-      expect(screen.queryByText('macroEditor.commandSuggestionsLabel')).toBeInTheDocument()
+      expect(screen.queryByText('editor.commandSuggestionsLabel')).toBeInTheDocument()
     })
   })
 

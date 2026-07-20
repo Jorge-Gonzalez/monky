@@ -36,7 +36,7 @@ vi.mock('../../store/useMacroStore', () => ({
 describe('Editor page', () => {
   it('renders all main sections', () => {
     render(<Editor />)
-    expect(screen.getByText('editor.title')).toBeInTheDocument()
+    expect(screen.getByText('editor.pageTitle')).toBeInTheDocument()
     expect(screen.getByText('MacroForm')).toBeInTheDocument()
     expect(screen.getByText('Settings Component')).toBeInTheDocument()
     expect(screen.getByText('MacroListEditor')).toBeInTheDocument()

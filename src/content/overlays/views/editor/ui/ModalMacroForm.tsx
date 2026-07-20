@@ -110,14 +110,14 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
       <div className="horizontal gap-lg align-center justify-between">
         <div className="horizontal rigid gap-sm align-center">
           <h1 className="ink font-lg font-semibold">
-            {editing ? t('macroEditor.title.editShort') : t('macroEditor.title.newShort')}
+            {editing ? t('editor.title.editShort') : t('editor.title.newShort')}
           </h1>
           <button
             type="button"
             className="horizontal padding-xs align-center justify-center ink-soft corner-sm pressable tween-ground-ink-quick hover:ground-defined hover:ink-accent"
             onClick={openFullEditor}
-            aria-label={t('macroEditor.openFullEditor')}
-            title={t('macroEditor.openFullEditor')}
+            aria-label={t('editor.openFullEditor')}
+            title={t('editor.openFullEditor')}
           >
             <PopoutIcon />
           </button>
