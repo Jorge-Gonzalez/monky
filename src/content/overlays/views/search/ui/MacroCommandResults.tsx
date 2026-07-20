@@ -11,24 +11,25 @@ interface MacroCommandResultsProps {
 export function MacroCommandResults({ commands, selectedIndex, onSelect, resultsRef }: MacroCommandResultsProps) {
   if (commands.length === 0) {
     return (
-      <div ref={resultsRef} className="grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
-        <div className="span-all padding-lg ink-soft font-md text-center">{t('modalSearch.noMatchingCommands')}</div>
+      <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
+        <div data-component="search-empty" className="span-all padding-lg ink-soft font-md text-center">{t('modalSearch.noMatchingCommands')}</div>
       </div>
     );
   }
 
   return (
-    <div ref={resultsRef} className="grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
+    <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
       {commands.map((cmd, index) => (
         <div
           key={cmd.id}
-          className="subgrid span-all position-relative selectable"
+          data-component="search-item"
+          className="subgrid span-all position-relative selectable corner-md hover:ground-subtle selected:ground-defined"
           role="option"
           aria-selected={index === selectedIndex}
           onClick={() => onSelect(cmd)}
         >
-          <div className="padding-top-lg padding-right-xs padding-bottom-lg padding-left-none hidden ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick">{cmd.command}</div>
-          <em className="padding-top-lg padding-right-md padding-bottom-lg padding-left-xs ink rule-soft font-lg parent-hover:ground-subtle parent-selected:ground-defined tween-ground-quick">{cmd.description}</em>
+          <div data-component="search-item-command" className="padding-top-lg padding-right-xs padding-bottom-lg padding-left-none hidden ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate tween-ground-quick">{cmd.command}</div>
+          <em data-component="search-item-text" className="padding-top-lg padding-right-md padding-bottom-lg padding-left-xs ink rule-soft font-lg tween-ground-quick">{cmd.description}</em>
         </div>
       ))}
     </div>

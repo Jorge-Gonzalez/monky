@@ -14,11 +14,11 @@ export function MacroSearchFooter({ count, isCommandMode, hasSelection }: MacroS
     : t(count === 1 ? 'modalSearch.footer.macro' : 'modalSearch.footer.macros', { count });
 
   return (
-    <div className="horizontal padding-block-sm padding-inline-xl justify-between ground ink-soft font-sm">
-      <div className="rigid text-nowrap tabular ink-soft">
+    <div data-component="search-footer" className="horizontal padding-block-sm padding-inline-xl justify-between ground ink-soft font-sm">
+      <div data-component="search-footer-count" className="rigid text-nowrap tabular ink-soft">
         {countText}
       </div>
-      <div className="horizontal gap-md align-center">
+      <div data-component="search-footer-hints" className="horizontal gap-md align-center">
         {showShortcuts && (isCommandMode ? (
           <>
             <span className="horizontal inline gap-sm align-center margin-right-lg"><kbd className="sf-keycap sf-keycap-raised horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono">↑</kbd><kbd className="sf-keycap sf-keycap-raised horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono">↓</kbd> {t('modalSearch.footer.navigate')}</span>
@@ -38,6 +38,7 @@ export function MacroSearchFooter({ count, isCommandMode, hasSelection }: MacroS
         ))}
         <button
           type="button"
+          data-component="search-footer-toggle"
           className="horizontal rigid control-box-lg align-center justify-center ink-soft corner-3xl pressable hover:ground-defined hover:ink expanded:ground-defined expanded:ink-accent"
           aria-label={t(showShortcuts ? 'modalSearch.footer.hideShortcuts' : 'modalSearch.footer.showShortcuts')}
           aria-expanded={showShortcuts}

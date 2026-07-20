@@ -45,17 +45,19 @@ export function DeleteConfirmPopup({
   return (
     <div
       ref={containerRef}
+      data-component="delete-confirm-container"
       className="min-width-popover-md max-width-popover-2xl ground rule corner-lg ruled elevated-soft font-md tween-opacity-transform-quick"
       style={{ left: position.x, top: position.y, position: 'fixed' }}
     >
-      <div className={`sf-callout-arrow position-absolute center-x height-none ${placement === 'top' ? 'sf-callout-arrow-top attach-below' : 'sf-callout-arrow-bottom attach-above'}`} />
-      <div className="padding-block-sm padding-inline-md ink rule-soft ruled-bottom font-sm">
+      <div data-component="delete-confirm-arrow" className={`sf-callout-arrow position-absolute center-x height-none ${placement === 'top' ? 'sf-callout-arrow-top attach-below' : 'sf-callout-arrow-bottom attach-above'}`} />
+      <div data-component="delete-confirm-message" className="padding-block-sm padding-inline-md ink rule-soft ruled-bottom font-sm">
         {t('deleteConfirm.message')}{' '}
-        <span className="ink-accent font-semibold font-mono">{macro.command}</span>
+        <span data-component="delete-confirm-command" className="ink-accent font-semibold font-mono">{macro.command}</span>
       </div>
-      <div className="horizontal gap-xs padding-xs rule-soft ruled-bottom" role="listbox">
+      <div data-component="delete-confirm-options" className="horizontal gap-xs padding-xs rule-soft ruled-bottom" role="listbox">
         <button
           type="button"
+          data-component="delete-confirm-cancel"
           className="elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
           role="option"
           aria-selected={nav.selectedIndex === 0}
@@ -65,6 +67,7 @@ export function DeleteConfirmPopup({
         </button>
         <button
           type="button"
+          data-component="delete-confirm-delete"
           className="elastic basis-ratio hidden min-width-none max-width-none selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-fail-faint hover:rule-fail selected:ground-fail-faint selected:ink-fail selected:rule-fail"
           role="option"
           aria-selected={nav.selectedIndex === 1}
@@ -73,7 +76,7 @@ export function DeleteConfirmPopup({
           {t('deleteConfirm.delete')}
         </button>
       </div>
-      <div className="horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule font-xs">
+      <div data-component="delete-confirm-footer" className="horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule font-xs">
         <span><kbd className="sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">Tab</kbd> {t('deleteConfirm.footer.switch')}</span>
         <span><kbd className="sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">↵</kbd> {t('deleteConfirm.footer.select')}</span>
         <span><kbd className="sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">Esc</kbd> {t('deleteConfirm.footer.cancel')}</span>

@@ -160,6 +160,7 @@ export function MacroSuggestions({
   return (
     <div
       ref={containerRef}
+      data-component="suggestions-container"
       className="hidden min-width-popover-sm max-width-popover-2xl ground rule corner-lg ruled elevated-soft font-md tween-opacity-transform-quick"
       style={{
         left: position.x,
@@ -167,12 +168,13 @@ export function MacroSuggestions({
         position: 'fixed',
       }}
     >
-      <div className={`sf-callout-arrow position-absolute center-x height-none ${placement === 'top' ? 'sf-callout-arrow-top attach-below' : 'sf-callout-arrow-bottom attach-above'}`} />
-      <div ref={listRef} role="listbox" className="horizontal gap-xs padding-xs rule-soft ruled-bottom">
+      <div data-component="suggestions-arrow" className={`sf-callout-arrow position-absolute center-x height-none ${placement === 'top' ? 'sf-callout-arrow-top attach-below' : 'sf-callout-arrow-bottom attach-above'}`} />
+      <div ref={listRef} role="listbox" data-component="suggestions-list" className="horizontal gap-xs padding-xs rule-soft ruled-bottom">
         {visibleMacros.map((macro, index) => (
           <button
             key={macro.id}
             ref={(el) => { buttonRefs.current[index] = el; }}
+            data-component="suggestions-item"
             className="compressible hidden min-width-none max-width-command selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
             onMouseDown={(e) => {
               e.preventDefault();
@@ -187,11 +189,11 @@ export function MacroSuggestions({
         ))}
       </div>
       {selectedMacro && (
-        <div className="padding-block-sm padding-inline-md hidden clamp-3 ink-soft font-xs">
+        <div data-component="suggestions-preview" className="padding-block-sm padding-inline-md hidden clamp-3 ink-soft font-xs">
           {selectedMacro.text}
         </div>
       )}
-      <div className="horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs">
+      <div data-component="suggestions-footer" className="horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs">
         <span>
           <kbd className="sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">←</kbd>
           <kbd className="sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">→</kbd>/

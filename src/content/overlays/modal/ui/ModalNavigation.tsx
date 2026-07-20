@@ -50,14 +50,15 @@ export function ModalNavigation({ currentView, onViewChange, theme }: ModalNavig
   const Logo = isDarkMode ? MonkyLogoDark : MonkyLogoLight;
 
   return (
-    <nav className="horizontal padding-block-sm padding-inline-xl min-height-control-3xl align-center justify-between">
-      <div className="horizontal align-center ink-accent">
+    <nav data-component="modal-nav" className="horizontal padding-block-sm padding-inline-xl min-height-control-3xl align-center justify-between">
+      <div data-component="modal-nav-brand" className="horizontal align-center ink-accent">
         <Logo />
       </div>
-      <div className="horizontal gap-sm padding-xs ground-subtle corner-3xl">
+      <div data-component="modal-nav-tabs" className="horizontal gap-sm padding-xs ground-subtle corner-3xl">
         {tabs.map(tab => (
           <button
             key={tab.view}
+            data-component="modal-nav-tab"
             className="tween-ground-ink-quick horizontal padding-none control-box-lg align-center justify-center ink-soft corner-3xl pressable hover:ink current:ground-defined current:ink-accent"
             onClick={() => onViewChange(tab.view)}
             aria-label={t('modalNavigation.switchTo', { view: tab.label })}

@@ -38,12 +38,14 @@ export function ModalShell({
 
   return (
     <div
+      data-component="modal-backdrop"
       className="sf-foreign-overlay-host horizontal align-center justify-center cover scrim"
       onMouseDown={onClose}
       role="presentation"
     >
       <div
         ref={modalRef}
+        data-component="modal-dialog"
         className="vertical hidden dialog-measure ground rule corner-3xl ruled elevated-soft"
         role="dialog"
         aria-modal="true"
@@ -56,7 +58,7 @@ export function ModalShell({
           theme={theme}
         />
 
-        <div className="vertical elastic basis-ratio hidden min-height-none">
+        <div data-component="modal-content" className="vertical elastic basis-ratio hidden min-height-none">
           {childrenWithProps}
         </div>
       </div>

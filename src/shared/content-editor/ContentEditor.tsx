@@ -84,7 +84,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
   const bodyFlex = className.includes('editor-content') ? 'elastic basis-ratio ' : ''
 
   return (
-    <div className={`vertical ${shellMinHeight} ${className}`}>
+    <div data-component="ce-shell" className={`vertical ${shellMinHeight} ${className}`}>
       <ContentEditorToolbar
         formatState={formatState}
         linkMode={linkMode}
@@ -93,10 +93,11 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
         onLinkRequest={handleLinkRequest}
         onLinkClose={() => { setLinkMode(false); editorRef.current?.focus() }}
       />
-      <div className={`vertical hidden ${bodyFlex}${bodyMinHeight} ground-subtle ink ${isFocused ? 'rule-accent-soft ring-accent-soft' : 'rule'} corner-xl ruled recessed-soft`}>
+      <div data-component="ce-frame" className={`vertical hidden ${bodyFlex}${bodyMinHeight} ground-subtle ink ${isFocused ? 'rule-accent-soft ring-accent-soft' : 'rule'} corner-xl ruled recessed-soft`}>
         <div
           ref={editorRef}
           contentEditable
+          data-component="ce-body"
           className="sf-authored-content sf-generated-placeholder sf-focus-proxy padding-top-md padding-right-xl padding-bottom-md padding-left-md elastic basis-ratio min-height-none margin-right-xs scroll-auto ink font-md"
           data-placeholder={placeholder}
           onFocus={() => setIsFocused(true)}

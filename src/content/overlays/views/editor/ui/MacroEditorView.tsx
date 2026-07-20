@@ -10,7 +10,7 @@ export function MacroEditorView({ initialMacro, onClose }: MacroEditorViewProps)
   const handleDone = onClose;
 
   return (
-    <div className="fill-block vertical padding-xl ink">
+    <div data-component="editor-view" className="fill-block vertical padding-xl ink">
       <ModalMacroForm
         editing={editingMacro}
         onDone={handleDone}

@@ -45,11 +45,12 @@ export function ContentEditorLinkField({
   }
 
   return (
-    <div className="horizontal elastic basis-ratio gap-xs align-center">
+    <div data-component="ce-link-field" className="horizontal elastic basis-ratio gap-xs align-center">
       <span className="padding-block-none padding-inline-xs horizontal rigid align-center ink-soft" dangerouslySetInnerHTML={{ __html: icons.link }} />
       <input
         ref={inputRef}
         type="url"
+        data-component="ce-link-input"
         className="padding-block-none padding-inline-sm elastic basis-ratio control-block-lg ground-subtle ink rule corner-sm ruled font-sm focus:rule-accent focus:ring"
         value={url}
         onChange={e => setUrl(e.currentTarget.value)}
@@ -58,6 +59,7 @@ export function ContentEditorLinkField({
       />
       <button
         type="button"
+        data-component="ce-link-confirm"
         className="padding-none horizontal rigid control-box-lg align-center justify-center ink-soft corner-sm pressable tween-ground-ink-quick hover:ground-defined hover:ink"
         onMouseDown={e => { e.preventDefault(); confirm() }}
         title="Apply (Enter)"
@@ -66,6 +68,7 @@ export function ContentEditorLinkField({
       />
       <button
         type="button"
+        data-component="ce-link-cancel"
         className="padding-none horizontal rigid control-box-lg align-center justify-center ink-soft corner-sm pressable tween-ground-ink-quick hover:ground-defined hover:ink"
         onMouseDown={e => { e.preventDefault(); cancel() }}
         title="Cancel (Escape)"

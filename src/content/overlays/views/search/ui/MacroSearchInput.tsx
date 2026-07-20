@@ -9,10 +9,11 @@ interface MacroSearchInputProps {
 
 export function MacroSearchInput({ value, onChange, inputRef }: MacroSearchInputProps) {
   return (
-    <div className="padding-top-xs padding-right-xl padding-bottom-md padding-left-xl">
+    <div data-component="search-input-container" className="padding-top-xs padding-right-xl padding-bottom-md padding-left-xl">
       <input
         ref={inputRef}
         type="text"
+        data-component="search-input"
         value={value}
         onChange={e => onChange(e.currentTarget.value)}
         placeholder={t('modalSearch.inputPlaceholder')}

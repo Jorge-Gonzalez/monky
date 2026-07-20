@@ -106,14 +106,15 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   }
 
   return (
-    <form onSubmit={onSubmit} className="vertical elastic basis-ratio gap-md min-height-none position-relative">
-      <div className="horizontal gap-lg align-center justify-between">
+    <form onSubmit={onSubmit} data-component="editor-form" className="vertical elastic basis-ratio gap-md min-height-none position-relative">
+      <div data-component="editor-form-header" className="horizontal gap-lg align-center justify-between">
         <div className="horizontal rigid gap-sm align-center">
-          <h1 className="ink font-lg font-semibold">
+          <h1 data-component="editor-form-title" className="ink font-lg font-semibold">
             {editing ? t('editor.title.editShort') : t('editor.title.newShort')}
           </h1>
           <button
             type="button"
+            data-component="editor-form-popout"
             className="horizontal padding-xs align-center justify-center ink-soft corner-sm pressable tween-ground-ink-quick hover:ground-defined hover:ink-accent"
             onClick={openFullEditor}
             aria-label={t('editor.openFullEditor')}
@@ -123,7 +124,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           </button>
         </div>
 
-        <div className="horizontal gap-sm align-center">
+        <div data-component="editor-form-command" className="horizontal gap-sm align-center">
           <span>
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16">
               <polygon fill="currentColor" points="7,9 4,9 10,0 8,7 11,7 5.417,15 "/>
@@ -133,6 +134,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             <input
               id="modal-macro-command"
               ref={commandInputRef}
+              data-component="editor-form-command-input"
               className={`fill-inline padding-block-sm padding-inline-md ground-subtle ink rule ${commandJoined ? 'corner-top-3xl corner-bottom-none' : 'corner-3xl'} ruled recessed-soft font-md tween-rule-quick focus:rule-accent-soft focus:ring-accent-soft ${command && !commandValid ? 'rule-fail focus:rule-fail focus:recessed-fail' : ''}`}
               value={command}
               onChange={e => setCommand(e.currentTarget.value)}
@@ -144,7 +146,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
               {...suggest.inputProps}
             />
             {command && !commandValid && (
-              <div className={`padding-block-xs padding-inline-sm ${suggest.visible ? 'corner-bottom-none' : 'corner-bottom-md'} ground-fail-faint ink-fail font-xs`}>
+              <div data-component="editor-form-command-error" className={`padding-block-xs padding-inline-sm ${suggest.visible ? 'corner-bottom-none' : 'corner-bottom-md'} ground-fail-faint ink-fail font-xs`}>
                 {t('macroForm.commandPrefixError', { prefixes: prefixes.join(', ') })}
               </div>
             )}
@@ -168,8 +170,8 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
         placeholder={t('macroForm.contentPlaceholder')}
       />
 
-      <div className="horizontal rigid gap-md align-center justify-between">
-        <label className="horizontal gap-sm align-center ink font-sm pressable">
+      <div data-component="editor-form-footer" className="horizontal rigid gap-md align-center justify-between">
+        <label data-component="editor-form-sensitive" className="horizontal gap-sm align-center ink font-sm pressable">
           <input
             type="checkbox"
             checked={isSensitive}
@@ -179,10 +181,11 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           <span>{t('macroForm.sensitiveLabel')}</span>
         </label>
 
-        <div className="horizontal inline gap-sm">
+        <div data-component="editor-form-actions" className="horizontal inline gap-sm">
           {editing && (
             <button
               type="button"
+              data-component="editor-form-cancel"
               className="tween-quick padding-block-sm padding-inline-lg ground ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60"
               onClick={onDone}
             >
@@ -191,6 +194,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           )}
           <button
             type="submit"
+            data-component="editor-form-save"
             disabled={!isFormValid || savedToast !== null}
             className="tween-quick padding-block-sm padding-inline-lg ground-pass ink-inverse rule corner-md ruled font-md font-medium pressable hover:ground-pass focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60"
           >
@@ -200,7 +204,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
       </div>
 
       {(error || savedToast) && (
-        <div className={`padding-md position-absolute center-x inset-bottom-3xl text-nowrap corner-md ruled elevated-soft ${error ? 'ground-fail-faint rule-fail ink-fail' : 'ground-pass-faint rule-pass ink-pass'}`} role="status">
+        <div data-component="editor-form-toast" className={`padding-md position-absolute center-x inset-bottom-3xl text-nowrap corner-md ruled elevated-soft ${error ? 'ground-fail-faint rule-fail ink-fail' : 'ground-pass-faint rule-pass ink-pass'}`} role="status">
           <p className="font-medium">{error ?? savedToast}</p>
         </div>
       )}

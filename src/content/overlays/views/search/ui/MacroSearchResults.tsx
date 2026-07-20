@@ -30,8 +30,8 @@ export function MacroSearchResults({
 }: MacroSearchResultsProps) {
   if (macros.length === 0) {
     return (
-      <div ref={resultsRef} className="grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
-        <div className="span-all padding-lg ink-soft font-md text-center">
+      <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
+        <div data-component="search-empty" className="span-all padding-lg ink-soft font-md text-center">
           {searchQuery ? t('modalSearch.noMacrosFound') : t('modalSearch.startTypingHint')}
         </div>
       </div>
@@ -39,7 +39,7 @@ export function MacroSearchResults({
   }
 
   return (
-    <div ref={resultsRef} className="grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
+    <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
       {macros.map((macro, index) => (
         <MacroSearchItem
           key={macro.id}
@@ -65,24 +65,29 @@ interface MacroSearchItemProps {
 function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdit }: MacroSearchItemProps) {
   const commandClassName = [
     'pressable padding-top-lg padding-right-xs padding-bottom-lg padding-left-none rule-soft ruled-bottom font-lg font-medium hidden truncate tween-ground-quick',
-    isConfirmingDelete ? 'ground-fail-faint ink-fail' : 'ink-accent parent-hover:ground-subtle parent-selected:ground-defined',
+    isConfirmingDelete ? 'ink-fail' : 'ink-accent',
+  ].join(' ');
+  const wrapperClassName = [
+    'subgrid span-all position-relative selectable corner-md',
+    isConfirmingDelete ? 'ground-fail-faint' : 'hover:ground-subtle selected:ground-defined',
   ].join(' ');
 
   return (
     <div
-      className="subgrid span-all position-relative selectable"
+      data-component="search-item"
+      className={wrapperClassName}
       role="option"
       aria-selected={isSelected}
       data-state={isConfirmingDelete ? 'confirming-delete' : undefined}
       onClick={onClick}
     >
-      <div className={commandClassName}>{macro.command}</div>
+      <div data-component="search-item-command" className={commandClassName}>{macro.command}</div>
       {isConfirmingDelete ? (
-        <div className="padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ground-fail-faint ink-fail rule-soft ruled-bottom font-lg font-medium truncate" role="alert">
+        <div data-component="search-item-confirm" className="padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ink-fail rule-soft ruled-bottom font-lg font-medium truncate" role="alert">
           {t('modalSearch.confirmDelete')}
         </div>
       ) : (
-        <div className="padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ink rule-soft ruled-bottom font-lg pressable truncate parent-hover:ground-subtle parent-selected:ground-defined parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick">
+        <div data-component="search-item-text" className="padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ink rule-soft ruled-bottom font-lg pressable truncate parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick">
           {!hasPlaceholders(macro.text)
             ? macro.text
             : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>
@@ -94,6 +99,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
       )}
       {onEdit && !isConfirmingDelete && (
         <button
+          data-component="search-item-edit"
           className="horizontal padding-xs align-center justify-center position-absolute center-y inset-right-sm ink-soft corner-sm pressable concealed tween-opacity-ground-ink-quick hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed"
           onClick={e => { e.stopPropagation(); onEdit(); }}
           aria-label={t('modalSearch.editMacro')}

@@ -39,6 +39,7 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
     <div ref={wrapperRef} className="position-relative">
       <button
         type="button"
+        data-component="ce-style-trigger"
         className="padding-block-none padding-inline-xs horizontal rigid width-auto min-width-control-2xl control-block-lg gap-xs align-center justify-center ink-soft corner-sm font-sm font-medium pressable tween-ground-ink-quick hover:ground-defined hover:ink expanded:ground-defined expanded:ink-accent"
         onMouseDown={e => { e.preventDefault(); setOpen(o => !o) }}
         title={t('contentEditor.textStyle')}
@@ -51,13 +52,14 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
       </button>
 
       {open && (
-        <div className="vertical gap-xs padding-xs position-absolute attach-below-xs attach-left dropdown ground rule corner-md ruled elevated" role="listbox">
+        <div data-component="ce-style-menu" className="vertical gap-xs padding-xs position-absolute attach-below-xs attach-left dropdown ground rule corner-md ruled elevated" role="listbox">
           {STYLE_OPTIONS.map(opt => (
             <button
               key={opt.type}
               type="button"
               role="option"
               aria-selected={blockType === opt.type}
+              data-component="ce-style-option"
               className="fill-inline horizontal gap-sm padding-block-xs padding-inline-sm align-center selectable ink corner-sm font-sm text-start pressable tween-ground-quick hover:ground-defined selected:ground-defined selected:ink-accent"
               onMouseDown={e => { e.preventDefault(); handleSelect(opt.type) }}
             >

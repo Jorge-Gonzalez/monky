@@ -28,6 +28,7 @@ function Btn({ icon, title, active, onAction }: BtnProps) {
   return (
     <button
       type="button"
+      data-component="ce-toolbar-button"
       className="pressable padding-none horizontal align-center justify-center rigid control-box-lg corner-sm ink-soft tween-ground-ink-quick hover:ground-defined hover:ink pressed:ground-defined pressed:ink-accent"
       onMouseDown={e => { e.preventDefault(); onAction() }}
       title={title}
@@ -52,7 +53,7 @@ export function ContentEditorToolbar({
 }: ContentEditorToolbarProps) {
   if (linkMode) {
     return (
-      <div data-region="ce-toolbar" className="horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed ground">
+      <div data-region="ce-toolbar" data-component="ce-toolbar" className="horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed ground">
         <ContentEditorLinkField
           savedRange={savedRange}
           existingHref={formatState.linkHref}
