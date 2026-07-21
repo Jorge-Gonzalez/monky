@@ -64,7 +64,7 @@ interface MacroSearchItemProps {
 
 function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdit }: MacroSearchItemProps) {
   const commandClassName = [
-    'pressable padding-top-lg padding-right-xs padding-bottom-lg padding-left-none rule-soft ruled-bottom font-lg font-medium hidden truncate tween-ground-quick',
+    'pressable padding-top-lg padding-right-xs padding-bottom-lg padding-left-md rule-soft ruled-bottom font-lg font-medium hidden truncate tween-ground-quick',
     isConfirmingDelete ? 'ink-fail' : 'ink-accent',
   ].join(' ');
   const wrapperClassName = [
