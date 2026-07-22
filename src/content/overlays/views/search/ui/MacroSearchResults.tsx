@@ -64,35 +64,36 @@ interface MacroSearchItemProps {
 }
 
 function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdit }: MacroSearchItemProps) {
-  const commandClassName = [
-    'pressable padding-top-lg padding-right-xs padding-bottom-lg padding-left-md rule-soft ruled-bottom font-lg font-medium hidden truncate tween-ground-quick',
-    isConfirmingDelete ? 'ink-fail' : 'ink-accent',
-  ].join(' ');
-  const wrapperClassName = [
-    'subgrid span-all position-relative selectable corner-md',
-    isConfirmingDelete ? 'ground-fail-faint' : 'hover:ground-subtle selected:ground-defined',
-  ].join(' ');
-
   return (
     <div
       data-component="search-item"
-      className={wrapperClassName}
+      className={`subgrid span-all position-relative selectable corner-md ${
+        isConfirmingDelete ? 'ground-fail-faint' : 'hover:ground-subtle selected:ground-defined'
+      }`}
       role="option"
       aria-selected={isSelected}
       data-state={isConfirmingDelete ? 'confirming-delete' : undefined}
       onClick={onClick}
     >
-      <div data-component="search-item-command" className={commandClassName}>{macro.command}</div>
+      <div data-component="search-item-command" className={`padding-right-xs padding-left-md padding-top-lg padding-bottom-lg hidden tween-ground-quick rule-soft ruled-bottom font-lg font-medium pressable truncate ${
+        isConfirmingDelete ? 'ink-fail' : 'ink-accent'
+      }`}>{macro.command}</div>
       {isConfirmingDelete ? (
-        <div data-component="search-item-confirm" className="padding-left-xs padding-right-md padding-top-lg padding-bottom-lg hidden
-          ink-fail rule-soft ruled-bottom font-lg font-medium truncate" role="alert">
+        <div 
+          data-component="search-item-confirm" 
+          className="padding-left-xs padding-right-md padding-top-lg padding-bottom-lg hidden
+            ink-fail rule-soft ruled-bottom font-lg font-medium truncate" 
+          role="alert"
+        >
           {t('modalSearch.confirmDelete')}
         </div>
       ) : (
-        <div data-component="search-item-text" className="padding-left-xs padding-right-md padding-top-lg padding-bottom-lg hidden
-          tween-ground-quick
-          ink rule-soft ruled-bottom font-lg pressable truncate
-          parent-selected:overflow-visible parent-selected:text-wrap">
+        <div 
+          data-component="search-item-text"
+          className="padding-left-xs padding-right-md padding-top-lg padding-bottom-lg hidden
+            tween-ground-quick
+            ink rule-soft ruled-bottom font-lg pressable truncate
+            parent-selected:overflow-visible parent-selected:text-wrap">
           {!hasPlaceholders(macro.text)
             ? macro.text
             : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>
