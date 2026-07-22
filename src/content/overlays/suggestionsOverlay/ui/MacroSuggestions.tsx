@@ -161,21 +161,29 @@ export function MacroSuggestions({
     <div
       ref={containerRef}
       data-component="suggestions-container"
-      className="hidden min-width-popover-sm max-width-popover-2xl ground rule corner-lg ruled elevated-soft font-md tween-opacity-transform-quick"
+      className="hidden max-width-popover-2xl min-width-popover-sm
+        tween-opacity-transform-quick
+        ground rule corner-lg ruled font-md elevated-soft"
       style={{
         left: position.x,
         top: position.y,
         position: 'fixed',
       }}
     >
-      <div data-component="suggestions-arrow" className={`sf-callout-arrow position-absolute center-x height-none ${placement === 'top' ? 'sf-callout-arrow-top attach-below' : 'sf-callout-arrow-bottom attach-above'}`} />
-      <div ref={listRef} role="listbox" data-component="suggestions-list" className="horizontal gap-xs padding-xs rule-soft ruled-bottom">
+      <div data-component="suggestions-arrow" className={`sf-callout-arrow height-none center-x position-absolute ${placement === 'top' ? 'sf-callout-arrow-top attach-below' : 'sf-callout-arrow-bottom attach-above'}`} />
+      <div ref={listRef} role="listbox" data-component="suggestions-list" className="horizontal gap-xs padding-xs
+        rule-soft ruled-bottom">
         {visibleMacros.map((macro, index) => (
           <button
             key={macro.id}
             ref={(el) => { buttonRefs.current[index] = el; }}
             data-component="suggestions-item"
-            className="compressible hidden min-width-none max-width-command selectable ground-subtle ink rule-soft corner-md ruled padding-block-xs padding-inline-sm font-sm text-center pressable truncate tween-quick hover:ground-defined hover:rule selected:ground-defined selected:ink-accent selected:rule-accent"
+            className="compressible padding-block-xs padding-inline-sm hidden max-width-command min-width-none
+              tween-quick
+              selectable
+              ground-subtle ink rule-soft corner-md ruled font-sm text-center pressable truncate
+              hover:ground-defined hover:rule
+              selected:ground-defined selected:ink-accent selected:rule-accent"
             onMouseDown={(e) => {
               e.preventDefault();
               onSelectMacro(macro);
@@ -189,21 +197,28 @@ export function MacroSuggestions({
         ))}
       </div>
       {selectedMacro && (
-        <div data-component="suggestions-preview" className="padding-block-sm padding-inline-md hidden clamp-3 ink-soft font-xs">
+        <div data-component="suggestions-preview" className="padding-block-sm padding-inline-md hidden
+          ink-soft font-xs clamp-3">
           {selectedMacro.text}
         </div>
       )}
-      <div data-component="suggestions-footer" className="horizontal justify-end gap-md padding-block-xs padding-inline-md ground ink-soft rule ruled-top font-xs">
+      <div data-component="suggestions-footer" className="horizontal gap-md padding-block-xs padding-inline-md justify-end
+        ground ink-soft rule ruled-top font-xs">
         <span>
-          <kbd className="sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">←</kbd>
-          <kbd className="sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">→</kbd>/
-          <kbd className="sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">Tab</kbd> {t('macroSuggestions.footer.navigate')}
+          <kbd className="sf-keycap
+            ground-subtle ink rule corner-sm ruled font-xs font-mono">←</kbd>
+          <kbd className="sf-keycap
+            ground-subtle ink rule corner-sm ruled font-xs font-mono">→</kbd>/
+          <kbd className="sf-keycap
+            ground-subtle ink rule corner-sm ruled font-xs font-mono">Tab</kbd> {t('macroSuggestions.footer.navigate')}
         </span>
         <span>
-          <kbd className="sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">↵</kbd> {t('macroSuggestions.footer.select')}
+          <kbd className="sf-keycap
+            ground-subtle ink rule corner-sm ruled font-xs font-mono">↵</kbd> {t('macroSuggestions.footer.select')}
         </span>
         <span>
-          <kbd className="sf-keycap ground-subtle ink rule corner-sm ruled font-xs font-mono">Esc</kbd> {t('macroSuggestions.footer.cancel')}
+          <kbd className="sf-keycap
+            ground-subtle ink rule corner-sm ruled font-xs font-mono">Esc</kbd> {t('macroSuggestions.footer.cancel')}
         </span>
       </div>
     </div>

@@ -40,7 +40,11 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
       <button
         type="button"
         data-component="ce-style-trigger"
-        className="padding-block-none padding-inline-xs horizontal rigid width-auto min-width-control-2xl control-block-lg gap-xs align-center justify-center ink-soft corner-sm font-sm font-medium pressable tween-ground-ink-quick hover:ground-defined hover:ink expanded:ground-defined expanded:ink-accent"
+        className="horizontal rigid gap-xs padding-inline-xs padding-block-none align-center justify-center min-width-control-2xl width-auto control-block-lg
+          tween-ground-ink-quick
+          ink-soft corner-sm font-sm font-medium pressable
+          hover:ground-defined hover:ink
+          expanded:ground-defined expanded:ink-accent"
         onMouseDown={e => { e.preventDefault(); setOpen(o => !o) }}
         title={t('contentEditor.textStyle')}
         aria-label={t('contentEditor.textStyle')}
@@ -48,11 +52,14 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
         aria-haspopup="listbox"
       >
         <span>{current.shortLabel}</span>
-        <span className="horizontal align-center alpha-60" dangerouslySetInnerHTML={{ __html: icons.chevronDown }} />
+        <span className="horizontal align-center
+          alpha-60" dangerouslySetInnerHTML={{ __html: icons.chevronDown }} />
       </button>
 
       {open && (
-        <div data-component="ce-style-menu" className="vertical gap-xs padding-xs position-absolute attach-below-xs attach-left dropdown ground rule corner-md ruled elevated" role="listbox">
+        <div data-component="ce-style-menu" className="vertical gap-xs padding-xs attach-left attach-below-xs
+          dropdown position-absolute
+          ground rule corner-md ruled elevated" role="listbox">
           {STYLE_OPTIONS.map(opt => (
             <button
               key={opt.type}
@@ -60,10 +67,17 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
               role="option"
               aria-selected={blockType === opt.type}
               data-component="ce-style-option"
-              className="fill-inline horizontal gap-sm padding-block-xs padding-inline-sm align-center selectable ink corner-sm font-sm text-start pressable tween-ground-quick hover:ground-defined selected:ground-defined selected:ink-accent"
+              className="horizontal gap-sm padding-block-xs padding-inline-sm align-center fill-inline
+                tween-ground-quick
+                selectable
+                ink corner-sm font-sm text-start pressable
+                hover:ground-defined
+                selected:ground-defined selected:ink-accent"
               onMouseDown={e => { e.preventDefault(); handleSelect(opt.type) }}
             >
-              <span className="rigid control-inline-md ink-soft font-xs font-semibold parent-selected:ink-accent">{opt.shortLabel}</span>
+              <span className="rigid control-inline-md
+                ink-soft font-xs font-semibold
+                parent-selected:ink-accent">{opt.shortLabel}</span>
               <span className="elastic basis-ratio">{t(opt.labelKey as Parameters<typeof t>[0])}</span>
             </button>
           ))}

@@ -30,8 +30,9 @@ export function MacroSearchResults({
 }: MacroSearchResultsProps) {
   if (macros.length === 0) {
     return (
-      <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
-        <div data-component="search-empty" className="span-all padding-lg ink-soft font-md text-center">
+      <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs content-align-start scroll-auto max-height-results-md" role="listbox">
+        <div data-component="search-empty" className="span-all padding-lg
+          ink-soft font-md text-center">
           {searchQuery ? t('modalSearch.noMacrosFound') : t('modalSearch.startTypingHint')}
         </div>
       </div>
@@ -39,7 +40,7 @@ export function MacroSearchResults({
   }
 
   return (
-    <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-left-xl padding-right-lg margin-right-xs max-height-results-md scroll-auto content-align-start" role="listbox">
+    <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs content-align-start scroll-auto max-height-results-md" role="listbox">
       {macros.map((macro, index) => (
         <MacroSearchItem
           key={macro.id}
@@ -83,11 +84,15 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
     >
       <div data-component="search-item-command" className={commandClassName}>{macro.command}</div>
       {isConfirmingDelete ? (
-        <div data-component="search-item-confirm" className="padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ink-fail rule-soft ruled-bottom font-lg font-medium truncate" role="alert">
+        <div data-component="search-item-confirm" className="padding-left-xs padding-right-md padding-top-lg padding-bottom-lg hidden
+          ink-fail rule-soft ruled-bottom font-lg font-medium truncate" role="alert">
           {t('modalSearch.confirmDelete')}
         </div>
       ) : (
-        <div data-component="search-item-text" className="padding-top-lg padding-right-md padding-bottom-lg padding-left-xs hidden ink rule-soft ruled-bottom font-lg pressable truncate parent-selected:text-wrap parent-selected:overflow-visible tween-ground-quick">
+        <div data-component="search-item-text" className="padding-left-xs padding-right-md padding-top-lg padding-bottom-lg hidden
+          tween-ground-quick
+          ink rule-soft ruled-bottom font-lg pressable truncate
+          parent-selected:overflow-visible parent-selected:text-wrap">
           {!hasPlaceholders(macro.text)
             ? macro.text
             : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>
@@ -100,7 +105,13 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
       {onEdit && !isConfirmingDelete && (
         <button
           data-component="search-item-edit"
-          className="horizontal padding-xs align-center justify-center position-absolute center-y inset-right-sm ink-soft corner-sm pressable concealed tween-opacity-ground-ink-quick hover:ground-defined hover:ink-accent parent-hover:revealed parent-selected:revealed"
+          className="horizontal padding-xs align-center justify-center center-y inset-right-sm
+            position-absolute
+            tween-opacity-ground-ink-quick
+            ink-soft corner-sm pressable concealed
+            hover:ground-defined hover:ink-accent
+            parent-hover:revealed
+            parent-selected:revealed"
           onClick={e => { e.stopPropagation(); onEdit(); }}
           aria-label={t('modalSearch.editMacro')}
           tabIndex={-1}

@@ -17,6 +17,7 @@ const result = spawnSync(process.execPath, [
   'adoption/format-paragraphs.ts',
   '--project',
   project,
+  '--lines',
   '--check',
 ], { cwd: ermineRoot, stdio: 'inherit' })
 if (result.error) throw result.error

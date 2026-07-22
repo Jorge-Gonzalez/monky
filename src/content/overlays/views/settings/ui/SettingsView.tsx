@@ -57,14 +57,17 @@ export function SettingsView(_props: BaseModalViewProps) {
   ];
 
   return (
-    <div data-component="settings-view" className="fill-block vertical scroll-auto scrollbar-subtle">
-      <div className="padding-top-2xl padding-right-none padding-bottom-xl padding-left-none">
+    <div data-component="settings-view" className="vertical scroll-auto fill-block
+      scrollbar-subtle">
+      <div className="padding-bottom-xl padding-top-2xl padding-right-none padding-left-none">
 
         <div className="columns-12 padding-block-xl padding-inline-3xl">
-          <div data-component="settings-section-label" className="quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">{t('settings.sections.general')}</div>
-          <div data-component="settings-section-body" className="three-quarters elastic basis-ratio min-width-none">
+          <div data-component="settings-section-label" className="quarter padding-right-sm padding-top-md padding-bottom-none padding-left-none
+            ink-accent-soft font-xs font-medium overline">{t('settings.sections.general')}</div>
+          <div data-component="settings-section-body" className="elastic basis-ratio three-quarters min-width-none">
             <div data-component="settings-row" className="horizontal gap-lg padding-block-sm align-center justify-between">
-              <span data-component="settings-row-label" className="rigid ink font-md">{t('options.prefixEditor.title')}</span>
+              <span data-component="settings-row-label" className="rigid
+                ink font-md">{t('options.prefixEditor.title')}</span>
               <SelectableGroup
                 options={ALL_PREFIXES}
                 selected={prefixes}
@@ -74,7 +77,8 @@ export function SettingsView(_props: BaseModalViewProps) {
               />
             </div>
             <div data-component="settings-row" className="horizontal gap-lg padding-block-sm align-center justify-between">
-              <span data-component="settings-row-label" className="rigid ink font-md">{t('replacementMode.title')}</span>
+              <span data-component="settings-row-label" className="rigid
+                ink font-md">{t('replacementMode.title')}</span>
               <SegmentedControl
                 options={REPLACEMENT_OPTIONS.map(o => ({ value: o.value, label: o.label() }))}
                 value={replacementValue}
@@ -84,13 +88,16 @@ export function SettingsView(_props: BaseModalViewProps) {
           </div>
         </div>
 
-        <div data-component="settings-divider" className="height-none rule ruled-top margin-block-sm margin-inline-xl" />
+        <div data-component="settings-divider" className="margin-block-sm margin-inline-xl height-none
+          rule ruled-top" />
 
         <div className="columns-12 padding-block-xl padding-inline-3xl">
-          <div data-component="settings-section-label" className="quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">{t('settings.sections.appearance')}</div>
-          <div data-component="settings-section-body" className="three-quarters elastic basis-ratio min-width-none">
+          <div data-component="settings-section-label" className="quarter padding-right-sm padding-top-md padding-bottom-none padding-left-none
+            ink-accent-soft font-xs font-medium overline">{t('settings.sections.appearance')}</div>
+          <div data-component="settings-section-body" className="elastic basis-ratio three-quarters min-width-none">
             <div data-component="settings-row" className="horizontal gap-lg padding-block-sm align-center justify-between">
-              <span data-component="settings-row-label" className="rigid ink font-md">{t('settings.colorTheme')}</span>
+              <span data-component="settings-row-label" className="rigid
+                ink font-md">{t('settings.colorTheme')}</span>
               <div className="horizontal gap-md align-center">
                 <SegmentedControl
                   options={THEME_OPTIONS}
@@ -105,7 +112,8 @@ export function SettingsView(_props: BaseModalViewProps) {
               </div>
             </div>
             <div data-component="settings-row" className="horizontal gap-lg padding-block-sm align-center justify-between">
-              <span data-component="settings-row-label" className="rigid ink font-md">{t('settings.language')}</span>
+              <span data-component="settings-row-label" className="rigid
+                ink font-md">{t('settings.language')}</span>
               <SegmentedControl
                 options={LANGUAGE_OPTIONS}
                 value={language}
@@ -115,18 +123,33 @@ export function SettingsView(_props: BaseModalViewProps) {
           </div>
         </div>
 
-        <div data-component="settings-divider" className="height-none rule ruled-top margin-block-sm margin-inline-xl" />
+        <div data-component="settings-divider" className="margin-block-sm margin-inline-xl height-none
+          rule ruled-top" />
 
         <div className="columns-12 padding-block-xl padding-inline-3xl">
-          <div data-component="settings-section-label" className="quarter overline padding-top-md padding-right-sm padding-bottom-none padding-left-none ink-accent-soft font-xs font-medium">{t('settings.sections.data')}</div>
-          <div data-component="settings-section-body" className="three-quarters elastic basis-ratio min-width-none">
+          <div data-component="settings-section-label" className="quarter padding-right-sm padding-top-md padding-bottom-none padding-left-none
+            ink-accent-soft font-xs font-medium overline">{t('settings.sections.data')}</div>
+          <div data-component="settings-section-body" className="elastic basis-ratio three-quarters min-width-none">
             <div data-component="settings-row" className="horizontal gap-lg padding-block-sm align-center justify-between">
-              <span data-component="settings-row-label" className="rigid ink font-md">{t('settings.importExport.title')}</span>
+              <span data-component="settings-row-label" className="rigid
+                ink font-md">{t('settings.importExport.title')}</span>
               <div className="horizontal gap-sm">
-                <button data-component="settings-button" className="rigid tween-quick padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60" type="button" onClick={exportMacros}>
+                <button data-component="settings-button" className="rigid padding-block-sm padding-inline-lg
+                  tween-quick
+                  ground-subtle ink rule corner-md ruled font-md font-medium pressable
+                  hover:ground-defined
+                  focus:ring
+                  active:ground-accent active:ink-inverse
+                  disabled:ground-subtle disabled:ink-soft disabled:blocked disabled:alpha-60" type="button" onClick={exportMacros}>
                   {t('settings.importExport.exportButton')}
                 </button>
-                <button data-component="settings-button" className="rigid tween-quick padding-block-sm padding-inline-lg ground-subtle ink rule corner-md ruled font-md font-medium pressable hover:ground-defined focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60" type="button" onClick={() => fileInputRef.current?.click()}>
+                <button data-component="settings-button" className="rigid padding-block-sm padding-inline-lg
+                  tween-quick
+                  ground-subtle ink rule corner-md ruled font-md font-medium pressable
+                  hover:ground-defined
+                  focus:ring
+                  active:ground-accent active:ink-inverse
+                  disabled:ground-subtle disabled:ink-soft disabled:blocked disabled:alpha-60" type="button" onClick={() => fileInputRef.current?.click()}>
                   {t('settings.importExport.importButton')}
                 </button>
                 <input
@@ -147,7 +170,7 @@ export function SettingsView(_props: BaseModalViewProps) {
         </div>
 
         {importStatus && (
-          <div className={`font-sm padding-top-xs padding-inline-xl padding-bottom-sm ${importStatus.ok ? 'ink-accent' : 'ink-fail'}`}>
+          <div className={`padding-top-xs padding-bottom-sm padding-inline-xl font-sm ${importStatus.ok ? 'ink-accent' : 'ink-fail'}`}>
             {importStatus.message}
           </div>
         )}

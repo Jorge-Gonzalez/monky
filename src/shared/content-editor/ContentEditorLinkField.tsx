@@ -46,12 +46,15 @@ export function ContentEditorLinkField({
 
   return (
     <div data-component="ce-link-field" className="horizontal elastic basis-ratio gap-xs align-center">
-      <span className="padding-block-none padding-inline-xs horizontal rigid align-center ink-soft" dangerouslySetInnerHTML={{ __html: icons.link }} />
+      <span className="horizontal rigid padding-inline-xs padding-block-none align-center
+        ink-soft" dangerouslySetInnerHTML={{ __html: icons.link }} />
       <input
         ref={inputRef}
         type="url"
         data-component="ce-link-input"
-        className="padding-block-none padding-inline-sm elastic basis-ratio control-block-lg ground-subtle ink rule corner-sm ruled font-sm focus:rule-accent focus:ring"
+        className="elastic basis-ratio padding-inline-sm padding-block-none control-block-lg
+          ground-subtle ink rule corner-sm ruled font-sm
+          focus:rule-accent focus:ring"
         value={url}
         onChange={e => setUrl(e.currentTarget.value)}
         onKeyDown={onKeyDown}
@@ -60,7 +63,10 @@ export function ContentEditorLinkField({
       <button
         type="button"
         data-component="ce-link-confirm"
-        className="padding-none horizontal rigid control-box-lg align-center justify-center ink-soft corner-sm pressable tween-ground-ink-quick hover:ground-defined hover:ink"
+        className="horizontal rigid padding-none align-center justify-center control-box-lg
+          tween-ground-ink-quick
+          ink-soft corner-sm pressable
+          hover:ground-defined hover:ink"
         onMouseDown={e => { e.preventDefault(); confirm() }}
         title="Apply (Enter)"
         aria-label="Apply link"
@@ -69,7 +75,10 @@ export function ContentEditorLinkField({
       <button
         type="button"
         data-component="ce-link-cancel"
-        className="padding-none horizontal rigid control-box-lg align-center justify-center ink-soft corner-sm pressable tween-ground-ink-quick hover:ground-defined hover:ink"
+        className="horizontal rigid padding-none align-center justify-center control-box-lg
+          tween-ground-ink-quick
+          ink-soft corner-sm pressable
+          hover:ground-defined hover:ink"
         onMouseDown={e => { e.preventDefault(); cancel() }}
         title="Cancel (Escape)"
         aria-label="Cancel"

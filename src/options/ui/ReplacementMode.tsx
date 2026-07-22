@@ -10,28 +10,33 @@ interface ReplacementModeProps {
  */
 export default function ReplacementMode({ useCommitKeys, onChange }: ReplacementModeProps) {
   return (
-    <div className="vertical gap-md padding-lg ground-subtle rule corner-md ruled">
+    <div className="vertical gap-md padding-lg
+      ground-subtle rule corner-md ruled">
       <h3 className="font-lg">{t('replacementMode.title')}</h3>
-      <div className="horizontal hug-inline gap-xl">
-        <label className="horizontal rigid hug-inline gap-sm align-center">
+      <div className="horizontal gap-xl hug-inline">
+        <label className="horizontal rigid gap-sm align-center hug-inline">
           <input
             type="radio"
             name="behavior"
             checked={!useCommitKeys}
             onChange={() => onChange(false)}
-            className="control-size-lg rigid pressable"
+            className="rigid control-size-lg
+              pressable"
           />
-          <span className="rigid ink font-md pressable">{t('replacementMode.auto')}</span>
+          <span className="rigid
+            ink font-md pressable">{t('replacementMode.auto')}</span>
         </label>
-        <label className="horizontal rigid hug-inline gap-sm align-center">
+        <label className="horizontal rigid gap-sm align-center hug-inline">
           <input
             type="radio"
             name="behavior"
             checked={useCommitKeys}
             onChange={() => onChange(true)}
-            className="control-size-lg rigid pressable"
+            className="rigid control-size-lg
+              pressable"
           />
-          <span className="rigid ink font-md pressable">{t('replacementMode.manual')}</span>
+          <span className="rigid
+            ink font-md pressable">{t('replacementMode.manual')}</span>
         </label>
       </div>
       <p className="ink-soft font-md">

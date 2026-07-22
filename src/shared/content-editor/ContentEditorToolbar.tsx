@@ -29,7 +29,11 @@ function Btn({ icon, title, active, onAction }: BtnProps) {
     <button
       type="button"
       data-component="ce-toolbar-button"
-      className="pressable padding-none horizontal align-center justify-center rigid control-box-lg corner-sm ink-soft tween-ground-ink-quick hover:ground-defined hover:ink pressed:ground-defined pressed:ink-accent"
+      className="horizontal rigid padding-none align-center justify-center control-box-lg
+        tween-ground-ink-quick
+        ink-soft corner-sm pressable
+        hover:ground-defined hover:ink
+        pressed:ground-defined pressed:ink-accent"
       onMouseDown={e => { e.preventDefault(); onAction() }}
       title={title}
       aria-label={title}
@@ -40,7 +44,8 @@ function Btn({ icon, title, active, onAction }: BtnProps) {
 }
 
 function Sep() {
-  return <span className="separator-mark-xs margin-block-none margin-inline-xs rigid rule ruled-left" aria-hidden />
+  return <span className="rigid margin-inline-xs margin-block-none separator-mark-xs
+    rule ruled-left" aria-hidden />
 }
 
 export function ContentEditorToolbar({
@@ -53,7 +58,8 @@ export function ContentEditorToolbar({
 }: ContentEditorToolbarProps) {
   if (linkMode) {
     return (
-      <div data-region="ce-toolbar" data-component="ce-toolbar" className="horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed ground">
+      <div data-region="ce-toolbar" data-component="ce-toolbar" className="horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed
+        ground">
         <ContentEditorLinkField
           savedRange={savedRange}
           existingHref={formatState.linkHref}
@@ -65,7 +71,8 @@ export function ContentEditorToolbar({
   }
 
   return (
-    <div data-region="ce-toolbar" className="horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed ground" role="toolbar" aria-label="Formatting">
+    <div data-region="ce-toolbar" className="horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed
+      ground" role="toolbar" aria-label="Formatting">
       <Btn icon={icons.undo} title="Undo (Ctrl+Z)" onAction={undo} />
       <Btn icon={icons.redo} title="Redo (Ctrl+Y)" onAction={redo} />
 

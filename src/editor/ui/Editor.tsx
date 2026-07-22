@@ -11,7 +11,7 @@ export default function Editor() {
   const { editingMacro, setEditingMacro, resetForm } = useMacroEditor()
 
   return (
-    <div className="fill-viewport vertical gap-lg padding-2xl max-width-2xl centered flush-block">
+    <div className="vertical gap-lg padding-2xl centered flush-block max-width-2xl fill-viewport">
       <h1 className="font-2xl">{t('editor.pageTitle')}</h1>
       <MacroForm editing={editingMacro} onDone={resetForm} />
       <hr className="rule ruled-top" />
