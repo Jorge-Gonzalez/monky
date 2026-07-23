@@ -30,9 +30,16 @@ export function MacroSearchResults({
 }: MacroSearchResultsProps) {
   if (macros.length === 0) {
     return (
-      <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs content-align-start scroll-auto max-height-results-md" role="listbox">
-        <div data-component="search-empty" className="span-all padding-lg
-            ink-soft font-md text-center">
+      <div ref={resultsRef} 
+        data-component="search-results" 
+        className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs content-align-start scroll-auto max-height-results-md" 
+        role="listbox"
+      >
+        <div 
+          data-component="search-empty" 
+          className="span-all padding-lg
+              ink-soft font-md text-center"
+        >
           {searchQuery ? t('modalSearch.noMacrosFound') : t('modalSearch.startTypingHint')}
         </div>
       </div>
@@ -77,7 +84,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
     >
       <div 
         data-component="search-item-command" 
-        className={`padding-right-xs padding-left-md padding-top-lg padding-bottom-lg hidden tween-ground-quick rule-soft ruled-bottom font-lg font-medium pressable truncate ${
+        className={`padding-right-xs padding-left-md padding-top-lg padding-bottom-lg hidden tween-ground-quick rule-soft ruled-bottom font-md font-bold pressable truncate ${
           isConfirmingDelete 
             ? 'ink-fail' 
             : 'ink-accent'
@@ -88,7 +95,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
         <div 
           data-component="search-item-confirm" 
           className="padding-left-xs padding-right-md padding-top-lg padding-bottom-lg hidden
-              ink-fail rule-soft ruled-bottom font-lg font-medium truncate" 
+              ink-fail rule-soft ruled-bottom font-md font-medium truncate" 
           role="alert"
         >
           {t('modalSearch.confirmDelete')}
@@ -98,7 +105,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
           data-component="search-item-text"
           className="padding-left-xs padding-right-md padding-top-lg padding-bottom-lg hidden
               tween-ground-quick
-              ink rule-soft ruled-bottom font-lg pressable truncate
+              ink rule-soft ruled-bottom font-md pressable truncate
               parent-selected:overflow-visible parent-selected:text-wrap">
           {!hasPlaceholders(macro.text)
             ? macro.text
