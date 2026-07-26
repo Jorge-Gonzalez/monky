@@ -63,7 +63,7 @@
     },
     {
       "id": "search-results",
-      "classString": "grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs content-align-start scroll-auto max-height-results-md",
+      "classString": "grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs ground content-align-start scroll-auto max-height-results-md",
       "backing": []
     },
     {

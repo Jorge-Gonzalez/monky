@@ -11,7 +11,7 @@ interface MacroCommandResultsProps {
 export function MacroCommandResults({ commands, selectedIndex, onSelect, resultsRef }: MacroCommandResultsProps) {
   if (commands.length === 0) {
     return (
-      <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs content-align-start scroll-auto max-height-results-md" role="listbox">
+      <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs ground content-align-start scroll-auto max-height-results-md" role="listbox">
         <div data-component="search-empty" className="span-all padding-lg
           ink-soft font-md text-center">{t('modalSearch.noMatchingCommands')}</div>
       </div>
@@ -19,7 +19,7 @@ export function MacroCommandResults({ commands, selectedIndex, onSelect, results
   }
 
   return (
-    <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs content-align-start scroll-auto max-height-results-md" role="listbox">
+    <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs ground content-align-start scroll-auto max-height-results-md" role="listbox">
       {commands.map((cmd, index) => (
         <div
           key={cmd.id}

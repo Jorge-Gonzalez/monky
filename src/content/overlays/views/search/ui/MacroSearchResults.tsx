@@ -32,7 +32,7 @@ export function MacroSearchResults({
     return (
       <div ref={resultsRef} 
         data-component="search-results" 
-        className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs content-align-start scroll-auto max-height-results-md" 
+        className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs ground content-align-start scroll-auto max-height-results-md" 
         role="listbox"
       >
         <div 
@@ -47,7 +47,7 @@ export function MacroSearchResults({
   }
 
   return (
-    <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs content-align-start scroll-auto max-height-results-md" role="listbox">
+    <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs ground content-align-start scroll-auto max-height-results-md" role="listbox">
       {macros.map((macro, index) => (
         <MacroSearchItem
           key={macro.id}
