@@ -19,7 +19,7 @@ export function MacroSearchInput({ value, onChange, inputRef }: MacroSearchInput
         placeholder={t('modalSearch.inputPlaceholder')}
         className="padding-block-sm padding-inline-lg fill-inline
           tween-rule-quick
-          ground-subtle ink rule corner-2xl ruled font-md recessed-soft
+          ground-subtle ink rule corner-3xl ruled font-md recessed-soft
           focus:rule-accent-soft focus:ring-accent-soft"
       />
     </div>
