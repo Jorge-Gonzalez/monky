@@ -143,13 +143,15 @@
    translate also lands whole, but any non-none transform/translate promotes the
    element to a composited layer, and Chrome drops subpixel antialiasing in layers it
    cannot prove opaque — a real risk next to `border-radius: 24px`. Buying the
-   alignment with layout alone avoids taking that bet. (Note: the modal separately
-   renders without subpixel AA for reasons not yet identified; removing the translate
-   did not by itself restore it, so this is precaution, not the cure.)
+   alignment with layout alone avoids taking that bet.
 
    The scrim stays a separate full-cover element, so trimming to an even size here
    never leaves an uncovered strip. Rasterisation alignment on a foreign page, not an
-   Ermine placement word. */
+   Ermine placement word.
+
+   Caveat: this guarantees whole pixels only while the centred box is itself even.
+   `dialog-measure` is 600x560, but below ~632px of viewport its width becomes
+   `100vw - 2rem`, which is odd on an odd viewport and lands fractional again. */
 .sf-pixel-frame {
   position: absolute;
   top: 0;
