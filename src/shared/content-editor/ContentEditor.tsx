@@ -99,7 +99,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
           contentEditable
           data-component="ce-body"
           className="sf-authored-content sf-generated-placeholder sf-focus-proxy
-            elastic basis-ratio padding-top-md padding-bottom-md padding-left-md padding-right-xl margin-right-xs scroll-auto min-height-none
+            elastic basis-ratio padding-top-md padding-bottom-md padding-left-md padding-right-xl margin-right-xs ground-subtle scroll-auto min-height-none
             ink font-md"
           data-placeholder={placeholder}
           onFocus={() => setIsFocused(true)}

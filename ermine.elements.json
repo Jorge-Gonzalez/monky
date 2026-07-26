@@ -626,7 +626,7 @@
     },
     {
       "id": "phase-b-content-editor-body",
-      "classString": "elastic basis-ratio padding-top-md padding-bottom-md padding-left-md padding-right-xl margin-right-xs scroll-auto min-height-none ink font-md",
+      "classString": "elastic basis-ratio padding-top-md padding-bottom-md padding-left-md padding-right-xl margin-right-xs ground-subtle scroll-auto min-height-none ink font-md",
       "backing": []
     },
     {
