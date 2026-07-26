@@ -7,8 +7,13 @@
       "backing": []
     },
     {
+      "id": "modal-centering-frame",
+      "classString": "horizontal align-center justify-center position-absolute",
+      "backing": []
+    },
+    {
       "id": "modal-dialog",
-      "classString": "position-absolute vertical hidden dialog-measure ground rule corner-3xl ruled elevated-soft",
+      "classString": "vertical hidden dialog-measure ground rule corner-3xl ruled elevated-soft",
       "backing": []
     },
     {
@@ -81,7 +86,7 @@
     },
     {
       "id": "search-item-command-cell",
-      "classString": "padding-right-xs padding-top-lg padding-bottom-lg padding-left-none hidden tween-ground-quick ink-accent rule-soft ruled-bottom font-lg font-medium pressable truncate",
+      "classString": "padding-right-xs padding-top-lg padding-bottom-lg padding-left-none width-command hidden tween-ground-quick ink-accent rule-soft ruled-bottom font-lg font-medium pressable truncate",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -107,7 +112,7 @@
     },
     {
       "id": "search-command-name-cell",
-      "classString": "padding-right-xs padding-top-lg padding-bottom-lg padding-left-none hidden tween-ground-quick ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate",
+      "classString": "padding-right-xs padding-top-lg padding-bottom-lg padding-left-none width-command hidden tween-ground-quick ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"

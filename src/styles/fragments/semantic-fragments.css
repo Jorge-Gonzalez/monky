@@ -133,23 +133,32 @@
   z-index: var(--monky-foreign-overlay-z, 10000) !important;
 }
 
-/* sf-pixel-centered: centre an overlay on whole device pixels.
-   Both flex centring and `left: 50%; translate: -50%` halve the leftover space, so
-   whenever that leftover is odd the box lands on a half pixel — measured at 6 of 12
-   common viewport widths. Every glyph origin inside then shifts by 0.5px, and under
-   slight hinting (which grid-fits vertically only, never horizontally) each vertical
-   stem straddles two pixels and reads soft. Rounding the 50% anchor and the -50%
-   self-offset *separately* keeps their sum whole at any viewport width.
-   Rasterisation alignment on a foreign page, not an Ermine placement word. Uses the
-   standalone `translate` property so `transform` stays free for animation. */
-.sf-pixel-centered {
+/* sf-pixel-frame: a transparent centring box sized to an even number of pixels, so
+   halving its leftover space is exact and the dialog lands on a whole pixel — at 6
+   of 12 common viewport widths it otherwise lands on x.5, shifting every glyph
+   origin by half a pixel. Under slight hinting (which grid-fits vertically only,
+   never horizontally) that splits every vertical stem across two pixels.
+
+   It centres with layout rather than `translate: -50%` deliberately. A rounded
+   translate also lands whole, but any non-none transform/translate promotes the
+   element to a composited layer, and Chrome drops subpixel antialiasing in layers it
+   cannot prove opaque — a real risk next to `border-radius: 24px`. Buying the
+   alignment with layout alone avoids taking that bet. (Note: the modal separately
+   renders without subpixel AA for reasons not yet identified; removing the translate
+   did not by itself restore it, so this is precaution, not the cure.)
+
+   The scrim stays a separate full-cover element, so trimming to an even size here
+   never leaves an uncovered strip. Rasterisation alignment on a foreign page, not an
+   Ermine placement word. */
+.sf-pixel-frame {
   position: absolute;
+  top: 0;
+  left: 0;
 
   /* stylelint-disable declaration-property-value-no-unknown -- stylelint's value
      parser doesn't yet know CSS round(); verified working in the Chrome target. */
-  left: round(down, 50%, 1px);
-  top: round(down, 50%, 1px);
-  translate: round(down, -50%, 1px) round(down, -50%, 1px);
+  width: round(down, 100%, 2px);
+  height: round(down, 100%, 2px);
   /* stylelint-enable declaration-property-value-no-unknown */
 }
 

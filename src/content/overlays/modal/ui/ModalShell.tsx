@@ -44,24 +44,28 @@ export function ModalShell({
       role="presentation"
     >
       <div
-        ref={modalRef}
-        data-component="modal-dialog"
-        className="sf-pixel-centered
-          vertical hidden dialog-measure
-          ground rule corner-3xl ruled elevated-soft"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Monky Modal"
-        onMouseDown={e => e.stopPropagation()}
+        data-component="modal-centering-frame"
+        className="sf-pixel-frame horizontal align-center justify-center"
       >
-        <ModalNavigation
-          currentView={currentView}
-          onViewChange={onViewChange}
-          theme={theme}
-        />
+        <div
+          ref={modalRef}
+          data-component="modal-dialog"
+          className="vertical hidden dialog-measure
+            ground rule corner-3xl ruled elevated-soft"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Monky Modal"
+          onMouseDown={e => e.stopPropagation()}
+        >
+          <ModalNavigation
+            currentView={currentView}
+            onViewChange={onViewChange}
+            theme={theme}
+          />
 
-        <div data-component="modal-content" className="vertical elastic basis-ratio hidden min-height-none">
-          {childrenWithProps}
+          <div data-component="modal-content" className="vertical elastic basis-ratio hidden min-height-none">
+            {childrenWithProps}
+          </div>
         </div>
       </div>
     </div>

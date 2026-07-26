@@ -84,7 +84,7 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
     >
       <div 
         data-component="search-item-command" 
-        className={`padding-right-xs padding-top-sm padding-bottom-sm padding-left-md hidden tween-ground-quick font-md font-bold pressable truncate ${
+        className={`padding-right-xs padding-top-sm padding-bottom-sm padding-left-md width-command hidden tween-ground-quick font-md font-bold pressable truncate ${
           isConfirmingDelete 
             ? 'ink-fail' 
             : 'ink-accent'

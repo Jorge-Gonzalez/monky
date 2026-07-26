@@ -34,7 +34,7 @@ export function MacroCommandResults({ commands, selectedIndex, onSelect, results
           aria-selected={index === selectedIndex}
           onClick={() => onSelect(cmd)}
         >
-          <div data-component="search-item-command" className="padding-right-xs padding-left-md padding-top-lg padding-bottom-lg hidden
+          <div data-component="search-item-command" className="padding-right-xs padding-left-md padding-top-lg padding-bottom-lg width-command hidden
             tween-ground-quick
             ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate">{cmd.command}</div>
           <em data-component="search-item-text" className="padding-left-xs padding-right-md padding-top-lg padding-bottom-lg
