@@ -3,12 +3,12 @@
   "elements": [
     {
       "id": "modal-backdrop",
-      "classString": "horizontal align-center justify-center cover position-fixed scrim",
+      "classString": "cover position-fixed scrim",
       "backing": []
     },
     {
       "id": "modal-dialog",
-      "classString": "vertical hidden dialog-measure ground rule corner-3xl ruled elevated-soft",
+      "classString": "position-absolute vertical hidden dialog-measure ground rule corner-3xl ruled elevated-soft",
       "backing": []
     },
     {

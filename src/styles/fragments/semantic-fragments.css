@@ -133,6 +133,26 @@
   z-index: var(--monky-foreign-overlay-z, 10000) !important;
 }
 
+/* sf-pixel-centered: centre an overlay on whole device pixels.
+   Both flex centring and `left: 50%; translate: -50%` halve the leftover space, so
+   whenever that leftover is odd the box lands on a half pixel — measured at 6 of 12
+   common viewport widths. Every glyph origin inside then shifts by 0.5px, and under
+   slight hinting (which grid-fits vertically only, never horizontally) each vertical
+   stem straddles two pixels and reads soft. Rounding the 50% anchor and the -50%
+   self-offset *separately* keeps their sum whole at any viewport width.
+   Rasterisation alignment on a foreign page, not an Ermine placement word. Uses the
+   standalone `translate` property so `transform` stays free for animation. */
+.sf-pixel-centered {
+  position: absolute;
+
+  /* stylelint-disable declaration-property-value-no-unknown -- stylelint's value
+     parser doesn't yet know CSS round(); verified working in the Chrome target. */
+  left: round(down, 50%, 1px);
+  top: round(down, 50%, 1px);
+  translate: round(down, -50%, 1px) round(down, -50%, 1px);
+  /* stylelint-enable declaration-property-value-no-unknown */
+}
+
 /* sf-callout-arrow: border-triangle callout pointer. */
 .sf-callout-arrow {
   width: 0;
