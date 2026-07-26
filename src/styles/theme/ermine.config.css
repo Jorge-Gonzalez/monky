@@ -8,6 +8,6 @@
 
 :root,
 :host {
-  /* Search text preserves Monky's established 15px reading size through `font-md`. */
-  --type-md: 15px;
+  /* Reading text (`font-md`) at 16px. */
+  --type-md: 16px;
 }

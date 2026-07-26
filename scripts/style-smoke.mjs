@@ -107,7 +107,7 @@ try {
   "generatedGrammarPresent": true,
   "page": {
     "body": {
-      "font-family": "\"IBM Plex Condensed Light\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+      "font-family": "\"IBM Plex Sans\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
       "margin": "0px",
       "padding": "0px"
     },
@@ -149,7 +149,7 @@ try {
   },
   "modal": {
     "host": {
-      "font-family": "\"IBM Plex Condensed Light\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+      "font-family": "\"IBM Plex Sans\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
       "line-height": "24px"
     },
     "target": {
@@ -304,7 +304,7 @@ try {
   "suggestions": {
     "container": {
       "host": {
-        "font-family": "\"IBM Plex Condensed Light\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+        "font-family": "\"IBM Plex Sans\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
         "line-height": "24px"
       },
       "target": {
@@ -312,7 +312,7 @@ try {
         "max-width": "360px",
         "border-radius": "8px",
         "overflow": "hidden",
-        "font-size": "15px"
+        "font-size": "16px"
       }
     },
     "list": {
@@ -355,7 +355,7 @@ try {
   "deletion": {
     "container": {
       "host": {
-        "font-family": "\"IBM Plex Condensed Light\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+        "font-family": "\"IBM Plex Sans\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
         "line-height": "24px"
       },
       "target": {

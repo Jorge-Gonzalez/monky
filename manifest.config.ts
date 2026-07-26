@@ -39,7 +39,7 @@ export default defineManifest({
   options_page: 'src/options/index.html',
   web_accessible_resources: [
     {
-      resources: ['src/editor/index.html', 'fonts/ibm-plex-sans-condensed-v15-latin-300.woff2'],
+      resources: ['src/editor/index.html', 'fonts/ibm-plex-sans-var.woff2'],
       matches: ['<all_urls>']
     }
   ]

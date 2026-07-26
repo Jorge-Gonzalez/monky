@@ -6,3 +6,4 @@
 @import url('./styles/theme/font.css') layer(theme);
 @import url('./styles/grammar/ermine.generated.css') layer(grammar);
 @import url('./styles/fragments/semantic-fragments.css') layer(fragments);
+@import url('./styles/theme/page-font.css');

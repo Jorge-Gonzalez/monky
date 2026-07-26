@@ -1,0 +1,13 @@
+/* ===== Extension-page font — deliberately unlayered ===== */
+/* Chrome injects its own default stylesheet into extension pages (popup, editor,
+   options) carrying `body { font-family: "Noto Sans", Arial, sans-serif;
+   font-size: 75% }`. That rule is unlayered, so it outranks every layered author
+   rule no matter the specificity or source order — a `body` font inside
+   @layer theme silently loses and the page never requests IBM Plex at all.
+   This file is imported without layer() so it meets that rule as a peer.
+   Shadow-DOM overlays are unaffected: they inherit from :host, not body. */
+body {
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-optical-sizing: none;
+  font-size: 100%;
+}
