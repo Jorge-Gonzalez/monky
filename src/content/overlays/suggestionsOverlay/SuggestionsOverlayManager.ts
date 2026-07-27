@@ -16,6 +16,11 @@ interface SavedState {
   trigger: string
 }
 
+/** Input and textarea hold their text in .value; a contenteditable holds it as text. */
+function readContent(element: NonNullable<EditableEl>): string {
+  return 'value' in element ? element.value : element.textContent ?? ''
+}
+
 interface OverlayState {
   isVisible: boolean
   cursorPosition: { x: number; y: number }
@@ -103,7 +108,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
     }
 
     if (overlayState.mode === 'showAll' && trigger) {
-      const content = (element as any).value || element.textContent || ''
+      const content = readContent(element)
       const triggerIndex = content.lastIndexOf(trigger)
       if (triggerIndex !== -1) {
         replaceText(element, macro, triggerIndex, triggerIndex + trigger.length)
@@ -119,7 +124,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
         replaceText(element, macro, selection.start, selection.end)
       }
     } else {
-      const content = (element as any).value || element.textContent || ''
+      const content = readContent(element)
       const triggerIndex = content.lastIndexOf(trigger)
       if (triggerIndex !== -1) {
         replaceText(element, macro, triggerIndex, triggerIndex + trigger.length)
@@ -142,7 +147,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
     }
 
     const timer = window.setTimeout(() => {
-      if (element && (element as any).isConnected) {
+      if (element?.isConnected) {
         element.focus()
 
         // Ensure cursor is positioned at the end of the content
@@ -181,7 +186,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
       return
     }
 
-    let caretCoords
+    let caretCoords: { x: number; y: number } | null
 
     if (x !== undefined && y !== undefined) {
       // Use provided coordinates
@@ -223,7 +228,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
       return
     }
 
-    let caretCoords
+    let caretCoords: { x: number; y: number } | null
 
     if (x !== undefined && y !== undefined) {
       // Use provided coordinates

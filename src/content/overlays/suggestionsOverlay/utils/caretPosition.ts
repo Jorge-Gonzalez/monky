@@ -50,7 +50,7 @@ function getInputCaretCoordinates(
     'whiteSpace',
     'wordBreak',
     'wordWrap',
-  ]
+  ] as const
 
   // Apply styles to mirror div
   div.style.position = 'absolute'
@@ -62,7 +62,7 @@ function getInputCaretCoordinates(
   div.style.overflow = 'hidden' // Prevent scrollbars in mirror
 
   properties.forEach((prop) => {
-    div.style[prop as any] = style[prop as any]
+    div.style[prop] = style[prop]
   })
 
   document.body.appendChild(div)
