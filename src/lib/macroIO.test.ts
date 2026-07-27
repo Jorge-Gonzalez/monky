@@ -126,7 +126,7 @@ describe('mergeImport', () => {
 
   it('assigns a fresh id to each imported macro', () => {
     let captured: Macro | undefined
-    const add = vi.fn((m: Macro) => { captured = m; return { success: true }; })
+    const add = vi.fn((m: Macro) => { captured = m; return { success: true } })
     mergeImport([{ command: '/sig', text: 'Jorge' }], new Set(), add)
     expect(captured?.id).toBeDefined()
     expect(typeof captured?.id).toBe('string')

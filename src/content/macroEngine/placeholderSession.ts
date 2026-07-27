@@ -1,4 +1,4 @@
-import { EditableEl } from '../../types'
+import type { EditableEl } from '../../types'
 import { getTextContent, findTextNodeForOffset } from './replacement/editableUtils'
 import { parsePlaceholders } from './replacement/placeholders'
 import { replacePlainText } from './replacement/plainTextReplacement'

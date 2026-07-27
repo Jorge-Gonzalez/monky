@@ -1,4 +1,4 @@
-import { BlockType } from './types'
+import type { BlockType } from './types'
 
 export function toggleBold() { document.execCommand('bold') }
 export function toggleItalic() { document.execCommand('italic') }

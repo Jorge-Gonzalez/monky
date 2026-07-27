@@ -1,7 +1,7 @@
 import React from 'react'
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest'
 import { createSuggestionsOverlayManager } from './SuggestionsOverlayManager'
-import { Macro, EditableEl } from '../../../types'
+import type { Macro, EditableEl } from '../../../types'
 
 // Create mock instances for the services
 const mockRenderer = {
@@ -55,7 +55,7 @@ vi.mock('./utils/popupPositioning', () => ({
 
 import { getActiveEditable, getSelection } from '../../macroEngine/replacement/editableUtils'
 import { replaceText } from '../../macroEngine/replacement/macroReplacement'
-import { getCaretCoordinates } from './utils/caretPosition'; // This import is correct
+import { getCaretCoordinates } from './utils/caretPosition' // This import is correct
 import { calculateOptimalPosition } from './utils/popupPositioning'
 
 describe('SuggestionsOverlayManager', () => {

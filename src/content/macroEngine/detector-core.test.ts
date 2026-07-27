@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest"
 import { updateStateOnKey, isExact } from "./detector-core"
-import type { Macro, CoreState } from '../../types';
+import type { Macro, CoreState } from '../../types'
 
 const macros: Macro[] = [
   { id: 1, command: "/sig", text: "Saludos" },

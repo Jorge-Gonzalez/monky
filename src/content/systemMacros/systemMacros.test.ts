@@ -1,4 +1,4 @@
-import { Macro } from '../../types';
+import type { Macro } from '../../types'
 
 // Create a simplified version of the system macros module for testing
 // without importing the entire system that has dependency issues
@@ -31,14 +31,14 @@ const SYSTEM_MACROS: Macro[] = [
     isSystemMacro: true,
     description: 'Toggle new suggestions overlay visibility'
   }
-];
+]
 
 /**
  * Checks if a macro is a system macro that should trigger special functionality
  * instead of text replacement.
  */
 function isSystemMacro(macro: Macro): boolean {
-  return macro.isSystemMacro === true || SYSTEM_MACROS.some(sm => sm.id === macro.id);
+  return macro.isSystemMacro === true || SYSTEM_MACROS.some(sm => sm.id === macro.id)
 }
 
 describe('System Macros - Toggle New Suggestions Overlay', () => {
@@ -48,41 +48,41 @@ describe('System Macros - Toggle New Suggestions Overlay', () => {
     text: '',
     isSystemMacro: true,
     description: 'Toggle new suggestions overlay visibility'
-  };
+  }
 
   test('SYSTEM_MACROS includes the toggle macro', () => {
-    expect(SYSTEM_MACROS).toContainEqual(toggleMacro);
-  });
+    expect(SYSTEM_MACROS).toContainEqual(toggleMacro)
+  })
 
   test('isSystemMacro recognizes the toggle macro', () => {
-    expect(isSystemMacro(toggleMacro)).toBe(true);
-  });
+    expect(isSystemMacro(toggleMacro)).toBe(true)
+  })
 
   test('toggle macro command is />', () => {
-    expect(toggleMacro.command).toBe('/>');
-  });
+    expect(toggleMacro.command).toBe('/>')
+  })
 
   test('toggle macro isSystemMacro flag is true', () => {
-    expect(toggleMacro.isSystemMacro).toBe(true);
-  });
+    expect(toggleMacro.isSystemMacro).toBe(true)
+  })
 
   test('toggle macro has correct description', () => {
-    expect(toggleMacro.description).toBe('Toggle new suggestions overlay visibility');
-  });
+    expect(toggleMacro.description).toBe('Toggle new suggestions overlay visibility')
+  })
 
   test('toggle macro id is correct', () => {
-    expect(toggleMacro.id).toBe('system-toggle-new-suggestions');
-  });
+    expect(toggleMacro.id).toBe('system-toggle-new-suggestions')
+  })
 
   test('all system macros have isSystemMacro flag set to true', () => {
     for (const macro of SYSTEM_MACROS) {
-      expect(macro.isSystemMacro).toBe(true);
+      expect(macro.isSystemMacro).toBe(true)
     }
-  });
+  })
 
   test('all system macros have empty text field', () => {
     for (const macro of SYSTEM_MACROS) {
-      expect(macro.text).toBe('');
+      expect(macro.text).toBe('')
     }
-  });
-});
+  })
+})

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import type { RefObject } from 'react'
-import { ThemeMode, ColorTheme } from '../../types'
+import type { ThemeMode, ColorTheme } from '../../types'
 import { themeSocketVars } from '../socketPalette'
 
 function isSystemDark(): boolean {

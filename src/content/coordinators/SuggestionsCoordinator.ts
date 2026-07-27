@@ -1,7 +1,7 @@
-import { EditableEl, Macro } from '../../types'
-import { SuggestionsOverlayManager } from '../overlays/suggestionsOverlay/SuggestionsOverlayManager'
+import type { EditableEl, Macro } from '../../types'
+import type { SuggestionsOverlayManager } from '../overlays/suggestionsOverlay/SuggestionsOverlayManager'
 import { getActiveEditable } from '../macroEngine/replacement/editableUtils'
-import { DetectorActions } from '../actions/detectorActions'
+import type { DetectorActions } from '../actions/detectorActions'
 
 export function createSuggestionsCoordinator(
   manager: SuggestionsOverlayManager

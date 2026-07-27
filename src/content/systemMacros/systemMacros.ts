@@ -1,6 +1,6 @@
-import { Macro } from "../../types"
-import { modalCoordinator, deleteConfirmManager } from "../overlays";
-import { useMacroStore } from "../../store/useMacroStore";
+import type { Macro } from "../../types"
+import { modalCoordinator, deleteConfirmManager } from "../overlays"
+import { useMacroStore } from "../../store/useMacroStore"
 
 export const SYSTEM_MACROS: Macro[] = [
   {

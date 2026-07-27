@@ -1,4 +1,5 @@
-import { useEffect, useRef, RefObject } from 'react'
+import type { RefObject } from 'react'
+import { useEffect, useRef } from 'react'
 
 /**
  * Closes an overlay when the user clicks outside it or presses Escape.

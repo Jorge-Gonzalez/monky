@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Macro } from '../../../../../types'
+import type { Macro } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
 
 const TrashIcon = () => (
@@ -40,7 +40,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
   const [confirmingId, setConfirmingId] = useState<Macro['id'] | null>(null)
 
   // Disarm when the list changes (deleted macro, edited query, dropdown reuse).
-  useEffect(() => { setConfirmingId(null); }, [suggestions])
+  useEffect(() => { setConfirmingId(null) }, [suggestions])
 
   return (
     <div data-component="editor-suggestions" className="hidden attach-below stretch-inline
@@ -59,7 +59,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
             className={`horizontal gap-md padding-block-sm padding-inline-md align-center hidden tween-ground-quick pressable ${confirming ? 'ground-fail-faint' : 'selectable hover:ground selected:ground-defined'}`}
             aria-selected={i === selectedIndex ? 'true' : 'false'}
             data-state={confirming ? 'confirming-delete' : undefined}
-            onMouseDown={e => { e.preventDefault(); onSelect(macro); }}
+            onMouseDown={e => { e.preventDefault(); onSelect(macro) }}
           >
             <span data-component="editor-suggestions-item-command" className="rigid
               ink-accent font-md font-medium text-nowrap">{macro.command}</span>
@@ -75,7 +75,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
                     ink-fail corner-sm pressable
                     hover:ground-fail hover:ink-inverse"
                   aria-label={t('editor.confirmDelete')}
-                  onMouseDown={e => { e.preventDefault(); e.stopPropagation(); onDelete(macro); setConfirmingId(null); }}
+                  onMouseDown={e => { e.preventDefault(); e.stopPropagation(); onDelete(macro); setConfirmingId(null) }}
                 >
                   <CheckIcon />
                 </button>
@@ -87,7 +87,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
                     ink-soft corner-sm pressable
                     hover:ground-defined hover:ink"
                   aria-label={t('editor.cancelDelete')}
-                  onMouseDown={e => { e.preventDefault(); e.stopPropagation(); setConfirmingId(null); }}
+                  onMouseDown={e => { e.preventDefault(); e.stopPropagation(); setConfirmingId(null) }}
                 >
                   <CloseIcon />
                 </button>
@@ -103,7 +103,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
                   parent-hover:revealed
                   parent-selected:revealed"
                 aria-label={t('editor.deleteMacro')}
-                onMouseDown={e => { e.preventDefault(); e.stopPropagation(); setConfirmingId(macro.id); }}
+                onMouseDown={e => { e.preventDefault(); e.stopPropagation(); setConfirmingId(macro.id) }}
               >
                 <TrashIcon />
               </button>

@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/preact'
 import '@testing-library/jest-dom'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { MacroSuggestions } from './MacroSuggestions'
-import { Macro } from '../../../../types'
+import type { Macro } from '../../../../types'
 
 // Mock the hooks used in the component
 vi.mock('../../../../theme/hooks/useThemeColors', () => ({
@@ -82,7 +82,7 @@ describe('MacroSuggestions', () => {
 
       expect(screen.getByText('test-macro')).toBeInTheDocument()
       expect(screen.getByText('another-test')).toBeInTheDocument()
-      expect(screen.queryByText('different')).not.toBeInTheDocument(); // Doesn't match "test"
+      expect(screen.queryByText('different')).not.toBeInTheDocument() // Doesn't match "test"
     })
 
     test('renders all macros in showAll mode', () => {

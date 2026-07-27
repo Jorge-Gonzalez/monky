@@ -1,4 +1,4 @@
-import { Config, Macro } from "../types"
+import type { Config, Macro } from "../types"
 
 export const defaultMacroConfig: Config = {
   disabledSites: [],

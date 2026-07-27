@@ -1,4 +1,4 @@
-import { t } from '../../lib/i18n';
+import { t } from '../../lib/i18n'
 
 interface ReplacementModeProps {
   useCommitKeys: boolean;
@@ -43,5 +43,5 @@ export default function ReplacementMode({ useCommitKeys, onChange }: Replacement
         {t('replacementMode.description')}
       </p>
     </div>
-  );
+  )
 }

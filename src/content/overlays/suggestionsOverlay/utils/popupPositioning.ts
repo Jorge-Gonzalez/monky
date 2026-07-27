@@ -48,13 +48,13 @@ export function calculateOptimalPosition(
   const viewportY = cursorPosition.y - window.scrollY
 
   // Try positioning below the cursor first
-  let finalViewportY = viewportY + 8; // 8px offset below cursor
+  let finalViewportY = viewportY + 8 // 8px offset below cursor
   let placement: 'top' | 'bottom' = 'bottom'
 
   // Check if popup would go off the bottom of the viewport
   if (finalViewportY + popupDimensions.height > windowSize.height - margin) {
     // Try positioning above the cursor
-    const aboveY = viewportY - popupDimensions.height - 8; // 8px offset above cursor
+    const aboveY = viewportY - popupDimensions.height - 8 // 8px offset above cursor
     if (aboveY >= margin) {
       // Position above cursor
       finalViewportY = aboveY

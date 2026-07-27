@@ -1,3 +1,3 @@
-import { composeShadowBundle } from '../../../styles/baseBundle';
+import { composeShadowBundle } from '../../../styles/baseBundle'
 
-export const SUGGESTIONS_OVERLAY_BUNDLE = composeShadowBundle();
+export const SUGGESTIONS_OVERLAY_BUNDLE = composeShadowBundle()

@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest'
 import { createSuggestionsCoordinator } from './SuggestionsCoordinator'
-import { SuggestionsOverlayManager } from '../overlays/suggestionsOverlay/SuggestionsOverlayManager'
+import type { SuggestionsOverlayManager } from '../overlays/suggestionsOverlay/SuggestionsOverlayManager'
 
 describe('SuggestionsCoordinator', () => {
   let mockManager: SuggestionsOverlayManager
@@ -115,7 +115,7 @@ describe('SuggestionsCoordinator', () => {
       test('shows all suggestions with default coordinates (0,0) when position is not provided', () => {
         mockActions.onShowAllRequested('context')
 
-        expect(mockManager.showAll).toHaveBeenCalledWith(0, 0, 'context'); // default coordinates and buffer
+        expect(mockManager.showAll).toHaveBeenCalledWith(0, 0, 'context') // default coordinates and buffer
       })
     })
 

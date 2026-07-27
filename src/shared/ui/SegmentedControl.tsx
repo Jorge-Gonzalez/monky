@@ -1,16 +1,17 @@
-import { useLayoutEffect, useRef, useState, ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 
 export interface SegmentedOption<T extends string> {
-  value: T;
-  label: ReactNode;
+  value: T
+  label: ReactNode
   // Needed when the label is an icon with no text, for screen readers.
-  ariaLabel?: string;
+  ariaLabel?: string
 }
 
 export interface SegmentedControlProps<T extends string> {
-  options: SegmentedOption<T>[];
-  value: T;
-  onChange: (value: T) => void;
+  options: SegmentedOption<T>[]
+  value: T
+  onChange: (value: T) => void
 }
 
 export function SegmentedControl<T extends string>({ options, value, onChange }: SegmentedControlProps<T>) {
@@ -62,8 +63,8 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
       }}
     >
       {options.map((opt, index) => {
-        const checked = opt.value === value;
-        const drawRightRule = !checked && index < options.length - 1;
+        const checked = opt.value === value
+        const drawRightRule = !checked && index < options.length - 1
         return (
         <button
           key={opt.value}
@@ -76,8 +77,8 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
         >
           {opt.label}
         </button>
-        );
+        )
       })}
     </div>
-  );
+  )
 }

@@ -1,5 +1,5 @@
 import { t } from '../../lib/i18n'
-import { Macro } from '../../types'
+import type { Macro } from '../../types'
 
 export default function MacroItemEditor({ macro, onEdit, onDelete }: {
   macro: Macro,

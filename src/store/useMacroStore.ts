@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist, createJSONStorage, type StateStorage } from 'zustand/middleware'
 import { defaultMacroConfig } from '../config/defaults'
 import { dummyMacros } from '../config/defaults'
-import { Macro, ThemeMode, Lang, Config, verticalPlacement, ColorTheme } from '../types'
+import type { Macro, ThemeMode, Lang, Config, verticalPlacement, ColorTheme } from '../types'
 
 type StoreOpResult = { success: boolean; error?: string }
 
@@ -150,16 +150,16 @@ if (typeof chrome !== 'undefined' && chrome.storage?.onChanged) {
   chrome.storage.onChanged.addListener((changes, area) => {
     // Rehydrate when either local (same-device context switch) or sync (cross-device) changes.
     if (area === 'local' || area === 'sync') {
-      const storeName = useMacroStore.persist.getOptions().name;
-      const change = storeName ? changes[storeName] : undefined;
+      const storeName = useMacroStore.persist.getOptions().name
+      const change = storeName ? changes[storeName] : undefined
       // Ignore the echo of our own writes: a change whose value matches what we
       // just persisted carries no new information, and re-reading it here (sync
       // is read first and can be stale under rate-limiting) is what caused the
       // settings controls to flicker back to a stale value. Genuine external
       // changes (popup, another device) carry a different value and still rehydrate.
       if (change && change.newValue !== lastWrittenValue) {
-        useMacroStore.persist.rehydrate();
+        useMacroStore.persist.rehydrate()
       }
     }
-  });
+  })
 }

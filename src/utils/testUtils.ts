@@ -1,4 +1,4 @@
-import { EditableEl } from "../types"
+import type { EditableEl } from "../types"
 
 /**
  * Helper function to simulate typing in an element

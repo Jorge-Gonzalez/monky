@@ -2,7 +2,7 @@
 import { render, screen, fireEvent } from '@testing-library/preact'
 import { describe, it, expect, vi } from 'vitest'
 import { MacroSearch } from './MacroSearch'
-import { Macro } from '../../types'
+import type { Macro } from '../../types'
 
 // Mock the i18n function
 vi.mock('../../lib/i18n', () => ({

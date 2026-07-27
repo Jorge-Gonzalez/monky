@@ -1,5 +1,6 @@
-import { useState, useRef, RefObject } from 'react'
-import { BlockType } from './types'
+import type { RefObject } from 'react'
+import { useState, useRef } from 'react'
+import type { BlockType } from './types'
 import { setBlockType } from './editorCommands'
 import { icons } from './icons'
 import { useOverlayDismiss } from './useOverlayDismiss'

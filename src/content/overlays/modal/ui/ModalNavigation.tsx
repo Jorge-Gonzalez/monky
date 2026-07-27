@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { ModalNavigationProps, ModalView } from '../types'
+import type { ModalNavigationProps, ModalView } from '../types'
 import { t } from '../../../../lib/i18n'
 
 /**

@@ -1,6 +1,6 @@
 import { useRef, useCallback, useMemo, useEffect, useState, useLayoutEffect } from 'react'
 import fuzzysort from 'fuzzysort'
-import { Macro } from '../../../../types'
+import type { Macro } from '../../../../types'
 import { t } from '../../../../lib/i18n'
 import { useAppliedTheme } from '../../../../theme/hooks/useAppliedTheme'
 import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation'
@@ -176,7 +176,7 @@ export function MacroSuggestions({
         {visibleMacros.map((macro, index) => (
           <button
             key={macro.id}
-            ref={(el) => { buttonRefs.current[index] = el; }}
+            ref={(el) => { buttonRefs.current[index] = el }}
             data-component="suggestions-item"
             className="compressible padding-block-xs padding-inline-sm hidden max-width-command min-width-none
               tween-quick

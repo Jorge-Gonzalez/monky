@@ -1,6 +1,6 @@
-import { Macro, EditableEl } from '../../types'
-import { ModalManager } from '../overlays/modal/modalManager'
-import { ModalView } from '../overlays/modal/types'
+import type { Macro, EditableEl } from '../../types'
+import type { ModalManager } from '../overlays/modal/modalManager'
+import type { ModalView } from '../overlays/modal/types'
 
 /**
  * Unified modal coordinator that handles all modal views

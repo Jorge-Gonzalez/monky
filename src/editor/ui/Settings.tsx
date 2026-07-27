@@ -1,6 +1,6 @@
 import type { ChangeEvent } from 'react'
 import { useOptions } from '../../options'
-import { Lang } from '../../types'
+import type { Lang } from '../../types'
 import { t } from '../../lib/i18n'
 
 export default function Settings() {

@@ -1,4 +1,4 @@
-import { Macro } from '../../../../../types'
+import type { Macro } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
 import { splitPlaceholders } from '../../../../macroEngine/replacement/placeholders'
 import { SearchResultsPanel, searchOptionId } from './SearchResultsPanel'
@@ -120,7 +120,7 @@ function MacroSearchItem({ optionId, macro, isSelected, isConfirmingDelete, onCl
             hover:ground-defined hover:ink-accent
             parent-hover:revealed
             parent-selected:revealed"
-          onClick={e => { e.stopPropagation(); onEdit(); }}
+          onClick={e => { e.stopPropagation(); onEdit() }}
           aria-label={t('modalSearch.editMacro')}
           tabIndex={-1}
         >

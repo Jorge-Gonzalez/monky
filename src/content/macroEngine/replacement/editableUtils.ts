@@ -43,20 +43,20 @@ export function getActiveEditable(target: EventTarget | null): EditableEl {
 
   // For contenteditable elements, we need to traverse up the DOM tree
   // because the target might be a child element (text node, <b>, <i>, etc.)
-  let element: HTMLElement | null = null;
+  let element: HTMLElement | null = null
 
   if (target instanceof HTMLElement) {
-    element = target;
+    element = target
   } else if (target instanceof Node && target.parentElement) {
     // Handle text nodes and other non-HTMLElement nodes
-    element = target.parentElement;
+    element = target.parentElement
   }
 
   while (element) {
     if (element.isContentEditable || element.contentEditable === "true") {
-      return element;
+      return element
     }
-    element = element.parentElement;
+    element = element.parentElement
   }
 
   return null
@@ -155,18 +155,18 @@ export function getCursorCoordinates(): { x: number; y: number } | null {
     return null
   }
 
-  const sel = window.getSelection();
-  if (!sel || sel.rangeCount === 0) return null;
+  const sel = window.getSelection()
+  if (!sel || sel.rangeCount === 0) return null
 
-  const range = sel.getRangeAt(0).cloneRange();
+  const range = sel.getRangeAt(0).cloneRange()
   // Collapse the range to the start, which is the caret position
-  range.collapse(true);
+  range.collapse(true)
 
   try {
-    const rects = range.getClientRects();
+    const rects = range.getClientRects()
     if (rects.length > 0) {
-      const rect = rects[0];
-      return { x: rect.left, y: rect.bottom }; // Use bottom to position popup below the line
+      const rect = rects[0]
+      return { x: rect.left, y: rect.bottom } // Use bottom to position popup below the line
     }
   } catch (error) {
     // In test environments (JSDOM), getClientRects might not be properly implemented
@@ -174,18 +174,18 @@ export function getCursorCoordinates(): { x: number; y: number } | null {
   }
 
   // Fallback for elements where getClientRects() might fail for a collapsed range
-  const activeElement = document.activeElement as HTMLElement;
+  const activeElement = document.activeElement as HTMLElement
   if (activeElement) {
     try {
-      const rect = activeElement.getBoundingClientRect();
-      return { x: rect.left, y: rect.bottom };
+      const rect = activeElement.getBoundingClientRect()
+      return { x: rect.left, y: rect.bottom }
     } catch (error) {
       // In test environments, return a default position
-      return { x: 0, y: 0 };
+      return { x: 0, y: 0 }
     }
   }
 
-  return null;
+  return null
 }
 
 /**

@@ -1,9 +1,9 @@
-import { t } from '../../lib/i18n';
+import { t } from '../../lib/i18n'
 
 export default function NewMacroButton() {
   const handleNewMacro = () => {
-    chrome.tabs.create({ url: chrome.runtime.getURL('src/editor/index.html') });
-  };
+    chrome.tabs.create({ url: chrome.runtime.getURL('src/editor/index.html') })
+  }
 
   return (
     <button
@@ -16,5 +16,5 @@ export default function NewMacroButton() {
     >
       + {t('popup.newMacro')}
     </button>
-  );
+  )
 }

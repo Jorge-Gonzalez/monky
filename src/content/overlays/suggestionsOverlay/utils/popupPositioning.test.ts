@@ -36,12 +36,12 @@ describe('Popup Positioning', () => {
         boundarySettings
       )
 
-      expect(result.y).toBe(100 + 8); // 8px below cursor
+      expect(result.y).toBe(100 + 8) // 8px below cursor
       expect(result.placement).toBe('bottom')
     })
 
     test('positions above cursor when space below is insufficient', () => {
-      const cursorPosition = { x: 100, y: 550 }; // near bottom
+      const cursorPosition = { x: 100, y: 550 } // near bottom
       const windowSize = { width: 800, height: 600 }
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
@@ -53,12 +53,12 @@ describe('Popup Positioning', () => {
         boundarySettings
       )
 
-      expect(result.y).toBe(550 - 100 - 8); // above cursor
+      expect(result.y).toBe(550 - 100 - 8) // above cursor
       expect(result.placement).toBe('top')
     })
 
     test('centers popup on cursor horizontally', () => {
-      const cursorPosition = { x: 400, y: 300 }; // center of 800x600 window
+      const cursorPosition = { x: 400, y: 300 } // center of 800x600 window
       const windowSize = { width: 800, height: 600 }
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
@@ -70,13 +70,13 @@ describe('Popup Positioning', () => {
         boundarySettings
       )
 
-      expect(result.x).toBe(400 - 100); // centered on cursor (x - width/2)
-      expect(result.y).toBe(300 + 8); // below cursor
+      expect(result.x).toBe(400 - 100) // centered on cursor (x - width/2)
+      expect(result.y).toBe(300 + 8) // below cursor
       expect(result.placement).toBe('bottom')
     })
 
     test('constrains x position to left boundary', () => {
-      const cursorPosition = { x: 50, y: 100 }; // near left edge
+      const cursorPosition = { x: 50, y: 100 } // near left edge
       const windowSize = { width: 800, height: 600 }
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
@@ -88,12 +88,12 @@ describe('Popup Positioning', () => {
         boundarySettings
       )
 
-      expect(result.x).toBe(10); // constrained to left margin
+      expect(result.x).toBe(10) // constrained to left margin
       expect(result.placement).toBe('bottom')
     })
 
     test('constrains x position to right boundary', () => {
-      const cursorPosition = { x: 750, y: 100 }; // near right edge
+      const cursorPosition = { x: 750, y: 100 } // near right edge
       const windowSize = { width: 800, height: 600 }
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
@@ -105,7 +105,7 @@ describe('Popup Positioning', () => {
         boundarySettings
       )
 
-      expect(result.x).toBe(800 - 200 - 10); // constrained to right
+      expect(result.x).toBe(800 - 200 - 10) // constrained to right
       expect(result.placement).toBe('bottom')
     })
   })
@@ -232,7 +232,7 @@ describe('Popup Positioning', () => {
 
       const cursorPosition = { x: 400, y: 300 }
       const windowSize = { width: 800, height: 600 }
-      const popupDimensions = { width: 200, height: 500 }; // very tall
+      const popupDimensions = { width: 200, height: 500 } // very tall
       const boundarySettings = { margin: 10 }
 
       const result = calculateOptimalPosition(
@@ -243,8 +243,8 @@ describe('Popup Positioning', () => {
       )
 
       // Should constrain to viewport boundaries
-      expect(result.y).toBeGreaterThanOrEqual(10); // at least margin
-      expect(result.y).toBeLessThanOrEqual(600 - 500 - 10); // at most window - height - margin
+      expect(result.y).toBeGreaterThanOrEqual(10) // at least margin
+      expect(result.y).toBeLessThanOrEqual(600 - 500 - 10) // at most window - height - margin
     })
 
     test('uses default margin when not specified', () => {
@@ -262,7 +262,7 @@ describe('Popup Positioning', () => {
         // No boundarySettings - should use default margin of 10
       )
 
-      expect(result.x).toBe(10); // default margin
+      expect(result.x).toBe(10) // default margin
     })
   })
 })

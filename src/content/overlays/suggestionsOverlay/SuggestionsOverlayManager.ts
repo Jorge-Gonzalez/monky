@@ -1,5 +1,5 @@
 import { createElement } from 'react'
-import { Macro, EditableEl } from '../../../types'
+import type { Macro, EditableEl } from '../../../types'
 import { MacroSuggestions } from './ui/MacroSuggestions'
 import { createReactRenderer } from '../services/reactRenderer'
 import { createStyleInjector } from '../services/styleInjector'
@@ -26,7 +26,7 @@ interface OverlayState {
 
 // Estimated popup dimensions (used for positioning calculations)
 const POPUP_ESTIMATED_WIDTH = 300
-const POPUP_ESTIMATED_HEIGHT = 75; // Adjust based on your typical popup height
+const POPUP_ESTIMATED_HEIGHT = 75 // Adjust based on your typical popup height
 
 export function createSuggestionsOverlayManager(macros: Macro[]) {
   const renderer = createReactRenderer('macro-suggestions', true, 'sf-foreign-overlay-host')

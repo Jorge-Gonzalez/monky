@@ -1,4 +1,4 @@
-import { ModalCommand } from '../modalCommands'
+import type { ModalCommand } from '../modalCommands'
 import { t } from '../../../../../lib/i18n'
 import { SearchResultsPanel, searchOptionId } from './SearchResultsPanel'
 

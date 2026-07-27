@@ -1,10 +1,12 @@
 import { createModalManager } from './modal/modalManager'
 import { createSuggestionsOverlayManager } from './suggestionsOverlay'
 import { createDeleteConfirmManager } from './deleteConfirm/DeleteConfirmManager'
-import { createModalCoordinator, ModalCoordinator } from '../coordinators/ModalCoordinator'
-import { createSuggestionsCoordinator, SuggestionsCoordinator } from '../coordinators/SuggestionsCoordinator'
+import type { ModalCoordinator } from '../coordinators/ModalCoordinator'
+import { createModalCoordinator } from '../coordinators/ModalCoordinator'
+import type { SuggestionsCoordinator } from '../coordinators/SuggestionsCoordinator'
+import { createSuggestionsCoordinator } from '../coordinators/SuggestionsCoordinator'
 import { deleteMacro } from '../../store/macroCrud'
-import { Macro } from '../../types'
+import type { Macro } from '../../types'
 
 // Create managers (private, only used by coordinators)
 const modalManager = createModalManager()
@@ -17,7 +19,7 @@ export const suggestionsCoordinator: SuggestionsCoordinator = createSuggestionsC
 // In-page delete confirmation. Confirming deletes via macroCrud so the change is
 // pushed to sync (the same path the search view uses).
 export const deleteConfirmManager = createDeleteConfirmManager()
-deleteConfirmManager.setOnConfirm(macro => { deleteMacro(String(macro.id)); })
+deleteConfirmManager.setOnConfirm(macro => { deleteMacro(String(macro.id)) })
 
 // Convenience function for updating macros
 export function updateAllMacros(macros: Macro[]): void {

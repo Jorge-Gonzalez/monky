@@ -1,7 +1,7 @@
 import { createElement } from 'react'
 import type { ReactElement } from 'react'
-import { Macro, EditableEl } from '../../../types'
-import { ModalView } from './types'
+import type { Macro, EditableEl } from '../../../types'
+import type { ModalView } from './types'
 import { ModalShell } from './ui/ModalShell'
 import { MacroSearchView } from '../views/search/ui/MacroSearchView'
 import { SettingsView } from '../views/settings/ui/SettingsView'
@@ -27,9 +27,9 @@ export function createModalManager() {
 
   const handleMacroSelection = (macro: Macro): void => {
     const targetElement = focusManager.getSavedState()?.element ?? null
-    if (!targetElement) { focusManager.clear(); return; }
+    if (!targetElement) { focusManager.clear(); return }
     const editableElement = getActiveEditable(targetElement)
-    if (!editableElement) { focusManager.clear(); return; }
+    if (!editableElement) { focusManager.clear(); return }
     focusManager.clear()
     if (onMacroSelectedCallback) {
       onMacroSelectedCallback(macro, editableElement)

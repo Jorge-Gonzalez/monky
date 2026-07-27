@@ -1,5 +1,7 @@
-import { useState, useEffect, RefObject } from 'react'
-import { BlockType, EditorFormatState, DEFAULT_FORMAT_STATE } from './types'
+import type { RefObject } from 'react'
+import { useState, useEffect } from 'react'
+import type { BlockType, EditorFormatState} from './types'
+import { DEFAULT_FORMAT_STATE } from './types'
 
 function getBlockType(): BlockType {
   const sel = window.getSelection()

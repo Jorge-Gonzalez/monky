@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen, fireEvent } from '@testing-library/preact'
-import { describe, it, expect, vi, beforeEach, Mock } from 'vitest'
+import type { Mock } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import Settings from './Settings'
 import { useOptions } from '../../options'
 

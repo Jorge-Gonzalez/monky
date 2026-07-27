@@ -1,5 +1,5 @@
 import { createElement } from 'react'
-import { Macro } from '../../../types'
+import type { Macro } from '../../../types'
 import { DeleteConfirmPopup } from './DeleteConfirmPopup'
 import { createReactRenderer } from '../services/reactRenderer'
 import { createStyleInjector } from '../services/styleInjector'

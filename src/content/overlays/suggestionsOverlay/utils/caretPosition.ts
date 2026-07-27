@@ -1,4 +1,4 @@
-import { EditableEl } from '../../../../types'
+import type { EditableEl } from '../../../../types'
 
 export interface CaretCoordinates {
   x: number
@@ -59,7 +59,7 @@ function getInputCaretCoordinates(
   div.style.wordWrap = 'break-word'
   div.style.top = '0'
   div.style.left = '0'
-  div.style.overflow = 'hidden'; // Prevent scrollbars in mirror
+  div.style.overflow = 'hidden' // Prevent scrollbars in mirror
 
   properties.forEach((prop) => {
     div.style[prop as any] = style[prop as any]
@@ -76,7 +76,7 @@ function getInputCaretCoordinates(
 
   // Create a span for measuring the exact caret position
   const span = document.createElement('span')
-  span.textContent = '|'; // Use a visible character for measurement
+  span.textContent = '|' // Use a visible character for measurement
   div.appendChild(span)
 
   // Get the span's position relative to the mirror div
@@ -122,11 +122,11 @@ function getContentEditableCaretCoordinates(): CaretCoordinates | null {
   
   // Clone the range to avoid modifying the actual selection
   const clonedRange = range.cloneRange()
-  clonedRange.collapse(true); // Collapse to start (caret position)
+  clonedRange.collapse(true) // Collapse to start (caret position)
   
   // Insert a temporary span at the caret position to get precise coordinates
   const span = document.createElement('span')
-  span.textContent = '\u200B'; // Zero-width space
+  span.textContent = '\u200B' // Zero-width space
   clonedRange.insertNode(span)
   
   const rect = span.getBoundingClientRect()

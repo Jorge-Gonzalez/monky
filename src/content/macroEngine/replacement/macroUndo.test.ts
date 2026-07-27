@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createMacroDetector } from '../macroDetector'
-import { DetectorActions } from '../../actions/detectorActions'
-import { Macro, EditableEl } from '../../../types'
+import type { DetectorActions } from '../../actions/detectorActions'
+import type { Macro} from '../../../types'
+import { EditableEl } from '../../../types'
 import { setCursorInside, typeIn } from '../../../utils/testUtils'
 import { useMacroStore } from "../../../store/useMacroStore"
 
@@ -214,15 +215,15 @@ describe('MacroDetector - Undo System', () => {
 
       // Verify replacement happened - input fields normalize multiline text to single line
       // The macro's text property has newlines which get converted to spaces
-      expect(inputElement.value).toBe('Tambien a mi Blockquote: > Lo que no se tiene no se perdio, entonces por que se anhela, los anhelos y los miedos dos caras de la misma moneda la alegria y la miseria inalcanzables pero simpre presentes tranparentes.');
-      expect(detector.getUndoHistoryLength()).toBe(1);
+      expect(inputElement.value).toBe('Tambien a mi Blockquote: > Lo que no se tiene no se perdio, entonces por que se anhela, los anhelos y los miedos dos caras de la misma moneda la alegria y la miseria inalcanzables pero simpre presentes tranparentes.')
+      expect(detector.getUndoHistoryLength()).toBe(1)
 
       // Undo the replacement
-      inputElement.dispatchEvent(getUndoEvent());
+      inputElement.dispatchEvent(getUndoEvent())
 
       // Verify undo worked - should clear the replacement
-      expect(inputElement.value).toBe('');
-      expect(detector.getUndoHistoryLength()).toBe(0);
+      expect(inputElement.value).toBe('')
+      expect(detector.getUndoHistoryLength()).toBe(0)
     })
 
     it('should undo macro replacement in input element', () => {

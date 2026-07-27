@@ -16,7 +16,7 @@ export default function SiteToggle() {
         try {
           const url = new URL(tabs[0].url)
           if (validProtocols.includes(url.protocol)) {
-            setHostname(url.hostname); // This will be 'localhost' for localhost, '' for file://, and the domain for others.
+            setHostname(url.hostname) // This will be 'localhost' for localhost, '' for file://, and the domain for others.
           }
         } catch (e) {
           // Not a valid URL (e.g., chrome://extensions), do nothing

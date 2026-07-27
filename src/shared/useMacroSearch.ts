@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import fuzzysort from 'fuzzysort'
-import { Macro } from '../types'
+import type { Macro } from '../types'
 
 const MAX_RESULTS = 50
 

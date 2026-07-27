@@ -1,5 +1,6 @@
-import { RefObject, useEffect, useRef } from 'react'
-import { EditorFormatState, BlockType } from './types'
+import type { RefObject} from 'react'
+import { useEffect, useRef } from 'react'
+import type { EditorFormatState, BlockType } from './types'
 import {
   toggleBold, toggleItalic, toggleUnderline, toggleStrikethrough,
   toggleInlineCode, toggleBulletList, toggleOrderedList, setBlockType,

@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { Macro } from '../../../../../types'
+import type { Macro } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
 import { useMacroStore } from '../../../../../store/useMacroStore'
 import { deleteMacro } from '../../../../../store/macroCrud'
@@ -12,8 +12,9 @@ import { MacroSearchResults } from './MacroSearchResults'
 import { MacroCommandResults } from './MacroCommandResults'
 import { SearchResultsPanel, SEARCH_LISTBOX_ID, searchOptionId } from './SearchResultsPanel'
 import { MacroSearchFooter } from './MacroSearchFooter'
-import { BaseModalViewProps } from '../../../modal/types'
-import { parseModalQuery, ModalCommand } from '../modalCommands'
+import type { BaseModalViewProps } from '../../../modal/types'
+import type { ModalCommand } from '../modalCommands'
+import { parseModalQuery } from '../modalCommands'
 
 interface MacroSearchViewProps extends BaseModalViewProps {
   onSelectMacro: (macro: Macro) => void
@@ -51,16 +52,16 @@ export function MacroSearchView({
   const navigation = useListNavigation(listLength, { allowEmpty: true })
 
   // Reset selection on mode switches (e.g. search ↔ command discovery)
-  useEffect(() => { navigation.reset(); }, [parsed.mode])
+  useEffect(() => { navigation.reset() }, [parsed.mode])
   // On mount, clear any stale state
-  useEffect(() => { setSearchQuery(''); navigation.reset(); }, [])
+  useEffect(() => { setSearchQuery(''); navigation.reset() }, [])
   // Auto-select first result when query is active; clear selection when query is empty
   useEffect(() => {
     if (searchQuery.trim()) navigation.selectIndex(0)
     else navigation.reset()
-  }, [searchQuery]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [searchQuery]) // eslint-disable-line react-hooks/exhaustive-deps
   // Disarm a pending delete when the user navigates away or edits the query.
-  useEffect(() => { setPendingDelete(null); }, [navigation.selectedIndex, searchQuery])
+  useEffect(() => { setPendingDelete(null) }, [navigation.selectedIndex, searchQuery])
 
   // --- Handlers ---
 

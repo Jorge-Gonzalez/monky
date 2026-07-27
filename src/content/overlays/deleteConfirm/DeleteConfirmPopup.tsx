@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Macro } from '../../../types'
+import type { Macro } from '../../../types'
 import { t } from '../../../lib/i18n'
 import { useAppliedTheme } from '../../../theme/hooks/useAppliedTheme'
 import { useListNavigation } from '../hooks/useListNavigation'

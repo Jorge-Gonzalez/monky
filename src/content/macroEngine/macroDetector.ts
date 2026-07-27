@@ -2,13 +2,13 @@ import { useMacroStore } from "../../store/useMacroStore"
 import { updateStateOnKey, isExact, getExact } from "./detector-core"
 import { getActiveEditable, getSelection, getCursorCoordinates } from "./replacement/editableUtils"
 import { replaceText } from './replacement/macroReplacement'
-import { Macro, CoreState, EditableEl } from "../../types"
+import type { Macro, CoreState, EditableEl } from "../../types"
 import { isPrintableKey, UNSUPPORTED_KEYS } from "./keyUtils"
 import { defaultMacroConfig } from "../../config/defaults"
 import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro, parseParametricBuffer, handleParametricSystemCommand } from "../systemMacros/systemMacros"
-import { DetectorActions } from "../actions/detectorActions"
+import type { DetectorActions } from "../actions/detectorActions"
 import { createMacroReplacement } from "./replacement/macroReplacement"
-import { PlaceholderSession } from "./placeholderSession"
+import type { PlaceholderSession } from "./placeholderSession"
 import { hasPlaceholders } from "./replacement/placeholders"
 import { isGoogleDocs, attachToGoogleDocsIframe, isIntentionalFocusMove } from "./googledocs/googleDocsAdapter"
 import { getBackend, resetAllBackends } from "./backend/editableBackend"
@@ -300,11 +300,11 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Handle navigation keys
     if (state.active && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-      let direction: 'up' | 'down' | 'left' | 'right';
-      if (e.key === 'ArrowUp') direction = 'up';
-      else if (e.key === 'ArrowDown') direction = 'down';
-      else if (e.key === 'ArrowLeft') direction = 'left';
-      else direction = 'right';
+      let direction: 'up' | 'down' | 'left' | 'right'
+      if (e.key === 'ArrowUp') direction = 'up'
+      else if (e.key === 'ArrowDown') direction = 'down'
+      else if (e.key === 'ArrowLeft') direction = 'left'
+      else direction = 'right'
       
       const handled = actions.onNavigationRequested(direction as any)
       if (handled) {
@@ -316,8 +316,8 @@ export function createMacroDetector(actions: DetectorActions) {
     // Handle Tab key
     if (state.active && e.key === 'Tab') {
       if (actions.onNavigationRequested && actions.onNavigationRequested('right' as any)) {
-        e.preventDefault();
-        return;
+        e.preventDefault()
+        return
       }
 
       // For parametric commands, Tab shows suggestions filtered by the current parameter
@@ -331,18 +331,18 @@ export function createMacroDetector(actions: DetectorActions) {
         return
       }
 
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault()
+      e.stopPropagation()
       clearBlurTimer()
       
       if (actions.onShowAllRequested) {
-        const coords = getCursorCoordinates();
-        actions.onShowAllRequested(state.buffer, coords || undefined);
+        const coords = getCursorCoordinates()
+        actions.onShowAllRequested(state.buffer, coords || undefined)
       } else {
-        const coords = getCursorCoordinates();
-        actions.onDetectionUpdated(state.buffer, coords || undefined);
+        const coords = getCursorCoordinates()
+        actions.onDetectionUpdated(state.buffer, coords || undefined)
       }
-      return;
+      return
     }
 
     // Handle Escape
@@ -369,7 +369,7 @@ export function createMacroDetector(actions: DetectorActions) {
         // Only prevent event and commit if we have an exact, non-parametric match.
         // Parametric macros need a parameter (e.g. :edit/cmd) — don't commit bare :edit.
         // If handled=true but no exact match, the overlay is visible and handles selection.
-        const macroToCommit = getExact(state.buffer, macros);
+        const macroToCommit = getExact(state.buffer, macros)
         if (macroToCommit && !macroToCommit.isParametric) {
           e.preventDefault()
           commitReplace(macroToCommit, sel, false)
@@ -585,7 +585,7 @@ export function createMacroDetector(actions: DetectorActions) {
     macros = [...SYSTEM_MACROS, ...newMacros]
     
     if ('setMacros' in actions && typeof actions.setMacros === 'function') {
-      (actions as any).setMacros([...SYSTEM_MACROS, ...newMacros]);
+      (actions as any).setMacros([...SYSTEM_MACROS, ...newMacros])
     }
   }
 

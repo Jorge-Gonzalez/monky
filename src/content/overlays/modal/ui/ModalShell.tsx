@@ -1,6 +1,6 @@
 import { useRef, isValidElement, cloneElement } from 'react'
 import type { ReactElement } from 'react'
-import { ModalShellProps } from '../types'
+import type { ModalShellProps } from '../types'
 import { useModalKeyboard } from '../hooks/useModalKeyboard'
 import { useAppliedTheme } from '../../../../theme/hooks/useAppliedTheme'
 import { useMacroStore } from '../../../../store/useMacroStore'
@@ -25,7 +25,7 @@ export function ModalShell({
 }: ModalShellProps) {
   const modalRef = useRef<HTMLDivElement>(null)
 
-  const theme = useMacroStore(state => state.config.theme); // for the nav logo variant
+  const theme = useMacroStore(state => state.config.theme) // for the nav logo variant
 
   useModalKeyboard(isVisible, onClose)
   useAppliedTheme(modalRef, isVisible)

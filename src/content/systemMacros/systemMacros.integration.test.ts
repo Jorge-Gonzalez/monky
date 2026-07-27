@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { createMacroDetector } from '../macroEngine/macroDetector'
 import { SYSTEM_MACROS } from './systemMacros'
-import { Macro } from '../../types'
-import { DetectorActions } from '../actions/detectorActions'
+import type { Macro } from '../../types'
+import type { DetectorActions } from '../actions/detectorActions'
 
 // Mock the system macro notifications
 vi.mock('./systemMacros', async () => {
@@ -18,7 +18,7 @@ vi.mock('../store/useMacroStore', () => ({
     getState: vi.fn(() => ({ config: {} })),
     subscribe: vi.fn(),
   },
-}));
+}))
 
 describe('System Macros Integration', () => {
   let mockHandleSystemMacro: any

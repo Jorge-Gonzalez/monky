@@ -3,7 +3,7 @@
 // out of ModalMacroForm so the form speaks only about editing a macro.
 import { useEffect, useMemo, useState } from 'react'
 import type { KeyboardEvent } from 'react'
-import { Macro } from '../../../../types'
+import type { Macro } from '../../../../types'
 import { useMacroStore } from '../../../../store/useMacroStore'
 
 const MAX_SUGGESTIONS = 5

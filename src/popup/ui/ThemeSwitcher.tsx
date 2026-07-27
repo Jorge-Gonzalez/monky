@@ -1,5 +1,5 @@
 import { useMacroStore } from '../../store/useMacroStore'
-import { ThemeMode } from '../../types'
+import type { ThemeMode } from '../../types'
 
 export default function ThemeSwitcher() {
   const setTheme = useMacroStore(s => s.setTheme)

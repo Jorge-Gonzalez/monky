@@ -1,4 +1,4 @@
-import { Macro } from '../types'
+import type { Macro } from '../types'
 
 export type ExportedMacro = Omit<Macro, 'id' | 'isSystemMacro' | 'isParametric'>
 
@@ -31,7 +31,7 @@ export function mergeImport(
   let added = 0
   let skipped = 0
   for (const m of incoming) {
-    if (existingCommands.has(m.command)) { skipped++; continue; }
+    if (existingCommands.has(m.command)) { skipped++; continue }
     const result = add({ ...m, id: crypto.randomUUID() })
     result.success ? added++ : skipped++
   }

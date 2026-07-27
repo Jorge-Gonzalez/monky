@@ -1,6 +1,7 @@
-import { useEffect, RefObject } from 'react';
+import type { RefObject } from 'react'
+import { useEffect } from 'react'
 
-type FocusableElement = HTMLElement & { focus: () => void };
+type FocusableElement = HTMLElement & { focus: () => void }
 
 export function useAutoFocus<T extends FocusableElement>(
   inputRef: RefObject<T | null>,
@@ -8,7 +9,7 @@ export function useAutoFocus<T extends FocusableElement>(
 ) {
   useEffect(() => {
     if (isActive && inputRef.current) {
-      inputRef.current.focus();
+      inputRef.current.focus()
     }
-  }, [isActive, inputRef]);
+  }, [isActive, inputRef])
 }

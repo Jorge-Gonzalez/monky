@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from 'vitest'
-import { createMacroDetector, MacroDetector } from './macroDetector'
+import type { MacroDetector } from './macroDetector'
+import { createMacroDetector } from './macroDetector'
 import { useMacroStore } from '../../store/useMacroStore'
 import { defaultMacroConfig } from '../../config/defaults'
-import { DetectorActions } from '../actions/detectorActions'
+import type { DetectorActions } from '../actions/detectorActions'
 
 // Mock external dependencies. The mock functions are created inside the factory
 // and will be accessed via the imported module later.
@@ -11,12 +12,12 @@ vi.mock('../../store/useMacroStore', () => ({
     getState: vi.fn(),
     subscribe: vi.fn(),
   },
-}));
+}))
 
 vi.mock('./detector-core', () => ({
   updateStateOnKey: vi.fn(),
   isExact: vi.fn()
-}));
+}))
 
 vi.mock('../../config/defaults', () => ({
   defaultMacroConfig: {

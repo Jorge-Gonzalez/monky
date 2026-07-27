@@ -1,5 +1,5 @@
-import type { RefObject } from 'react';
-import { t } from '../../../../../lib/i18n';
+import type { RefObject } from 'react'
+import { t } from '../../../../../lib/i18n'
 
 interface MacroSearchInputProps {
   value: string;
@@ -32,5 +32,5 @@ export function MacroSearchInput({ value, onChange, inputRef, listboxId, activeO
           focus:rule-accent-soft focus:ring-accent-soft"
       />
     </div>
-  );
+  )
 }

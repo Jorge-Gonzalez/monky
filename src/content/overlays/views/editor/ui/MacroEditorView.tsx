@@ -1,4 +1,4 @@
-import { MacroEditorViewProps } from '../../../modal/types'
+import type { MacroEditorViewProps } from '../../../modal/types'
 import { useMacroEditor } from '../../../../../editor/useMacroEditor'
 import { ModalMacroForm } from './ModalMacroForm'
 

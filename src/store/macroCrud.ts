@@ -1,7 +1,7 @@
 import { useMacroStore } from './useMacroStore'
 import { pushCreate, pushUpdate, pushDelete } from '../lib/sync'
 import { getErrorMessage } from '../lib/errors'
-import { Macro } from '../types'
+import type { Macro } from '../types'
 
 // Macro create/update/delete operations: the store is the local source of truth
 // (write + dup-check), then lib/sync pushes the change to the backend. Framework-

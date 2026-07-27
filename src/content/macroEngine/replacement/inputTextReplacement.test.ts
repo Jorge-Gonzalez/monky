@@ -557,12 +557,12 @@ describe('Input Text Replacement', () => {
       document.body.appendChild(input)
 
       // Replace /name
-      let nameStart = input.value.indexOf('/name')
+      const nameStart = input.value.indexOf('/name')
       replaceInInput(input, nameStart, nameStart + 5, 'Alice')
       expect(input.value).toBe('Hi Alice, your order /orderId is ready')
 
       // Replace /orderId
-      let orderStart = input.value.indexOf('/orderId')
+      const orderStart = input.value.indexOf('/orderId')
       replaceInInput(input, orderStart, orderStart + 8, '#12345')
       expect(input.value).toBe('Hi Alice, your order #12345 is ready')
 

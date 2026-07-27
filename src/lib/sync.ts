@@ -38,7 +38,7 @@ function mergeByUpdated(local, remote){
 
 export async function flushQueue(){
   if (!syncEnabled()) return
-  let q = await getQueue(); if (!q.length) return
+  const q = await getQueue(); if (!q.length) return
   const remain = []
   for (const item of q){
     try {

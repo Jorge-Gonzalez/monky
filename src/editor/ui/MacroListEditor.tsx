@@ -1,6 +1,6 @@
 import MacroItemEditor from './MacroItemEditor'
 import { t } from '../../lib/i18n'
-import { Macro } from '../../types'
+import type { Macro } from '../../types'
 
 export default function MacroListEditor({ macros, onEdit, onDelete }: {
   macros: Macro[],

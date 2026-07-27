@@ -1,5 +1,5 @@
-import { RefObject } from 'react'
-import { EditorFormatState } from './types'
+import type { RefObject } from 'react'
+import type { EditorFormatState } from './types'
 import {
   toggleBold, toggleItalic, toggleUnderline, toggleStrikethrough,
   toggleBulletList, toggleOrderedList, undo, redo,

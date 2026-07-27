@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import type { RefObject } from 'react';
+import { useEffect } from 'react'
+import type { RefObject } from 'react'
 
 export function useScrollIntoView(
   containerRef: RefObject<HTMLElement | null>,
@@ -7,11 +7,11 @@ export function useScrollIntoView(
   selector: string = '.selected'
 ) {
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current) return
 
-    const selectedItem = containerRef.current.querySelector(selector);
+    const selectedItem = containerRef.current.querySelector(selector)
     if (selectedItem && typeof selectedItem.scrollIntoView === 'function') {
-      selectedItem.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      selectedItem.scrollIntoView({ block: 'nearest', inline: 'nearest' })
     }
-  }, [containerRef, selectedIndex, selector]);
+  }, [containerRef, selectedIndex, selector])
 }

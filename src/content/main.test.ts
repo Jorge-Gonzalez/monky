@@ -103,7 +103,7 @@ describe("Content Script: Macro Replacement", () => {
   }
 
   beforeEach(async () => {
-    vi.useFakeTimers();
+    vi.useFakeTimers()
     await init()
     // Set default prefixes for the store
     useMacroStore.setState(s => ({ config: { ...s.config, prefixes: ["/"] } }))
@@ -112,10 +112,10 @@ describe("Content Script: Macro Replacement", () => {
 
     // Spy on createElement to add a mock for scrollIntoView.
     // This is needed because JSDOM doesn't implement it.
-    const originalCreateElement = document.createElement.bind(document);
+    const originalCreateElement = document.createElement.bind(document)
     vi.spyOn(document, 'createElement').mockImplementation((tag, options) => {
-      const element = originalCreateElement(tag, options);
-      element.scrollIntoView = vi.fn();
+      const element = originalCreateElement(tag, options)
+      element.scrollIntoView = vi.fn()
       return element
     })
   })

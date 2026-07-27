@@ -27,10 +27,11 @@ if (typeof chrome === 'undefined' || !chrome.storage) {
 }
 
 import { useMacroStore } from '../store/useMacroStore'
-import { createMacroDetector,MacroDetector } from "./macroEngine/macroDetector"
+import type {MacroDetector } from "./macroEngine/macroDetector"
+import { createMacroDetector } from "./macroEngine/macroDetector"
 import { loadMacros, listenMacrosChange } from './storage/macroStorage'
 import { suggestionsCoordinator, modalCoordinator } from './overlays'
-import { Macro } from '../types'
+import type { Macro } from '../types'
 import { initExtensionConflictDetector } from './devExtensionConflictDetector'
 
 // Module-level state for development

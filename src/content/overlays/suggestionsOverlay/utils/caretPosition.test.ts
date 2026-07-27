@@ -206,13 +206,13 @@ describe('getCaretCoordinates', () => {
 
     test('handles element with scrolled content', () => {
       const textarea = document.createElement('textarea')
-      textarea.value = 'Line 1\n'.repeat(50); // Create long content
+      textarea.value = 'Line 1\n'.repeat(50) // Create long content
       textarea.rows = 5
       textarea.style.overflow = 'scroll'
       container.appendChild(textarea)
 
       textarea.setSelectionRange(100, 100)
-      textarea.scrollTop = 50; // Scroll down
+      textarea.scrollTop = 50 // Scroll down
       textarea.focus()
 
       const coords = getCaretCoordinates(textarea)
@@ -224,7 +224,7 @@ describe('getCaretCoordinates', () => {
       const input = document.createElement('input')
       input.value = 'Test'
       input.style.position = 'absolute'
-      input.style.top = '2000px'; // Far down the page
+      input.style.top = '2000px' // Far down the page
       container.appendChild(input)
 
       input.setSelectionRange(2, 2)
@@ -275,7 +275,7 @@ describe('getCaretCoordinates', () => {
       const input = document.createElement('input')
       input.value = 'This is a longer text string'
       input.style.fontSize = '16px'
-      input.style.fontFamily = 'monospace'; // Use monospace for predictable spacing
+      input.style.fontFamily = 'monospace' // Use monospace for predictable spacing
       container.appendChild(input)
 
       input.setSelectionRange(0, 0)

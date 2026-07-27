@@ -1,7 +1,7 @@
 // Pattern: Store-Hook — the options feature reads/writes config on the store
 // directly. No manager/coordinator/actions; this hook is the whole Feature API.
 import { useMacroStore } from '../store/useMacroStore'
-import { Lang, ColorTheme, ThemeMode } from '../types'
+import type { Lang, ColorTheme, ThemeMode } from '../types'
 
 export interface OptionsApi {
   prefixes: string[]

@@ -51,6 +51,12 @@ export default [
       "no-unused-vars": "off",
       "no-undef": "off",
 
+      // The house style is semicolon-free, matching .prettierrc. Without this rule
+      // nothing enforced it, and `eslint --fix` reintroduced semicolons on every import
+      // it rewrote. The default beforeStatementContinuationChars: "any" leaves the few
+      // semicolons that ASI genuinely requires alone.
+      semi: ["error", "never"],
+
       // TypeScript rules (override a few noisy ones for this project)
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
       "@typescript-eslint/consistent-type-imports": ["warn", { prefer: "type-imports" }],

@@ -40,7 +40,7 @@ describe('useScrollIntoView Hook', () => {
     const container = document.createElement('div')
     const item = document.createElement('div')
     item.className = 'selected';
-    (item as any).scrollIntoView = undefined; // Simulate missing function
+    (item as any).scrollIntoView = undefined // Simulate missing function
     container.appendChild(item)
     const containerRef = { current: container }
     const { rerender } = renderHook(() => useScrollIntoView(containerRef, 1))

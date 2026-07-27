@@ -1,4 +1,4 @@
-import { Macro, EditableEl } from "../../../types"
+import type { Macro, EditableEl } from "../../../types"
 import { getTextContent, getSelection, normalizeForInputElement, isGoogleDocsSentinel } from "./editableUtils"
 import { replaceInGoogleDocs } from "../googledocs/googleDocsAdapter"
 import { replaceInInput } from "./inputTextReplacement"

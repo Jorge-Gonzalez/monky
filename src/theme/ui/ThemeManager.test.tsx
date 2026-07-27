@@ -21,13 +21,13 @@ const MOCK_MATCH_MEDIA = {
 vi.stubGlobal('matchMedia', () => MOCK_MATCH_MEDIA)
 
 describe('ThemeManager component', () => {
-  let ThemeManager: any;
+  let ThemeManager: any
   const mockedUseMacroStore = vi.mocked(useMacroStore)
 
   beforeEach(async () => {
     // Reset mocks and DOM before each test
-    const module = await import('./ThemeManager');
-    ThemeManager = module.ThemeManager;
+    const module = await import('./ThemeManager')
+    ThemeManager = module.ThemeManager
 
     vi.clearAllMocks()
     document.documentElement.classList.remove('dark')

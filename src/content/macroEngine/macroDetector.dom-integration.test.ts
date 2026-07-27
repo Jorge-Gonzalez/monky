@@ -26,7 +26,8 @@ vi.mock('../../store/useMacroStore', () => ({
   useMacroStore: { getState: vi.fn(), subscribe: vi.fn() },
 }))
 
-import { createMacroDetector, MacroDetector } from './macroDetector'
+import type { MacroDetector } from './macroDetector'
+import { createMacroDetector } from './macroDetector'
 import { useMacroStore } from '../../store/useMacroStore'
 import type { DetectorActions } from '../actions/detectorActions'
 import type { Macro } from '../../types'
