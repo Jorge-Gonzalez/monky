@@ -179,7 +179,7 @@ export function MacroSuggestions({
       <div data-component="suggestions-arrow" className={`sf-callout-arrow height-none center-x position-absolute ${placement === 'top' ? 'sf-callout-arrow-top attach-below' : 'sf-callout-arrow-bottom attach-above'}`} />
       <div ref={listRef} id={SUGGESTIONS_OVERLAY_LISTBOX_ID} role="listbox"
         aria-label={t('macroSuggestions.listLabel')} data-component="suggestions-list" className="horizontal gap-xs padding-xs
-        rule-soft ruled-bottom">
+          rule-soft ruled-bottom">
         {visibleMacros.map((macro, index) => (
           <button
             key={macro.id}

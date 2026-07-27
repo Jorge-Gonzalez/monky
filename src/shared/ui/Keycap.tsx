@@ -10,7 +10,9 @@ import type { ReactNode } from 'react'
  */
 export function Keycap({ children, raised }: { children: ReactNode; raised?: boolean }) {
   return raised ? (
-    <kbd data-component="keycap" className="sf-keycap sf-keycap-raised horizontal align-center justify-center position-relative
+    <kbd data-component="keycap" className="sf-keycap sf-keycap-raised
+      horizontal align-center justify-center
+      position-relative
       ground ink-soft rule-soft ruled font-xs font-mono">{children}</kbd>
   ) : (
     <kbd data-component="keycap" className="sf-keycap
