@@ -10,31 +10,31 @@
 
 export function initExtensionConflictDetector() {
   // Set a marker that the dev page is using the injected script
-  document.documentElement.setAttribute('data-macro-dev-script-loaded', 'true');
+  document.documentElement.setAttribute('data-macro-dev-script-loaded', 'true')
 
   // Check for conflicts multiple times to catch the extension whenever it loads
-  setTimeout(checkForExtensionConflict, 100);
-  setTimeout(checkForExtensionConflict, 500);
-  setTimeout(checkForExtensionConflict, 1000);
+  setTimeout(checkForExtensionConflict, 100)
+  setTimeout(checkForExtensionConflict, 500)
+  setTimeout(checkForExtensionConflict, 1000)
 }
 
-let warningShown = false;
+let warningShown = false
 
 function checkForExtensionConflict() {
   // Only show warning once
   if (warningShown) {
-    return;
+    return
   }
 
   // Check if the extension's content script has also loaded
   // The extension sets a DOM attribute because content scripts run in isolated context
-  const isConflict = document.documentElement.hasAttribute('data-macro-extension-loaded');
+  const isConflict = document.documentElement.hasAttribute('data-macro-extension-loaded')
 
   if (isConflict) {
     // Show warning banner if it exists
-    const warningBanner = document.getElementById('extension-warning');
+    const warningBanner = document.getElementById('extension-warning')
     if (warningBanner) {
-      warningBanner.classList.add('show');
+      warningBanner.classList.add('show')
     }
 
     console.error(
@@ -43,8 +43,8 @@ function checkForExtensionConflict() {
       '\n\nThe Macro Replacer extension is active alongside the injected dev script.',
       '\nThis causes double initialization and unpredictable behavior.',
       '\n\nSolution: Disable the extension or add localhost to disabled sites.'
-    );
+    )
 
-    warningShown = true;
+    warningShown = true
   }
 }

@@ -1,7 +1,7 @@
-import React from 'react';
-import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createSuggestionsOverlayManager } from './SuggestionsOverlayManager';
-import { Macro, EditableEl } from '../../../types';
+import React from 'react'
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest'
+import { createSuggestionsOverlayManager } from './SuggestionsOverlayManager'
+import { Macro, EditableEl } from '../../../types'
 
 // Create mock instances for the services
 const mockRenderer = {
@@ -11,52 +11,52 @@ const mockRenderer = {
   clear: vi.fn(),
   destroy: vi.fn(),
   getShadowRoot: vi.fn(() => null),
-};
+}
 
 const mockStyleInjector = {
   inject: vi.fn(),
   remove: vi.fn(),
-};
+}
 
 // Mock the renderer and style injector
 vi.mock('../services/reactRenderer', () => ({
   createReactRenderer: vi.fn(() => mockRenderer),
-}));
+}))
 
 vi.mock('../services/styleInjector', () => ({
   createStyleInjector: vi.fn(() => mockStyleInjector),
-}));
+}))
 
 // The shared app @font-face registration is its own concern, tested elsewhere;
 // stub it so it doesn't share this manager's mocked style injector.
 vi.mock('../services/appFont', () => ({
   ensureAppFontFace: vi.fn(),
-}));
+}))
 
 // Mock the editable utils
 vi.mock('../../macroEngine/replacement/editableUtils', () => ({
   getActiveEditable: vi.fn(),
   getSelection: vi.fn(),
-}));
+}))
 
 vi.mock('../../macroEngine/replacement/macroReplacement', () => ({
   replaceText: vi.fn(),
-}));
+}))
 
 // Mock the caret position utility
 vi.mock('./utils/caretPosition', () => ({
   getCaretCoordinates: vi.fn(),
-}));
+}))
 
 // Mock the popup positioning utility
 vi.mock('./utils/popupPositioning', () => ({
   calculateOptimalPosition: vi.fn(),
-}));
+}))
 
-import { getActiveEditable, getSelection } from '../../macroEngine/replacement/editableUtils';
-import { replaceText } from '../../macroEngine/replacement/macroReplacement';
+import { getActiveEditable, getSelection } from '../../macroEngine/replacement/editableUtils'
+import { replaceText } from '../../macroEngine/replacement/macroReplacement'
 import { getCaretCoordinates } from './utils/caretPosition'; // This import is correct
-import { calculateOptimalPosition } from './utils/popupPositioning';
+import { calculateOptimalPosition } from './utils/popupPositioning'
 
 describe('SuggestionsOverlayManager', () => {
   const mockMacros: Macro[] = [
@@ -78,214 +78,214 @@ describe('SuggestionsOverlayManager', () => {
       text: 'Yet another test',
       updated_at: String(new Date()),
     },
-  ];
+  ]
 
-  let mockElement: EditableEl;
+  let mockElement: EditableEl
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.clearAllMocks()
     
     // Create a mock input element
     mockElement = document.createElement('input') as EditableEl;
-    (mockElement as HTMLInputElement).value = 'test text';
-    document.body.appendChild(mockElement);
+    (mockElement as HTMLInputElement).value = 'test text'
+    document.body.appendChild(mockElement)
     
     // Setup default mock implementations
-    vi.mocked(getActiveEditable).mockReturnValue(mockElement);
-    vi.mocked(getSelection).mockReturnValue({ start: 0, end: 0 });
-    vi.mocked(getCaretCoordinates).mockReturnValue({ x: 100, y: 200 });
-    vi.mocked(calculateOptimalPosition).mockImplementation((coords) => ({ ...coords, placement: 'bottom' }));
-  });
+    vi.mocked(getActiveEditable).mockReturnValue(mockElement)
+    vi.mocked(getSelection).mockReturnValue({ start: 0, end: 0 })
+    vi.mocked(getCaretCoordinates).mockReturnValue({ x: 100, y: 200 })
+    vi.mocked(calculateOptimalPosition).mockImplementation((coords) => ({ ...coords, placement: 'bottom' }))
+  })
 
   afterEach(() => {
     if (mockElement && document.body.contains(mockElement)) {
-      document.body.removeChild(mockElement);
+      document.body.removeChild(mockElement)
     }
-  });
+  })
 
   describe('Initialization', () => {
     test('initializes properly with provided macros', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
 
-      expect(manager).toBeDefined();
-      expect(manager.isVisible()).toBe(false);
-      expect(mockStyleInjector.inject).toHaveBeenCalledTimes(1);
-      expect(mockRenderer.initialize).toHaveBeenCalledTimes(1);
-    });
+      expect(manager).toBeDefined()
+      expect(manager.isVisible()).toBe(false)
+      expect(mockStyleInjector.inject).toHaveBeenCalledTimes(1)
+      expect(mockRenderer.initialize).toHaveBeenCalledTimes(1)
+    })
 
     test('exposes correct public API', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
 
-      expect(manager).toHaveProperty('show');
-      expect(manager).toHaveProperty('showAll');
-      expect(manager).toHaveProperty('hide');
-      expect(manager).toHaveProperty('updateMacros');
-      expect(manager).toHaveProperty('updateBuffer');
-      expect(manager).toHaveProperty('isVisible');
-      expect(manager).toHaveProperty('destroy');
-    });
-  });
+      expect(manager).toHaveProperty('show')
+      expect(manager).toHaveProperty('showAll')
+      expect(manager).toHaveProperty('hide')
+      expect(manager).toHaveProperty('updateMacros')
+      expect(manager).toHaveProperty('updateBuffer')
+      expect(manager).toHaveProperty('isVisible')
+      expect(manager).toHaveProperty('destroy')
+    })
+  })
 
   describe('Show/Hide Functionality', () => {
     test('shows the suggestions overlay in filter mode', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
-      manager.show('test', 100, 200);
+      manager.show('test', 100, 200)
 
-      expect(manager.isVisible()).toBe(true);
-      expect(mockRenderer.render).toHaveBeenCalled();
+      expect(manager.isVisible()).toBe(true)
+      expect(mockRenderer.render).toHaveBeenCalled()
       
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      expect(renderCall.props.filterBuffer).toBe('test');
-      expect(renderCall.props.mode).toBe('filter');
-      expect(renderCall.props.position).toEqual({ x: 100, y: 200 });
-      expect(renderCall.props.isVisible).toBe(true);
-    });
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      expect(renderCall.props.filterBuffer).toBe('test')
+      expect(renderCall.props.mode).toBe('filter')
+      expect(renderCall.props.position).toEqual({ x: 100, y: 200 })
+      expect(renderCall.props.isVisible).toBe(true)
+    })
 
     test('shows the suggestions overlay in showAll mode', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
-      manager.showAll(150, 250);
+      manager.showAll(150, 250)
 
-      expect(manager.isVisible()).toBe(true);
-      expect(mockRenderer.render).toHaveBeenCalled();
+      expect(manager.isVisible()).toBe(true)
+      expect(mockRenderer.render).toHaveBeenCalled()
       
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      expect(renderCall.props.filterBuffer).toBe('');
-      expect(renderCall.props.mode).toBe('showAll');
-      expect(renderCall.props.position).toEqual({ x: 150, y: 250 });
-      expect(renderCall.props.isVisible).toBe(true);
-    });
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      expect(renderCall.props.filterBuffer).toBe('')
+      expect(renderCall.props.mode).toBe('showAll')
+      expect(renderCall.props.position).toEqual({ x: 150, y: 250 })
+      expect(renderCall.props.isVisible).toBe(true)
+    })
 
     test('shows the suggestions overlay in showAll mode with buffer context', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
-      manager.showAll(150, 250, '/s');
+      manager.showAll(150, 250, '/s')
 
-      expect(manager.isVisible()).toBe(true);
-      expect(mockRenderer.render).toHaveBeenCalled();
+      expect(manager.isVisible()).toBe(true)
+      expect(mockRenderer.render).toHaveBeenCalled()
       
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      expect(renderCall.props.filterBuffer).toBe('/s');
-      expect(renderCall.props.mode).toBe('showAll');
-      expect(renderCall.props.position).toEqual({ x: 150, y: 250 });
-      expect(renderCall.props.isVisible).toBe(true);
-    });
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      expect(renderCall.props.filterBuffer).toBe('/s')
+      expect(renderCall.props.mode).toBe('showAll')
+      expect(renderCall.props.position).toEqual({ x: 150, y: 250 })
+      expect(renderCall.props.isVisible).toBe(true)
+    })
 
     test('calculates cursor position automatically if not provided', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
       // Mock getCaretCoordinates to return specific coords
-      vi.mocked(getCaretCoordinates).mockReturnValue({ x: 300, y: 400 });
+      vi.mocked(getCaretCoordinates).mockReturnValue({ x: 300, y: 400 })
       
-      manager.show('test');
+      manager.show('test')
 
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      expect(renderCall.props.position).toEqual({ x: 300, y: 400 });
-      expect(getCaretCoordinates).toHaveBeenCalledWith(mockElement);
-    });
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      expect(renderCall.props.position).toEqual({ x: 300, y: 400 })
+      expect(getCaretCoordinates).toHaveBeenCalledWith(mockElement)
+    })
 
     test('calculates cursor position for showAll if not provided', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
-      vi.mocked(getCaretCoordinates).mockReturnValue({ x: 350, y: 450 });
+      vi.mocked(getCaretCoordinates).mockReturnValue({ x: 350, y: 450 })
       
-      manager.showAll();
+      manager.showAll()
 
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      expect(renderCall.props.position).toEqual({ x: 350, y: 450 });
-      expect(getCaretCoordinates).toHaveBeenCalledWith(mockElement);
-    });
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      expect(renderCall.props.position).toEqual({ x: 350, y: 450 })
+      expect(getCaretCoordinates).toHaveBeenCalledWith(mockElement)
+    })
 
     test('does not show when no active element found', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
-      vi.mocked(getActiveEditable).mockReturnValue(null);
+      vi.mocked(getActiveEditable).mockReturnValue(null)
       
-      manager.show('test', 100, 200);
+      manager.show('test', 100, 200)
 
-      expect(manager.isVisible()).toBe(false);
-      expect(mockRenderer.render).not.toHaveBeenCalled();
-    });
+      expect(manager.isVisible()).toBe(false)
+      expect(mockRenderer.render).not.toHaveBeenCalled()
+    })
 
     test('hides the suggestions overlay', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
-      manager.show('test', 100, 200);
-      expect(manager.isVisible()).toBe(true);
+      manager.show('test', 100, 200)
+      expect(manager.isVisible()).toBe(true)
       
-      manager.hide();
+      manager.hide()
       
-      expect(manager.isVisible()).toBe(false);
-      expect(mockRenderer.clear).toHaveBeenCalledTimes(1);
-    });
+      expect(manager.isVisible()).toBe(false)
+      expect(mockRenderer.clear).toHaveBeenCalledTimes(1)
+    })
 
     test('does nothing when hiding already hidden overlay', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
-      manager.hide();
+      manager.hide()
       
-      expect(mockRenderer.clear).not.toHaveBeenCalled();
-    });
-  });
+      expect(mockRenderer.clear).not.toHaveBeenCalled()
+    })
+  })
 
   describe('Macro Selection', () => {
     test('handles macro selection in filter mode', () => {
       const manager = createSuggestionsOverlayManager(mockMacros);
-      (mockElement as HTMLInputElement).value = 'test';
+      (mockElement as HTMLInputElement).value = 'test'
       
-      manager.show('test', 100, 200);
+      manager.show('test', 100, 200)
       
       // Get the onSelectMacro callback
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      const onSelectMacro = renderCall.props.onSelectMacro;
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      const onSelectMacro = renderCall.props.onSelectMacro
       
       // Simulate selecting a macro
-      onSelectMacro(mockMacros[0]);
+      onSelectMacro(mockMacros[0])
 
       expect(replaceText).toHaveBeenCalledWith(
         mockElement,
         mockMacros[0],
         0, // triggerIndex
         4  // triggerIndex + trigger.length
-      );
-      expect(manager.isVisible()).toBe(false);
-    });
+      )
+      expect(manager.isVisible()).toBe(false)
+    })
 
     test('handles macro selection in showAll mode', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
-      vi.mocked(getSelection).mockReturnValue({ start: 5, end: 5 });
+      vi.mocked(getSelection).mockReturnValue({ start: 5, end: 5 })
       
-      manager.showAll(100, 200);
+      manager.showAll(100, 200)
       
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      const onSelectMacro = renderCall.props.onSelectMacro;
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      const onSelectMacro = renderCall.props.onSelectMacro
       
-      onSelectMacro(mockMacros[0]);
+      onSelectMacro(mockMacros[0])
 
       expect(replaceText).toHaveBeenCalledWith(
         mockElement,
         mockMacros[0],
         5,
         5
-      );
-      expect(manager.isVisible()).toBe(false);
-    });
+      )
+      expect(manager.isVisible()).toBe(false)
+    })
 
     test('handles macro selection in showAll mode with buffer context - saves trigger properly', () => {
       const manager = createSuggestionsOverlayManager(mockMacros);
-      (mockElement as HTMLInputElement).value = '/s something';
+      (mockElement as HTMLInputElement).value = '/s something'
       
-      vi.mocked(getSelection).mockReturnValue({ start: 2, end: 2 });
+      vi.mocked(getSelection).mockReturnValue({ start: 2, end: 2 })
       
       // Show all with buffer context (simulating Tab key pressed after typing /s)
-      manager.showAll(100, 200, '/s');
+      manager.showAll(100, 200, '/s')
       
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      const onSelectMacro = renderCall.props.onSelectMacro;
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      const onSelectMacro = renderCall.props.onSelectMacro
       
-      onSelectMacro(mockMacros[0]);
+      onSelectMacro(mockMacros[0])
 
       // Should replace from start of trigger (/s) to current position
       expect(replaceText).toHaveBeenCalledWith(
@@ -293,67 +293,67 @@ describe('SuggestionsOverlayManager', () => {
         mockMacros[0],
         0, // Start of '/s'
         2  // Current position
-      );
-      expect(manager.isVisible()).toBe(false);
-    });
+      )
+      expect(manager.isVisible()).toBe(false)
+    })
 
     test('handles selection when savedState element is null', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
 
       
       // Show the overlay to capture the onSelectMacro callback
-      manager.show('test', 100, 200);
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      const onSelectMacro = renderCall.props.onSelectMacro;
+      manager.show('test', 100, 200)
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      const onSelectMacro = renderCall.props.onSelectMacro
 
       // Now, hide the manager, which will clear the savedState.
-      manager.hide();
+      manager.hide()
       
       // Now, call the captured callback. `savedState` is now null.
-      onSelectMacro(mockMacros[0]);
+      onSelectMacro(mockMacros[0])
 
-      expect(replaceText).not.toHaveBeenCalled();
-      expect(manager.isVisible()).toBe(false);
-    });
+      expect(replaceText).not.toHaveBeenCalled()
+      expect(manager.isVisible()).toBe(false)
+    })
 
     test('handles selection when trigger not found in content', () => {
       const manager = createSuggestionsOverlayManager(mockMacros);
-      (mockElement as HTMLInputElement).value = 'different text';
+      (mockElement as HTMLInputElement).value = 'different text'
       
-      manager.show('test', 100, 200);
+      manager.show('test', 100, 200)
       
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      const onSelectMacro = renderCall.props.onSelectMacro;
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      const onSelectMacro = renderCall.props.onSelectMacro
       
-      onSelectMacro(mockMacros[0]);
+      onSelectMacro(mockMacros[0])
 
       // replaceText should not be called when trigger is not found
-      expect(replaceText).not.toHaveBeenCalled();
-      expect(manager.isVisible()).toBe(false);
-    });
-  });
+      expect(replaceText).not.toHaveBeenCalled()
+      expect(manager.isVisible()).toBe(false)
+    })
+  })
 
   describe('Close Handler', () => {
     test('calls hide when onClose is triggered', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
-      manager.show('test', 100, 200);
+      manager.show('test', 100, 200)
       
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      const onClose = renderCall.props.onClose;
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      const onClose = renderCall.props.onClose
       
-      onClose();
+      onClose()
 
-      expect(manager.isVisible()).toBe(false);
-      expect(mockRenderer.clear).toHaveBeenCalled();
-    });
-  });
+      expect(manager.isVisible()).toBe(false)
+      expect(mockRenderer.clear).toHaveBeenCalled()
+    })
+  })
 
   describe('Update Macros', () => {
     test('updates macros and re-renders when visible', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
-      manager.show('new', 100, 200);
+      manager.show('new', 100, 200)
       
       const newMacros: Macro[] = [
         {
@@ -362,20 +362,20 @@ describe('SuggestionsOverlayManager', () => {
           text: 'This is a new macro',
           updated_at: String(new Date()),
         }
-      ];
+      ]
       
-      const renderCallsBefore = mockRenderer.render.mock.calls.length;
+      const renderCallsBefore = mockRenderer.render.mock.calls.length
       
-      manager.updateMacros(newMacros);
+      manager.updateMacros(newMacros)
       
-      expect(mockRenderer.render.mock.calls.length).toBe(renderCallsBefore + 1);
+      expect(mockRenderer.render.mock.calls.length).toBe(renderCallsBefore + 1)
       
-      const lastCall = mockRenderer.render.mock.calls[mockRenderer.render.mock.calls.length - 1][0];
-      expect(lastCall.props.macros).toEqual(newMacros);
-    });
+      const lastCall = mockRenderer.render.mock.calls[mockRenderer.render.mock.calls.length - 1][0]
+      expect(lastCall.props.macros).toEqual(newMacros)
+    })
 
     test('updates macros but does not re-render when hidden', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
       const newMacros: Macro[] = [
         {
@@ -384,18 +384,18 @@ describe('SuggestionsOverlayManager', () => {
           text: 'This is a new macro',
           updated_at: String(new Date()),
         }
-      ];
+      ]
       
-      const renderCallsBefore = mockRenderer.render.mock.calls.length;
+      const renderCallsBefore = mockRenderer.render.mock.calls.length
       
-      manager.updateMacros(newMacros);
+      manager.updateMacros(newMacros)
       
       // Should not trigger additional render when hidden
-      expect(mockRenderer.render.mock.calls.length).toBe(renderCallsBefore);
-    });
+      expect(mockRenderer.render.mock.calls.length).toBe(renderCallsBefore)
+    })
 
     test('uses updated macros in next show call', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
       const newMacros: Macro[] = [
         {
@@ -404,166 +404,166 @@ describe('SuggestionsOverlayManager', () => {
           text: 'This is an updated macro',
           updated_at: String(new Date()),
         }
-      ];
+      ]
       
-      manager.updateMacros(newMacros);
-      manager.show('updated', 100, 200);
+      manager.updateMacros(newMacros)
+      manager.show('updated', 100, 200)
       
-      const renderCall = mockRenderer.render.mock.calls[mockRenderer.render.mock.calls.length - 1][0];
-      expect(renderCall.props.macros).toEqual(newMacros);
-    });
-  });
+      const renderCall = mockRenderer.render.mock.calls[mockRenderer.render.mock.calls.length - 1][0]
+      expect(renderCall.props.macros).toEqual(newMacros)
+    })
+  })
 
   describe('Update Buffer', () => {
     test('does nothing when overlay is hidden', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
-      const rendersBefore = mockRenderer.render.mock.calls.length;
+      const manager = createSuggestionsOverlayManager(mockMacros)
+      const rendersBefore = mockRenderer.render.mock.calls.length
 
-      manager.updateBuffer('/updated');
+      manager.updateBuffer('/updated')
 
-      expect(mockRenderer.render.mock.calls.length).toBe(rendersBefore);
-    });
+      expect(mockRenderer.render.mock.calls.length).toBe(rendersBefore)
+    })
 
     test('updates filterBuffer and re-renders when visible', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
-      manager.show('/si', 100, 200);
-      const rendersBefore = mockRenderer.render.mock.calls.length;
+      const manager = createSuggestionsOverlayManager(mockMacros)
+      manager.show('/si', 100, 200)
+      const rendersBefore = mockRenderer.render.mock.calls.length
 
-      manager.updateBuffer('/sig');
+      manager.updateBuffer('/sig')
 
-      expect(mockRenderer.render.mock.calls.length).toBe(rendersBefore + 1);
-      const calls = mockRenderer.render.mock.calls;
-      const lastProps = calls[calls.length - 1][0].props;
-      expect(lastProps.filterBuffer).toBe('/sig');
-    });
+      expect(mockRenderer.render.mock.calls.length).toBe(rendersBefore + 1)
+      const calls = mockRenderer.render.mock.calls
+      const lastProps = calls[calls.length - 1][0].props
+      expect(lastProps.filterBuffer).toBe('/sig')
+    })
 
     test('updates savedState trigger so the correct text is replaced on select', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
-      const mockCallback = vi.fn();
-      manager.setOnMacroSelected(mockCallback);
-      manager.show('/si', 100, 200);
+      const manager = createSuggestionsOverlayManager(mockMacros)
+      const mockCallback = vi.fn()
+      manager.setOnMacroSelected(mockCallback)
+      manager.show('/si', 100, 200)
 
-      manager.updateBuffer('/sig');
+      manager.updateBuffer('/sig')
 
-      const renderCalls = mockRenderer.render.mock.calls;
-      const onSelectMacro = renderCalls[renderCalls.length - 1][0].props.onSelectMacro;
-      onSelectMacro(mockMacros[0]);
-      expect(mockCallback).toHaveBeenCalledWith(mockMacros[0], '/sig', mockElement);
-    });
-  });
+      const renderCalls = mockRenderer.render.mock.calls
+      const onSelectMacro = renderCalls[renderCalls.length - 1][0].props.onSelectMacro
+      onSelectMacro(mockMacros[0])
+      expect(mockCallback).toHaveBeenCalledWith(mockMacros[0], '/sig', mockElement)
+    })
+  })
 
   describe('Destroy', () => {
     test('cleans up resources properly', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
-      manager.show('test', 100, 200);
-      manager.destroy();
+      manager.show('test', 100, 200)
+      manager.destroy()
       
-      expect(mockRenderer.destroy).toHaveBeenCalledTimes(1);
-      expect(mockStyleInjector.remove).toHaveBeenCalledTimes(1);
-      expect(manager.isVisible()).toBe(false);
-    });
+      expect(mockRenderer.destroy).toHaveBeenCalledTimes(1)
+      expect(mockStyleInjector.remove).toHaveBeenCalledTimes(1)
+      expect(manager.isVisible()).toBe(false)
+    })
 
     test('can destroy without showing first', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
-      expect(() => manager.destroy()).not.toThrow();
-      expect(mockRenderer.destroy).toHaveBeenCalledTimes(1);
-      expect(mockStyleInjector.remove).toHaveBeenCalledTimes(1);
-    });
-  });
+      expect(() => manager.destroy()).not.toThrow()
+      expect(mockRenderer.destroy).toHaveBeenCalledTimes(1)
+      expect(mockStyleInjector.remove).toHaveBeenCalledTimes(1)
+    })
+  })
 
   describe('Props Passed to Component', () => {
     test('passes all required props to component', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
       
-      manager.show('test', 100, 200);
+      manager.show('test', 100, 200)
       
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      const props = renderCall.props;
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      const props = renderCall.props
       
-      expect(props).toHaveProperty('macros');
-      expect(props).toHaveProperty('filterBuffer');
-      expect(props).toHaveProperty('mode');
-      expect(props).toHaveProperty('position');
-      expect(props).toHaveProperty('isVisible');
-      expect(props).toHaveProperty('onSelectMacro');
-      expect(props).toHaveProperty('onClose');
+      expect(props).toHaveProperty('macros')
+      expect(props).toHaveProperty('filterBuffer')
+      expect(props).toHaveProperty('mode')
+      expect(props).toHaveProperty('position')
+      expect(props).toHaveProperty('isVisible')
+      expect(props).toHaveProperty('onSelectMacro')
+      expect(props).toHaveProperty('onClose')
       
-      expect(typeof props.onSelectMacro).toBe('function');
-      expect(typeof props.onClose).toBe('function');
-    });
-  });
+      expect(typeof props.onSelectMacro).toBe('function')
+      expect(typeof props.onClose).toBe('function')
+    })
+  })
 
   describe('Button Click Integration', () => {
     test('triggers macro replacement when button is clicked via callback', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
-      const mockCallback = vi.fn();
+      const manager = createSuggestionsOverlayManager(mockMacros)
+      const mockCallback = vi.fn()
 
       // Set up the callback (simulating what the main.ts does)
-      manager.setOnMacroSelected(mockCallback);
+      manager.setOnMacroSelected(mockCallback)
 
       // Show the overlay
-      manager.show('test', 100, 200);
+      manager.show('test', 100, 200)
 
       // Get the onSelectMacro callback that was passed to the component
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      const onSelectMacro = renderCall.props.onSelectMacro;
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      const onSelectMacro = renderCall.props.onSelectMacro
 
       // Simulate clicking a button (which calls onSelectMacro)
-      onSelectMacro(mockMacros[0]);
+      onSelectMacro(mockMacros[0])
 
       // Verify the callback was called with the correct parameters
-      expect(mockCallback).toHaveBeenCalledWith(mockMacros[0], 'test', mockElement);
-      expect(mockCallback).toHaveBeenCalledTimes(1);
+      expect(mockCallback).toHaveBeenCalledWith(mockMacros[0], 'test', mockElement)
+      expect(mockCallback).toHaveBeenCalledTimes(1)
 
       // Verify the overlay was hidden after selection
-      expect(manager.isVisible()).toBe(false);
-    });
+      expect(manager.isVisible()).toBe(false)
+    })
 
     test('button click works even without registered callback (fallback mode)', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
+      const manager = createSuggestionsOverlayManager(mockMacros)
 
       // Don't set a callback - testing fallback behavior
 
       // Show the overlay
-      manager.show('test', 100, 200);
+      manager.show('test', 100, 200)
 
       // Get the onSelectMacro callback that was passed to the component
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      const onSelectMacro = renderCall.props.onSelectMacro;
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      const onSelectMacro = renderCall.props.onSelectMacro
 
       // Simulate clicking a button
-      onSelectMacro(mockMacros[0]);
+      onSelectMacro(mockMacros[0])
 
       // Verify replaceText was called (fallback behavior)
-      expect(replaceText).toHaveBeenCalled();
+      expect(replaceText).toHaveBeenCalled()
 
       // Verify the overlay was hidden after selection
-      expect(manager.isVisible()).toBe(false);
-    });
+      expect(manager.isVisible()).toBe(false)
+    })
 
     test('button click in showAll mode triggers replacement correctly', () => {
-      const manager = createSuggestionsOverlayManager(mockMacros);
-      const mockCallback = vi.fn();
+      const manager = createSuggestionsOverlayManager(mockMacros)
+      const mockCallback = vi.fn()
 
-      manager.setOnMacroSelected(mockCallback);
+      manager.setOnMacroSelected(mockCallback)
 
       // Show the overlay in showAll mode with a buffer
-      manager.showAll(100, 200, '/te');
+      manager.showAll(100, 200, '/te')
 
       // Get the onSelectMacro callback
-      const renderCall = mockRenderer.render.mock.calls[0][0];
-      const onSelectMacro = renderCall.props.onSelectMacro;
+      const renderCall = mockRenderer.render.mock.calls[0][0]
+      const onSelectMacro = renderCall.props.onSelectMacro
 
       // Simulate clicking a button
-      onSelectMacro(mockMacros[0]);
+      onSelectMacro(mockMacros[0])
 
       // Verify the callback was called with the buffer from showAll
-      expect(mockCallback).toHaveBeenCalledWith(mockMacros[0], '/te', mockElement);
+      expect(mockCallback).toHaveBeenCalledWith(mockMacros[0], '/te', mockElement)
 
       // Verify the overlay was hidden
-      expect(manager.isVisible()).toBe(false);
-    });
-  });
-});
+      expect(manager.isVisible()).toBe(false)
+    })
+  })
+})

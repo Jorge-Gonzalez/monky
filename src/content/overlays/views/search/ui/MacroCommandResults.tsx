@@ -1,11 +1,11 @@
-import { ModalCommand } from '../modalCommands';
-import { t } from '../../../../../lib/i18n';
-import { SearchResultsPanel, searchOptionId } from './SearchResultsPanel';
+import { ModalCommand } from '../modalCommands'
+import { t } from '../../../../../lib/i18n'
+import { SearchResultsPanel, searchOptionId } from './SearchResultsPanel'
 
 interface MacroCommandResultsProps {
-  commands: ModalCommand[];
-  selectedIndex: number;
-  onSelect: (command: ModalCommand) => void;
+  commands: ModalCommand[]
+  selectedIndex: number
+  onSelect: (command: ModalCommand) => void
 }
 
 export function MacroCommandResults({ commands, selectedIndex, onSelect }: MacroCommandResultsProps) {
@@ -15,7 +15,7 @@ export function MacroCommandResults({ commands, selectedIndex, onSelect }: Macro
         <div data-component="search-empty" className="span-all padding-lg
           ink-soft font-md text-center" role="status">{t('modalSearch.noMatchingCommands')}</div>
       </SearchResultsPanel>
-    );
+    )
   }
 
   return (
@@ -44,5 +44,5 @@ export function MacroCommandResults({ commands, selectedIndex, onSelect }: Macro
         </div>
       ))}
     </SearchResultsPanel>
-  );
+  )
 }

@@ -1,6 +1,6 @@
-import type { RefObject } from 'react';
-import { useMacroStore } from '../../store/useMacroStore';
-import { useThemeColors } from './useThemeColors';
+import type { RefObject } from 'react'
+import { useMacroStore } from '../../store/useMacroStore'
+import { useThemeColors } from './useThemeColors'
 
 /**
  * Applies the current theme + color theme (from the store) to a container ref.
@@ -8,7 +8,7 @@ import { useThemeColors } from './useThemeColors';
  * of reciting the store reads + useThemeColors call.
  */
 export function useAppliedTheme(ref: RefObject<HTMLElement | null>, enabled = true) {
-  const theme = useMacroStore(s => s.config.theme);
-  const colorTheme = useMacroStore(s => s.config.colorTheme);
-  useThemeColors(ref, theme, enabled, colorTheme);
+  const theme = useMacroStore(s => s.config.theme)
+  const colorTheme = useMacroStore(s => s.config.colorTheme)
+  useThemeColors(ref, theme, enabled, colorTheme)
 }

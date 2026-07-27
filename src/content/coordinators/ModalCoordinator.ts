@@ -1,6 +1,6 @@
-import { Macro, EditableEl } from '../../types';
-import { ModalManager } from '../overlays/modal/modalManager';
-import { ModalView } from '../overlays/modal/types';
+import { Macro, EditableEl } from '../../types'
+import { ModalManager } from '../overlays/modal/modalManager'
+import { ModalView } from '../overlays/modal/types'
 
 /**
  * Unified modal coordinator that handles all modal views
@@ -8,63 +8,63 @@ import { ModalView } from '../overlays/modal/types';
 export function createModalCoordinator(
   manager: ModalManager
 ): ModalCoordinator {
-  let isEnabled = true;
+  let isEnabled = true
 
   /**
    * Show the modal with a specific view
    */
   const show = (view?: ModalView, x?: number, y?: number): void => {
-    if (!isEnabled) return;
-    manager.show(view, x, y);
-  };
+    if (!isEnabled) return
+    manager.show(view, x, y)
+  }
 
   /**
    * Hide the modal
    */
   const hide = (): void => {
-    manager.hide();
-  };
+    manager.hide()
+  }
 
   /**
    * Switch to a different view without closing the modal
    */
   const switchView = (view: ModalView): void => {
-    manager.switchView(view);
-  };
+    manager.switchView(view)
+  }
 
   /**
    * Check if the modal is currently visible
    */
   const isVisible = (): boolean => {
-    return manager.isVisible();
-  };
+    return manager.isVisible()
+  }
 
   /**
    * Get the current view (or null if modal is closed)
    */
   const getCurrentView = (): ModalView | null => {
-    return manager.getCurrentView();
-  };
+    return manager.getCurrentView()
+  }
 
   /**
    * Set the callback for when a macro is selected from the search view
    */
   const setOnMacroSelected = (callback: (macro: Macro, element: EditableEl) => void): void => {
-    manager.setOnMacroSelected(callback);
-  };
+    manager.setOnMacroSelected(callback)
+  }
 
   const handleClickOutside = (e: MouseEvent): void => {
-    if (!manager.isVisible()) return;
+    if (!manager.isVisible()) return
 
-    const target = e.target as Element;
-    const modalElement = document.getElementById('monky-modal');
-    const isInsideModal = modalElement && modalElement.contains(target);
-    const isToolbar = !!target.closest('[data-region="ce-toolbar"]');
+    const target = e.target as Element
+    const modalElement = document.getElementById('monky-modal')
+    const isInsideModal = modalElement && modalElement.contains(target)
+    const isToolbar = !!target.closest('[data-region="ce-toolbar"]')
 
-    if (isInsideModal || isToolbar) return;
+    if (isInsideModal || isToolbar) return
 
-    manager.hide();
-  };
+    manager.hide()
+  }
 
   /**
    * Handle escape key to close the modal
@@ -72,19 +72,19 @@ export function createModalCoordinator(
    * but we keep this for backup/consistency
    */
   const handleEscapeKey = (e: KeyboardEvent): void => {
-    if (!manager.isVisible()) return;
+    if (!manager.isVisible()) return
 
     if (e.key === 'Escape') {
-      manager.hide();
-      e.preventDefault();
-      e.stopPropagation();
+      manager.hide()
+      e.preventDefault()
+      e.stopPropagation()
     }
-  };
+  }
 
   const navigateToEditor = (macro?: Macro): void => {
-    if (!isEnabled) return;
-    manager.navigateToEditor(macro);
-  };
+    if (!isEnabled) return
+    manager.navigateToEditor(macro)
+  }
 
   const coordinator: ModalCoordinator = {
     show,
@@ -96,50 +96,50 @@ export function createModalCoordinator(
     setOnMacroSelected,
 
     attach: (): void => {
-      document.addEventListener('click', handleClickOutside, true);
-      document.addEventListener('keydown', handleEscapeKey, true);
+      document.addEventListener('click', handleClickOutside, true)
+      document.addEventListener('keydown', handleEscapeKey, true)
     },
 
     detach: (): void => {
-      document.removeEventListener('click', handleClickOutside, true);
-      document.removeEventListener('keydown', handleEscapeKey, true);
-      manager.hide();
+      document.removeEventListener('click', handleClickOutside, true)
+      document.removeEventListener('keydown', handleEscapeKey, true)
+      manager.hide()
     },
 
     enable: (): void => {
-      isEnabled = true;
+      isEnabled = true
     },
 
     disable: (): void => {
-      isEnabled = false;
+      isEnabled = false
       if (manager.isVisible()) {
-        manager.hide();
+        manager.hide()
       }
     },
 
     isEnabled: (): boolean => isEnabled,
 
     destroy: (): void => {
-      coordinator.detach();
-      manager.destroy();
+      coordinator.detach()
+      manager.destroy()
     },
-  };
+  }
 
-  return coordinator;
+  return coordinator
 }
 
 export interface ModalCoordinator {
-  show: (view?: ModalView, x?: number, y?: number) => void;
-  hide: () => void;
-  switchView: (view: ModalView) => void;
-  navigateToEditor: (macro?: Macro) => void;
-  isVisible: () => boolean;
-  getCurrentView: () => ModalView | null;
-  setOnMacroSelected: (callback: (macro: Macro, element: EditableEl) => void) => void;
-  attach: () => void;
-  detach: () => void;
-  enable: () => void;
-  disable: () => void;
-  isEnabled: () => boolean;
-  destroy: () => void;
+  show: (view?: ModalView, x?: number, y?: number) => void
+  hide: () => void
+  switchView: (view: ModalView) => void
+  navigateToEditor: (macro?: Macro) => void
+  isVisible: () => boolean
+  getCurrentView: () => ModalView | null
+  setOnMacroSelected: (callback: (macro: Macro, element: EditableEl) => void) => void
+  attach: () => void
+  detach: () => void
+  enable: () => void
+  disable: () => void
+  isEnabled: () => boolean
+  destroy: () => void
 }

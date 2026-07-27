@@ -1,20 +1,20 @@
-import { useState, useEffect } from 'react';
-import { t } from '../../lib/i18n';
-import { useMacroStore } from '../../store/useMacroStore';
+import { useState, useEffect } from 'react'
+import { t } from '../../lib/i18n'
+import { useMacroStore } from '../../store/useMacroStore'
 
 export default function SiteToggle() {
-  const [hostname, setHostname] = useState<string | null>(null);
+  const [hostname, setHostname] = useState<string | null>(null)
 
   const disabledSites = useMacroStore(state => state.config.disabledSites || [])
-  const toggleSiteDisabled = useMacroStore(state => state.toggleSiteDisabled);
+  const toggleSiteDisabled = useMacroStore(state => state.toggleSiteDisabled)
 
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
       // The "tabs" permission is required in the manifest for the url property to be populated.
       if (tabs[0]?.url) {
-        const validProtocols = ['http:', 'https:', 'file:'];
+        const validProtocols = ['http:', 'https:', 'file:']
         try {
-          const url = new URL(tabs[0].url);
+          const url = new URL(tabs[0].url)
           if (validProtocols.includes(url.protocol)) {
             setHostname(url.hostname); // This will be 'localhost' for localhost, '' for file://, and the domain for others.
           }
@@ -22,16 +22,16 @@ export default function SiteToggle() {
           // Not a valid URL (e.g., chrome://extensions), do nothing
         }
       }
-    });
-  }, []);
+    })
+  }, [])
 
   // Don't render anything if we couldn't determine a valid hostname.
   if (hostname === null) {
-    return null;
+    return null
   }
 
-  const isEnabled = !disabledSites.includes(hostname);
-  const displayHostname = hostname || t('popup.localFile');
+  const isEnabled = !disabledSites.includes(hostname)
+  const displayHostname = hostname || t('popup.localFile')
 
   return (
     <div className="horizontal padding-sm align-center justify-between
@@ -54,5 +54,5 @@ export default function SiteToggle() {
         />
       </label>
     </div>
-  );
+  )
 }

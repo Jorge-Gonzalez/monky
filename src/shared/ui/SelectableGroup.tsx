@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
 /**
  * Toggle an option in/out of the selection, refusing to drop below `minSelected`.
@@ -9,21 +9,21 @@ export function toggleSelection(
   option: string,
   minSelected: number,
 ): string[] | null {
-  const isSelected = selected.includes(option);
-  if (isSelected && selected.length <= minSelected) return null;
-  return isSelected ? selected.filter(o => o !== option) : [...selected, option];
+  const isSelected = selected.includes(option)
+  if (isSelected && selected.length <= minSelected) return null
+  return isSelected ? selected.filter(o => o !== option) : [...selected, option]
 }
 
 interface SelectableGroupProps {
-  options: string[];
-  selected: string[];
-  onChange: (next: string[]) => void;
+  options: string[]
+  selected: string[]
+  onChange: (next: string[]) => void
   /** Minimum that must stay selected. Default 1. */
-  minSelected?: number;
+  minSelected?: number
   /** Extra classes on the group wrapper (layout). */
-  className?: string;
+  className?: string
   /** Base classes for each toggle button. */
-  buttonClassName?: string;
+  buttonClassName?: string
 }
 
 /**
@@ -40,24 +40,24 @@ export function SelectableGroup({
   className,
   buttonClassName,
 }: SelectableGroupProps) {
-  const [shake, setShake] = useState<string | null>(null);
+  const [shake, setShake] = useState<string | null>(null)
 
   const handleClick = (option: string) => {
-    const next = toggleSelection(selected, option, minSelected);
+    const next = toggleSelection(selected, option, minSelected)
     if (!next) {
-      setShake(option);
-      setTimeout(() => setShake(null), 400);
-      return;
+      setShake(option)
+      setTimeout(() => setShake(null), 400)
+      return
     }
-    onChange(next);
-  };
+    onChange(next)
+  }
 
-  const minClass = minSelected === 1 ? 'sf-min-selected-1' : '';
+  const minClass = minSelected === 1 ? 'sf-min-selected-1' : ''
 
   return (
     <div className={`sf-selectable-group ${minClass} ${className ?? ''}`} role="group">
       {options.map(option => {
-        const isSelected = selected.includes(option);
+        const isSelected = selected.includes(option)
         return (
           <button
             key={option}
@@ -69,8 +69,8 @@ export function SelectableGroup({
           >
             {option}
           </button>
-        );
+        )
       })}
     </div>
-  );
+  )
 }

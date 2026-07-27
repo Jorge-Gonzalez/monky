@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
-import type { RefObject } from 'react';
-import { ThemeMode, ColorTheme } from '../../types';
-import { themeSocketVars } from '../socketPalette';
+import { useEffect } from 'react'
+import type { RefObject } from 'react'
+import { ThemeMode, ColorTheme } from '../../types'
+import { themeSocketVars } from '../socketPalette'
 
 function isSystemDark(): boolean {
-  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 }
 
 export function useThemeColors(
@@ -14,16 +14,16 @@ export function useThemeColors(
   colorTheme: ColorTheme = 'humo'
 ) {
   useEffect(() => {
-    if (!isEnabled || !ref.current) return;
+    if (!isEnabled || !ref.current) return
 
-    const element = ref.current;
-    const isDark = theme === 'dark' || (theme === 'system' && isSystemDark());
-    const colors = themeSocketVars(colorTheme, isDark);
+    const element = ref.current
+    const isDark = theme === 'dark' || (theme === 'system' && isSystemDark())
+    const colors = themeSocketVars(colorTheme, isDark)
 
     for (const [property, value] of Object.entries(colors)) {
-      element.style.setProperty(property, value);
+      element.style.setProperty(property, value)
     }
-    element.classList.toggle('dark', isDark);
-    element.classList.toggle('light', !isDark);
-  }, [ref, theme, isEnabled, colorTheme]);
+    element.classList.toggle('dark', isDark)
+    element.classList.toggle('light', !isDark)
+  }, [ref, theme, isEnabled, colorTheme])
 }

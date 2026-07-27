@@ -1,17 +1,17 @@
-import { useRef } from 'react';
-import { t } from '../../lib/i18n';
-import { MacroSearch } from './MacroSearch';
-import SiteToggle from './SiteToggle';
-import { useMacroStore } from '../../store/useMacroStore';
-import ThemeSwitcher from './ThemeSwitcher';
-import NewMacroButton from './NewMacroButton';
-import { useAppliedTheme } from '../../theme/hooks/useAppliedTheme';
+import { useRef } from 'react'
+import { t } from '../../lib/i18n'
+import { MacroSearch } from './MacroSearch'
+import SiteToggle from './SiteToggle'
+import { useMacroStore } from '../../store/useMacroStore'
+import ThemeSwitcher from './ThemeSwitcher'
+import NewMacroButton from './NewMacroButton'
+import { useAppliedTheme } from '../../theme/hooks/useAppliedTheme'
 
 export default function Popup() {
-  const macros = useMacroStore(state => state.macros);
+  const macros = useMacroStore(state => state.macros)
 
-  const popupRef = useRef<HTMLDivElement>(null);
-  useAppliedTheme(popupRef);
+  const popupRef = useRef<HTMLDivElement>(null)
+  useAppliedTheme(popupRef)
 
   return (
     <div ref={popupRef} className="vertical gap-sm padding-sm width-popover-xl
@@ -26,5 +26,5 @@ export default function Popup() {
       <SiteToggle />
       <MacroSearch macros={macros} />
     </div>
-  );
+  )
 }

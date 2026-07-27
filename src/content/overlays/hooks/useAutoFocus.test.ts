@@ -1,55 +1,55 @@
 // @vitest-environment jsdom
-import { renderHook } from '@testing-library/preact';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { useAutoFocus } from './useAutoFocus';
+import { renderHook } from '@testing-library/preact'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { useAutoFocus } from './useAutoFocus'
 
 describe('useAutoFocus Hook', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
-  });
+    vi.useFakeTimers()
+  })
 
   afterEach(() => {
-    vi.useRealTimers();
-  });
+    vi.useRealTimers()
+  })
 
   it('should focus the input element when isActive becomes true', () => {
-    const input = document.createElement('input');
-    const focusSpy = vi.spyOn(input, 'focus');
-    const inputRef = { current: input };
+    const input = document.createElement('input')
+    const focusSpy = vi.spyOn(input, 'focus')
+    const inputRef = { current: input }
 
     const { rerender } = renderHook(({ isActive }) => useAutoFocus(inputRef, isActive), {
       initialProps: { isActive: false },
-    });
+    })
 
-    expect(focusSpy).not.toHaveBeenCalled();
+    expect(focusSpy).not.toHaveBeenCalled()
 
-    rerender({ isActive: true });
-    vi.advanceTimersByTime(50);
+    rerender({ isActive: true })
+    vi.advanceTimersByTime(50)
 
-    expect(focusSpy).toHaveBeenCalledTimes(1);
-  });
+    expect(focusSpy).toHaveBeenCalledTimes(1)
+  })
 
   it('should not focus the input element if isActive is false', () => {
-    const input = document.createElement('input');
-    const focusSpy = vi.spyOn(input, 'focus');
-    const inputRef = { current: input };
+    const input = document.createElement('input')
+    const focusSpy = vi.spyOn(input, 'focus')
+    const inputRef = { current: input }
 
-    renderHook(() => useAutoFocus(inputRef, false));
+    renderHook(() => useAutoFocus(inputRef, false))
 
-    vi.runAllTimers();
-    expect(focusSpy).not.toHaveBeenCalled();
-  });
+    vi.runAllTimers()
+    expect(focusSpy).not.toHaveBeenCalled()
+  })
 
   it('does not throw when ref is null and isActive becomes true', () => {
-    const nullRef = { current: null };
+    const nullRef = { current: null }
     const { rerender } = renderHook(({ isActive }) => useAutoFocus(nullRef, isActive), {
       initialProps: { isActive: false },
-    });
-    expect(() => rerender({ isActive: true })).not.toThrow();
-  });
+    })
+    expect(() => rerender({ isActive: true })).not.toThrow()
+  })
 
   it('does not call focus when ref is null', () => {
-    const nullRef = { current: null };
-    expect(() => renderHook(() => useAutoFocus(nullRef, true))).not.toThrow();
-  });
-});
+    const nullRef = { current: null }
+    expect(() => renderHook(() => useAutoFocus(nullRef, true))).not.toThrow()
+  })
+})

@@ -1,11 +1,11 @@
-import { useRef } from 'react';
-import { BaseModalViewProps } from '../../../modal/types';
-import { useOptions } from '../../../../../options';
-import { useMacroImportExport } from '../useMacroImportExport';
-import { ColorTheme, Lang } from '../../../../../types';
-import { SegmentedControl } from '../../../../../shared/ui/SegmentedControl';
-import { SelectableGroup } from '../../../../../shared/ui/SelectableGroup';
-import { t } from '../../../../../lib/i18n';
+import { useRef } from 'react'
+import { BaseModalViewProps } from '../../../modal/types'
+import { useOptions } from '../../../../../options'
+import { useMacroImportExport } from '../useMacroImportExport'
+import { ColorTheme, Lang } from '../../../../../types'
+import { SegmentedControl } from '../../../../../shared/ui/SegmentedControl'
+import { SelectableGroup } from '../../../../../shared/ui/SelectableGroup'
+import { t } from '../../../../../lib/i18n'
 
 const SunIcon = () => (
   <svg className="boxed-inline" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -15,46 +15,46 @@ const SunIcon = () => (
       <path d="M12 19v4M12 1v4" strokeLinecap="round" />
     </g>
   </svg>
-);
+)
 
 const MoonIcon = () => (
   <svg className="boxed-inline" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
     <path d="M10.41 13.28C7.332 10.205 6.716 5.693 8.357 2c-1.23.41-2.256 1.23-3.281 2.256a10.399 10.399 0 0 0 0 14.768c4.102 4.102 10.46 3.897 14.562-.205 1.026-1.026 1.846-2.051 2.256-3.282-3.896 1.436-8.409.82-11.486-2.256Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
-);
+)
 
-const ALL_PREFIXES = ['/', ';', ':', '#', '!'];
+const ALL_PREFIXES = ['/', ';', ':', '#', '!']
 
 const REPLACEMENT_OPTIONS = [
   { value: 'auto' as const,   label: () => t('replacementMode.autoShort')   },
   { value: 'manual' as const, label: () => t('replacementMode.manualShort') },
-];
+]
 
 const THEME_OPTIONS: { value: ColorTheme; label: string }[] = [
   { value: 'humo',  label: 'Humo'  },
   { value: 'acera', label: 'Acera' },
   { value: 'mar',   label: 'Mar'   },
-];
+]
 
 const LANGUAGE_OPTIONS: { value: Lang; label: string }[] = [
   { value: 'en', label: 'English' },
   { value: 'es', label: 'Español' },
-];
+]
 
 export function SettingsView(_props: BaseModalViewProps) {
-  const { prefixes, useCommitKeys, colorTheme, theme, language, setPrefixes, setUseCommitKeys, setColorTheme, setTheme, setLanguage } = useOptions();
-  const { status: importStatus, exportMacros, importFromFile } = useMacroImportExport();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { prefixes, useCommitKeys, colorTheme, theme, language, setPrefixes, setUseCommitKeys, setColorTheme, setTheme, setLanguage } = useOptions()
+  const { status: importStatus, exportMacros, importFromFile } = useMacroImportExport()
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const replacementValue = useCommitKeys ? 'manual' : 'auto';
+  const replacementValue = useCommitKeys ? 'manual' : 'auto'
 
   // The toggle is light/dark; reflect the resolved mode when the stored value is 'system'.
-  const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ?? false;
-  const mode = theme === 'dark' || (theme === 'system' && systemDark) ? 'dark' : 'light';
+  const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ?? false
+  const mode = theme === 'dark' || (theme === 'system' && systemDark) ? 'dark' : 'light'
   const MODE_OPTIONS = [
     { value: 'light' as const, label: <SunIcon />,  ariaLabel: t('settings.lightMode') },
     { value: 'dark'  as const, label: <MoonIcon />, ariaLabel: t('settings.darkMode') },
-  ];
+  ]
 
   return (
     <div data-component="settings-view" className="vertical scroll-auto fill-block
@@ -158,10 +158,10 @@ export function SettingsView(_props: BaseModalViewProps) {
                   accept=".json,application/json"
                   style={{ display: 'none' }}
                   onChange={e => {
-                    const input = e.currentTarget as HTMLInputElement;
-                    const file = input.files?.[0];
-                    input.value = '';
-                    if (file) importFromFile(file);
+                    const input = e.currentTarget as HTMLInputElement
+                    const file = input.files?.[0]
+                    input.value = ''
+                    if (file) importFromFile(file)
                   }}
                 />
               </div>
@@ -177,5 +177,5 @@ export function SettingsView(_props: BaseModalViewProps) {
 
       </div>
     </div>
-  );
+  )
 }

@@ -1,26 +1,26 @@
 interface PopupPosition {
-  x: number;
-  y: number;
+  x: number
+  y: number
 }
 
 interface WindowSize {
-  width: number;
-  height: number;
+  width: number
+  height: number
 }
 
 interface PopupDimensions {
-  width: number;
-  height: number;
+  width: number
+  height: number
 }
 
 interface BoundarySettings {
-  margin: number;
+  margin: number
 }
 
 export interface PopupPositionResult {
-  x: number;
-  y: number;
-  placement: 'top' | 'bottom';
+  x: number
+  y: number
+  placement: 'top' | 'bottom'
 }
 
 /**
@@ -41,15 +41,15 @@ export function calculateOptimalPosition(
   popupDimensions: PopupDimensions,
   boundarySettings: BoundarySettings = { margin: 10 }
 ): PopupPositionResult {
-  const { margin } = boundarySettings;
+  const { margin } = boundarySettings
 
   // Convert page coordinates to viewport coordinates
-  const viewportX = cursorPosition.x - window.scrollX;
-  const viewportY = cursorPosition.y - window.scrollY;
+  const viewportX = cursorPosition.x - window.scrollX
+  const viewportY = cursorPosition.y - window.scrollY
 
   // Try positioning below the cursor first
   let finalViewportY = viewportY + 8; // 8px offset below cursor
-  let placement: 'top' | 'bottom' = 'bottom';
+  let placement: 'top' | 'bottom' = 'bottom'
 
   // Check if popup would go off the bottom of the viewport
   if (finalViewportY + popupDimensions.height > windowSize.height - margin) {
@@ -57,24 +57,24 @@ export function calculateOptimalPosition(
     const aboveY = viewportY - popupDimensions.height - 8; // 8px offset above cursor
     if (aboveY >= margin) {
       // Position above cursor
-      finalViewportY = aboveY;
-      placement = 'top';
+      finalViewportY = aboveY
+      placement = 'top'
     } else {
       // Neither position works perfectly, prefer positioning below
       // but constrain to viewport boundaries
       finalViewportY = Math.max(
         margin, 
         Math.min(viewportY + 8, windowSize.height - popupDimensions.height - margin)
-      );
+      )
     }
   }
 
   // Calculate x position in viewport, centering on cursor if possible
-  let finalViewportX = Math.max(margin, viewportX - popupDimensions.width / 2);
+  let finalViewportX = Math.max(margin, viewportX - popupDimensions.width / 2)
 
   // Ensure popup stays within left/right boundaries
   if (finalViewportX + popupDimensions.width > windowSize.width - margin) {
-    finalViewportX = windowSize.width - popupDimensions.width - margin;
+    finalViewportX = windowSize.width - popupDimensions.width - margin
   }
-  return { x: finalViewportX, y: finalViewportY, placement };
+  return { x: finalViewportX, y: finalViewportY, placement }
 }

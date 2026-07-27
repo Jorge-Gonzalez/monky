@@ -5,20 +5,20 @@
 // so component CSS keeps reading --base-tone / --harmonic / --status-error unchanged while
 // the source of truth becomes the socket palette.
 
-type Mode = 'light' | 'dark';
+type Mode = 'light' | 'dark'
 
 interface Tones {
-  base: string; toneDim: string; tone: string;
-  ink: string; inkSoft: string; inkAlt: string;
-  harmonic: string; harmonicMinor: string;
-  accent: string; accentDim: string;
-  calm: string; active: string; charged: string; still: string;
-  shadow: string;
+  base: string; toneDim: string; tone: string
+  ink: string; inkSoft: string; inkAlt: string
+  harmonic: string; harmonicMinor: string
+  accent: string; accentDim: string
+  calm: string; active: string; charged: string; still: string
+  shadow: string
 }
 
-const wash = (role: string) => `color-mix(in oklch, var(--${role}) 15%, var(--ground))`;
-const towardInk = (pct: number) => `color-mix(in oklch, var(--ground) ${100 - pct}%, var(--ink))`;
-const towardAccent = (pct: number) => `color-mix(in oklch, var(--ground) ${100 - pct}%, var(--accent))`;
+const wash = (role: string) => `color-mix(in oklch, var(--${role}) 15%, var(--ground))`
+const towardInk = (pct: number) => `color-mix(in oklch, var(--ground) ${100 - pct}%, var(--ink))`
+const towardAccent = (pct: number) => `color-mix(in oklch, var(--ground) ${100 - pct}%, var(--accent))`
 
 // Ermine socket values for a theme × mode.
 const sockets = (t: Tones): Record<string, string> => ({
@@ -32,7 +32,7 @@ const sockets = (t: Tones): Record<string, string> => ({
   '--fail': t.charged, '--fail-faint': wash('fail'),
   '--note': t.still, '--note-faint': wash('note'),
   '--shadow': t.shadow,
-});
+})
 
 // Monky's consumed var names, aliased to the sockets above. Names that already match a
 // socket (--ink, --ink-soft, --accent) need no alias. --shadow-color has no socket yet.
@@ -49,7 +49,7 @@ const BRIDGE: Record<string, string> = {
   // R-SKIN-15 scrollbar treatment sockets: Monky keeps its subtle-ground track
   // instead of the treatment's transparent default.
   '--scrollbar-thumb': 'var(--rule)', '--scrollbar-track': 'var(--ground-subtle)',
-};
+}
 
 const TONES: Record<string, Record<Mode, Tones>> = {
   humo: {
@@ -64,10 +64,10 @@ const TONES: Record<string, Record<Mode, Tones>> = {
     light: { base: '#c9c4bf', toneDim: '#d4d0cc', tone: '#bbbfd4', ink: '#212935', inkSoft: '#657184', inkAlt: '#ffffff', harmonic: '#8f98a6', harmonicMinor: '#b5bac1', accent: '#1c59bd', accentDim: '#4874be', calm: '#05bd5e', active: '#d58b0b', charged: '#d1431f', still: '#2d5ae1', shadow: 'rgba(0,0,0,0.15)' },
     dark: { base: '#0f131b', toneDim: '#121720', tone: '#162e48', ink: '#d3eaf8', inkSoft: '#6f8fa4', inkAlt: '#ffffff', harmonic: '#203d5d', harmonicMinor: '#162738', accent: '#4cbef2', accentDim: '#3d6178', calm: '#9ed999', active: '#f4c762', charged: '#f9699a', still: '#9489e1', shadow: 'rgba(0,0,0,0.4)' },
   },
-};
+}
 
 /** The custom properties a themed root sets for a given color theme and mode. */
 export function themeSocketVars(colorTheme: string, isDark: boolean): Record<string, string> {
-  const tones = (TONES[colorTheme] ?? TONES.humo)[isDark ? 'dark' : 'light'];
-  return { ...sockets(tones), ...BRIDGE };
+  const tones = (TONES[colorTheme] ?? TONES.humo)[isDark ? 'dark' : 'light']
+  return { ...sockets(tones), ...BRIDGE }
 }

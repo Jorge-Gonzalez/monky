@@ -1,53 +1,53 @@
 // Pattern: Store-Hook — macro import/export behavior. Keeps the import/export
 // "conversation" out of SettingsView (which is about config settings).
-import { useState } from 'react';
-import { useMacroStore } from '../../../../store/useMacroStore';
-import { serializeMacros, parseMacroImport, mergeImport } from '../../../../lib/macroIO';
-import { t } from '../../../../lib/i18n';
+import { useState } from 'react'
+import { useMacroStore } from '../../../../store/useMacroStore'
+import { serializeMacros, parseMacroImport, mergeImport } from '../../../../lib/macroIO'
+import { t } from '../../../../lib/i18n'
 
-export type ImportStatus = { ok: boolean; message: string } | null;
+export type ImportStatus = { ok: boolean; message: string } | null
 
 export function useMacroImportExport() {
-  const macros = useMacroStore(s => s.macros);
-  const addMacro = useMacroStore(s => s.addMacro);
-  const [status, setStatus] = useState<ImportStatus>(null);
+  const macros = useMacroStore(s => s.macros)
+  const addMacro = useMacroStore(s => s.addMacro)
+  const [status, setStatus] = useState<ImportStatus>(null)
 
   const flash = (ok: boolean, message: string) => {
-    setStatus({ ok, message });
-    setTimeout(() => setStatus(null), 4000);
-  };
+    setStatus({ ok, message })
+    setTimeout(() => setStatus(null), 4000)
+  }
 
   const exportMacros = () => {
-    const json = serializeMacros(macros);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'monky-macros.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+    const json = serializeMacros(macros)
+    const blob = new Blob([json], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'monky-macros.json'
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   const importFromFile = (file: File) => {
-    const reader = new FileReader();
+    const reader = new FileReader()
     reader.onload = () => {
       try {
-        const parsed = parseMacroImport(reader.result as string);
+        const parsed = parseMacroImport(reader.result as string)
         if (parsed.length === 0) {
-          flash(false, t('settings.importExport.status.noValidMacros'));
-          return;
+          flash(false, t('settings.importExport.status.noValidMacros'))
+          return
         }
-        const existing = new Set(macros.map(m => m.command));
-        const { added, skipped } = mergeImport(parsed, existing, addMacro);
+        const existing = new Set(macros.map(m => m.command))
+        const { added, skipped } = mergeImport(parsed, existing, addMacro)
         flash(true, skipped > 0
           ? t('settings.importExport.status.addedWithSkipped', { added, skipped })
-          : t('settings.importExport.status.added', { count: added }));
+          : t('settings.importExport.status.added', { count: added }))
       } catch {
-        flash(false, t('settings.importExport.status.invalidFile'));
+        flash(false, t('settings.importExport.status.invalidFile'))
       }
-    };
-    reader.readAsText(file);
-  };
+    }
+    reader.readAsText(file)
+  }
 
-  return { status, exportMacros, importFromFile };
+  return { status, exportMacros, importFromFile }
 }

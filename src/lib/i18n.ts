@@ -351,35 +351,35 @@ const translations = {
   // You could add more languages here in the future, e.g., en: { ... }
 }
 
-type Language = keyof typeof translations;
+type Language = keyof typeof translations
 
 // Helper type to flatten the nested translation object keys
 type FlattenKeys<T, P extends string = ''> = {
   [K in keyof T]: T[K] extends string
     ? `${P}${K & string}`
     : FlattenKeys<T[K], `${P}${K & string}.`>
-}[keyof T];
+}[keyof T]
 
 // Use the helper to generate all possible dot-notation keys
-type TranslationKeys = FlattenKeys<typeof translations['en']>;
+type TranslationKeys = FlattenKeys<typeof translations['en']>
 
 // The old type definition, kept for reference:
 // type TranslationKeys = keyof typeof translations['en']; // 'en' is the source of truth for keys
 
 export function t(key: TranslationKeys, options?: Record<string, string | number>): string {
-  const lang = (useMacroStore.getState()?.config?.language ?? 'en') as Language;
-  const locale = translations[lang] ?? translations.en;
+  const lang = (useMacroStore.getState()?.config?.language ?? 'en') as Language
+  const locale = translations[lang] ?? translations.en
 
-  let text: unknown = locale;
+  let text: unknown = locale
   for (const k of key.split('.')) {
-    text = (text as Record<string, unknown>)?.[k];
+    text = (text as Record<string, unknown>)?.[k]
   }
 
-  if (typeof text !== 'string') return key;
+  if (typeof text !== 'string') return key
 
   if (options) {
-    return Object.entries(options).reduce((acc, [k, v]) => acc.replace(`{{${k}}}`, String(v)), text);
+    return Object.entries(options).reduce((acc, [k, v]) => acc.replace(`{{${k}}}`, String(v)), text)
   }
 
-  return text;
+  return text
 }

@@ -1,88 +1,88 @@
-import { createElement } from 'react';
-import type { ReactElement } from 'react';
-import { Macro, EditableEl } from '../../../types';
-import { ModalView } from './types';
-import { ModalShell } from './ui/ModalShell';
-import { MacroSearchView } from '../views/search/ui/MacroSearchView';
-import { SettingsView } from '../views/settings/ui/SettingsView';
-import { MacroEditorView } from '../views/editor/ui/MacroEditorView';
-import { createReactRenderer } from '../services/reactRenderer';
-import { createFocusManager } from '../services/focusManager';
-import { createStyleInjector } from '../services/styleInjector';
-import { ensureAppFontFace } from '../services/appFont';
-import { getActiveEditable } from '../../macroEngine/replacement/editableUtils';
-import { composeShadowBundle } from '../../../styles/baseBundle';
+import { createElement } from 'react'
+import type { ReactElement } from 'react'
+import { Macro, EditableEl } from '../../../types'
+import { ModalView } from './types'
+import { ModalShell } from './ui/ModalShell'
+import { MacroSearchView } from '../views/search/ui/MacroSearchView'
+import { SettingsView } from '../views/settings/ui/SettingsView'
+import { MacroEditorView } from '../views/editor/ui/MacroEditorView'
+import { createReactRenderer } from '../services/reactRenderer'
+import { createFocusManager } from '../services/focusManager'
+import { createStyleInjector } from '../services/styleInjector'
+import { ensureAppFontFace } from '../services/appFont'
+import { getActiveEditable } from '../../macroEngine/replacement/editableUtils'
+import { composeShadowBundle } from '../../../styles/baseBundle'
 
 export function createModalManager() {
-  const renderer = createReactRenderer('monky-modal', true);
-  const focusManager = createFocusManager();
+  const renderer = createReactRenderer('monky-modal', true)
+  const focusManager = createFocusManager()
 
-  const allStyles = composeShadowBundle();
+  const allStyles = composeShadowBundle()
 
-  let styleInjector: ReturnType<typeof createStyleInjector>;
-  let isVisible = false;
-  let currentView: ModalView = 'search';
-  let editingMacro: Macro | undefined = undefined;
-  let onMacroSelectedCallback: ((macro: Macro, element: EditableEl) => void) | null = null;
+  let styleInjector: ReturnType<typeof createStyleInjector>
+  let isVisible = false
+  let currentView: ModalView = 'search'
+  let editingMacro: Macro | undefined = undefined
+  let onMacroSelectedCallback: ((macro: Macro, element: EditableEl) => void) | null = null
 
   const handleMacroSelection = (macro: Macro): void => {
-    const targetElement = focusManager.getSavedState()?.element ?? null;
+    const targetElement = focusManager.getSavedState()?.element ?? null
     if (!targetElement) { focusManager.clear(); return; }
-    const editableElement = getActiveEditable(targetElement);
+    const editableElement = getActiveEditable(targetElement)
     if (!editableElement) { focusManager.clear(); return; }
-    focusManager.clear();
+    focusManager.clear()
     if (onMacroSelectedCallback) {
-      onMacroSelectedCallback(macro, editableElement);
+      onMacroSelectedCallback(macro, editableElement)
     }
-    document.dispatchEvent(new CustomEvent('macro-search-selected', { detail: { macro } }));
-  };
+    document.dispatchEvent(new CustomEvent('macro-search-selected', { detail: { macro } }))
+  }
 
   const navigateToEditor = (macro?: Macro): void => {
-    editingMacro = macro;
-    currentView = 'editor';
-    if (isVisible) renderModal();
-  };
+    editingMacro = macro
+    currentView = 'editor'
+    if (isVisible) renderModal()
+  }
 
   const switchView = (view: ModalView): void => {
-    if (currentView === view) return;
-    if (view !== 'editor') editingMacro = undefined;
-    currentView = view;
-    if (isVisible) renderModal();
-  };
+    if (currentView === view) return
+    if (view !== 'editor') editingMacro = undefined
+    currentView = view
+    if (isVisible) renderModal()
+  }
 
   const renderView = (): ReactElement => {
     const viewProps = {
       onClose: hide,
       onViewChange: switchView,
       onNavigateToEditor: navigateToEditor,
-    };
+    }
 
     switch (currentView) {
       case 'search':
         return createElement(MacroSearchView, {
           ...viewProps,
           onSelectMacro: (macro: Macro) => {
-            hide();
-            handleMacroSelection(macro);
+            hide()
+            handleMacroSelection(macro)
           },
-        });
+        })
       case 'settings':
-        return createElement(SettingsView, viewProps);
+        return createElement(SettingsView, viewProps)
       case 'editor':
         return createElement(MacroEditorView, {
           ...viewProps,
           initialMacro: editingMacro,
-        });
+        })
       default:
         return createElement(MacroSearchView, {
           ...viewProps,
           onSelectMacro: (macro: Macro) => {
-            hide();
-            handleMacroSelection(macro);
+            hide()
+            handleMacroSelection(macro)
           },
-        });
+        })
     }
-  };
+  }
 
   const renderModal = (): void => {
     renderer.render(
@@ -93,49 +93,49 @@ export function createModalManager() {
         onViewChange: switchView,
         children: renderView(),
       })
-    );
-  };
+    )
+  }
 
   const initialize = (): void => {
-    renderer.initialize();
-    const shadowRoot = renderer.getShadowRoot();
-    ensureAppFontFace();
-    styleInjector = createStyleInjector('monky-modal-styles', allStyles, shadowRoot);
-    styleInjector.inject();
-  };
+    renderer.initialize()
+    const shadowRoot = renderer.getShadowRoot()
+    ensureAppFontFace()
+    styleInjector = createStyleInjector('monky-modal-styles', allStyles, shadowRoot)
+    styleInjector.inject()
+  }
 
   const show = (view?: ModalView, x?: number, y?: number): void => {
-    if (view) currentView = view;
+    if (view) currentView = view
     if (x !== undefined && y !== undefined) {/* position unused but kept for API compat */}
-    focusManager.saveFocus();
-    isVisible = true;
-    renderModal();
-  };
+    focusManager.saveFocus()
+    isVisible = true
+    renderModal()
+  }
 
   const hide = (): void => {
-    if (!isVisible) return;
-    isVisible = false;
-    renderer.clear();
-    focusManager.restoreFocus();
-  };
+    if (!isVisible) return
+    isVisible = false
+    renderer.clear()
+    focusManager.restoreFocus()
+  }
 
-  const getVisibility = (): boolean => isVisible;
-  const getCurrentView = (): ModalView | null => isVisible ? currentView : null;
+  const getVisibility = (): boolean => isVisible
+  const getCurrentView = (): ModalView | null => isVisible ? currentView : null
 
   const destroy = (): void => {
-    hide();
-    renderer.destroy();
-    styleInjector.remove();
+    hide()
+    renderer.destroy()
+    styleInjector.remove()
     // The app @font-face is shared across overlays; leave it registered.
-  };
+  }
 
   const setOnMacroSelected = (callback: (macro: Macro, element: EditableEl) => void) => {
-    onMacroSelectedCallback = callback;
-  };
+    onMacroSelectedCallback = callback
+  }
 
-  initialize();
+  initialize()
 
-  return { show, hide, switchView, navigateToEditor, isVisible: getVisibility, getCurrentView, destroy, setOnMacroSelected };
+  return { show, hide, switchView, navigateToEditor, isVisible: getVisibility, getCurrentView, destroy, setOnMacroSelected }
 }
 
-export type ModalManager = ReturnType<typeof createModalManager>;
+export type ModalManager = ReturnType<typeof createModalManager>

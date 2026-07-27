@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { t } from '../../../../../lib/i18n';
+import { useState } from 'react'
+import { t } from '../../../../../lib/i18n'
 
 interface MacroSearchFooterProps {
-  count: number;
-  isCommandMode: boolean;
-  hasSelection?: boolean;
+  count: number
+  isCommandMode: boolean
+  hasSelection?: boolean
 }
 
 export function MacroSearchFooter({ count, isCommandMode, hasSelection }: MacroSearchFooterProps) {
-  const [showShortcuts, setShowShortcuts] = useState(false);
+  const [showShortcuts, setShowShortcuts] = useState(false)
   const countText = isCommandMode
     ? t(count === 1 ? 'modalSearch.footer.command' : 'modalSearch.footer.commands', { count })
-    : t(count === 1 ? 'modalSearch.footer.macro' : 'modalSearch.footer.macros', { count });
+    : t(count === 1 ? 'modalSearch.footer.macro' : 'modalSearch.footer.macros', { count })
 
   return (
     <div data-component="search-footer" className="horizontal padding-block-sm padding-inline-xl justify-between
@@ -57,5 +57,5 @@ export function MacroSearchFooter({ count, isCommandMode, hasSelection }: MacroS
         </button>
       </div>
     </div>
-  );
+  )
 }

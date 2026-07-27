@@ -1,11 +1,11 @@
-import { t } from '../../lib/i18n';
-import { SelectableGroup } from '../../shared/ui/SelectableGroup';
+import { t } from '../../lib/i18n'
+import { SelectableGroup } from '../../shared/ui/SelectableGroup'
 
-const ALL_PREFIXES = ['/', ';', ':', '#', '!'];
+const ALL_PREFIXES = ['/', ';', ':', '#', '!']
 
 interface PrefixEditorProps {
-  prefixes: string[];
-  onChange: (next: string[]) => void;
+  prefixes: string[]
+  onChange: (next: string[]) => void
 }
 
 /**
@@ -25,5 +25,5 @@ export default function PrefixEditor({ prefixes, onChange }: PrefixEditorProps) 
       />
       <p className="ink-soft font-md">{t('options.prefixEditor.description')}</p>
     </div>
-  );
+  )
 }

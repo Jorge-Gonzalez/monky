@@ -1,10 +1,10 @@
-import { t } from '../../lib/i18n';
-import PrefixEditor from './PrefixEditor';
-import ReplacementMode from './ReplacementMode';
-import { useOptions } from '../useOptions';
+import { t } from '../../lib/i18n'
+import PrefixEditor from './PrefixEditor'
+import ReplacementMode from './ReplacementMode'
+import { useOptions } from '../useOptions'
 
 export default function Options() {
-  const { prefixes, useCommitKeys, setPrefixes, setUseCommitKeys } = useOptions();
+  const { prefixes, useCommitKeys, setPrefixes, setUseCommitKeys } = useOptions()
 
   return (
     <div className="vertical gap-lg padding-2xl centered flush-block max-width-2xl fill-viewport">
@@ -12,5 +12,5 @@ export default function Options() {
       <PrefixEditor prefixes={prefixes} onChange={setPrefixes} />
       <ReplacementMode useCommitKeys={useCommitKeys} onChange={setUseCommitKeys} />
     </div>
-  );
+  )
 }
