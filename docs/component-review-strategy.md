@@ -205,6 +205,29 @@ anyway) is to make the **role conditional rather than the markup conditional**:
 Export the listbox id and option-id helper from the panel component — one contract shared
 by every file that participates.
 
+**Then check what is nested inside the options.** ARIA gives `role="option"` *presentational
+children*: everything below it is dropped from the accessibility tree. Two things therefore
+look right in the markup and do nothing:
+
+- **A live region inside an option is never announced.** In the search view this was the
+  `role="alert"` on the delete confirmation — the one destructive action, and the one thing
+  a screen-reader user would not have been told. State has to reach AT through the option's
+  own accessible name, which is the only channel an option has.
+- **A control inside an option is not a control.** A listbox option cannot hold a working
+  button; the pattern does not allow it. Either hide it (`aria-hidden`) and make the
+  keyboard path explicit elsewhere, or — if the row genuinely needs per-row actions — the
+  widget is a `grid` with `row`/`gridcell`, not a `listbox`. Do not leave a button that is
+  in the DOM but not in the tree.
+
+This survived a dedicated accessibility pass that added ids, labels and
+`aria-activedescendant`. Getting the wiring right and getting the content model right are
+separate checks, and passing the first says nothing about the second.
+
+It is not fixed anywhere else yet. Every remaining listbox nests a `<button>` inside its
+rows — `MacroSuggestions`, `DeleteConfirmPopup`, `ContentEditorStyleMenu` — and
+`CommandSuggestions` has the inverse defect: `aria-selected` on rows with **no**
+`role="option"` at all, which is invalid on a plain `div`.
+
 `aria-expanded` deserves a moment's thought each time. In the search view it degenerates to
 "options exist" because the panel is always visible; where there is a real popup it means
 what it says. If a surface ever gains a collapsed state, the two must be separated.
@@ -286,12 +309,17 @@ for(const f of walk('src')) for(const m of fs.readFileSync(f,'utf8').matchAll(/c
 "
 ```
 
-**Three more listboxes with no contract.** `MacroSuggestions`, `DeleteConfirmPopup` and
+**Four listboxes with a broken contract.** `MacroSuggestions`, `DeleteConfirmPopup` and
 `ContentEditorStyleMenu` each declare `role="listbox"` with `role="option"` children and
-none of the rest: no option ids, no `aria-activedescendant`, and only one has a label. The
-search view's `SearchResultsPanel` is the worked example — but note the suggestions overlay
-is a horizontal list and the style menu a real popup, so `aria-expanded` means something
-different there.
+none of the rest: no option ids, no `aria-activedescendant`, and only one has a label. All
+three also nest a `<button>` inside their rows, which the presentational-children rule
+makes inert. `CommandSuggestions` is worse: `aria-selected` on rows that have no
+`role="option"`, so the attribute is invalid where it sits.
+
+`SearchResultsPanel` is the worked example — but note the suggestions overlay is a
+horizontal list and the style menu a real popup, so `aria-expanded` means something
+different in each, and a row that genuinely needs per-row buttons wants `grid` semantics
+rather than `listbox`.
 
 **Two views with no test at all:** `MacroEditorView` and `SettingsView`. `SettingsView` is
 also the densest duplication site, so extraction and its first test belong in one pass.
