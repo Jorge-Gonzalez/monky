@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { t } from '../../../../../lib/i18n'
+import { ShortcutHint } from '../../../../../shared/ui/Keycap'
 
 interface MacroSearchFooterProps {
   count: number
@@ -23,19 +24,19 @@ export function MacroSearchFooter({ count, isCommandMode, hasSelection }: MacroS
       <div data-component="search-footer-hints" className="horizontal gap-md align-center">
         {showShortcuts && (isCommandMode ? (
           <>
-            <span className="horizontal inline gap-sm margin-right-lg align-center"><kbd className="sf-keycap sf-keycap-raised horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono">↑</kbd><kbd className="sf-keycap sf-keycap-raised horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono">↓</kbd> {t('modalSearch.footer.navigate')}</span>
-            <span className="horizontal inline gap-sm margin-right-lg align-center"><kbd className="sf-keycap sf-keycap-raised horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono">&#8239;↵&#8239;</kbd> {t('modalSearch.footer.run')}</span>
-            <span className="horizontal inline gap-sm align-center"><kbd className="sf-keycap sf-keycap-raised horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono">Esc</kbd> {t('modalSearch.footer.close')}</span>
+            <ShortcutHint keys={['↑', '↓']} label={t('modalSearch.footer.navigate')} />
+            <ShortcutHint keys={['\u2009↵\u2009']} label={t('modalSearch.footer.run')} />
+            <ShortcutHint keys={['Esc']} label={t('modalSearch.footer.close')} last />
           </>
         ) : (
           <>
-            <span className="horizontal inline gap-sm margin-right-lg align-center"><kbd className="sf-keycap sf-keycap-raised horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono">:</kbd> {t('modalSearch.footer.commandsLabel')}</span>
-            <span className="horizontal inline gap-sm margin-right-lg align-center"><kbd className="sf-keycap sf-keycap-raised horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono">↑</kbd><kbd className="sf-keycap sf-keycap-raised horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono">↓</kbd> {t('modalSearch.footer.navigate')}</span>
-            <span className="horizontal inline gap-sm margin-right-lg align-center"><kbd className="sf-keycap sf-keycap-raised horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono">&#8239;↵&#8239;</kbd> {t('modalSearch.footer.select')}</span>
+            <ShortcutHint keys={[':']} label={t('modalSearch.footer.commandsLabel')} />
+            <ShortcutHint keys={['↑', '↓']} label={t('modalSearch.footer.navigate')} />
+            <ShortcutHint keys={['\u2009↵\u2009']} label={t('modalSearch.footer.select')} />
             {hasSelection && (
-              <span className="horizontal inline gap-sm margin-right-lg align-center"><kbd className="sf-keycap sf-keycap-raised horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono">Tab</kbd> {t('modalSearch.footer.edit')}</span>
+              <ShortcutHint keys={['Tab']} label={t('modalSearch.footer.edit')} />
             )}
-            <span className="horizontal inline gap-sm align-center"><kbd className="sf-keycap sf-keycap-raised horizontal align-center justify-center position-relative ground ink-soft rule-soft ruled font-xs font-mono">Esc</kbd> {t('modalSearch.footer.close')}</span>
+            <ShortcutHint keys={['Esc']} label={t('modalSearch.footer.close')} last />
           </>
         ))}
         <button
