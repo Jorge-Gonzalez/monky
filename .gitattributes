@@ -1,0 +1,18 @@
+# Text files are stored with LF in the repository and checked out with LF everywhere.
+# Ten files had been committed with CRLF, which made their diffs whole-file rewrites and
+# defeated line-ending-sensitive tooling.
+* text=auto eol=lf
+
+# Declared rather than left to detection, so a stray byte can never make git treat one of
+# these as text and rewrite its line endings.
+*.woff2 binary
+*.woff  binary
+*.ttf   binary
+*.otf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.webp  binary
+*.zip   binary
