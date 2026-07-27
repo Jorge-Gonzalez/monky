@@ -73,8 +73,8 @@ describe('Tab Key Integration Tests', () => {
   ]
 
   let mockInput: HTMLInputElement
-  let overlayManager: any
-  let coordinator: any
+  let overlayManager: ReturnType<typeof createSuggestionsOverlayManager>
+  let coordinator: ReturnType<typeof createSuggestionsCoordinator>
 
   beforeEach(() => {
     // Create DOM elements

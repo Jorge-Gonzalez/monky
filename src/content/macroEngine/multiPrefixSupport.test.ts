@@ -68,9 +68,9 @@ describe('Multi-Prefix Support', () => {
     }
   ]
 
-  let detector: any
-  let overlayManager: any
-  let coordinator: any
+  let detector: ReturnType<typeof createMacroDetector>
+  let overlayManager: ReturnType<typeof createSuggestionsOverlayManager>
+  let coordinator: ReturnType<typeof createSuggestionsCoordinator>
 
   beforeEach(() => {
     // Create the components

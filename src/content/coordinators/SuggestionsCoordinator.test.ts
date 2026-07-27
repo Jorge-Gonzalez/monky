@@ -4,7 +4,7 @@ import type { SuggestionsOverlayManager } from '../overlays/suggestionsOverlay/S
 
 describe('SuggestionsCoordinator', () => {
   let mockManager: SuggestionsOverlayManager
-  let mockActions: any
+  let mockActions: ReturnType<typeof createSuggestionsCoordinator>
 
   beforeEach(() => {
     // Create mock manager
