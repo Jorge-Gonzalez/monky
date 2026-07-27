@@ -75,6 +75,8 @@ const translations = {
       startTypingHint: 'Start typing to search macros...',
       editMacro: 'Edit macro',
       confirmDelete: 'Delete this macro? Press ↵ to confirm',
+      macroResultsLabel: 'Macro results',
+      commandResultsLabel: 'Command results',
       footer: {
         macro: '{{count}} macro',
         macros: '{{count}} macros',
@@ -246,6 +248,8 @@ const translations = {
       startTypingHint: 'Empieza a escribir para buscar macros...',
       editMacro: 'Editar macro',
       confirmDelete: '¿Borrar esta macro? Pulsa ↵ para confirmar',
+      macroResultsLabel: 'Resultados de macros',
+      commandResultsLabel: 'Resultados de comandos',
       footer: {
         macro: '{{count}} macro',
         macros: '{{count}} macros',

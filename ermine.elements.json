@@ -63,7 +63,7 @@
     },
     {
       "id": "search-results",
-      "classString": "grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs ground content-align-start scroll-auto max-height-results-md",
+      "classString": "grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs content-align-start scroll-auto max-height-results-md ground",
       "backing": []
     },
     {
@@ -86,7 +86,7 @@
     },
     {
       "id": "search-item-command-cell",
-      "classString": "padding-right-xs padding-top-lg padding-bottom-lg padding-left-none width-command hidden tween-ground-quick ink-accent rule-soft ruled-bottom font-lg font-medium pressable truncate",
+      "classString": "padding-right-xs padding-top-lg padding-bottom-lg padding-left-none hidden width-command tween-ground-quick ink-accent rule-soft ruled-bottom font-lg font-medium pressable truncate",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -112,7 +112,7 @@
     },
     {
       "id": "search-command-name-cell",
-      "classString": "padding-right-xs padding-top-lg padding-bottom-lg padding-left-none width-command hidden tween-ground-quick ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate",
+      "classString": "padding-right-xs padding-top-lg padding-bottom-lg padding-left-none hidden width-command tween-ground-quick ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -626,7 +626,7 @@
     },
     {
       "id": "phase-b-content-editor-body",
-      "classString": "elastic basis-ratio padding-top-md padding-bottom-md padding-left-md padding-right-xl margin-right-xs ground-subtle scroll-auto min-height-none ink font-md",
+      "classString": "elastic basis-ratio padding-top-md padding-bottom-md padding-left-md padding-right-xl margin-right-xs scroll-auto min-height-none ground-subtle ink font-md",
       "backing": []
     },
     {

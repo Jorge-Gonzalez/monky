@@ -6,11 +6,11 @@ import { deleteMacro } from '../../../../../store/macroCrud';
 import { useMacroSearch } from '../../../../../shared/useMacroSearch';
 import { useListNavigation } from '../../../hooks/useListNavigation';
 import { useKeyboardNavigation } from '../../../hooks/useKeyboardNavigation';
-import { useScrollIntoView } from '../hooks/useScrollIntoView';
 import { useAutoFocus } from '../../../hooks/useAutoFocus';
 import { MacroSearchInput } from './MacroSearchInput';
 import { MacroSearchResults } from './MacroSearchResults';
 import { MacroCommandResults } from './MacroCommandResults';
+import { SearchResultsPanel, SEARCH_LISTBOX_ID, searchOptionId } from './SearchResultsPanel';
 import { MacroSearchFooter } from './MacroSearchFooter';
 import { BaseModalViewProps } from '../../../modal/types';
 import { parseModalQuery, ModalCommand } from '../modalCommands';
@@ -29,7 +29,6 @@ export function MacroSearchView({
   // The macro armed for deletion: first select arms it, a second select deletes.
   const [pendingDelete, setPendingDelete] = useState<Macro | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const resultsRef = useRef<HTMLDivElement>(null);
 
   const macros = useMacroStore(state => state.macros);
   const prefixes = useMacroStore(state => state.config.prefixes);
@@ -124,7 +123,6 @@ export function MacroSearchView({
       handleCommandSelect, handleParametricSelect, handleMacroSelect]);
 
   useAutoFocus(inputRef, true);
-  useScrollIntoView(resultsRef, navigation.selectedIndex, '[role="option"][aria-selected="true"]');
   useKeyboardNavigation({
     isActive: true,
     axis: 'vertical',
@@ -144,7 +142,6 @@ export function MacroSearchView({
           commands={[parsed.command]}
           selectedIndex={0}
           onSelect={handleCommandSelect}
-          resultsRef={resultsRef}
         />
       );
     }
@@ -154,18 +151,17 @@ export function MacroSearchView({
           commands={visibleCommands}
           selectedIndex={navigation.selectedIndex}
           onSelect={handleCommandSelect}
-          resultsRef={resultsRef}
         />
       );
     }
     if (parsed.mode === 'awaiting') {
       return (
-        <div ref={resultsRef} className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs ground content-align-start scroll-auto max-height-results-md">
+        <SearchResultsPanel>
           <div className="span-all padding-lg
-            font-md text-center">
+            font-md text-center" role="status">
             {t('modalSearch.awaitingHint')}
           </div>
-        </div>
+        </SearchResultsPanel>
       );
     }
     // 'search' | 'parametric'
@@ -179,7 +175,6 @@ export function MacroSearchView({
           : handleMacroSelect}
         onEdit={parsed.mode === 'search' ? onNavigateToEditor : undefined}
         confirmingDeleteId={pendingDelete?.id}
-        resultsRef={resultsRef}
       />
     );
   };
@@ -188,12 +183,22 @@ export function MacroSearchView({
   const isCommandMode = parsed.mode !== 'search';
   const hasSelection = showMacros && navigation.selectedIndex >= 0;
 
+  // A panel only becomes a listbox once it holds options; 'instant' shows a single
+  // pre-selected command, every other mode follows the navigation cursor.
+  const optionCount =
+    parsed.mode === 'instant' ? 1 :
+    parsed.mode === 'awaiting' ? 0 :
+    footerCount;
+  const activeIndex = parsed.mode === 'instant' ? 0 : navigation.selectedIndex;
+
   return (
     <div className="vertical fill-block">
       <MacroSearchInput
         value={searchQuery}
         onChange={setSearchQuery}
         inputRef={inputRef}
+        listboxId={optionCount > 0 ? SEARCH_LISTBOX_ID : undefined}
+        activeOptionId={activeIndex >= 0 && activeIndex < optionCount ? searchOptionId(activeIndex) : undefined}
       />
       {renderResults()}
       <MacroSearchFooter

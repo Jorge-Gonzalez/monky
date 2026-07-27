@@ -2,11 +2,9 @@
 import { render, screen, fireEvent } from '@testing-library/preact';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MacroSearchResults } from './MacroSearchResults';
+import { searchOptionId } from './SearchResultsPanel';
 
 vi.mock('../../../../../lib/i18n', () => ({ t: (key: string) => key }));
-vi.mock('../../../../macroEngine/replacement/placeholders', () => ({
-  hasPlaceholders: vi.fn(() => false),
-}));
 
 const macros = [
   { id: 1, command: '/sig',  text: 'My signature' },
@@ -19,7 +17,6 @@ const baseProps = {
   selectedIndex: -1,
   searchQuery: '',
   onSelect: vi.fn(),
-  resultsRef: { current: null } as any,
 };
 
 describe('MacroSearchResults', () => {
@@ -43,6 +40,58 @@ describe('MacroSearchResults', () => {
     it('shows empty state when macros list is empty', () => {
       render(<MacroSearchResults {...baseProps} macros={[]} searchQuery="xyz" />);
       expect(screen.getByText('modalSearch.noMacrosFound')).toBeInTheDocument();
+    });
+  });
+
+  describe('listbox wiring', () => {
+    it('names the listbox so it is not announced as an unlabelled group', () => {
+      render(<MacroSearchResults {...baseProps} />);
+      expect(screen.getByRole('listbox')).toHaveAttribute('aria-label', 'modalSearch.macroResultsLabel');
+    });
+
+    it('gives every option the id the input points aria-activedescendant at', () => {
+      const { container } = render(<MacroSearchResults {...baseProps} />);
+      const ids = [...container.querySelectorAll('[role="option"]')].map(node => node.id);
+      expect(ids).toEqual(macros.map((_, index) => searchOptionId(index)));
+    });
+
+    it('is not a listbox when it holds no options', () => {
+      render(<MacroSearchResults {...baseProps} macros={[]} searchQuery="xyz" />);
+      expect(screen.queryByRole('listbox')).toBeNull();
+    });
+
+    it('announces the empty state, which may not live inside a listbox', () => {
+      render(<MacroSearchResults {...baseProps} macros={[]} searchQuery="xyz" />);
+      expect(screen.getByRole('status')).toHaveTextContent('modalSearch.noMacrosFound');
+    });
+  });
+
+  describe('placeholder text', () => {
+    const textOf = (container: Element) =>
+      container.querySelector('[data-component="search-item-text"]')!;
+
+    it('fades the braces and leaves the label plain', () => {
+      const { container } = render(
+        <MacroSearchResults {...baseProps} macros={[{ id: 9, command: '/greet', text: 'Hi {{name}}!' }]} />
+      );
+      const text = textOf(container);
+      expect(text.textContent).toBe('Hi {{name}}!');
+      expect([...text.querySelectorAll('.alpha-35')].map(node => node.textContent)).toEqual(['{{', '}}']);
+    });
+
+    it('fades every placeholder when there is more than one', () => {
+      const { container } = render(
+        <MacroSearchResults {...baseProps} macros={[{ id: 9, command: '/m', text: '{{a}} and {{b}}' }]} />
+      );
+      const text = textOf(container);
+      expect(text.textContent).toBe('{{a}} and {{b}}');
+      expect(text.querySelectorAll('.alpha-35')).toHaveLength(4);
+    });
+
+    it('leaves text without placeholders unmarked', () => {
+      const { container } = render(<MacroSearchResults {...baseProps} />);
+      expect(textOf(container).textContent).toBe('My signature');
+      expect(textOf(container).querySelectorAll('.alpha-35')).toHaveLength(0);
     });
   });
 

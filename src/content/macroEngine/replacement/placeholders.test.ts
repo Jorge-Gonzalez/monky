@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parsePlaceholders, stripPlaceholders, hasPlaceholders } from './placeholders'
+import { parsePlaceholders, splitPlaceholders, stripPlaceholders, hasPlaceholders } from './placeholders'
 
 describe('parsePlaceholders', () => {
   it('returns empty array when no placeholders present', () => {
@@ -57,6 +57,47 @@ describe('stripPlaceholders', () => {
   it('strips all placeholders in a multi-placeholder string', () => {
     expect(stripPlaceholders('{{greeting}} {{name}}, order {{id}} ready'))
       .toBe('greeting name, order id ready')
+  })
+})
+
+describe('splitPlaceholders', () => {
+  const literal = (text: string) => ({ text, isPlaceholder: false })
+  const placeholder = (text: string) => ({ text, isPlaceholder: true })
+
+  it('returns a single literal segment for plain text', () => {
+    expect(splitPlaceholders('Hello world')).toEqual([literal('Hello world')])
+  })
+
+  it('returns nothing for an empty string', () => {
+    expect(splitPlaceholders('')).toEqual([])
+  })
+
+  it('splits a placeholder out of its surrounding text', () => {
+    expect(splitPlaceholders('Dear {{name}},'))
+      .toEqual([literal('Dear '), placeholder('name'), literal(',')])
+  })
+
+  it('emits no empty segment when a placeholder sits at either end', () => {
+    expect(splitPlaceholders('{{greeting}}')).toEqual([placeholder('greeting')])
+    expect(splitPlaceholders('{{a}}{{b}}')).toEqual([placeholder('a'), placeholder('b')])
+  })
+
+  it('keeps every placeholder and literal in source order', () => {
+    expect(splitPlaceholders('{{greeting}} {{name}}, order {{id}} ready')).toEqual([
+      placeholder('greeting'), literal(' '), placeholder('name'),
+      literal(', order '), placeholder('id'), literal(' ready'),
+    ])
+  })
+
+  it('treats malformed syntax without closing braces as literal text', () => {
+    expect(splitPlaceholders('Hello {{unclosed')).toEqual([literal('Hello {{unclosed')])
+  })
+
+  it('reassembles to the original text', () => {
+    const text = 'Dear {{name}}, your {{item}} ships {{when}}.'
+    expect(splitPlaceholders(text).map(segment =>
+      segment.isPlaceholder ? `{{${segment.text}}}` : segment.text
+    ).join('')).toBe(text)
   })
 })
 

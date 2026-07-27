@@ -1,7 +1,7 @@
-import React from 'react';
 import { Macro } from '../../../../../types';
 import { t } from '../../../../../lib/i18n';
-import { hasPlaceholders } from '../../../../macroEngine/replacement/placeholders';
+import { splitPlaceholders } from '../../../../macroEngine/replacement/placeholders';
+import { SearchResultsPanel, searchOptionId } from './SearchResultsPanel';
 
 const EditIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24">
@@ -16,7 +16,6 @@ interface MacroSearchResultsProps {
   onSelect: (macro: Macro) => void;
   onEdit?: (macro: Macro) => void;
   confirmingDeleteId?: Macro['id'];
-  resultsRef: React.RefObject<HTMLDivElement>;
 }
 
 export function MacroSearchResults({
@@ -26,43 +25,41 @@ export function MacroSearchResults({
   onSelect,
   onEdit,
   confirmingDeleteId,
-  resultsRef,
 }: MacroSearchResultsProps) {
-  if (macros.length === 0) {
-    return (
-      <div ref={resultsRef} 
-        data-component="search-results" 
-        className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs ground content-align-start scroll-auto max-height-results-md" 
-        role="listbox"
-      >
-        <div 
-          data-component="search-empty" 
+  return (
+    <SearchResultsPanel
+      role={macros.length === 0 ? undefined : 'listbox'}
+      label={macros.length === 0 ? undefined : t('modalSearch.macroResultsLabel')}
+      activeIndex={selectedIndex}
+    >
+      {macros.length === 0 ? (
+        <div
+          data-component="search-empty"
           className="span-all padding-lg
             ink-soft font-md text-center"
+          role="status"
         >
           {searchQuery ? t('modalSearch.noMacrosFound') : t('modalSearch.startTypingHint')}
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div ref={resultsRef} data-component="search-results" className="grid-fit-sm elastic basis-ratio padding-right-lg padding-left-xl margin-right-xs ground content-align-start scroll-auto max-height-results-md" role="listbox">
-      {macros.map((macro, index) => (
-        <MacroSearchItem
-          key={macro.id}
-          macro={macro}
-          isSelected={index === selectedIndex}
-          isConfirmingDelete={macro.id === confirmingDeleteId}
-          onClick={() => onSelect(macro)}
-          onEdit={onEdit ? () => onEdit(macro) : undefined}
-        />
-      ))}
-    </div>
+      ) : (
+        macros.map((macro, index) => (
+          <MacroSearchItem
+            key={macro.id}
+            optionId={searchOptionId(index)}
+            macro={macro}
+            isSelected={index === selectedIndex}
+            isConfirmingDelete={macro.id === confirmingDeleteId}
+            onClick={() => onSelect(macro)}
+            onEdit={onEdit ? () => onEdit(macro) : undefined}
+          />
+        ))
+      )}
+    </SearchResultsPanel>
   );
 }
 
 interface MacroSearchItemProps {
+  optionId: string;
   macro: Macro;
   isSelected: boolean;
   isConfirmingDelete: boolean;
@@ -70,9 +67,10 @@ interface MacroSearchItemProps {
   onEdit?: () => void;
 }
 
-function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdit }: MacroSearchItemProps) {
+function MacroSearchItem({ optionId, macro, isSelected, isConfirmingDelete, onClick, onEdit }: MacroSearchItemProps) {
   return (
     <div
+      id={optionId}
       data-component="search-item"
       className={`subgrid span-all position-relative selectable corner-3xl ${
         isConfirmingDelete ? 'ground-fail-faint' : 'hover:ground-subtle selected:ground-defined'
@@ -84,11 +82,12 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
     >
       <div 
         data-component="search-item-command" 
-        className={`padding-right-xs padding-top-sm padding-bottom-sm padding-left-md width-command hidden tween-ground-quick font-md font-bold pressable truncate ${
+        className={`padding-right-xs padding-top-sm padding-bottom-sm padding-left-md hidden width-command tween-ground-quick font-md font-bold pressable truncate ${
           isConfirmingDelete 
             ? 'ink-fail' 
             : 'ink-accent'
-        }`}>
+        }`}
+      >
         {macro.command}
       </div>
       {isConfirmingDelete ? (
@@ -106,14 +105,9 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
           className="padding-left-xs padding-top-sm padding-bottom-sm padding-right-md hidden
             tween-ground-quick
             ink font-md pressable truncate
-            parent-selected:overflow-visible parent-selected:text-wrap">
-          {!hasPlaceholders(macro.text)
-            ? macro.text
-            : macro.text.split(/(\{\{[^}]+\}\})/g).map((part, i) =>
-                part.startsWith('{{')
-                  ? <span key={i}><span className="alpha-35">{'{{'}</span>{part.slice(2, -2)}<span className="alpha-35">{'}}'}</span></span>
-                  : part
-              )}
+            parent-selected:overflow-visible parent-selected:text-wrap"
+        >
+          <PlaceholderText text={macro.text} />
         </div>
       )}
       {onEdit && !isConfirmingDelete && (
@@ -134,5 +128,24 @@ function MacroSearchItem({ macro, isSelected, isConfirmingDelete, onClick, onEdi
         </button>
       )}
     </div>
+  );
+}
+
+/** Macro text with its {{placeholder}} braces faded back behind the label. */
+function PlaceholderText({ text }: { text: string }) {
+  return (
+    <>
+      {splitPlaceholders(text).map((segment, i) =>
+        segment.isPlaceholder ? (
+          <span key={i}>
+            <span className="alpha-35">{'{{'}</span>
+            {segment.text}
+            <span className="alpha-35">{'}}'}</span>
+          </span>
+        ) : (
+          segment.text
+        )
+      )}
+    </>
   );
 }
