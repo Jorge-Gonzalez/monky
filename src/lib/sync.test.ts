@@ -25,6 +25,10 @@ vi.mock('./api', () => ({
   apiFetch: vi.fn()
 }))
 
+// apiFetch resolves a full Response. The code under test reads only `ok` and `json`,
+// so the stubs supply those and this names the narrowing rather than repeating a cast.
+const stubResponse = (body: Partial<Response>) => body as Response
+
 // Mock store
 vi.mock('../store/useMacroStore', () => ({
   useMacroStore: {
@@ -72,10 +76,10 @@ describe('sync', () => {
   describe('pushCreate', () => {
     it('pushes the create to the backend and does not touch storage on success', async () => {
       const macro = { id: 1, command: '/test', text: 'test text' }
-      vi.mocked(apiFetch).mockResolvedValueOnce({
+      vi.mocked(apiFetch).mockResolvedValueOnce(stubResponse({
         ok: true,
         json: vi.fn().mockResolvedValue({ success: true })
-      })
+      }))
 
       await sync.pushCreate(macro)
 
@@ -88,7 +92,7 @@ describe('sync', () => {
 
     it('queues the operation when the remote push fails', async () => {
       const macro = { id: 1, command: '/test', text: 'test text' }
-      vi.mocked(apiFetch).mockResolvedValueOnce({ ok: false })
+      vi.mocked(apiFetch).mockResolvedValueOnce(stubResponse({ ok: false }))
 
       await sync.pushCreate(macro)
 
@@ -103,10 +107,10 @@ describe('sync', () => {
   describe('pushUpdate', () => {
     it('pushes the update to the backend on success', async () => {
       const macro = { id: 1, command: '/updated', text: 'updated text' }
-      vi.mocked(apiFetch).mockResolvedValueOnce({
+      vi.mocked(apiFetch).mockResolvedValueOnce(stubResponse({
         ok: true,
         json: vi.fn().mockResolvedValue({ success: true })
-      })
+      }))
 
       await sync.pushUpdate(macro)
 
@@ -119,7 +123,7 @@ describe('sync', () => {
 
     it('queues the operation when the remote push fails', async () => {
       const macro = { id: 1, command: '/updated', text: 'updated text' }
-      vi.mocked(apiFetch).mockResolvedValueOnce({ ok: false })
+      vi.mocked(apiFetch).mockResolvedValueOnce(stubResponse({ ok: false }))
 
       await sync.pushUpdate(macro)
 
@@ -133,7 +137,7 @@ describe('sync', () => {
 
   describe('pushDelete', () => {
     it('pushes the delete to the backend on success', async () => {
-      vi.mocked(apiFetch).mockResolvedValueOnce({ ok: true })
+      vi.mocked(apiFetch).mockResolvedValueOnce(stubResponse({ ok: true }))
 
       await sync.pushDelete(1)
 
@@ -144,7 +148,7 @@ describe('sync', () => {
     })
 
     it('queues the operation when the remote push fails', async () => {
-      vi.mocked(apiFetch).mockResolvedValueOnce({ ok: false })
+      vi.mocked(apiFetch).mockResolvedValueOnce(stubResponse({ ok: false }))
 
       await sync.pushDelete(1)
 
@@ -165,10 +169,10 @@ describe('sync', () => {
         { id: 1, command: '/local', text: 'local text', updated_at: '2023-01-02T00:00:00Z' },
         { id: 2, command: '/local-only', text: 'local only text', updated_at: '2023-01-01T00:00:00Z' }
       ]
-      vi.mocked(apiFetch).mockResolvedValueOnce({
+      vi.mocked(apiFetch).mockResolvedValueOnce(stubResponse({
         ok: true,
         json: vi.fn().mockResolvedValue({ success: true, data: remoteMacros })
-      })
+      }))
 
       const mockSetMacros = vi.fn()
       vi.mocked(useMacroStore.getState).mockReturnValue({
@@ -195,8 +199,8 @@ describe('sync', () => {
       ]
       mockGet.mockResolvedValue({ pendingOps })
       vi.mocked(apiFetch)
-        .mockResolvedValueOnce({ ok: true, json: vi.fn().mockResolvedValue({ success: true }) })
-        .mockResolvedValueOnce({ ok: true, json: vi.fn().mockResolvedValue({ success: true }) })
+        .mockResolvedValueOnce(stubResponse({ ok: true, json: vi.fn().mockResolvedValue({ success: true }) }))
+        .mockResolvedValueOnce(stubResponse({ ok: true, json: vi.fn().mockResolvedValue({ success: true }) }))
 
       await sync.flushQueue()
 
@@ -208,7 +212,7 @@ describe('sync', () => {
         { op: 'create', macro: { id: 1, command: '/test', text: 'test' }, ts: Date.now() }
       ]
       mockGet.mockResolvedValue({ pendingOps })
-      vi.mocked(apiFetch).mockResolvedValueOnce({ ok: false })
+      vi.mocked(apiFetch).mockResolvedValueOnce(stubResponse({ ok: false }))
 
       await sync.flushQueue()
 
