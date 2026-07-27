@@ -60,4 +60,21 @@ export default [
       "react/react-in-jsx-scope": "off",
     },
   },
+  // Tests hold mocks to a different standard than production code. A test double is
+  // deliberately shaped like the thing it stands in for rather than typed as it, and
+  // `expect(obj.method)` passes a method reference it never calls -- which is exactly what
+  // unbound-method exists to catch, and never a defect here. Left on, these rules report
+  // once per *use* of an untyped mock, so a single test double buries the production
+  // findings under hundreds of entries.
+  {
+    files: ["**/*.{test,spec}.{ts,tsx}", "src/utils/testUtils.ts"],
+    rules: {
+      "@typescript-eslint/unbound-method": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-argument": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
+    },
+  },
 ];
