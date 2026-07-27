@@ -59,7 +59,9 @@ export function MacroSearchView({
   useEffect(() => {
     if (searchQuery.trim()) navigation.selectIndex(0)
     else navigation.reset()
-  }, [searchQuery]) // eslint-disable-line react-hooks/exhaustive-deps
+  // Intentionally keyed on the query alone: navigation is a stable API and including it
+  // would re-run this on every selection change, fighting the user's arrow keys.
+  }, [searchQuery])
   // Disarm a pending delete when the user navigates away or edits the query.
   useEffect(() => { setPendingDelete(null) }, [navigation.selectedIndex, searchQuery])
 
@@ -79,7 +81,7 @@ export function MacroSearchView({
     if (command.id === 'delete') {
       // Two-step: first select arms the row, a second select on it confirms.
       if (pendingDelete?.id === macro.id) {
-        deleteMacro(String(macro.id))
+        void deleteMacro(String(macro.id))
         setPendingDelete(null)
         setSearchQuery('')
       } else {

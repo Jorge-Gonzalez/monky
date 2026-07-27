@@ -9,11 +9,14 @@ export interface OptionsApi {
   language: Lang
   colorTheme: ColorTheme
   theme: ThemeMode
-  setPrefixes(prefixes: string[]): void
-  setUseCommitKeys(enabled: boolean): void
-  setLanguage(language: Lang): void
-  setColorTheme(colorTheme: ColorTheme): void
-  setTheme(theme: ThemeMode): void
+  // Declared as function-typed properties rather than method shorthand: these are plain
+  // store functions meant to be destructured and passed around, not methods bound to an
+  // OptionsApi instance. Method shorthand would claim they may depend on `this`.
+  setPrefixes: (prefixes: string[]) => void
+  setUseCommitKeys: (enabled: boolean) => void
+  setLanguage: (language: Lang) => void
+  setColorTheme: (colorTheme: ColorTheme) => void
+  setTheme: (theme: ThemeMode) => void
 }
 
 export function useOptions(): OptionsApi {

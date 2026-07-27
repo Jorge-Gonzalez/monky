@@ -9,9 +9,10 @@ type StoreOpResult = { success: boolean; error?: string }
 type MacroStore = {
   macros: Macro[]
   config: Config
-  user: any
+  /** Reserved for the hosted backend; no shape decided yet, and nothing reads it. */
+  user: unknown
   syncStatus: 'idle'|'syncing'|'error'
-  setUser: (u:any)=>void
+  setUser: (u: unknown)=>void
   setMacros: (m:Macro[])=>void
   addMacro: (m:Macro) => StoreOpResult
   updateMacro: (id:Macro['id'], patch:Partial<Macro>) => StoreOpResult
@@ -40,17 +41,18 @@ const chromeStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
     try {
       const result = await chrome.storage.sync.get(name)
-      if (result[name] != null) return result[name]
-    } catch {}
-    const result = await chrome.storage.local.get(name)
-    return result[name] ?? null
+      const synced = result[name] as string | undefined
+      if (synced != null) return synced
+    } catch { /* sync storage unavailable or over quota: fall back to local */ }
+    const local = await chrome.storage.local.get(name)
+    return (local[name] as string | undefined) ?? null
   },
   setItem: async (name: string, value: string): Promise<void> => {
     lastWrittenValue = value
     await chrome.storage.local.set({ [name]: value })
     try {
       await chrome.storage.sync.set({ [name]: value })
-    } catch {}
+    } catch { /* sync storage unavailable or over quota: the local write above stands */ }
   },
   removeItem: async (name: string): Promise<void> => {
     await Promise.allSettled([
@@ -158,7 +160,7 @@ if (typeof chrome !== 'undefined' && chrome.storage?.onChanged) {
       // settings controls to flicker back to a stale value. Genuine external
       // changes (popup, another device) carry a different value and still rehydrate.
       if (change && change.newValue !== lastWrittenValue) {
-        useMacroStore.persist.rehydrate()
+        void useMacroStore.persist.rehydrate()
       }
     }
   })
