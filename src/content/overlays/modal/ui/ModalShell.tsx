@@ -34,7 +34,7 @@ export function ModalShell({
 
   // Clone children and inject modalContainerRef prop
   const childrenWithProps = isValidElement(children)
-    ? cloneElement(children as ReactElement<any>, { containerRef: modalRef })
+    ? cloneElement(children as ReactElement<{ containerRef?: typeof modalRef }>, { containerRef: modalRef })
     : children
 
   return (

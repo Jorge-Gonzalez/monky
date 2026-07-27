@@ -69,7 +69,8 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
   const handleLinkRequest = () => {
     // Use shadow root's getSelection() so the range points into the shadow tree,
     // not the adjusted outer-document range window.getSelection() returns for shadow DOM content.
-    const root = editorRef.current?.getRootNode() as any
+    // getSelection() on a ShadowRoot is non-standard, so it is declared optional here.
+    const root = editorRef.current?.getRootNode() as (Node & { getSelection?: () => Selection | null }) | undefined
     const sel: Selection | null = root?.getSelection?.() ?? window.getSelection()
     if (sel?.rangeCount) {
       savedRangeRef.current = sel.getRangeAt(0).cloneRange()

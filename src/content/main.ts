@@ -136,7 +136,7 @@ async function main() {
   updateAllMacros(finalMacros)
 
   // Set a flag to indicate the content script is loaded (for debugging)
-  ;(window as any).macroExtensionLoaded = true
+  ;(window as unknown as { macroExtensionLoaded?: boolean }).macroExtensionLoaded = true
 }
 
 /**
@@ -178,7 +178,7 @@ export function getMacroEngine(): MacroDetector | null {
 }
 
 // Listen for messages from other parts of the extension (e.g., popup)
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message: { type?: string }, sender, sendResponse) => {
   if (message.type === 'open-editor') {
     modalCoordinator.show('editor')
     sendResponse({ success: true })

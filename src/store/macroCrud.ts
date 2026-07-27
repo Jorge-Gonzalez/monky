@@ -7,7 +7,7 @@ import type { Macro } from '../types'
 // (write + dup-check), then lib/sync pushes the change to the backend. Framework-
 // free — the editor views call these directly.
 
-type Result = { success: boolean; error?: string }
+export type Result = { success: boolean; error?: string }
 
 type NewMacro = Omit<Macro, 'id'>
 

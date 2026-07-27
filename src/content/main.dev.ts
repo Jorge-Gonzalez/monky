@@ -6,13 +6,18 @@
  * This allows the store and other modules to be tested on a standard webpage
  * without modification. It mimics the promise-based API of `chrome.storage`.
  */
+// The shim stands in for the parts of chrome.* this entry point touches, so it is typed
+// as that shape rather than as the full extension API.
+type ChromeShim = { storage: unknown }
+
 if (typeof chrome === 'undefined' || !chrome.storage) {
-  (window as any).chrome = {
-    ...(window as any).chrome,
+  const host = window as unknown as { chrome?: ChromeShim }
+  host.chrome = {
+    ...host.chrome,
     storage: {
       local: {
         get: (key: string) => Promise.resolve({ [key]: localStorage.getItem(key) }),
-        set: (items: { [key: string]: any }) => {
+        set: (items: Record<string, string>) => {
           Object.keys(items).forEach(key => localStorage.setItem(key, items[key]))
           return Promise.resolve()
         },

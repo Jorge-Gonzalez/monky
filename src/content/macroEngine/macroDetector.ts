@@ -306,7 +306,7 @@ export function createMacroDetector(actions: DetectorActions) {
       else if (e.key === 'ArrowLeft') direction = 'left'
       else direction = 'right'
       
-      const handled = actions.onNavigationRequested(direction as any)
+      const handled = actions.onNavigationRequested(direction)
       if (handled) {
         e.preventDefault()
       }
@@ -315,7 +315,7 @@ export function createMacroDetector(actions: DetectorActions) {
 
     // Handle Tab key
     if (state.active && e.key === 'Tab') {
-      if (actions.onNavigationRequested && actions.onNavigationRequested('right' as any)) {
+      if (actions.onNavigationRequested('right')) {
         e.preventDefault()
         return
       }
@@ -584,8 +584,10 @@ export function createMacroDetector(actions: DetectorActions) {
   function setMacros(newMacros: Macro[]): void {
     macros = [...SYSTEM_MACROS, ...newMacros]
     
-    if ('setMacros' in actions && typeof actions.setMacros === 'function') {
-      (actions as any).setMacros([...SYSTEM_MACROS, ...newMacros])
+    // Some action sets also mirror the macro list; forward to them when present.
+    const mirror = actions as DetectorActions & { setMacros?: (macros: Macro[]) => void }
+    if (typeof mirror.setMacros === 'function') {
+      mirror.setMacros([...SYSTEM_MACROS, ...newMacros])
     }
   }
 

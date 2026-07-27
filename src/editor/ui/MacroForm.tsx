@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import type { FormEvent } from 'react'
 import { useMacroStore } from '../../store/useMacroStore'
 import { createMacro, updateMacro } from '../../store/macroCrud'
+import type { Result } from '../../store/macroCrud'
 import { t } from '../../lib/i18n'
 import type { Macro } from '../../types'
 import type { ContentEditorRef } from '../../shared/content-editor'
@@ -70,7 +71,7 @@ export default function MacroForm({ editing, onDone }: {
       is_sensitive: isSensitive,
     }
 
-    let result
+    let result: Result
     if (editing && editing.id) {
       result = await updateMacro(String(editing.id), macroData)
       if (result.success) onDone()
