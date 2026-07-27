@@ -284,15 +284,25 @@ effect fails exactly one.
 
 Ranked by what the tooling already knows. Regenerate the first list with the scan below.
 
-**Duplicated paragraphs — 22 across the tree.** Each is a candidate missing component, and
-the ones spanning *files* matter more than the ones repeated within one:
+**Duplicated paragraphs — 13 across the tree, down from 22.** Each is a candidate missing
+component, and the ones spanning *files* matter more than the ones repeated within one.
+Done so far: the keycap (8× across two overlays → `shared/ui/Keycap`), the modal footer's
+raised keycap and hint wrapper (10× and 8× → `ShortcutHint`), and the settings section,
+row, divider and button (13× in one file → `SettingsLayout`).
+
+What is left, all cross-file:
 
 | count | files | reading |
 |---|---|---|
-| 8× | `DeleteConfirmPopup`, `MacroSuggestions` | a keycap component, unextracted, across two features |
-| 3× | `ModalMacroForm`, `MacroForm`, `SiteToggle` | a control paragraph shared by three surfaces |
-| 10× | `MacroSearchFooter` | within one file — lower priority, but a local component |
-| 5×, 3×, 3× | `SettingsView` | the densest single file; likely several small components |
+| 3× | `ModalMacroForm`, `MacroForm`, `SiteToggle` | a control paragraph shared by three surfaces — the biggest remaining |
+| 3× | `Settings`, `PrefixEditor`, `ReplacementMode` | the options-page equivalent of the settings row |
+| 2× | `ModalMacroForm`, `MacroForm` | twice more between the same pair; these two forms are near-duplicates and worth reading together |
+| 2× | `MacroSearchResults`, `MacroCommandResults` | the two search result rows |
+| 2× | `Editor`, `Options` | page shells |
+
+The `ModalMacroForm` / `MacroForm` pair accounts for three of the eight. They are the modal
+and full-page versions of the same form; whether that is one component with a prop or two
+that share pieces is a design decision, not a mechanical extraction.
 
 ```
 node -e "
@@ -309,24 +319,40 @@ for(const f of walk('src')) for(const m of fs.readFileSync(f,'utf8').matchAll(/c
 "
 ```
 
-**Four listboxes with a broken contract.** `MacroSuggestions`, `DeleteConfirmPopup` and
-`ContentEditorStyleMenu` each declare `role="listbox"` with `role="option"` children and
-none of the rest: no option ids, no `aria-activedescendant`, and only one has a label. All
-three also nest a `<button>` inside their rows, which the presentational-children rule
-makes inert. `CommandSuggestions` is worse: `aria-selected` on rows that have no
-`role="option"`, so the attribute is invalid where it sits.
+**Listbox contracts — three of four now wired, one redesign left.**
 
-`SearchResultsPanel` is the worked example — but note the suggestions overlay is a
-horizontal list and the style menu a real popup, so `aria-expanded` means something
-different in each, and a row that genuinely needs per-row buttons wants `grid` semantics
-rather than `listbox`.
+`CommandSuggestions` had `aria-selected` on rows with no `role="option"` and no listbox at
+all; it now has the full contract, with the command input as its combobox. Its row buttons
+are `aria-hidden`, which is a stronger statement than the search view's: they are
+pointer-only *for everyone*, because the input's `onBlur` closes the dropdown, so tabbing
+towards them dismisses it. Deleting a suggestion has no keyboard path — a product gap,
+recorded in the component header.
 
-**Two views with no test at all:** `MacroEditorView` and `SettingsView`. `SettingsView` is
-also the densest duplication site, so extraction and its first test belong in one pass.
+`MacroSuggestions` and `DeleteConfirmPopup` have names and positional option ids now.
 
-**Editor next, settings after.** The editor view has three test files already and shares the
-`ModalMacroForm` / `MacroForm` duplication with two other surfaces, so a pass there pays off
-in three places at once.
+**What is deliberately left:** neither of those two has anything holding focus. Keys are
+handled at the document level and the popups never receive focus, so
+`aria-activedescendant` has nowhere to live, and the delete confirmation — a destructive
+action — is not announced when it opens. `DeleteConfirmPopup` is also a confirm dialog
+modelled as a listbox of two buttons, where `role="option"` on a `<button>` discards its
+button semantics. The honest fix is `alertdialog` with real focus management, which in a
+content script means deciding what happens to the host page's focus. That wants a decision,
+not an unattended commit.
+
+`ContentEditorStyleMenu` still has the original defect and is untouched.
+
+**Tests.** `SettingsView` now has eleven, written with its extraction. `MacroEditorView` is
+still untested — it is a 22-line wrapper, so the value is low and it is last. The other
+untested files are the components this work created (`SearchResultsPanel`, `SettingsLayout`)
+plus `MacroSearchInput` and `MacroCommandResults`, all covered through their parents.
+
+**Next, in order.** The `ModalMacroForm` / `MacroForm` pair: read them together, decide
+whether they are one form or two, and take the three shared paragraphs with that decision.
+Then the options page (`Settings`, `PrefixEditor`, `ReplacementMode`), which repeats the
+settings-row shape that already has a component on the overlay side — check whether
+`SettingsLayout` should move to `shared/ui` rather than being duplicated. Then
+`ContentEditorStyleMenu`'s contract, and last the focus-management decision for the two
+overlay popups.
 
 ---
 
