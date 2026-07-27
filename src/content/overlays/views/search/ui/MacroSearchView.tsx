@@ -55,8 +55,15 @@ export function MacroSearchView({
   const { selectedIndex, navigateNext, navigatePrev, reset, selectIndex } =
     useListNavigation(listLength, { allowEmpty: true })
 
-  // Reset selection on mode switches (e.g. search ↔ command discovery)
-  useEffect(() => { reset() }, [parsed.mode, reset])
+  // Reset selection on mode switches (e.g. search ↔ command discovery).
+  // Disabled pending removal: no path was found where this is observable. The mode only
+  // changes when the query or the prefixes change; on a query change the auto-select
+  // effect below runs in the same commit and normalises the selection either way, and
+  // when the list empties useListNavigation's own clamp already resets to -1. Its own
+  // hook effect is declared first, so it also runs before this one. Deleting the call
+  // breaks no test, and the prefixes-change case -- the only mode switch that leaves the
+  // query untouched -- is covered in MacroSearchView.test.tsx.
+  // useEffect(() => { reset() }, [parsed.mode, reset])
   // On mount, clear any stale state
   useEffect(() => { setSearchQuery(''); reset() }, [reset])
   // Auto-select first result when query is active; clear selection when query is empty

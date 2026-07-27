@@ -50,8 +50,16 @@ function press(key: string) {
   fireEvent.keyDown(document, { key })
 }
 
+const useStore = (macros: unknown[], prefixes: string[]) =>
+  vi.mocked(useMacroStore).mockImplementation((selector: (s: unknown) => unknown) =>
+    selector({ macros, config: { prefixes } })
+  )
+
 describe('MacroSearchView', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+    useStore(mockMacros, ['/'])
+  })
 
   describe('on mount', () => {
     it('focuses the search input', () => {
@@ -68,9 +76,7 @@ describe('MacroSearchView', () => {
     })
 
     it('shows the start-typing hint only when there are no macros at all', () => {
-      vi.mocked(useMacroStore).mockImplementationOnce((selector: (s: unknown) => unknown) =>
-        selector({ macros: [], config: { prefixes: ['/'] } })
-      )
+      useStore([], ['/'])
       render(<MacroSearchView {...props()} />)
       expect(screen.getByRole('status')).toHaveTextContent('modalSearch.startTypingHint')
       expect(screen.queryByRole('listbox')).toBeNull()
@@ -159,6 +165,30 @@ describe('MacroSearchView', () => {
       expect(options()).toHaveLength(0)
       type(':delete/')
       expect(options()[0]).toHaveAttribute('aria-selected', 'true')
+    })
+
+    // A prefixes change from another surface (popup, options page) is the only way the
+    // mode can switch while the query stays exactly as typed, so it is the one case the
+    // disabled mode-reset effect could have been the sole actor for.
+    it('drops a stale selection when a prefixes change flips the mode and back', () => {
+      const { rerender } = render(<MacroSearchView {...props()} />)
+      type(':delete/')
+      press('ArrowDown')
+      press('ArrowDown')
+      expect(options()[2]).toHaveAttribute('aria-selected', 'true')
+
+      // '/' is no longer a prefix, so the command falls back to awaiting its argument.
+      useStore(mockMacros, [';'])
+      rerender(<MacroSearchView {...props()} />)
+      expect(screen.getByRole('status')).toHaveTextContent('modalSearch.awaitingHint')
+      expect(options()).toHaveLength(0)
+
+      // Back to a list of results: the selection starts over rather than resuming at 2.
+      useStore(mockMacros, ['/'])
+      rerender(<MacroSearchView {...props()} />)
+      expect(options()).toHaveLength(mockMacros.length)
+      expect(options()[0]).toHaveAttribute('aria-selected', 'true')
+      expect(input()).toHaveAttribute('aria-activedescendant', searchOptionId(0))
     })
 
     it('shows the awaiting hint for a parametric command with no argument', () => {
