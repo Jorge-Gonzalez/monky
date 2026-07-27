@@ -57,6 +57,15 @@ export default [
       // semicolons that ASI genuinely requires alone.
       semi: ["error", "never"],
 
+      // Off, on evidence rather than taste. Its analysis disagrees with the compiler on
+      // DOM query results -- it calls `querySelector(...) as HTMLElement | null`
+      // unnecessary, and running its autofix removed assertions that tsc requires,
+      // breaking the typecheck across nine files while the runtime tests stayed green.
+      // A rule whose fix breaks the build, and whose every finding must be re-checked
+      // against tsc by hand, costs more than it returns. It does catch genuinely
+      // redundant `!` operators, so a manual pass is worth doing someday.
+      "@typescript-eslint/no-unnecessary-type-assertion": "off",
+
       // TypeScript rules (override a few noisy ones for this project)
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
       "@typescript-eslint/consistent-type-imports": ["warn", { prefer: "type-imports" }],

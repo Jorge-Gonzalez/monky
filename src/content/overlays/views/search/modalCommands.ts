@@ -1,4 +1,3 @@
-import { Macro } from '../../../../types'
 
 export type ModalCommandId = 'new' | 'edit' | 'delete' | 'settings'
 

@@ -33,7 +33,7 @@ export function mergeImport(
   for (const m of incoming) {
     if (existingCommands.has(m.command)) { skipped++; continue }
     const result = add({ ...m, id: crypto.randomUUID() })
-    result.success ? added++ : skipped++
+    if (result.success) added++; else skipped++
   }
   return { added, skipped }
 }

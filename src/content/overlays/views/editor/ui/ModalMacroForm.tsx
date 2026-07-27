@@ -72,7 +72,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
 
   // Open the full-page editor (a content script can't call chrome.tabs directly;
   // the background opens the tab).
-  const openFullEditor = () => { chrome.runtime.sendMessage('open-editor') }
+  const openFullEditor = () => { void chrome.runtime.sendMessage('open-editor') }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()

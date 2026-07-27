@@ -19,7 +19,7 @@ export const suggestionsCoordinator: SuggestionsCoordinator = createSuggestionsC
 // In-page delete confirmation. Confirming deletes via macroCrud so the change is
 // pushed to sync (the same path the search view uses).
 export const deleteConfirmManager = createDeleteConfirmManager()
-deleteConfirmManager.setOnConfirm(macro => { deleteMacro(String(macro.id)) })
+deleteConfirmManager.setOnConfirm(macro => { void deleteMacro(String(macro.id)) })
 
 // Convenience function for updating macros
 export function updateAllMacros(macros: Macro[]): void {

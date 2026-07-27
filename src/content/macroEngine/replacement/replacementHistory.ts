@@ -1,5 +1,5 @@
 import type { EditableEl } from "../../../types"
-import { getTextContent, findTextNodeForOffset, setCursorAtOffset } from "./editableUtils"
+import { getTextContent, findTextNodeForOffset } from "./editableUtils"
 import { undoMostRecentInsertion, hasMarkers } from "./richTextReplacement"
 
 // History entry tracking a specific text replacement
@@ -97,20 +97,6 @@ export function createReplacementHistory() {
   }
 
   /**
-   * Set cursor position in the element
-   */
-  function setCursorPosition(element: EditableEl, position: number): void {
-    if (!element) return
-
-    if ('setSelectionRange' in element) {
-      element.focus()
-      element.setSelectionRange(position, position)
-    } else if (element.isContentEditable) {
-      setCursorAtOffset(element as Node, position)
-    }
-  }
-
-  /**
    * Create a history entry for a replacement
    */
   function createEntry(
@@ -205,7 +191,7 @@ export function createReplacementHistory() {
             // Set cursor at end of restored text
             element.setSelectionRange(startPos + originalText.length, startPos + originalText.length)
             element.dispatchEvent(new Event('input', { bubbles: true }))
-          } else if (element.isContentEditable || (element as any).contentEditable === 'true') {
+          } else if (element.isContentEditable || (element as HTMLElement).contentEditable === 'true') {
             // Use Selection API to preserve formatting
             replaceInContentEditablePreservingFormat(element, expectedReplacementPos, expectedEndPos, originalText)
             element.dispatchEvent(new Event('input', { bubbles: true }))

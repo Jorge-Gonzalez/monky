@@ -23,10 +23,12 @@ export function getActiveEditable(target: EventTarget | null): EditableEl {
   // checking ownerDocument and return our sentinel so downstream code can
   // route to the Google Docs replacement path.
   if (isGoogleDocs() && target !== null) {
-    // Cross-realm: events from inside the iframe (different JS realm)
+    // Cross-realm: events from inside the iframe (different JS realm). The link has to be
+    // read structurally for the same reason instanceof fails -- the constructors differ.
+    const node = target as { ownerDocument?: Document | null }
     if (
-      typeof (target as any).ownerDocument !== 'undefined' &&
-      (target as any).ownerDocument !== document
+      typeof node.ownerDocument !== 'undefined' &&
+      node.ownerDocument !== document
     ) {
       return GOOGLE_DOCS_SENTINEL
     }
@@ -168,7 +170,7 @@ export function getCursorCoordinates(): { x: number; y: number } | null {
       const rect = rects[0]
       return { x: rect.left, y: rect.bottom } // Use bottom to position popup below the line
     }
-  } catch (error) {
+  } catch {
     // In test environments (JSDOM), getClientRects might not be properly implemented
     // Fall through to the activeElement fallback
   }
@@ -179,7 +181,7 @@ export function getCursorCoordinates(): { x: number; y: number } | null {
     try {
       const rect = activeElement.getBoundingClientRect()
       return { x: rect.left, y: rect.bottom }
-    } catch (error) {
+    } catch {
       // In test environments, return a default position
       return { x: 0, y: 0 }
     }

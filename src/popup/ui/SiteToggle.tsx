@@ -18,7 +18,7 @@ export default function SiteToggle() {
           if (validProtocols.includes(url.protocol)) {
             setHostname(url.hostname) // This will be 'localhost' for localhost, '' for file://, and the domain for others.
           }
-        } catch (e) {
+        } catch {
           // Not a valid URL (e.g., chrome://extensions), do nothing
         }
       }

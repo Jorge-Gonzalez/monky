@@ -169,7 +169,7 @@ export function cleanupMacroSystem() {
 
 // Export onExecute function for CRXJS plugin compatibility
 export function onExecute() {
-  main()
+  void main()
 }
 
 // Export macro engine access for debugging/testing
@@ -187,7 +187,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 })
 
 // Auto-initialize when module is imported
-main()
+void main()
 
 // Cleanup on unload (for hot reload during development)
 if (import.meta.hot) {

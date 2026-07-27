@@ -176,13 +176,13 @@ function cleanup() {
 
 // Auto-execute for development
 if (typeof window !== 'undefined') {
-  main()
+  void main()
   initExtensionConflictDetector()
 }
 
 // Export for compatibility
 export function onExecute() {
-  main()
+  void main()
 }
 
 // Export cleanup for tests
