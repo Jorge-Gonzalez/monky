@@ -39,13 +39,16 @@ export function ModalShell({
   return (
     <div
       data-component="modal-backdrop"
-      className="sf-foreign-overlay-host cover scrim"
+      className="sf-foreign-overlay-host
+        cover
+        scrim"
       onMouseDown={onClose}
       role="presentation"
     >
       <div
         data-component="modal-centering-frame"
-        className="sf-pixel-frame horizontal align-center justify-center"
+        className="sf-pixel-frame
+          horizontal align-center justify-center"
       >
         <div
           ref={modalRef}
