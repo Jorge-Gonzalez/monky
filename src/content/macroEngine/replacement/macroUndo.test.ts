@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createMacroDetector } from '../macroDetector'
 import type { DetectorActions } from '../../actions/detectorActions'
 import type { Macro} from '../../../types'
-import { EditableEl } from '../../../types'
-import { setCursorInside, typeIn } from '../../../utils/testUtils'
+import { } from '../../../types'
+import { typeIn } from '../../../utils/testUtils'
 import { useMacroStore } from "../../../store/useMacroStore"
 
 describe('MacroDetector - Undo System', () => {

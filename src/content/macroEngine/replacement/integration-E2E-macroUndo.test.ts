@@ -51,7 +51,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
   })
 
   describe('Real-World Usage Scenarios', () => {
-    it('should handle complete typing → replacement → undo workflow', async () => {
+    it('should handle complete typing → replacement → undo workflow', () => {
       //inputElement.focus()
 
       typeIn(inputElement, '/')
@@ -593,7 +593,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
   describe('Clipboard Integration', () => {
 
-    it('should maintain undo after paste operations', async () => {
+    it('should maintain undo after paste operations', () => {
 
       typeIn(inputElement, '/hello ')
       // Simulate paste

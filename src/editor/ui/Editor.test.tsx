@@ -46,10 +46,10 @@ describe('Editor page', () => {
     render(<Editor />)
     expect(screen.getByTestId('editing-state')).toHaveTextContent('null')
 
-    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Edit' })) })
+    await act(() => { fireEvent.click(screen.getByRole('button', { name: 'Edit' })) })
     expect(screen.getByTestId('editing-state')).toHaveTextContent(JSON.stringify(mockMacros[0]))
 
-    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Done' })) })
+    await act(() => { fireEvent.click(screen.getByRole('button', { name: 'Done' })) })
     expect(screen.getByTestId('editing-state')).toHaveTextContent('null')
   })
 })

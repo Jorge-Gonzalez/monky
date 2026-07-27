@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { createMacroDetector } from './macroDetector'
+import { } from './macroDetector'
 import { createSuggestionsCoordinator } from '../coordinators/SuggestionsCoordinator'
 import { createSuggestionsOverlayManager } from '../overlays/suggestionsOverlay/SuggestionsOverlayManager'
 import type { Macro } from '../../types'
@@ -54,7 +54,7 @@ vi.mock('../overlays/suggestionsOverlay/utils/popupPositioning', () => ({
 }))
 
 import { getActiveEditable, getSelection, getCursorCoordinates } from './replacement/editableUtils'
-import { replaceText } from './replacement/macroReplacement'
+import { } from './replacement/macroReplacement'
 
 describe('Tab Key Integration Tests', () => {
   const mockMacros: Macro[] = [

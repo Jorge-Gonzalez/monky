@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/preact'
+import { render, screen, fireEvent } from '@testing-library/preact'
 import '@testing-library/jest-dom'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { MacroSuggestions } from './MacroSuggestions'

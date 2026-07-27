@@ -1,5 +1,5 @@
-import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest'
-import { calculateOptimalPosition, PopupPositionResult } from './popupPositioning'
+import { describe, test, expect, beforeEach, afterEach } from 'vitest'
+import { calculateOptimalPosition } from './popupPositioning'
 
 describe('Popup Positioning', () => {
   let originalScrollX: number

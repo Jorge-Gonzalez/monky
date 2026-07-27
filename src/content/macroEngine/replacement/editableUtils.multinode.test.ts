@@ -2,7 +2,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest"
 import { replaceText } from './macroReplacement'
 import type { Macro } from "../../../types"
-import { getSelection } from "./editableUtils"
+import { } from "./editableUtils"
 
 describe("replaceText (contenteditable) - multi-node", () => {
   let div: HTMLDivElement

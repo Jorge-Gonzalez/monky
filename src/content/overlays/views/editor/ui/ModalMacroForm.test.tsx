@@ -168,7 +168,7 @@ describe('ModalMacroForm', () => {
       expect(onLoadMacro).toHaveBeenCalledWith(mockMacros[0])
     })
 
-    it('dismisses suggestions on Enter when there is no exact match', async () => {
+    it('dismisses suggestions on Enter when there is no exact match', () => {
       render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
       const input = getCommandInput()
 

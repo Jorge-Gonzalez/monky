@@ -245,7 +245,7 @@ describe('ContentEditor component', () => {
 
   it('syncs updated value prop to DOM', async () => {
     const { rerender } = render(<ContentEditor value="<p>first</p>" />)
-    await act(async () => rerender(<ContentEditor value="<p>second</p>" />))
+    await act(() => rerender(<ContentEditor value="<p>second</p>" />))
     expect(getBody().innerHTML).toBe('<p>second</p>')
   })
 
@@ -265,7 +265,7 @@ describe('ContentEditor component', () => {
     expect(emitted).toBe('<p><strong>x</strong></p>') // normalized, differs from raw
 
     // The parent echoes the normalized value straight back.
-    await act(async () => rerender(<ContentEditor value={emitted} onChange={onChange} />))
+    await act(() => rerender(<ContentEditor value={emitted} onChange={onChange} />))
 
     // Raw DOM (and thus the selection) is preserved — not overwritten with the echo.
     expect(getBody().innerHTML).toBe('<p><b>x</b></p>')
@@ -513,7 +513,7 @@ describe('ContentEditorStyleMenu', () => {
     expect(execCommandSpy).toHaveBeenCalledWith('formatBlock', false, 'p')
   })
 
-  it('closes the dropdown after selecting an option', async () => {
+  it('closes the dropdown after selecting an option', () => {
     render(<ContentEditorStyleMenu blockType="paragraph" editorRef={editorRef} />)
     fireEvent.mouseDown(screen.getByRole('button', { name: 'Text style' }))
     fireEvent.mouseDown(screen.getByRole('option', { name: /Heading 1/ }))
