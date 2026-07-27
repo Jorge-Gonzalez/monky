@@ -1,4 +1,5 @@
-import React from 'react';
+import { StrictMode } from 'react';
+import type { ComponentType } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeManager } from './ThemeManager';
 
@@ -8,7 +9,7 @@ import { ThemeManager } from './ThemeManager';
  *
  * @param PageComponent The component to render.
  */
-export function renderPageWithTheme(PageComponent: React.ComponentType) {
+export function renderPageWithTheme(PageComponent: ComponentType) {
   // No ensureAppFontFace() here: on an extension page the CSS-imported face's
   // root-relative /fonts/ URL resolves against the extension origin already.
   // Verified by removing the injected face at runtime — Plex still resolved.
@@ -16,9 +17,9 @@ export function renderPageWithTheme(PageComponent: React.ComponentType) {
   // and so is ignored inside a shadow root.
   const root = createRoot(document.getElementById('root')!);
   root.render(
-    <React.StrictMode>
+    <StrictMode>
       <ThemeManager />
       <PageComponent />
-    </React.StrictMode>
+    </StrictMode>
   );
 }

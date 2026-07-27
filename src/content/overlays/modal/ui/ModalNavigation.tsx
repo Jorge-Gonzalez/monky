@@ -1,4 +1,4 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { ModalNavigationProps, ModalView } from '../types';
 import { t } from '../../../../lib/i18n';
 
@@ -40,7 +40,7 @@ const SettingsIcon = () => (
  * ModalNavigation - Tab-based navigation for switching between modal views
  */
 export function ModalNavigation({ currentView, onViewChange, theme }: ModalNavigationProps) {
-  const tabs: Array<{ view: ModalView; label: string; icon?: React.ReactNode }> = [
+  const tabs: Array<{ view: ModalView; label: string; icon?: ReactNode }> = [
     { view: 'search', label: t('modalNavigation.search'), icon: <SearchIcon /> },
     { view: 'editor', label: t('modalNavigation.editor'), icon: <EditorIcon /> },
     { view: 'settings', label: t('modalNavigation.settings'), icon: <SettingsIcon /> },

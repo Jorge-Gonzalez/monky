@@ -1,4 +1,4 @@
-import React from 'react'
+import type { ChangeEvent } from 'react'
 import { useOptions } from '../../options'
 import { Lang } from '../../types'
 import { t } from '../../lib/i18n'
@@ -6,7 +6,7 @@ import { t } from '../../lib/i18n'
 export default function Settings() {
   const { language, setLanguage } = useOptions()
 
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleLanguageChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setLanguage(e.currentTarget.value as Lang)
   }
 

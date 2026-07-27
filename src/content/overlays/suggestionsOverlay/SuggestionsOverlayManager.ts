@@ -1,4 +1,4 @@
-import React from 'react';
+import { createElement } from 'react';
 import { Macro, EditableEl } from '../../../types';
 import { MacroSuggestions } from './ui/MacroSuggestions';
 import { createReactRenderer } from '../services/reactRenderer';
@@ -47,7 +47,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
 
   const renderSuggestions = (): void => {
     renderer.render(
-      React.createElement(MacroSuggestions, {
+      createElement(MacroSuggestions, {
         macros: currentMacros,
         filterBuffer: overlayState.filterBuffer,
         mode: overlayState.mode,

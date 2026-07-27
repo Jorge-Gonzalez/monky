@@ -1,4 +1,4 @@
-import React from 'react'
+import { createElement } from 'react'
 import { Macro } from '../../../types'
 import { DeleteConfirmPopup } from './DeleteConfirmPopup'
 import { createReactRenderer } from '../services/reactRenderer'
@@ -38,7 +38,7 @@ export function createDeleteConfirmManager() {
 
   const renderPopup = (macro: Macro, position: { x: number; y: number }, placement: 'top' | 'bottom'): void => {
     renderer.render(
-      React.createElement(DeleteConfirmPopup, {
+      createElement(DeleteConfirmPopup, {
         macro,
         position,
         placement,

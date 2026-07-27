@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import type { FormEvent } from 'react'
 import { useMacroStore } from '../../store/useMacroStore'
 import { createMacro, updateMacro } from '../../store/macroCrud'
 import { t } from '../../lib/i18n'
@@ -49,7 +50,7 @@ export default function MacroForm({ editing, onDone }: {
     isSensitive !== !!editing.is_sensitive
   const isFormValid = commandValid && isTextValid && isDirty
 
-  async function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault()
     setError(null)
 

@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import { useRef, isValidElement, cloneElement } from 'react';
+import type { ReactElement } from 'react';
 import { ModalShellProps } from '../types';
 import { useModalKeyboard } from '../hooks/useModalKeyboard';
 import { useAppliedTheme } from '../../../../theme/hooks/useAppliedTheme';
@@ -32,8 +33,8 @@ export function ModalShell({
   if (!isVisible) return null;
 
   // Clone children and inject modalContainerRef prop
-  const childrenWithProps = React.isValidElement(children)
-    ? React.cloneElement(children as React.ReactElement<any>, { containerRef: modalRef })
+  const childrenWithProps = isValidElement(children)
+    ? cloneElement(children as ReactElement<any>, { containerRef: modalRef })
     : children;
 
   return (

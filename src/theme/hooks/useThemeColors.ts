@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import type { RefObject } from 'react';
 import { ThemeMode, ColorTheme } from '../../types';
 import { themeSocketVars } from '../socketPalette';
 
@@ -7,7 +8,7 @@ function isSystemDark(): boolean {
 }
 
 export function useThemeColors(
-  ref: React.RefObject<HTMLElement | null>,
+  ref: RefObject<HTMLElement | null>,
   theme: ThemeMode,
   isEnabled: boolean,
   colorTheme: ColorTheme = 'humo'

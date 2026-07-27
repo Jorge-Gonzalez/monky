@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import type { FormEvent } from 'react'
 import { Macro } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
 import { createMacro, updateMacro, deleteMacro } from '../../../../../store/macroCrud'
@@ -72,7 +73,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   // the background opens the tab).
   const openFullEditor = () => { chrome.runtime.sendMessage('open-editor') }
 
-  async function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault()
     setError(null)
 

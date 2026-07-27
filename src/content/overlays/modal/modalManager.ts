@@ -1,4 +1,5 @@
-import React from 'react';
+import { createElement } from 'react';
+import type { ReactElement } from 'react';
 import { Macro, EditableEl } from '../../../types';
 import { ModalView } from './types';
 import { ModalShell } from './ui/ModalShell';
@@ -49,7 +50,7 @@ export function createModalManager() {
     if (isVisible) renderModal();
   };
 
-  const renderView = (): React.ReactElement => {
+  const renderView = (): ReactElement => {
     const viewProps = {
       onClose: hide,
       onViewChange: switchView,
@@ -58,7 +59,7 @@ export function createModalManager() {
 
     switch (currentView) {
       case 'search':
-        return React.createElement(MacroSearchView, {
+        return createElement(MacroSearchView, {
           ...viewProps,
           onSelectMacro: (macro: Macro) => {
             hide();
@@ -66,14 +67,14 @@ export function createModalManager() {
           },
         });
       case 'settings':
-        return React.createElement(SettingsView, viewProps);
+        return createElement(SettingsView, viewProps);
       case 'editor':
-        return React.createElement(MacroEditorView, {
+        return createElement(MacroEditorView, {
           ...viewProps,
           initialMacro: editingMacro,
         });
       default:
-        return React.createElement(MacroSearchView, {
+        return createElement(MacroSearchView, {
           ...viewProps,
           onSelectMacro: (macro: Macro) => {
             hide();
@@ -85,7 +86,7 @@ export function createModalManager() {
 
   const renderModal = (): void => {
     renderer.render(
-      React.createElement(ModalShell, {
+      createElement(ModalShell, {
         isVisible: true,
         onClose: hide,
         currentView,
