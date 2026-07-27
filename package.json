@@ -28,7 +28,9 @@
     "test:styles": "node scripts/style-smoke.mjs",
     "ermine:css": "node scripts/update-ermine-css.mjs",
     "format:paragraphs": "node scripts/format-paragraphs.mjs",
+    "format:paragraphs:check": "node scripts/format-paragraphs.mjs --check",
     "styles:reconcile": "node scripts/reconcile-styles.mjs",
+    "styles:reconcile:check": "node scripts/reconcile-styles.mjs --check",
     "debug:browser": "./scripts/debug-browser.sh"
   },
   "dependencies": {

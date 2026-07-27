@@ -11,6 +11,9 @@ if (!ermineRoot || !existsSync(resolve(ermineRoot, 'adoption/current-ledger.ts')
   throw new Error('usage: reconcile-styles.mjs --ermine-root <path>')
 }
 const project = relative(ermineRoot, projectRoot)
+// Bare run rewrites the ledger, --check only gates, matching Ermine's own spec/spec:check
+// pair. The closure gate is asserted either way.
+const check = args.includes('--check')
 const result = spawnSync(process.execPath, [
   '--import',
   'tsx',
@@ -19,7 +22,7 @@ const result = spawnSync(process.execPath, [
   project,
   '--name',
   'monky',
-  '--check',
+  check ? '--check' : '--write',
   '--gate',
 ], { cwd: ermineRoot, stdio: 'inherit' })
 if (result.error) throw result.error

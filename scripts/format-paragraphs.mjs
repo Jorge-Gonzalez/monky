@@ -11,6 +11,8 @@ if (!ermineRoot || !existsSync(resolve(ermineRoot, 'adoption/format-paragraphs.t
   throw new Error('usage: format-paragraphs.mjs --ermine-root <path>')
 }
 const project = relative(ermineRoot, projectRoot)
+// Bare run rewrites, --check only gates, matching Ermine's own spec/spec:check pair.
+const check = args.includes('--check')
 const result = spawnSync(process.execPath, [
   '--import',
   'tsx',
@@ -18,7 +20,7 @@ const result = spawnSync(process.execPath, [
   '--project',
   project,
   '--lines',
-  '--check',
+  ...(check ? ['--check'] : []),
 ], { cwd: ermineRoot, stdio: 'inherit' })
 if (result.error) throw result.error
 if (result.status !== 0) process.exit(result.status ?? 1)
