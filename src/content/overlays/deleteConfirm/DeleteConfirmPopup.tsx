@@ -4,6 +4,7 @@ import { t } from '../../../lib/i18n'
 import { useAppliedTheme } from '../../../theme/hooks/useAppliedTheme'
 import { useListNavigation } from '../hooks/useListNavigation'
 import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation'
+import { Keycap } from '../../../shared/ui/Keycap'
 
 export interface DeleteConfirmPopupProps {
   macro: Macro
@@ -58,9 +59,10 @@ export function DeleteConfirmPopup({
         <span data-component="delete-confirm-command" className="ink-accent font-semibold font-mono">{macro.command}</span>
       </div>
       <div data-component="delete-confirm-options" className="horizontal gap-xs padding-xs
-        rule-soft ruled-bottom" role="listbox">
+        rule-soft ruled-bottom" role="listbox" aria-label={t('deleteConfirm.optionsLabel')}>
         <button
           type="button"
+          id="monky-delete-confirm-option-0"
           data-component="delete-confirm-cancel"
           className="elastic basis-ratio padding-block-xs padding-inline-sm hidden max-width-none min-width-none
             tween-quick
@@ -76,6 +78,7 @@ export function DeleteConfirmPopup({
         </button>
         <button
           type="button"
+          id="monky-delete-confirm-option-1"
           data-component="delete-confirm-delete"
           className="elastic basis-ratio padding-block-xs padding-inline-sm hidden max-width-none min-width-none
             tween-quick
@@ -92,12 +95,9 @@ export function DeleteConfirmPopup({
       </div>
       <div data-component="delete-confirm-footer" className="horizontal gap-md padding-block-xs padding-inline-md justify-end
         ground ink-soft rule font-xs">
-        <span><kbd className="sf-keycap
-          ground-subtle ink rule corner-sm ruled font-xs font-mono">Tab</kbd> {t('deleteConfirm.footer.switch')}</span>
-        <span><kbd className="sf-keycap
-          ground-subtle ink rule corner-sm ruled font-xs font-mono">↵</kbd> {t('deleteConfirm.footer.select')}</span>
-        <span><kbd className="sf-keycap
-          ground-subtle ink rule corner-sm ruled font-xs font-mono">Esc</kbd> {t('deleteConfirm.footer.cancel')}</span>
+        <span><Keycap>Tab</Keycap> {t('deleteConfirm.footer.switch')}</span>
+        <span><Keycap>↵</Keycap> {t('deleteConfirm.footer.select')}</span>
+        <span><Keycap>Esc</Keycap> {t('deleteConfirm.footer.cancel')}</span>
       </div>
     </div>
   )

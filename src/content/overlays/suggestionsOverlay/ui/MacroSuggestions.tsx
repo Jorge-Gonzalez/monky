@@ -5,6 +5,12 @@ import { t } from '../../../../lib/i18n'
 import { useAppliedTheme } from '../../../../theme/hooks/useAppliedTheme'
 import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation'
 import { useListNavigation } from '../../hooks/useListNavigation'
+import { Keycap } from '../../../../shared/ui/Keycap'
+
+/** Options are addressed by position, so a controller can name the active one by index. */
+export const SUGGESTIONS_OVERLAY_LISTBOX_ID = 'monky-suggestions-overlay'
+export const suggestionsOverlayOptionId = (index: number) =>
+  `${SUGGESTIONS_OVERLAY_LISTBOX_ID}-option-${index}`
 
 export interface MacroSuggestionsProps {
   macros: Macro[]
@@ -171,11 +177,13 @@ export function MacroSuggestions({
       }}
     >
       <div data-component="suggestions-arrow" className={`sf-callout-arrow height-none center-x position-absolute ${placement === 'top' ? 'sf-callout-arrow-top attach-below' : 'sf-callout-arrow-bottom attach-above'}`} />
-      <div ref={listRef} role="listbox" data-component="suggestions-list" className="horizontal gap-xs padding-xs
+      <div ref={listRef} id={SUGGESTIONS_OVERLAY_LISTBOX_ID} role="listbox"
+        aria-label={t('macroSuggestions.listLabel')} data-component="suggestions-list" className="horizontal gap-xs padding-xs
         rule-soft ruled-bottom">
         {visibleMacros.map((macro, index) => (
           <button
             key={macro.id}
+            id={suggestionsOverlayOptionId(index)}
             ref={(el) => { buttonRefs.current[index] = el }}
             data-component="suggestions-item"
             className="compressible padding-block-xs padding-inline-sm hidden max-width-command min-width-none
@@ -205,20 +213,15 @@ export function MacroSuggestions({
       <div data-component="suggestions-footer" className="horizontal gap-md padding-block-xs padding-inline-md justify-end
         ground ink-soft rule ruled-top font-xs">
         <span>
-          <kbd className="sf-keycap
-            ground-subtle ink rule corner-sm ruled font-xs font-mono">←</kbd>
-          <kbd className="sf-keycap
-            ground-subtle ink rule corner-sm ruled font-xs font-mono">→</kbd>/
-          <kbd className="sf-keycap
-            ground-subtle ink rule corner-sm ruled font-xs font-mono">Tab</kbd> {t('macroSuggestions.footer.navigate')}
+          <Keycap>←</Keycap>
+          <Keycap>→</Keycap>/
+          <Keycap>Tab</Keycap> {t('macroSuggestions.footer.navigate')}
         </span>
         <span>
-          <kbd className="sf-keycap
-            ground-subtle ink rule corner-sm ruled font-xs font-mono">↵</kbd> {t('macroSuggestions.footer.select')}
+          <Keycap>↵</Keycap> {t('macroSuggestions.footer.select')}
         </span>
         <span>
-          <kbd className="sf-keycap
-            ground-subtle ink rule corner-sm ruled font-xs font-mono">Esc</kbd> {t('macroSuggestions.footer.cancel')}
+          <Keycap>Esc</Keycap> {t('macroSuggestions.footer.cancel')}
         </span>
       </div>
     </div>

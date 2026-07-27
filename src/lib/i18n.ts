@@ -94,6 +94,7 @@ const translations = {
     },
 
     macroSuggestions: {
+      listLabel: 'Matching macros',
       footer: {
         navigate: 'Navigate',
         select: 'Select',
@@ -102,6 +103,7 @@ const translations = {
     },
 
     deleteConfirm: {
+      optionsLabel: 'Confirm deletion',
       message: 'Delete macro',
       cancel: 'Cancel',
       delete: 'Delete',
@@ -267,6 +269,7 @@ const translations = {
     },
 
     macroSuggestions: {
+      listLabel: 'Macros coincidentes',
       footer: {
         navigate: 'Navegar',
         select: 'Seleccionar',
@@ -275,6 +278,7 @@ const translations = {
     },
 
     deleteConfirm: {
+      optionsLabel: 'Confirmar borrado',
       message: 'Borrar macro',
       cancel: 'Cancelar',
       delete: 'Borrar',
