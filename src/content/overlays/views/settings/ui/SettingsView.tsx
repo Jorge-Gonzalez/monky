@@ -6,6 +6,7 @@ import type { ColorTheme, Lang } from '../../../../../types'
 import { SegmentedControl } from '../../../../../shared/ui/SegmentedControl'
 import { SelectableGroup } from '../../../../../shared/ui/SelectableGroup'
 import { t } from '../../../../../lib/i18n'
+import { SettingsSection, SettingsRow, SettingsDivider, SettingsButton } from './SettingsLayout'
 
 const SunIcon = () => (
   <svg className="boxed-inline" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -61,113 +62,77 @@ export function SettingsView(_props: BaseModalViewProps) {
       ground scrollbar-subtle">
       <div className="padding-bottom-xl padding-top-2xl padding-right-none padding-left-none">
 
-        <div className="columns-12 padding-block-xl padding-inline-3xl">
-          <div data-component="settings-section-label" className="quarter padding-right-sm padding-top-md padding-bottom-none padding-left-none
-            ink-accent-soft font-xs font-medium overline">{t('settings.sections.general')}</div>
-          <div data-component="settings-section-body" className="elastic basis-ratio three-quarters min-width-none">
-            <div data-component="settings-row" className="horizontal gap-lg padding-block-sm align-center justify-between">
-              <span data-component="settings-row-label" className="rigid
-                ink font-md">{t('options.prefixEditor.title')}</span>
-              <SelectableGroup
-                options={ALL_PREFIXES}
-                selected={prefixes}
-                onChange={setPrefixes}
-                className="horizontal gap-sm"
-                buttonClassName="btn pressable padding-none corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60 ground-subtle ink ruled rule font-mono settings-prefix-btn horizontal control-box-xl align-center justify-center rigid"
-              />
-            </div>
-            <div data-component="settings-row" className="horizontal gap-lg padding-block-sm align-center justify-between">
-              <span data-component="settings-row-label" className="rigid
-                ink font-md">{t('replacementMode.title')}</span>
+        <SettingsSection label={t('settings.sections.general')}>
+          <SettingsRow label={t('options.prefixEditor.title')}>
+            <SelectableGroup
+              options={ALL_PREFIXES}
+              selected={prefixes}
+              onChange={setPrefixes}
+              className="horizontal gap-sm"
+              buttonClassName="btn pressable padding-none corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60 ground-subtle ink ruled rule font-mono settings-prefix-btn horizontal control-box-xl align-center justify-center rigid"
+            />
+          </SettingsRow>
+          <SettingsRow label={t('replacementMode.title')}>
+            <SegmentedControl
+              options={REPLACEMENT_OPTIONS.map(o => ({ value: o.value, label: o.label() }))}
+              value={replacementValue}
+              onChange={v => setUseCommitKeys(v === 'manual')}
+            />
+          </SettingsRow>
+        </SettingsSection>
+
+        <SettingsDivider />
+
+        <SettingsSection label={t('settings.sections.appearance')}>
+          <SettingsRow label={t('settings.colorTheme')}>
+            <div className="horizontal gap-md align-center">
               <SegmentedControl
-                options={REPLACEMENT_OPTIONS.map(o => ({ value: o.value, label: o.label() }))}
-                value={replacementValue}
-                onChange={v => setUseCommitKeys(v === 'manual')}
+                options={THEME_OPTIONS}
+                value={colorTheme}
+                onChange={v => setColorTheme(v)}
               />
-            </div>
-          </div>
-        </div>
-
-        <div data-component="settings-divider" className="margin-block-sm margin-inline-xl height-none
-          rule ruled-top" />
-
-        <div className="columns-12 padding-block-xl padding-inline-3xl">
-          <div data-component="settings-section-label" className="quarter padding-right-sm padding-top-md padding-bottom-none padding-left-none
-            ink-accent-soft font-xs font-medium overline">{t('settings.sections.appearance')}</div>
-          <div data-component="settings-section-body" className="elastic basis-ratio three-quarters min-width-none">
-            <div data-component="settings-row" className="horizontal gap-lg padding-block-sm align-center justify-between">
-              <span data-component="settings-row-label" className="rigid
-                ink font-md">{t('settings.colorTheme')}</span>
-              <div className="horizontal gap-md align-center">
-                <SegmentedControl
-                  options={THEME_OPTIONS}
-                  value={colorTheme}
-                  onChange={v => setColorTheme(v)}
-                />
-                <SegmentedControl
-                  options={MODE_OPTIONS}
-                  value={mode}
-                  onChange={v => setTheme(v)}
-                />
-              </div>
-            </div>
-            <div data-component="settings-row" className="horizontal gap-lg padding-block-sm align-center justify-between">
-              <span data-component="settings-row-label" className="rigid
-                ink font-md">{t('settings.language')}</span>
               <SegmentedControl
-                options={LANGUAGE_OPTIONS}
-                value={language}
-                onChange={v => setLanguage(v)}
+                options={MODE_OPTIONS}
+                value={mode}
+                onChange={v => setTheme(v)}
               />
             </div>
-          </div>
-        </div>
+          </SettingsRow>
+          <SettingsRow label={t('settings.language')}>
+            <SegmentedControl
+              options={LANGUAGE_OPTIONS}
+              value={language}
+              onChange={v => setLanguage(v)}
+            />
+          </SettingsRow>
+        </SettingsSection>
 
-        <div data-component="settings-divider" className="margin-block-sm margin-inline-xl height-none
-          rule ruled-top" />
+        <SettingsDivider />
 
-        <div className="columns-12 padding-block-xl padding-inline-3xl">
-          <div data-component="settings-section-label" className="quarter padding-right-sm padding-top-md padding-bottom-none padding-left-none
-            ink-accent-soft font-xs font-medium overline">{t('settings.sections.data')}</div>
-          <div data-component="settings-section-body" className="elastic basis-ratio three-quarters min-width-none">
-            <div data-component="settings-row" className="horizontal gap-lg padding-block-sm align-center justify-between">
-              <span data-component="settings-row-label" className="rigid
-                ink font-md">{t('settings.importExport.title')}</span>
-              <div className="horizontal gap-sm">
-                <button data-component="settings-button" className="rigid padding-block-sm padding-inline-lg
-                  tween-quick
-                  ground-subtle ink rule corner-md ruled font-md font-medium pressable
-                  hover:ground-defined
-                  focus:ring
-                  active:ground-accent active:ink-inverse
-                  disabled:ground-subtle disabled:ink-soft disabled:blocked disabled:alpha-60" type="button" onClick={exportMacros}>
-                  {t('settings.importExport.exportButton')}
-                </button>
-                <button data-component="settings-button" className="rigid padding-block-sm padding-inline-lg
-                  tween-quick
-                  ground-subtle ink rule corner-md ruled font-md font-medium pressable
-                  hover:ground-defined
-                  focus:ring
-                  active:ground-accent active:ink-inverse
-                  disabled:ground-subtle disabled:ink-soft disabled:blocked disabled:alpha-60" type="button" onClick={() => fileInputRef.current?.click()}>
-                  {t('settings.importExport.importButton')}
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".json,application/json"
-                  style={{ display: 'none' }}
-                  onChange={e => {
-                    const input = e.currentTarget as HTMLInputElement
-                    const file = input.files?.[0]
-                    input.value = ''
-                    if (file) importFromFile(file)
-                  }}
-                />
-              </div>
+        <SettingsSection label={t('settings.sections.data')}>
+          <SettingsRow label={t('settings.importExport.title')}>
+            <div className="horizontal gap-sm">
+              <SettingsButton onClick={exportMacros}>
+                {t('settings.importExport.exportButton')}
+              </SettingsButton>
+              <SettingsButton onClick={() => fileInputRef.current?.click()}>
+                {t('settings.importExport.importButton')}
+              </SettingsButton>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".json,application/json"
+                style={{ display: 'none' }}
+                onChange={e => {
+                  const input = e.currentTarget
+                  const file = input.files?.[0]
+                  input.value = ''
+                  if (file) importFromFile(file)
+                }}
+              />
             </div>
-          </div>
-        </div>
+          </SettingsRow>
+        </SettingsSection>
 
         {importStatus && (
           <div className={`padding-top-xs padding-bottom-sm padding-inline-xl font-sm ${importStatus.ok ? 'ink-accent' : 'ink-fail'}`}>
