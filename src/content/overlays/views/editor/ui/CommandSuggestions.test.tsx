@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen, fireEvent } from '@testing-library/preact'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { CommandSuggestions } from './CommandSuggestions'
+import { CommandSuggestions, SUGGESTIONS_LISTBOX_ID, suggestionOptionId } from './CommandSuggestions'
 
 vi.mock('../../../../../lib/i18n', () => ({ t: (key: string) => key }))
 
@@ -23,6 +23,36 @@ const trashOf = (row: Element) => row.querySelector('[aria-label="editor.deleteM
 
 describe('CommandSuggestions', () => {
   beforeEach(() => vi.clearAllMocks())
+
+  describe('listbox contract', () => {
+    it('exposes the rows as options of a named listbox', () => {
+      const { container } = setup()
+      const listbox = container.querySelector(`#${SUGGESTIONS_LISTBOX_ID}`)!
+      expect(listbox).toHaveAttribute('role', 'listbox')
+      expect(listbox).toHaveAttribute('aria-labelledby')
+      const options = listbox.querySelectorAll('[role="option"]')
+      expect(options).toHaveLength(suggestions.length)
+      expect([...options].map(o => o.id)).toEqual(suggestions.map((_, i) => suggestionOptionId(i)))
+      expect(options[0]).toHaveAttribute('aria-selected', 'true')
+    })
+
+    it('keeps the heading outside the listbox, which may hold only options', () => {
+      const { container } = setup()
+      const listbox = container.querySelector(`#${SUGGESTIONS_LISTBOX_ID}`)!
+      expect(listbox.querySelector('[data-component="editor-suggestions-label"]')).toBeNull()
+      // Every direct child of the listbox is an option.
+      expect([...listbox.children].every(c => c.getAttribute('role') === 'option')).toBe(true)
+    })
+
+    it('hides the row controls, which no keyboard or AT path can reach', () => {
+      const { container } = setup()
+      const rows = container.querySelectorAll('[role="option"]')
+      expect(trashOf(rows[0])).toHaveAttribute('aria-hidden', 'true')
+      fireEvent.mouseDown(trashOf(rows[0]))
+      expect(container.querySelector('[data-component="editor-suggestions-item-confirm"]')?.closest('[aria-hidden="true"]'))
+        .not.toBeNull()
+    })
+  })
 
   it('renders a trash control per row by default (no confirm/cancel)', () => {
     setup()

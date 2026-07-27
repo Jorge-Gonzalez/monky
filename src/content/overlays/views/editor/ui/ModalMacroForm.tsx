@@ -9,7 +9,7 @@ import { useMacroStore } from '../../../../../store/useMacroStore'
 import { validateCommand, isCommandValid } from '../../../../../shared/macroValidation'
 import { hasRichFormatting, extractPlainText } from '../../../../../shared/macroContent'
 import { useCommandSuggestions } from '../useCommandSuggestions'
-import { CommandSuggestions } from './CommandSuggestions'
+import { CommandSuggestions, SUGGESTIONS_LISTBOX_ID, suggestionOptionId } from './CommandSuggestions'
 
 // How long the success toast shows before the modal closes.
 const SAVE_TOAST_MS = 900
@@ -151,6 +151,13 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
               placeholder={t('macroForm.commandPlaceholder', { prefix: prefixes[0] })}
               aria-label={t('macroForm.triggerLabel')}
               aria-invalid={command && !commandValid ? true : undefined}
+              role="combobox"
+              aria-expanded={suggest.visible}
+              aria-controls={suggest.visible ? SUGGESTIONS_LISTBOX_ID : undefined}
+              aria-activedescendant={suggest.visible && suggest.selectedIndex >= 0
+                ? suggestionOptionId(suggest.selectedIndex)
+                : undefined}
+              aria-autocomplete="list"
               maxLength={50}
               autoComplete="off"
               {...suggest.inputProps}

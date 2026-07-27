@@ -24,6 +24,14 @@ const CloseIcon = () => (
   </svg>
 )
 
+/** The listbox the command input points at with aria-controls. */
+export const SUGGESTIONS_LISTBOX_ID = 'monky-command-suggestions'
+
+/** Options are addressed by position, so the input can name the active one from its index. */
+export const suggestionOptionId = (index: number) => `${SUGGESTIONS_LISTBOX_ID}-option-${index}`
+
+const SUGGESTIONS_LABEL_ID = `${SUGGESTIONS_LISTBOX_ID}-label`
+
 interface CommandSuggestionsProps {
   suggestions: Macro[]
   selectedIndex: number
@@ -35,6 +43,10 @@ interface CommandSuggestionsProps {
  * CommandSuggestions - the dropdown of existing macros matching the typed command.
  * Each row can be loaded for editing (select) or deleted via an inline two-step:
  * the trash icon arms the row, then a confirm (check) deletes / cancel (x) backs out.
+ *
+ * Those buttons are pointer-only by construction — the input's blur closes the dropdown —
+ * so they are hidden from the accessibility tree rather than advertised and unreachable.
+ * Deleting a suggestion has no keyboard path today; that is a product gap, not a wiring one.
  */
 export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDelete }: CommandSuggestionsProps) {
   const [confirmingId, setConfirmingId] = useState<Macro['id'] | null>(null)
@@ -46,15 +58,20 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
     <div data-component="editor-suggestions" className="hidden attach-below stretch-inline
       dropdown position-absolute
       ground-subtle rule-accent-soft corner-bottom-md ruled-bottom ruled-left ruled-right elevated">
-      <div data-component="editor-suggestions-label" className="padding-block-xs padding-inline-md
+      <div id={SUGGESTIONS_LABEL_ID} data-component="editor-suggestions-label" className="padding-block-xs padding-inline-md
         ink-soft rule ruled-bottom font-sm">
         {t('editor.commandSuggestionsLabel')}
       </div>
+      {/* The listbox wraps the rows only. A listbox may contain nothing but options, so the
+          heading above names it through aria-labelledby instead of sitting inside it. */}
+      <div id={SUGGESTIONS_LISTBOX_ID} role="listbox" aria-labelledby={SUGGESTIONS_LABEL_ID}>
       {suggestions.map((macro, i) => {
         const confirming = macro.id === confirmingId
         return (
           <div
             key={macro.id}
+            id={suggestionOptionId(i)}
+            role="option"
             data-component="editor-suggestions-item"
             className={`horizontal gap-md padding-block-sm padding-inline-md align-center hidden tween-ground-quick pressable ${confirming ? 'ground-fail-faint' : 'selectable hover:ground selected:ground-defined'}`}
             aria-selected={i === selectedIndex ? 'true' : 'false'}
@@ -65,8 +82,12 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
               ink-accent font-md font-medium text-nowrap">{macro.command}</span>
             <span data-component="editor-suggestions-item-text" className="hidden
               ink-soft font-sm truncate">{macro.text}</span>
+            {/* These controls are pointer-only for everyone, not just assistive tech: the
+                input's onBlur closes the dropdown, so tabbing towards them dismisses it.
+                A listbox option also makes its descendants presentational. Marked hidden so
+                the tree matches what is actually reachable — see the note in the header. */}
             {confirming ? (
-              <span className="horizontal rigid gap-xs push align-center">
+              <span aria-hidden="true" className="horizontal rigid gap-xs push align-center">
                 <button
                   type="button"
                   data-component="editor-suggestions-item-confirm"
@@ -95,6 +116,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
             ) : (
               <button
                 type="button"
+                aria-hidden="true"
                 data-component="editor-suggestions-item-delete"
                 className="horizontal rigid padding-xs push align-center justify-center
                   tween-opacity-ground-ink-quick
@@ -111,6 +133,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
           </div>
         )
       })}
+      </div>
     </div>
   )
 }
