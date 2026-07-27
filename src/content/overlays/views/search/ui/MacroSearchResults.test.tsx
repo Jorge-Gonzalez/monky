@@ -66,6 +66,32 @@ describe('MacroSearchResults', () => {
     })
   })
 
+  // A listbox option has presentational children: anything nested inside it is dropped
+  // from the accessibility tree. State has to reach AT through the option's own name, and
+  // nested controls have to be honest about not being reachable.
+  describe('option accessibility contract', () => {
+    it('carries the armed state in the row name, not in a nested node', () => {
+      const { container } = render(<MacroSearchResults {...baseProps} confirmingDeleteId={2} />)
+      const items = container.querySelectorAll('[role="option"]')
+      expect(items[1]).toHaveAttribute('aria-label', '/addr modalSearch.confirmDelete')
+      // An unarmed row takes its name from its content.
+      expect(items[0]).not.toHaveAttribute('aria-label')
+    })
+
+    it('does not nest a live region inside an option, where it would never be announced', () => {
+      const { container } = render(<MacroSearchResults {...baseProps} confirmingDeleteId={2} />)
+      expect(container.querySelector('[role="option"] [role="alert"]')).toBeNull()
+      expect(container.querySelector('[role="option"] [role="status"]')).toBeNull()
+    })
+
+    it('hides the edit button from the accessibility tree rather than leaving it inert', () => {
+      const { container } = render(<MacroSearchResults {...baseProps} onEdit={vi.fn()} />)
+      const button = container.querySelector('[aria-label="modalSearch.editMacro"]')!
+      expect(button).toHaveAttribute('aria-hidden', 'true')
+      expect(button).toHaveAttribute('tabIndex', '-1')
+    })
+  })
+
   describe('placeholder text', () => {
     const textOf = (container: Element) =>
       container.querySelector('[data-component="search-item-text"]')!

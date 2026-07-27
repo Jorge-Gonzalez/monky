@@ -77,6 +77,10 @@ function MacroSearchItem({ optionId, macro, isSelected, isConfirmingDelete, onCl
       }`}
       role="option"
       aria-selected={isSelected}
+      // ARIA gives `option` presentational children: everything below is dropped from the
+      // accessibility tree, so the armed state has to be carried by the row's own name
+      // rather than by anything nested inside it.
+      aria-label={isConfirmingDelete ? `${macro.command} ${t('modalSearch.confirmDelete')}` : undefined}
       data-state={isConfirmingDelete ? 'confirming-delete' : undefined}
       onClick={onClick}
     >
@@ -94,8 +98,7 @@ function MacroSearchItem({ optionId, macro, isSelected, isConfirmingDelete, onCl
         <div 
           data-component="search-item-confirm" 
           className="padding-left-xs padding-top-sm padding-bottom-sm padding-right-md hidden
-            ink-fail rule-soft ruled-bottom font-md font-medium truncate" 
-          role="alert"
+            ink-fail rule-soft ruled-bottom font-md font-medium truncate"
         >
           {t('modalSearch.confirmDelete')}
         </div>
@@ -122,6 +125,12 @@ function MacroSearchItem({ optionId, macro, isSelected, isConfirmingDelete, onCl
             parent-selected:revealed"
           onClick={e => { e.stopPropagation(); onEdit() }}
           aria-label={t('modalSearch.editMacro')}
+          // A pointer affordance only. A listbox option cannot contain a working control --
+          // its children are presentational -- so rather than leave a button that appears
+          // in the markup but not in the accessibility tree, it is hidden explicitly. The
+          // keyboard path is Tab, which MacroSearchView routes to the editor, and the
+          // footer announces that shortcut whenever there is a selection.
+          aria-hidden="true"
           tabIndex={-1}
         >
           <EditIcon />
