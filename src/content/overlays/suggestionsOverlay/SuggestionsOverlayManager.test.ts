@@ -1,4 +1,3 @@
-import React from 'react'
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest'
 import { createSuggestionsOverlayManager } from './SuggestionsOverlayManager'
 import type { Macro, EditableEl } from '../../../types'

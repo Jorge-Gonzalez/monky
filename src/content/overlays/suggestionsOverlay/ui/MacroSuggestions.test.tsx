@@ -32,7 +32,7 @@ vi.mock('../hooks/useKeyboardNavigation', () => ({
 }))
 
 vi.mock('../hooks/useListNavigation', () => ({
-  useListNavigation: vi.fn((length) => ({
+  useListNavigation: vi.fn((_length) => ({
     selectedIndex: 0,
     navigateLeft: mockNavigateLeft,
     navigateRight: mockNavigateRight,

@@ -21,12 +21,8 @@ vi.mock('../store/useMacroStore', () => ({
 }))
 
 describe('System Macros Integration', () => {
-  let mockHandleSystemMacro: any
 
-  beforeEach(async () => {
-    // Get the mocked function
-    const systemMacrosModule = await import('./systemMacros')
-    mockHandleSystemMacro = systemMacrosModule.handleSystemMacro
+  beforeEach(() => {
     vi.clearAllMocks()
   })
 

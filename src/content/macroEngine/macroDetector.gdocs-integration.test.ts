@@ -1,3 +1,4 @@
+import type * as EditableUtils from './replacement/editableUtils'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 /**
@@ -35,7 +36,7 @@ import { GOOGLE_DOCS_SENTINEL } from './replacement/editableUtils'
 
 // Route detection to the sentinel; keep the rest of editableUtils real.
 vi.mock('./replacement/editableUtils', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('./replacement/editableUtils')>()
+  const actual = await importOriginal<typeof EditableUtils>()
   return {
     ...actual,
     getActiveEditable: vi.fn(() => actual.GOOGLE_DOCS_SENTINEL),

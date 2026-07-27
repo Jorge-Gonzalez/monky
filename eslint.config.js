@@ -85,6 +85,11 @@ export default [
     files: ["**/*.{test,spec}.{ts,tsx}", "src/utils/testUtils.ts"],
     rules: {
       "@typescript-eslint/unbound-method": "off",
+      // Consistent with the rules below: a stand-in that is deliberately partial has no
+      // full type to state, and reporting the declaration while its consequences are
+      // ignored is the worst of both. Mocks that *do* have a real type available should
+      // still use it -- ReturnType<typeof factory> for a factory-built double.
+      "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
       "@typescript-eslint/no-unsafe-call": "off",
