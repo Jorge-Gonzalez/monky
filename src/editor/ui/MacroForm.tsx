@@ -85,7 +85,7 @@ export default function MacroForm({ editing, onDone }: {
   }
 
   return (
-    <form onSubmit={onSubmit} className="vertical gap-md">
+    <form onSubmit={e => { void onSubmit(e) }} className="vertical gap-md">
       <div>
         <label htmlFor="macro-command" className="boxed
           ink font-sm font-medium">

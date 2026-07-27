@@ -108,7 +108,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   }
 
   return (
-    <form onSubmit={onSubmit} data-component="editor-form" className="vertical elastic basis-ratio gap-md min-height-none
+    <form onSubmit={e => { void onSubmit(e) }} data-component="editor-form" className="vertical elastic basis-ratio gap-md min-height-none
       position-relative">
       <div data-component="editor-form-header" className="horizontal gap-lg align-center justify-between">
         <div className="horizontal rigid gap-sm align-center">
@@ -162,7 +162,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
                 suggestions={suggest.suggestions}
                 selectedIndex={suggest.selectedIndex}
                 onSelect={suggest.select}
-                onDelete={m => deleteMacro(String(m.id))}
+                onDelete={m => { void deleteMacro(String(m.id)) }}
               />
             )}
           </div>

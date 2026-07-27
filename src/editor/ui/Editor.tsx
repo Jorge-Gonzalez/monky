@@ -16,7 +16,7 @@ export default function Editor() {
       <MacroForm editing={editingMacro} onDone={resetForm} />
       <hr className="rule ruled-top" />
       <Settings />
-      <MacroListEditor macros={macros} onEdit={setEditingMacro} onDelete={deleteMacro} />
+      <MacroListEditor macros={macros} onEdit={setEditingMacro} onDelete={id => { void deleteMacro(id) }} />
     </div>
   )
 }
