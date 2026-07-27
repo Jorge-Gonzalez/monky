@@ -55,8 +55,11 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
     setError(null)
   }, [editing])
 
+  // Clear any error as soon as the user edits either field. Setting state to the value
+  // it already holds is a no-op, so this needs no guard -- and therefore no dependency
+  // on `error`, which would otherwise clear the error on the render that set it.
   useEffect(() => {
-    if (error) setError(null)
+    setError(null)
   }, [command, text])
 
   useEffect(() => {

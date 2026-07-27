@@ -45,5 +45,5 @@ export function useOverlayDismiss(
       document.removeEventListener('mousedown', handleMouseDown, true)
       window.removeEventListener('keydown', handleKeyDown, true)
     }
-  }, [open])
+  }, [open, wrapperRef])
 }

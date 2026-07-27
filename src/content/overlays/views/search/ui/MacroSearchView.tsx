@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import type { Macro } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
 import { useMacroStore } from '../../../../../store/useMacroStore'
@@ -34,7 +34,7 @@ export function MacroSearchView({
   const macros = useMacroStore(state => state.macros)
   const prefixes = useMacroStore(state => state.config.prefixes)
 
-  const parsed = parseModalQuery(searchQuery, prefixes)
+  const parsed = useMemo(() => parseModalQuery(searchQuery, prefixes), [searchQuery, prefixes])
 
   // For normal search, filter against the raw query.
   // For parametric mode, filter against the param (e.g. '/no').
@@ -46,24 +46,26 @@ export function MacroSearchView({
 
   const showMacros = parsed.mode === 'search' || parsed.mode === 'parametric'
   const showCommands = parsed.mode === 'discovery'
-  const visibleCommands = showCommands ? parsed.commands : []
+  const visibleCommands = useMemo(() => (showCommands ? parsed.commands : []), [showCommands, parsed])
 
   const listLength = showMacros ? filteredMacros.length : visibleCommands.length
-  const navigation = useListNavigation(listLength, { allowEmpty: true })
+  // Destructured rather than held as one object: useListNavigation memoises each
+  // callback but returns them in a fresh literal, so depending on the object meant
+  // depending on every render. The callbacks themselves are stable.
+  const { selectedIndex, navigateNext, navigatePrev, reset, selectIndex } =
+    useListNavigation(listLength, { allowEmpty: true })
 
   // Reset selection on mode switches (e.g. search ↔ command discovery)
-  useEffect(() => { navigation.reset() }, [parsed.mode])
+  useEffect(() => { reset() }, [parsed.mode, reset])
   // On mount, clear any stale state
-  useEffect(() => { setSearchQuery(''); navigation.reset() }, [])
+  useEffect(() => { setSearchQuery(''); reset() }, [reset])
   // Auto-select first result when query is active; clear selection when query is empty
   useEffect(() => {
-    if (searchQuery.trim()) navigation.selectIndex(0)
-    else navigation.reset()
-  // Intentionally keyed on the query alone: navigation is a stable API and including it
-  // would re-run this on every selection change, fighting the user's arrow keys.
-  }, [searchQuery])
+    if (searchQuery.trim()) selectIndex(0)
+    else reset()
+  }, [searchQuery, selectIndex, reset])
   // Disarm a pending delete when the user navigates away or edits the query.
-  useEffect(() => { setPendingDelete(null) }, [navigation.selectedIndex, searchQuery])
+  useEffect(() => { setPendingDelete(null) }, [selectedIndex, searchQuery])
 
   // --- Handlers ---
 
@@ -105,24 +107,24 @@ export function MacroSearchView({
 
   const handleEdit = useCallback(() => {
     if (!showMacros) return
-    const macro = filteredMacros[navigation.selectedIndex]
+    const macro = filteredMacros[selectedIndex]
     if (macro) onNavigateToEditor(macro)
-  }, [showMacros, filteredMacros, navigation.selectedIndex, onNavigateToEditor])
+  }, [showMacros, filteredMacros, selectedIndex, onNavigateToEditor])
 
   const handleSelect = useCallback(() => {
     if (parsed.mode === 'instant') {
       handleCommandSelect(parsed.command)
     } else if (parsed.mode === 'discovery') {
-      const cmd = visibleCommands[navigation.selectedIndex]
+      const cmd = visibleCommands[selectedIndex]
       if (cmd) handleCommandSelect(cmd)
     } else if (parsed.mode === 'parametric') {
-      const macro = filteredMacros[navigation.selectedIndex]
+      const macro = filteredMacros[selectedIndex]
       if (macro) handleParametricSelect(macro, parsed.command)
     } else if (parsed.mode === 'search') {
-      const macro = filteredMacros[navigation.selectedIndex]
+      const macro = filteredMacros[selectedIndex]
       if (macro) handleMacroSelect(macro)
     }
-  }, [parsed, visibleCommands, filteredMacros, navigation.selectedIndex,
+  }, [parsed, visibleCommands, filteredMacros, selectedIndex,
       handleCommandSelect, handleParametricSelect, handleMacroSelect])
 
   useAutoFocus(inputRef, true)
@@ -131,9 +133,9 @@ export function MacroSearchView({
     axis: 'vertical',
     onSelect: handleSelect,
     onClose,
-    onNavigatePrev: navigation.navigatePrev,
-    onNavigateNext: navigation.navigateNext,
-    onTab: showMacros && navigation.selectedIndex >= 0 ? handleEdit : undefined,
+    onNavigatePrev: navigatePrev,
+    onNavigateNext: navigateNext,
+    onTab: showMacros && selectedIndex >= 0 ? handleEdit : undefined,
   })
 
   // --- Render helpers ---
@@ -152,7 +154,7 @@ export function MacroSearchView({
       return (
         <MacroCommandResults
           commands={visibleCommands}
-          selectedIndex={navigation.selectedIndex}
+          selectedIndex={selectedIndex}
           onSelect={handleCommandSelect}
         />
       )
@@ -171,7 +173,7 @@ export function MacroSearchView({
     return (
       <MacroSearchResults
         macros={filteredMacros}
-        selectedIndex={navigation.selectedIndex}
+        selectedIndex={selectedIndex}
         searchQuery={macroSearchQuery}
         onSelect={parsed.mode === 'parametric'
           ? (m) => handleParametricSelect(m, parsed.command)
@@ -184,7 +186,7 @@ export function MacroSearchView({
 
   const footerCount = showCommands ? visibleCommands.length : filteredMacros.length
   const isCommandMode = parsed.mode !== 'search'
-  const hasSelection = showMacros && navigation.selectedIndex >= 0
+  const hasSelection = showMacros && selectedIndex >= 0
 
   // A panel only becomes a listbox once it holds options; 'instant' shows a single
   // pre-selected command, every other mode follows the navigation cursor.
@@ -192,7 +194,7 @@ export function MacroSearchView({
     parsed.mode === 'instant' ? 1 :
     parsed.mode === 'awaiting' ? 0 :
     footerCount
-  const activeIndex = parsed.mode === 'instant' ? 0 : navigation.selectedIndex
+  const activeIndex = parsed.mode === 'instant' ? 0 : selectedIndex
 
   return (
     <div className="vertical fill-block">

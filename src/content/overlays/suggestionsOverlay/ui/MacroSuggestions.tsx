@@ -96,7 +96,7 @@ export function MacroSuggestions({
         return lowerCommand.startsWith(lowerBuffer) || lowerCommand.includes(lowerBuffer)
       })
       .slice(0, 5)
-  }, [macros, filterBuffer, mode, isVisible])
+  }, [macros, filterBuffer, mode])
 
   // Single layout effect handles both reset (when candidates change) and count reduction
   // (when buttons are squeezed). Using useLayoutEffect for both avoids the loop that

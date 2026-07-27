@@ -4,6 +4,7 @@
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import reactPlugin from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
 
 export default [
   // Global ignores. This must be its own entry: `ignores` alongside `files` only narrows
@@ -38,6 +39,7 @@ export default [
     },
     plugins: {
       react: reactPlugin,
+      "react-hooks": reactHooks,
       "@typescript-eslint": tseslint.plugin,
     },
     settings: {
@@ -73,6 +75,16 @@ export default [
       // React rules
       "react/jsx-uses-react": "off",
       "react/react-in-jsx-scope": "off",
+
+      // The two classic hook rules, enabled explicitly rather than via the plugin's
+      // recommended preset: since v7 that preset also turns on the React Compiler rules
+      // (purity, immutability, use-memo and friends), which target codebases adopting the
+      // compiler. This is Preact, so they do not apply.
+      // rules-of-hooks is a correctness rule -- a conditional hook call genuinely breaks
+      // the hook order -- so it is an error. exhaustive-deps encodes a judgement about
+      // what an effect depends on, which is sometimes deliberately narrowed, so it warns.
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
     },
   },
   // Tests hold mocks to a different standard than production code. A test double is

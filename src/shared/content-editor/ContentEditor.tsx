@@ -64,7 +64,7 @@ export const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(({
     if (editorRef.current && value !== editorRef.current.innerHTML) {
       editorRef.current.innerHTML = value
     }
-  }, [value])
+  }, [value, autoFocus])
 
   const handleLinkRequest = () => {
     // Use shadow root's getSelection() so the range points into the shadow tree,
