@@ -23,13 +23,13 @@ describe('useOptions', () => {
 
   it('setters write through to the store', () => {
     const { result } = renderHook(() => useOptions())
-    act(() => result.current.setPrefixes(['/']))
+    void act(() => result.current.setPrefixes(['/']))
     expect(useMacroStore.getState().config.prefixes).toEqual(['/'])
-    act(() => result.current.setColorTheme('mar'))
+    void act(() => result.current.setColorTheme('mar'))
     expect(useMacroStore.getState().config.colorTheme).toBe('mar')
-    act(() => result.current.setUseCommitKeys(true))
+    void act(() => result.current.setUseCommitKeys(true))
     expect(useMacroStore.getState().config.useCommitKeys).toBe(true)
-    act(() => result.current.setLanguage('es'))
+    void act(() => result.current.setLanguage('es'))
     expect(useMacroStore.getState().config.language).toBe('es')
   })
 })

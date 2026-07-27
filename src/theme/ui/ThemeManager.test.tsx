@@ -76,7 +76,7 @@ describe('ThemeManager component', () => {
       )?.[1]
       expect(changeHandler).toBeDefined()
 
-      act(() => {
+      void act(() => {
         MOCK_MATCH_MEDIA.matches = true
         changeHandler({ matches: true })
       })

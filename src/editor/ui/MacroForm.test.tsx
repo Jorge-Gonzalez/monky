@@ -31,7 +31,7 @@ function setEditorContent(html: string) {
   const editorDiv = document.querySelector('[contenteditable]') as HTMLElement
   if (editorDiv) {
     editorDiv.innerHTML = html
-    act(() => { fireEvent.input(editorDiv) })
+    void act(() => { fireEvent.input(editorDiv) })
   }
 }
 

@@ -55,7 +55,7 @@ describe('SelectableGroup', () => {
     expect(onChange).not.toHaveBeenCalled()
     expect(slash).toHaveClass('shake')
 
-    act(() => { vi.advanceTimersByTime(400) })
+    void act(() => { vi.advanceTimersByTime(400) })
     expect(slash).not.toHaveClass('shake')
   })
 

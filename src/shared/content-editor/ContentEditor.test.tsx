@@ -281,14 +281,14 @@ describe('ContentEditor component', () => {
     it('setHTML updates innerHTML', () => {
       const ref = createRef<ContentEditorRef>()
       render(<ContentEditor ref={ref} />)
-      act(() => ref.current?.setHTML('<p>new</p>'))
+      void act(() => ref.current?.setHTML('<p>new</p>'))
       expect(getBody().innerHTML).toBe('<p>new</p>')
     })
 
     it('clear empties the editor', () => {
       const ref = createRef<ContentEditorRef>()
       render(<ContentEditor ref={ref} value="<p>text</p>" />)
-      act(() => ref.current?.clear())
+      void act(() => ref.current?.clear())
       expect(getBody().innerHTML).toBe('')
     })
   })

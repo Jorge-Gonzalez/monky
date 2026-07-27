@@ -11,33 +11,33 @@ describe('useListNavigation — always-selected (default)', () => {
 
   it('moves next and wraps to the start past the last item', () => {
     const { result } = renderHook(() => useListNavigation(3))
-    act(() => result.current.navigateNext())
+    void act(() => result.current.navigateNext())
     expect(result.current.selectedIndex).toBe(1)
-    act(() => result.current.navigateNext())
+    void act(() => result.current.navigateNext())
     expect(result.current.selectedIndex).toBe(2)
-    act(() => result.current.navigateNext()) // past the end → wrap
+    void act(() => result.current.navigateNext()) // past the end → wrap
     expect(result.current.selectedIndex).toBe(0)
   })
 
   it('moves prev and wraps to the last item from the start', () => {
     const { result } = renderHook(() => useListNavigation(3))
-    act(() => result.current.navigatePrev()) // from 0 → wrap to last
+    void act(() => result.current.navigatePrev()) // from 0 → wrap to last
     expect(result.current.selectedIndex).toBe(2)
-    act(() => result.current.navigatePrev())
+    void act(() => result.current.navigatePrev())
     expect(result.current.selectedIndex).toBe(1)
   })
 
   it('ignores navigation when the list is empty', () => {
     const { result } = renderHook(() => useListNavigation(0))
-    act(() => result.current.navigateNext())
-    act(() => result.current.navigatePrev())
+    void act(() => result.current.navigateNext())
+    void act(() => result.current.navigatePrev())
     expect(result.current.selectedIndex).toBe(0)
   })
 
   it('reset returns to the first item', () => {
     const { result } = renderHook(() => useListNavigation(3))
-    act(() => result.current.navigateNext())
-    act(() => result.current.reset())
+    void act(() => result.current.navigateNext())
+    void act(() => result.current.reset())
     expect(result.current.selectedIndex).toBe(0)
   })
 
@@ -45,8 +45,8 @@ describe('useListNavigation — always-selected (default)', () => {
     const { result, rerender } = renderHook(({ n }) => useListNavigation(n), {
       initialProps: { n: 3 },
     })
-    act(() => result.current.navigateNext())
-    act(() => result.current.navigateNext()) // index 2
+    void act(() => result.current.navigateNext())
+    void act(() => result.current.navigateNext()) // index 2
     expect(result.current.selectedIndex).toBe(2)
     rerender({ n: 1 }) // only index 0 remains → clamp
     expect(result.current.selectedIndex).toBe(0)
@@ -56,7 +56,7 @@ describe('useListNavigation — always-selected (default)', () => {
     const { result, rerender } = renderHook(({ n }) => useListNavigation(n), {
       initialProps: { n: 3 },
     })
-    act(() => result.current.navigateNext())
+    void act(() => result.current.navigateNext())
     rerender({ n: 0 })
     expect(result.current.selectedIndex).toBe(0)
   })
@@ -77,37 +77,37 @@ describe('useListNavigation — allowEmpty', () => {
 
   it('navigateNext from -1 selects index 0', () => {
     const { result } = renderHook(() => useListNavigation(3, empty))
-    act(() => result.current.navigateNext())
+    void act(() => result.current.navigateNext())
     expect(result.current.selectedIndex).toBe(0)
   })
 
   it('navigatePrev from -1 selects the last item', () => {
     const { result } = renderHook(() => useListNavigation(3, empty))
-    act(() => result.current.navigatePrev())
+    void act(() => result.current.navigatePrev())
     expect(result.current.selectedIndex).toBe(2)
   })
 
   it('navigation is a no-op when item count is zero', () => {
     const { result } = renderHook(() => useListNavigation(0, empty))
-    act(() => result.current.navigateNext())
-    act(() => result.current.navigatePrev())
+    void act(() => result.current.navigateNext())
+    void act(() => result.current.navigatePrev())
     expect(result.current.selectedIndex).toBe(-1)
   })
 
   it('selectIndex selects a valid index and ignores out-of-bounds or negative ones', () => {
     const { result } = renderHook(() => useListNavigation(3, empty))
-    act(() => result.current.selectIndex(2))
+    void act(() => result.current.selectIndex(2))
     expect(result.current.selectedIndex).toBe(2)
-    act(() => result.current.selectIndex(5))
+    void act(() => result.current.selectIndex(5))
     expect(result.current.selectedIndex).toBe(2)
-    act(() => result.current.selectIndex(-1))
+    void act(() => result.current.selectIndex(-1))
     expect(result.current.selectedIndex).toBe(2)
   })
 
   it('reset clears the selection and does not auto-reselect', () => {
     const { result } = renderHook(() => useListNavigation(5, empty))
-    act(() => result.current.selectIndex(2))
-    act(() => result.current.reset())
+    void act(() => result.current.selectIndex(2))
+    void act(() => result.current.reset())
     expect(result.current.selectedIndex).toBe(-1)
   })
 
@@ -115,7 +115,7 @@ describe('useListNavigation — allowEmpty', () => {
     const { result, rerender } = renderHook(({ n }) => useListNavigation(n, empty), {
       initialProps: { n: 3 },
     })
-    act(() => result.current.selectIndex(1))
+    void act(() => result.current.selectIndex(1))
     rerender({ n: 0 })
     expect(result.current.selectedIndex).toBe(-1)
   })
@@ -124,7 +124,7 @@ describe('useListNavigation — allowEmpty', () => {
     const { result, rerender } = renderHook(({ n }) => useListNavigation(n, empty), {
       initialProps: { n: 5 },
     })
-    act(() => result.current.selectIndex(4))
+    void act(() => result.current.selectIndex(4))
     rerender({ n: 3 })
     expect(result.current.selectedIndex).toBe(2)
   })

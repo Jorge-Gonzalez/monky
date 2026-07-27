@@ -23,8 +23,11 @@ describe('useMacroImportExport', () => {
     vi.clearAllMocks()
     // jsdom's FileReader doesn't reliably fire onload; stub it to fire asynchronously.
     vi.stubGlobal('FileReader', vi.fn(() => {
-      const reader: any = { result: '[]', onload: null }
-      reader.readAsText = () => { Promise.resolve().then(() => reader.onload?.()) }
+      // A minimal FileReader stub: readAsText fires onload on the next microtask,
+      // which is what the hook under test awaits.
+      const reader: { result: string; onload: (() => void) | null; readAsText?: () => void } =
+        { result: '[]', onload: null }
+      reader.readAsText = () => { void Promise.resolve().then(() => reader.onload?.()) }
       return reader
     }))
     mockAddMacro.mockReturnValue({ success: true })
@@ -37,7 +40,7 @@ describe('useMacroImportExport', () => {
 
   it('imports a file: parses, merges, adds, and reports a success status', async () => {
     const { result } = renderHook(() => useMacroImportExport())
-    act(() => { result.current.importFromFile(new File(['[]'], 'macros.json', { type: 'application/json' })) })
+    void act(() => { result.current.importFromFile(new File(['[]'], 'macros.json', { type: 'application/json' })) })
 
     await waitFor(() => expect(mockParseMacroImport).toHaveBeenCalledWith(expect.any(String)))
     expect(mockMergeImport).toHaveBeenCalledWith(
@@ -52,7 +55,7 @@ describe('useMacroImportExport', () => {
   it('reports an error status when the file is invalid', async () => {
     mockParseMacroImport.mockImplementation(() => { throw new Error('bad json') })
     const { result } = renderHook(() => useMacroImportExport())
-    act(() => { result.current.importFromFile(new File(['x'], 'x.json')) })
+    void act(() => { result.current.importFromFile(new File(['x'], 'x.json')) })
 
     await waitFor(() => {
       expect(result.current.status).toEqual({ ok: false, message: 'settings.importExport.status.invalidFile' })
