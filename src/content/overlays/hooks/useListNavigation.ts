@@ -22,23 +22,26 @@ export function useListNavigation(itemCount: number, { allowEmpty = false }: Lis
   // item and prev on the last.
   const navigateNext = useCallback(() => {
     if (itemCount === 0) return
-    setSelectedIndex(prev => (prev < itemCount - 1 ? prev + 1 : 0))
+    setSelectedIndex((prev) => (prev < itemCount - 1 ? prev + 1 : 0))
   }, [itemCount])
 
   const navigatePrev = useCallback(() => {
     if (itemCount === 0) return
-    setSelectedIndex(prev => (prev > 0 ? prev - 1 : itemCount - 1))
+    setSelectedIndex((prev) => (prev > 0 ? prev - 1 : itemCount - 1))
   }, [itemCount])
 
   const reset = useCallback(() => {
     setSelectedIndex(emptyIndex)
   }, [emptyIndex])
 
-  const selectIndex = useCallback((index: number) => {
-    if (index >= 0 && index < itemCount) {
-      setSelectedIndex(index)
-    }
-  }, [itemCount])
+  const selectIndex = useCallback(
+    (index: number) => {
+      if (index >= 0 && index < itemCount) {
+        setSelectedIndex(index)
+      }
+    },
+    [itemCount]
+  )
 
   return { selectedIndex, navigateNext, navigatePrev, reset, selectIndex }
 }

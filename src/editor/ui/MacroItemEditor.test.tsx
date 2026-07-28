@@ -11,24 +11,48 @@ describe('MacroItemEditor', () => {
   const onDelete = vi.fn()
 
   it('renders the command', () => {
-    render(<MacroItemEditor macro={mockMacro} onEdit={onEdit} onDelete={onDelete} />)
+    render(
+      <MacroItemEditor
+        macro={mockMacro}
+        onEdit={onEdit}
+        onDelete={onDelete}
+      />
+    )
     expect(screen.getByText('/test')).toBeInTheDocument()
   })
 
   it('truncates long text', () => {
     const longTextMacro = { ...mockMacro, text: 'A'.repeat(100) }
-    render(<MacroItemEditor macro={longTextMacro} onEdit={onEdit} onDelete={onDelete} />)
+    render(
+      <MacroItemEditor
+        macro={longTextMacro}
+        onEdit={onEdit}
+        onDelete={onDelete}
+      />
+    )
     expect(screen.getByText('A'.repeat(80) + '…')).toBeInTheDocument()
   })
 
   it('calls onEdit with the macro', () => {
-    render(<MacroItemEditor macro={mockMacro} onEdit={onEdit} onDelete={onDelete} />)
+    render(
+      <MacroItemEditor
+        macro={mockMacro}
+        onEdit={onEdit}
+        onDelete={onDelete}
+      />
+    )
     fireEvent.click(screen.getByText('macroItemEditor.edit'))
     expect(onEdit).toHaveBeenCalledWith(mockMacro)
   })
 
   it('calls onDelete with the macro id', () => {
-    render(<MacroItemEditor macro={mockMacro} onEdit={onEdit} onDelete={onDelete} />)
+    render(
+      <MacroItemEditor
+        macro={mockMacro}
+        onEdit={onEdit}
+        onDelete={onDelete}
+      />
+    )
     fireEvent.click(screen.getByText('macroItemEditor.delete'))
     expect(onDelete).toHaveBeenCalledWith('1')
   })

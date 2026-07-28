@@ -16,15 +16,15 @@ vi.mock('../../store/useMacroStore', () => ({
 
 vi.mock('./detector-core', () => ({
   updateStateOnKey: vi.fn(),
-  isExact: vi.fn()
+  isExact: vi.fn(),
 }))
 
 vi.mock('../../config/defaults', () => ({
   defaultMacroConfig: {
     prefixes: ['/', ';'],
     theme: 'light',
-    useCommitKeys: false
-  }
+    useCommitKeys: false,
+  },
 }))
 
 // Mock window APIs
@@ -50,16 +50,16 @@ describe('createMacroDetector', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    
+
     // Setup default mocks
     ;(useMacroStore.getState as Mock).mockReturnValue({
       config: {
         useCommitKeys: false,
         prefixes: defaultMacroConfig.prefixes,
-        disabledSites: []
-      }
+        disabledSites: [],
+      },
     })
-    
+
     mockAddEventListener.mockClear()
     mockRemoveEventListener.mockClear()
     mockSetTimeout.mockClear()
@@ -76,7 +76,7 @@ describe('createMacroDetector', () => {
   describe('initialize and destroy', () => {
     it('attaches event listeners and subscribes to config changes', () => {
       detector.initialize()
-      
+
       expect(mockAddEventListener).toHaveBeenCalledWith('keydown', expect.any(Function), true)
       expect(mockAddEventListener).toHaveBeenCalledWith('blur', expect.any(Function), true)
       expect(useMacroStore.subscribe).toHaveBeenCalled()
@@ -85,7 +85,7 @@ describe('createMacroDetector', () => {
     it('does not attach duplicate listeners on multiple initializations', () => {
       detector.initialize()
       detector.initialize()
-      
+
       // Should only have been called once despite two calls
       expect(mockAddEventListener).toHaveBeenCalledTimes(2) // keydown and blur
     })
@@ -94,17 +94,17 @@ describe('createMacroDetector', () => {
       // First initialize
       detector.initialize()
       mockAddEventListener.mockClear()
-      
+
       // Then cleanup
       detector.destroy()
-      
+
       expect(mockRemoveEventListener).toHaveBeenCalledWith('keydown', expect.any(Function), true)
       expect(mockRemoveEventListener).toHaveBeenCalledWith('blur', expect.any(Function), true)
     })
 
     it('does not try to remove listeners if not initialized', () => {
       detector.destroy()
-      
+
       expect(mockRemoveEventListener).not.toHaveBeenCalled()
     })
   })
@@ -113,18 +113,18 @@ describe('createMacroDetector', () => {
     it('updates the internal macros array', () => {
       const testMacros = [
         { id: '1', command: '/test', text: 'test text' },
-        { id: '2', command: ';hello', text: 'hello world' }
+        { id: '2', command: ';hello', text: 'hello world' },
       ]
-      
+
       detector.setMacros(testMacros)
-      
+
       // We can't directly test the internal state, but we can verify
       // the function was called without throwing an error
       expect(() => detector.setMacros(testMacros)).not.toThrow()
     })
   })
 
-  // Note: Complex integration tests for Tab key and navigation functionality 
+  // Note: Complex integration tests for Tab key and navigation functionality
   // are covered in tabKeyIntegration.test.ts which provides better test isolation
   // and integration validation without complex mock setup issues.
 

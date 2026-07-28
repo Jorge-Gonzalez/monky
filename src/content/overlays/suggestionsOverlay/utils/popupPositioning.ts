@@ -25,10 +25,10 @@ export interface PopupPositionResult {
 
 /**
  * Calculates optimal position for a popup to stay within window boundaries
- * 
+ *
  * IMPORTANT: Expects cursorPosition in PAGE coordinates (includes scroll: window.scrollX/Y)
  * Returns position in PAGE coordinates for use with position: fixed
- * 
+ *
  * @param cursorPosition Current cursor position in page coordinates (pageX, pageY)
  * @param windowSize Current window dimensions (viewport)
  * @param popupDimensions Dimensions of the popup element
@@ -63,7 +63,7 @@ export function calculateOptimalPosition(
       // Neither position works perfectly, prefer positioning below
       // but constrain to viewport boundaries
       finalViewportY = Math.max(
-        margin, 
+        margin,
         Math.min(viewportY + 8, windowSize.height - popupDimensions.height - margin)
       )
     }

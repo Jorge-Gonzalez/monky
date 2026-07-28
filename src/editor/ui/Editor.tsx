@@ -7,16 +7,25 @@ import { useMacroEditor } from '../useMacroEditor'
 import { t } from '../../lib/i18n'
 
 export default function Editor() {
-  const macros = useMacroStore(s => s.macros)
+  const macros = useMacroStore((s) => s.macros)
   const { editingMacro, setEditingMacro, resetForm } = useMacroEditor()
 
   return (
     <div className="vertical gap-lg padding-2xl centered flush-block max-width-2xl fill-viewport">
       <h1 className="font-2xl">{t('editor.pageTitle')}</h1>
-      <MacroForm editing={editingMacro} onDone={resetForm} />
+      <MacroForm
+        editing={editingMacro}
+        onDone={resetForm}
+      />
       <hr className="rule ruled-top" />
       <Settings />
-      <MacroListEditor macros={macros} onEdit={setEditingMacro} onDelete={id => { void deleteMacro(id) }} />
+      <MacroListEditor
+        macros={macros}
+        onEdit={setEditingMacro}
+        onDelete={(id) => {
+          void deleteMacro(id)
+        }}
+      />
     </div>
   )
 }

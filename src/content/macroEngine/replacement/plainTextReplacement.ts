@@ -96,15 +96,21 @@ export function replacePlainText(
 
     // If the selection spans the entire content of a parent element,
     // expand the range to include that parent to clean up empty tags
-    if (start.offsetInNode === 0 && start.node.parentNode &&
-        start.node.parentNode !== element &&
-        start.node.parentNode.childNodes.length === 1) {
+    if (
+      start.offsetInNode === 0 &&
+      start.node.parentNode &&
+      start.node.parentNode !== element &&
+      start.node.parentNode.childNodes.length === 1
+    ) {
       range.setStartBefore(start.node.parentNode)
     }
 
-    if (end.offsetInNode === end.node.length && end.node.parentNode &&
-        end.node.parentNode !== element &&
-        end.node.parentNode.childNodes.length === 1) {
+    if (
+      end.offsetInNode === end.node.length &&
+      end.node.parentNode &&
+      end.node.parentNode !== element &&
+      end.node.parentNode.childNodes.length === 1
+    ) {
       range.setEndAfter(end.node.parentNode)
     }
 

@@ -1,10 +1,10 @@
-import type { Macro, EditableEl } from "../../../types"
-import { getTextContent, getSelection, normalizeForInputElement, isGoogleDocsSentinel } from "./editableUtils"
-import { replaceInGoogleDocs } from "../googledocs/googleDocsAdapter"
-import { replaceInInput } from "./inputTextReplacement"
-import { replacePlainText } from "./plainTextReplacement"
-import { createReplacementHistory } from "./replacementHistory"
-import { replaceWithMarker } from "./richTextReplacement"
+import type { Macro, EditableEl } from '../../../types'
+import { getTextContent, getSelection, normalizeForInputElement, isGoogleDocsSentinel } from './editableUtils'
+import { replaceInGoogleDocs } from '../googledocs/googleDocsAdapter'
+import { replaceInInput } from './inputTextReplacement'
+import { replacePlainText } from './plainTextReplacement'
+import { createReplacementHistory } from './replacementHistory'
+import { replaceWithMarker } from './richTextReplacement'
 
 /**
  * Replaces a range of text in an editable element with the text from a macro.
@@ -24,7 +24,7 @@ export function replaceText(el: EditableEl, macro: Macro, startPos: number, endP
       macroId: String(macro.id),
       originalCommand: macro.command,
       insertedAt: Date.now(),
-      isHtml: true
+      isHtml: true,
     })
   }
 
@@ -63,15 +63,14 @@ export function createMacroReplacement() {
     const undoRange = {
       startPos: undoStartPos ?? startPos,
       endPos: undoEndPos ?? endPos,
-      originalText: '' // Undo should just clear the replacement, not restore the command
+      originalText: '', // Undo should just clear the replacement, not restore the command
     }
 
     // Determine the actual text that will be inserted into the element
     // For input elements, text is normalized (newlines removed, whitespace collapsed)
     // For textarea and contenteditable, text is used as-is
-    const actualReplacementText = (element instanceof HTMLInputElement)
-      ? normalizeForInputElement(replacementText)
-      : replacementText
+    const actualReplacementText =
+      element instanceof HTMLInputElement ? normalizeForInputElement(replacementText) : replacementText
 
     // Debug: Uncomment for undo history debugging
     // console.log('[UNDO] Storing history entry:', {
@@ -95,7 +94,7 @@ export function createMacroReplacement() {
     // Perform the actual replacement using tested editableUtils
     const macroForReplacement: Macro = {
       ...macro,
-      text: replacementText
+      text: replacementText,
     }
     replaceText(element, macroForReplacement, startPos, endPos)
   }
@@ -164,7 +163,7 @@ export function createMacroReplacement() {
     getElementId,
     getTextContent,
     getCursorPosition,
-    setCursorPosition
+    setCursorPosition,
   }
 }
 

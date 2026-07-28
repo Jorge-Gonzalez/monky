@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { } from './macroDetector'
+import {} from './macroDetector'
 import { createSuggestionsCoordinator } from '../coordinators/SuggestionsCoordinator'
 import { createSuggestionsOverlayManager } from '../overlays/suggestionsOverlay/SuggestionsOverlayManager'
 import type { Macro } from '../../types'
@@ -12,12 +12,12 @@ vi.mock('../../store/useMacroStore', () => ({
         useCommitKeys: false,
         prefixes: ['/', ';'],
         disabledSites: [],
-        theme: 'light' as const
+        theme: 'light' as const,
       },
-      macros: []
+      macros: [],
     })),
-    subscribe: vi.fn()
-  }
+    subscribe: vi.fn(),
+  },
 }))
 
 vi.mock('../overlays/services/reactRenderer', () => ({
@@ -28,14 +28,14 @@ vi.mock('../overlays/services/reactRenderer', () => ({
     clear: vi.fn(),
     destroy: vi.fn(),
     getShadowRoot: vi.fn(() => null),
-  }))
+  })),
 }))
 
 vi.mock('../overlays/services/styleInjector', () => ({
   createStyleInjector: vi.fn(() => ({
     inject: vi.fn(),
     remove: vi.fn(),
-  }))
+  })),
 }))
 
 vi.mock('./replacement/editableUtils', () => ({
@@ -54,7 +54,7 @@ vi.mock('../overlays/suggestionsOverlay/utils/popupPositioning', () => ({
 }))
 
 import { getActiveEditable, getSelection, getCursorCoordinates } from './replacement/editableUtils'
-import { } from './replacement/macroReplacement'
+import {} from './replacement/macroReplacement'
 
 describe('Tab Key Integration Tests', () => {
   const mockMacros: Macro[] = [
@@ -69,7 +69,7 @@ describe('Tab Key Integration Tests', () => {
       command: '/send',
       text: 'Send message now',
       updated_at: String(new Date()),
-    }
+    },
   ]
 
   let mockInput: HTMLInputElement
@@ -90,7 +90,7 @@ describe('Tab Key Integration Tests', () => {
     // Create the components
     overlayManager = createSuggestionsOverlayManager(mockMacros)
     coordinator = createSuggestionsCoordinator(overlayManager)
-    
+
     // Attach coordinator
     coordinator.attach()
   })
@@ -112,9 +112,9 @@ describe('Tab Key Integration Tests', () => {
 
     it('coordinator calls showAll on overlay manager when requested', () => {
       const showAllSpy = vi.spyOn(overlayManager, 'showAll')
-      
+
       coordinator.onShowAllRequested('/s', { x: 100, y: 200 })
-      
+
       expect(showAllSpy).toHaveBeenCalledWith(100, 200, '/s')
     })
 
@@ -122,15 +122,15 @@ describe('Tab Key Integration Tests', () => {
       // Show overlay first
       overlayManager.showAll(100, 200, '/s')
       expect(overlayManager.isVisible()).toBe(true)
-      
-      // Arrow keys should be handled by coordinator when overlay is visible  
+
+      // Arrow keys should be handled by coordinator when overlay is visible
       const handled = coordinator.onNavigationRequested('right')
       expect(handled).toBe(true)
     })
 
     it('coordinator does not handle navigation when overlay is hidden', () => {
       expect(overlayManager.isVisible()).toBe(false)
-      
+
       const handled = coordinator.onNavigationRequested('left')
       expect(handled).toBe(false)
     })
@@ -140,10 +140,10 @@ describe('Tab Key Integration Tests', () => {
     it('saves buffer as trigger correctly in showAll mode', () => {
       // Show overlay with buffer context (simulating Tab key behavior)
       overlayManager.showAll(100, 200, '/save')
-      
-      // Verify the overlay is visible 
+
+      // Verify the overlay is visible
       expect(overlayManager.isVisible()).toBe(true)
-      
+
       // This test verifies that showAll accepts the buffer parameter
       // which is used internally to save the trigger for proper text replacement
       // The actual buffer handling is tested in the overlay manager unit tests
@@ -152,9 +152,9 @@ describe('Tab Key Integration Tests', () => {
 
     it('showAll method accepts buffer parameter for Tab key integration', () => {
       const showAllSpy = vi.spyOn(overlayManager, 'showAll')
-      
+
       overlayManager.showAll(100, 200, '/test')
-      
+
       expect(showAllSpy).toHaveBeenCalledWith(100, 200, '/test')
     })
   })
@@ -163,7 +163,7 @@ describe('Tab Key Integration Tests', () => {
     it('handles all arrow key directions when overlay is visible', () => {
       // Show overlay first
       overlayManager.showAll(100, 200, '/s')
-      
+
       // Test all navigation directions
       expect(coordinator.onNavigationRequested('left')).toBe(true)
       expect(coordinator.onNavigationRequested('right')).toBe(true)
@@ -173,7 +173,7 @@ describe('Tab Key Integration Tests', () => {
 
     it('allows other handlers when overlay is not visible', () => {
       expect(overlayManager.isVisible()).toBe(false)
-      
+
       expect(coordinator.onNavigationRequested('left')).toBe(false)
       expect(coordinator.onNavigationRequested('right')).toBe(false)
       expect(coordinator.onNavigationRequested('up')).toBe(false)

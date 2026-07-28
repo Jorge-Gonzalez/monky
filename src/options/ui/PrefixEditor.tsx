@@ -13,8 +13,10 @@ interface PrefixEditorProps {
  */
 export default function PrefixEditor({ prefixes, onChange }: PrefixEditorProps) {
   return (
-    <div className="vertical gap-md padding-lg
-      ground-subtle rule corner-md ruled">
+    <div
+      className="vertical gap-md padding-lg
+        ground-subtle rule corner-md ruled"
+    >
       <h3 className="font-lg">{t('options.prefixEditor.title')}</h3>
       <SelectableGroup
         // At least one: with no prefix there is no character that can start a macro.

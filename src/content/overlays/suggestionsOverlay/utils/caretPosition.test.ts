@@ -287,14 +287,14 @@ describe('getCaretCoordinates', () => {
 
       expect(coords1).not.toBeNull()
       expect(coords2).not.toBeNull()
-      
+
       // In a real browser, X coordinate should increase as we move right
       // In test environment (jsdom), they might both be 0, so we just verify they're valid
       expect(typeof coords1!.x).toBe('number')
       expect(typeof coords2!.x).toBe('number')
       expect(coords1!.x).toBeGreaterThanOrEqual(0)
       expect(coords2!.x).toBeGreaterThanOrEqual(0)
-      
+
       // If both are non-zero, second should be greater than or equal to first
       if (coords1!.x > 0 && coords2!.x > 0) {
         expect(coords2!.x).toBeGreaterThanOrEqual(coords1!.x)

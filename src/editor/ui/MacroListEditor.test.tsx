@@ -10,7 +10,7 @@ vi.mock('../../lib/i18n', () => ({
 
 // Mock MacroItemEditor since it's a child component
 vi.mock('./MacroItemEditor', () => ({
-  default: ({ macro, onEdit }: { macro: any, onEdit: (m: any) => void }) => (
+  default: ({ macro, onEdit }: { macro: any; onEdit: (m: any) => void }) => (
     <div data-testid="macro-item-editor">
       <span>{macro.command}</span>
       <button onClick={() => onEdit(macro)}>Edit</button>
@@ -27,7 +27,13 @@ describe('MacroListEditor Component', () => {
   ] as any
 
   it('renders a MacroItemEditor per macro', () => {
-    render(<MacroListEditor macros={mockMacros} onEdit={mockOnEdit} onDelete={mockOnDelete} />)
+    render(
+      <MacroListEditor
+        macros={mockMacros}
+        onEdit={mockOnEdit}
+        onDelete={mockOnDelete}
+      />
+    )
     expect(screen.getAllByTestId('macro-item-editor')).toHaveLength(2)
     mockMacros.forEach((macro: any) => {
       expect(screen.getByText(macro.command)).toBeInTheDocument()
@@ -35,12 +41,24 @@ describe('MacroListEditor Component', () => {
   })
 
   it('displays a message when no macros exist', () => {
-    render(<MacroListEditor macros={[]} onEdit={mockOnEdit} onDelete={mockOnDelete} />)
+    render(
+      <MacroListEditor
+        macros={[]}
+        onEdit={mockOnEdit}
+        onDelete={mockOnDelete}
+      />
+    )
     expect(screen.getByText('macroListEditor.noMacros')).toBeInTheDocument()
   })
 
   it('calls onEdit with the correct macro', () => {
-    render(<MacroListEditor macros={mockMacros} onEdit={mockOnEdit} onDelete={mockOnDelete} />)
+    render(
+      <MacroListEditor
+        macros={mockMacros}
+        onEdit={mockOnEdit}
+        onDelete={mockOnDelete}
+      />
+    )
     fireEvent.click(screen.getAllByRole('button', { name: 'Edit' })[0])
     expect(mockOnEdit).toHaveBeenCalledWith(mockMacros[0])
   })

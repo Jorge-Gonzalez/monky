@@ -11,7 +11,7 @@ describe('Macro Store', () => {
     const { addMacro } = useMacroStore.getState()
     addMacro({ id: '1', command: '/test', text: 'This is a test' })
     const macros = useMacroStore.getState().macros
-    expect(macros.some(m => m.command === '/test' && m.text === 'This is a test')).toBe(true)
+    expect(macros.some((m) => m.command === '/test' && m.text === 'This is a test')).toBe(true)
   })
 
   it('edits a macro', () => {
@@ -19,7 +19,7 @@ describe('Macro Store', () => {
     addMacro({ id: '2', command: '/bye', text: 'Adiós' })
     updateMacro('2', { text: 'Chao' })
     const macros = useMacroStore.getState().macros
-    expect(macros.find(m => m.id === '2')?.text).toBe('Chao')
+    expect(macros.find((m) => m.id === '2')?.text).toBe('Chao')
   })
 
   it('removes a macro', () => {
@@ -27,6 +27,6 @@ describe('Macro Store', () => {
     addMacro({ id: '3', command: '/delete', text: 'To delete' })
     deleteMacro('3')
     const macros = useMacroStore.getState().macros
-    expect(macros.some(m => m.command === '/delete')).toBe(false)
+    expect(macros.some((m) => m.command === '/delete')).toBe(false)
   })
 })

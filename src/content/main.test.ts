@@ -1,16 +1,16 @@
-import type * as MacroStorage from "./storage/macroStorage"
+import type * as MacroStorage from './storage/macroStorage'
 // @vitest-environment jsdom
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 
 // Mock the storage and its listeners at the correct path
-vi.mock("./storage/macroStorage", async () => {
-  const original = await vi.importActual<typeof MacroStorage>("./storage/macroStorage")
+vi.mock('./storage/macroStorage', async () => {
+  const original = await vi.importActual<typeof MacroStorage>('./storage/macroStorage')
   return {
     ...original,
     loadMacros: vi.fn().mockResolvedValue([
-      { id: "1", command: "/sig", text: "My Signature" },
-      { id: "2", command: "/brb", text: "Be right back" },
-      { id: "3", command: "/signature", text: "My Full Signature" },
+      { id: '1', command: '/sig', text: 'My Signature' },
+      { id: '2', command: '/brb', text: 'Be right back' },
+      { id: '3', command: '/signature', text: 'My Full Signature' },
     ]),
     listenMacrosChange: vi.fn(),
   }
@@ -60,20 +60,17 @@ const mockOverlays = vi.hoisted(() => ({
 
 vi.mock('./overlays', () => mockOverlays)
 
-import { useMacroStore } from "../store/useMacroStore"
+import { useMacroStore } from '../store/useMacroStore'
 // Import the content script logic after mocks are set up.
 // The `init()` call inside index.ts will use the mocked `loadMacros`.
 import { init, cleanupMacroSystem } from './main'
 
-describe("Content Script: Macro Replacement", () => {
+describe('Content Script: Macro Replacement', () => {
   // Helper to simulate typing a character
   const typeIn = (el: HTMLElement | HTMLInputElement | HTMLTextAreaElement, key: string) => {
     // For contenteditable, we need to manually manage the selection to simulate
     // typing at the end of the content.
-    if (
-      el instanceof HTMLElement &&
-      (el.isContentEditable || el.contentEditable === "true")
-    ) {
+    if (el instanceof HTMLElement && (el.isContentEditable || el.contentEditable === 'true')) {
       const range = document.createRange()
       const sel = window.getSelection()!
       range.selectNodeContents(el)
@@ -83,22 +80,19 @@ describe("Content Script: Macro Replacement", () => {
     }
 
     // Dispatch the keydown event. The listener is on `window`.
-    const event = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true })
+    const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true })
     Object.defineProperty(event, 'target', { writable: false, value: el })
     window.dispatchEvent(event)
 
     // Manually simulate the browser's default action if the event was not prevented.
     if (!event.defaultPrevented) {
-      if (key === "Backspace") {
+      if (key === 'Backspace') {
         if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)
           el.value = el.value.slice(0, -1)
-        else
-          el.textContent = el.textContent!.slice(0, -1)
+        else el.textContent = el.textContent!.slice(0, -1)
       } else if (key.length === 1) {
-        if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)
-          el.value += key
-        else
-          el.textContent += key
+        if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) el.value += key
+        else el.textContent += key
       }
     }
   }
@@ -107,9 +101,7 @@ describe("Content Script: Macro Replacement", () => {
     vi.useFakeTimers()
     await init()
     // Set default prefixes for the store
-    useMacroStore.setState(s => ({ config: { ...s.config, prefixes: ["/"] } }))
-
-
+    useMacroStore.setState((s) => ({ config: { ...s.config, prefixes: ['/'] } }))
 
     // Spy on createElement to add a mock for scrollIntoView.
     // This is needed because JSDOM doesn't implement it.
@@ -127,17 +119,17 @@ describe("Content Script: Macro Replacement", () => {
     cleanupMacroSystem()
   })
 
-  describe("Manual Mode (useCommitKeys: true)", () => {
+  describe('Manual Mode (useCommitKeys: true)', () => {
     beforeEach(() => {
-      useMacroStore.setState(s => ({ config: { ...s.config, useCommitKeys: true } }))
+      useMacroStore.setState((s) => ({ config: { ...s.config, useCommitKeys: true } }))
     })
 
-    describe("in contenteditable", () => {
+    describe('in contenteditable', () => {
       let div: HTMLDivElement
 
       beforeEach(() => {
-        div = document.createElement("div")
-        div.contentEditable = "true"
+        div = document.createElement('div')
+        div.contentEditable = 'true'
         document.body.appendChild(div)
         div.focus()
       })
@@ -146,60 +138,60 @@ describe("Content Script: Macro Replacement", () => {
         document.body.removeChild(div)
       })
 
-      it("should replace macro on space key commit", () => {
-        div.textContent = "Hello "
-        typeIn(div, "/")
-        typeIn(div, "s")
-        typeIn(div, "i")
-        typeIn(div, "g")
-        expect(div.textContent).toBe("Hello /sig")
-        typeIn(div, " ") // commit with space
-        expect(div.textContent).toBe("Hello My Signature")
+      it('should replace macro on space key commit', () => {
+        div.textContent = 'Hello '
+        typeIn(div, '/')
+        typeIn(div, 's')
+        typeIn(div, 'i')
+        typeIn(div, 'g')
+        expect(div.textContent).toBe('Hello /sig')
+        typeIn(div, ' ') // commit with space
+        expect(div.textContent).toBe('Hello My Signature')
       })
 
-      it("should replace macro on Enter key commit", () => {
-        div.textContent = "Typing... "
-        typeIn(div, "/")
-        typeIn(div, "b")
-        typeIn(div, "r")
-        typeIn(div, "b")
-        expect(div.textContent).toBe("Typing... /brb")
-        typeIn(div, "Enter")
-        expect(div.textContent).toBe("Typing... Be right back")
+      it('should replace macro on Enter key commit', () => {
+        div.textContent = 'Typing... '
+        typeIn(div, '/')
+        typeIn(div, 'b')
+        typeIn(div, 'r')
+        typeIn(div, 'b')
+        expect(div.textContent).toBe('Typing... /brb')
+        typeIn(div, 'Enter')
+        expect(div.textContent).toBe('Typing... Be right back')
       })
 
-      it("should allow committing after correcting a typo with backspace", () => {
-        div.textContent = "Hello "
-        typeIn(div, "/")
-        typeIn(div, "s")
-        typeIn(div, "i")
-        typeIn(div, "x") // typo
-        expect(div.textContent).toBe("Hello /six")
+      it('should allow committing after correcting a typo with backspace', () => {
+        div.textContent = 'Hello '
+        typeIn(div, '/')
+        typeIn(div, 's')
+        typeIn(div, 'i')
+        typeIn(div, 'x') // typo
+        expect(div.textContent).toBe('Hello /six')
 
-        typeIn(div, "Backspace") // remove the 'x'
-        expect(div.textContent).toBe("Hello /si")
+        typeIn(div, 'Backspace') // remove the 'x'
+        expect(div.textContent).toBe('Hello /si')
 
-        typeIn(div, "g") // correct the typo
-        expect(div.textContent).toBe("Hello /sig")
+        typeIn(div, 'g') // correct the typo
+        expect(div.textContent).toBe('Hello /sig')
 
-        typeIn(div, " ") // commit with space
-        expect(div.textContent).toBe("Hello My Signature")
+        typeIn(div, ' ') // commit with space
+        expect(div.textContent).toBe('Hello My Signature')
       })
 
-      it("should not commit macro when Tab is pressed (Tab is reserved for fuzzy search)", () => {
-        div.textContent = "Hello "
-        typeIn(div, "/")
-        typeIn(div, "s")
-        typeIn(div, "i")
-        typeIn(div, "g")
-        expect(div.textContent).toBe("Hello /sig")
-        
+      it('should not commit macro when Tab is pressed (Tab is reserved for fuzzy search)', () => {
+        div.textContent = 'Hello '
+        typeIn(div, '/')
+        typeIn(div, 's')
+        typeIn(div, 'i')
+        typeIn(div, 'g')
+        expect(div.textContent).toBe('Hello /sig')
+
         // Tab should not trigger commit (it's reserved for fuzzy search)
-        typeIn(div, "Tab")
-        
+        typeIn(div, 'Tab')
+
         // Text should remain unchanged (Tab doesn't commit)
-        expect(div.textContent).toBe("Hello /sig")
-        
+        expect(div.textContent).toBe('Hello /sig')
+
         // Note: Testing actual fuzzy search trigger requires complex DOM setup
         // This is thoroughly tested in tabKeyIntegration.test.ts
       })
@@ -207,30 +199,30 @@ describe("Content Script: Macro Replacement", () => {
       // TODO: Feature not yet implemented - delayed commit with backspace grace period
       // This would require implementing a delay between commit key press and actual replacement
       // to allow users to hit backspace and correct typos before the macro is replaced
-      it.skip("should allow correcting a typo with backspace before manual commit", () => {
-        div.textContent = "Hello "
-        typeIn(div, "/")
-        typeIn(div, "s")
-        typeIn(div, "i")
-        typeIn(div, "x") // typo
-        expect(div.textContent).toBe("Hello /six")
+      it.skip('should allow correcting a typo with backspace before manual commit', () => {
+        div.textContent = 'Hello '
+        typeIn(div, '/')
+        typeIn(div, 's')
+        typeIn(div, 'i')
+        typeIn(div, 'x') // typo
+        expect(div.textContent).toBe('Hello /six')
 
-        typeIn(div, "Backspace") // remove the 'x'
-        expect(div.textContent).toBe("Hello /si")
+        typeIn(div, 'Backspace') // remove the 'x'
+        expect(div.textContent).toBe('Hello /si')
 
-        typeIn(div, "g")
-        expect(div.textContent).toBe("Hello /sig")
+        typeIn(div, 'g')
+        expect(div.textContent).toBe('Hello /sig')
 
-        typeIn(div, " ") // commit with space
-        expect(div.textContent).toBe("Hello My Signature")
+        typeIn(div, ' ') // commit with space
+        expect(div.textContent).toBe('Hello My Signature')
       })
     })
 
-    describe("in textarea", () => {
+    describe('in textarea', () => {
       let textarea: HTMLTextAreaElement
 
       beforeEach(() => {
-        textarea = document.createElement("textarea")
+        textarea = document.createElement('textarea')
         document.body.appendChild(textarea)
         textarea.focus()
       })
@@ -239,26 +231,26 @@ describe("Content Script: Macro Replacement", () => {
         document.body.removeChild(textarea)
       })
 
-      it("should replace macro on space key commit", () => {
-        textarea.value = "Note: "
-        typeIn(textarea, "/")
-        typeIn(textarea, "s")
-        typeIn(textarea, "i")
-        typeIn(textarea, "g")
-        expect(textarea.value).toBe("Note: /sig")
-        typeIn(textarea, " ")
-        expect(textarea.value).toBe("Note: My Signature")
+      it('should replace macro on space key commit', () => {
+        textarea.value = 'Note: '
+        typeIn(textarea, '/')
+        typeIn(textarea, 's')
+        typeIn(textarea, 'i')
+        typeIn(textarea, 'g')
+        expect(textarea.value).toBe('Note: /sig')
+        typeIn(textarea, ' ')
+        expect(textarea.value).toBe('Note: My Signature')
       })
     })
   })
 
-  describe("Automatic Mode (useCommitKeys: false)", () => {
+  describe('Automatic Mode (useCommitKeys: false)', () => {
     let div: HTMLDivElement
 
     beforeEach(() => {
-      useMacroStore.setState(s => ({ config: { ...s.config, useCommitKeys: false } }))
-      div = document.createElement("div")
-      div.contentEditable = "true"
+      useMacroStore.setState((s) => ({ config: { ...s.config, useCommitKeys: false } }))
+      div = document.createElement('div')
+      div.contentEditable = 'true'
       document.body.appendChild(div)
       div.focus()
     })
@@ -268,67 +260,67 @@ describe("Content Script: Macro Replacement", () => {
     })
 
     it("should replace macro immediately if it's not a prefix of another macro", () => {
-      div.textContent = "I will "
-      typeIn(div, "/")
-      typeIn(div, "b")
-      typeIn(div, "r")
-      typeIn(div, "b")
-      expect(div.textContent).toBe("I will Be right back")
+      div.textContent = 'I will '
+      typeIn(div, '/')
+      typeIn(div, 'b')
+      typeIn(div, 'r')
+      typeIn(div, 'b')
+      expect(div.textContent).toBe('I will Be right back')
     })
 
-    it("should replace macro after a delay if it is a prefix of another macro", () => {
-      div.textContent = "My "
-      typeIn(div, "/")
-      typeIn(div, "s")
-      typeIn(div, "i")
-      typeIn(div, "g")
-      expect(div.textContent).toBe("My /sig") // Not replaced yet
+    it('should replace macro after a delay if it is a prefix of another macro', () => {
+      div.textContent = 'My '
+      typeIn(div, '/')
+      typeIn(div, 's')
+      typeIn(div, 'i')
+      typeIn(div, 'g')
+      expect(div.textContent).toBe('My /sig') // Not replaced yet
 
       vi.advanceTimersByTime(1900)
-      expect(div.textContent).toBe("My My Signature")
+      expect(div.textContent).toBe('My My Signature')
     })
 
-    it("should replace longer macro immediately", () => {
-      div.textContent = "My "
-      typeIn(div, "/")
-      typeIn(div, "s")
-      typeIn(div, "i")
-      typeIn(div, "g")
-      typeIn(div, "n")
-      typeIn(div, "a")
-      typeIn(div, "t")
-      typeIn(div, "u")
-      typeIn(div, "r")
-      typeIn(div, "e")
-      expect(div.textContent).toBe("My My Full Signature")
+    it('should replace longer macro immediately', () => {
+      div.textContent = 'My '
+      typeIn(div, '/')
+      typeIn(div, 's')
+      typeIn(div, 'i')
+      typeIn(div, 'g')
+      typeIn(div, 'n')
+      typeIn(div, 'a')
+      typeIn(div, 't')
+      typeIn(div, 'u')
+      typeIn(div, 'r')
+      typeIn(div, 'e')
+      expect(div.textContent).toBe('My My Full Signature')
     })
 
-    it("should not auto-commit while backspace is being used", () => {
+    it('should not auto-commit while backspace is being used', () => {
       // This test is from the old suite and is relevant for automatic mode
-      div.textContent = "Hello "
-      typeIn(div, "/")
-      typeIn(div, "s")
-      typeIn(div, "i")
-      typeIn(div, "g") // buffer is now "/sig", which is an exact match
-      expect(div.textContent).toBe("Hello /sig")
+      div.textContent = 'Hello '
+      typeIn(div, '/')
+      typeIn(div, 's')
+      typeIn(div, 'i')
+      typeIn(div, 'g') // buffer is now "/sig", which is an exact match
+      expect(div.textContent).toBe('Hello /sig')
 
       // An auto-commit timer should be scheduled
       vi.advanceTimersByTime(1800) // just before CONFIRM_DELAY_MS = 1850
 
-      typeIn(div, "Backspace") // user hits backspace
-      expect(div.textContent).toBe("Hello /si")
+      typeIn(div, 'Backspace') // user hits backspace
+      expect(div.textContent).toBe('Hello /si')
 
       // The timer should have been cancelled. We advance past the original timeout.
       vi.advanceTimersByTime(100) // total time is now 1900ms
       // The text should NOT have been replaced
-      expect(div.textContent).toBe("Hello /si")
+      expect(div.textContent).toBe('Hello /si')
 
-      typeIn(div, "g") // user re-types 'g'
-      expect(div.textContent).toBe("Hello /sig")
+      typeIn(div, 'g') // user re-types 'g'
+      expect(div.textContent).toBe('Hello /sig')
 
       // A new timer should be scheduled. Let's let it fire.
       vi.advanceTimersByTime(1900)
-      expect(div.textContent).toBe("Hello My Signature")
+      expect(div.textContent).toBe('Hello My Signature')
     })
   })
 })

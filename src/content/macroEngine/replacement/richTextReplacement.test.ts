@@ -6,7 +6,7 @@ import {
   removeAllMarkers,
   hasMarkers,
   getMarkerCount,
-  type MacroMarkerData
+  type MacroMarkerData,
 } from './richTextReplacement'
 
 describe('Rich Text Replacement', () => {
@@ -30,7 +30,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'test-1',
         originalCommand: '/hello',
         insertedAt: Date.now(),
-        isHtml: false
+        isHtml: false,
       }
 
       const result = replaceWithMarker(
@@ -54,7 +54,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'test-html',
         originalCommand: '/sig',
         insertedAt: Date.now(),
-        isHtml: true
+        isHtml: true,
       }
 
       const result = replaceWithMarker(
@@ -80,7 +80,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'test-list',
         originalCommand: '/tasks',
         insertedAt: Date.now(),
-        isHtml: true
+        isHtml: true,
       }
 
       const result = replaceWithMarker(
@@ -105,7 +105,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'test-middle',
         originalCommand: '/name',
         insertedAt: Date.now(),
-        isHtml: false
+        isHtml: false,
       }
 
       const result = replaceWithMarker(
@@ -129,16 +129,10 @@ describe('Rich Text Replacement', () => {
         macroId: 'test-fail',
         originalCommand: '/hello',
         insertedAt: Date.now(),
-        isHtml: false
+        isHtml: false,
       }
 
-      const result = replaceWithMarker(
-        regularDiv,
-        0,
-        6,
-        'Hello',
-        markerData
-      )
+      const result = replaceWithMarker(regularDiv, 0, 6, 'Hello', markerData)
 
       expect(result).toBeNull()
     })
@@ -152,7 +146,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'test-undo-1',
         originalCommand: '/hello',
         insertedAt: Date.now(),
-        isHtml: false
+        isHtml: false,
       }
 
       replaceWithMarker(contentEditableDiv, 0, 6, 'Hello, World!', markerData)
@@ -171,16 +165,10 @@ describe('Rich Text Replacement', () => {
         macroId: 'test-undo-html',
         originalCommand: '/sig',
         insertedAt: Date.now(),
-        isHtml: true
+        isHtml: true,
       }
 
-      replaceWithMarker(
-        contentEditableDiv,
-        0,
-        4,
-        '<strong>John Doe</strong>',
-        markerData
-      )
+      replaceWithMarker(contentEditableDiv, 0, 4, '<strong>John Doe</strong>', markerData)
 
       expect(contentEditableDiv.innerHTML).toContain('<strong>John Doe</strong>')
 
@@ -199,7 +187,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'first',
         originalCommand: '/hello',
         insertedAt: 1000,
-        isHtml: false
+        isHtml: false,
       }
       replaceWithMarker(contentEditableDiv, 0, 6, 'Hello', marker1)
 
@@ -208,7 +196,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'second',
         originalCommand: '/world',
         insertedAt: 2000,
-        isHtml: false
+        isHtml: false,
       }
       replaceWithMarker(contentEditableDiv, 6, 12, 'World', marker2)
 
@@ -228,7 +216,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'test-edit',
         originalCommand: '/hello',
         insertedAt: Date.now(),
-        isHtml: false
+        isHtml: false,
       }
 
       replaceWithMarker(contentEditableDiv, 0, 6, 'Hello', markerData)
@@ -268,7 +256,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'first',
         originalCommand: '/hello',
         insertedAt: Date.now(),
-        isHtml: false
+        isHtml: false,
       }
       replaceWithMarker(contentEditableDiv, 0, 6, 'Hello', marker1)
 
@@ -276,7 +264,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'second',
         originalCommand: '/world',
         insertedAt: Date.now(),
-        isHtml: false
+        isHtml: false,
       }
       replaceWithMarker(contentEditableDiv, 6, 12, 'World', marker2)
 
@@ -295,7 +283,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'exists',
         originalCommand: '/hello',
         insertedAt: Date.now(),
-        isHtml: false
+        isHtml: false,
       }
 
       replaceWithMarker(contentEditableDiv, 0, 6, 'Hello', markerData)
@@ -314,7 +302,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'first',
         originalCommand: '/hello',
         insertedAt: Date.now(),
-        isHtml: false
+        isHtml: false,
       }
       replaceWithMarker(contentEditableDiv, 0, 6, 'Hello', marker1)
 
@@ -322,7 +310,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'second',
         originalCommand: '/world',
         insertedAt: Date.now(),
-        isHtml: false
+        isHtml: false,
       }
       replaceWithMarker(contentEditableDiv, 6, 12, 'World', marker2)
 
@@ -342,16 +330,10 @@ describe('Rich Text Replacement', () => {
         macroId: 'html-remove',
         originalCommand: '/sig',
         insertedAt: Date.now(),
-        isHtml: true
+        isHtml: true,
       }
 
-      replaceWithMarker(
-        contentEditableDiv,
-        0,
-        4,
-        '<strong>Bold Text</strong>',
-        markerData
-      )
+      replaceWithMarker(contentEditableDiv, 0, 4, '<strong>Bold Text</strong>', markerData)
 
       expect(hasMarkers(contentEditableDiv)).toBe(true)
 
@@ -379,7 +361,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'complex',
         originalCommand: '/table',
         insertedAt: Date.now(),
-        isHtml: true
+        isHtml: true,
       }
 
       const complexHtml = `
@@ -389,13 +371,7 @@ describe('Rich Text Replacement', () => {
         </table>
       `
 
-      const result = replaceWithMarker(
-        contentEditableDiv,
-        0,
-        6,
-        complexHtml,
-        markerData
-      )
+      const result = replaceWithMarker(contentEditableDiv, 0, 6, complexHtml, markerData)
 
       expect(result).not.toBeNull()
       expect(contentEditableDiv.innerHTML).toContain('<table>')
@@ -421,7 +397,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'cursor-test',
         originalCommand: '/hello',
         insertedAt: Date.now(),
-        isHtml: false
+        isHtml: false,
       }
 
       replaceWithMarker(contentEditableDiv, 0, 6, 'Hello, World!', markerData)
@@ -442,7 +418,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'transparent',
         originalCommand: '/hello',
         insertedAt: Date.now(),
-        isHtml: false
+        isHtml: false,
       }
 
       replaceWithMarker(contentEditableDiv, 0, 6, 'Hello', markerData)
@@ -459,7 +435,7 @@ describe('Rich Text Replacement', () => {
         macroId: 'meta-test',
         originalCommand: '/test',
         insertedAt: 12345,
-        isHtml: true
+        isHtml: true,
       }
 
       replaceWithMarker(contentEditableDiv, 0, 5, 'Test Content', markerData)

@@ -1,6 +1,6 @@
-import type { EditableEl } from "../../../types"
-import { getTextContent, findTextNodeForOffset } from "./editableUtils"
-import { undoMostRecentInsertion, hasMarkers } from "./richTextReplacement"
+import type { EditableEl } from '../../../types'
+import { getTextContent, findTextNodeForOffset } from './editableUtils'
+import { undoMostRecentInsertion, hasMarkers } from './richTextReplacement'
 
 // History entry tracking a specific text replacement
 export interface ReplacementHistoryEntry {
@@ -39,11 +39,7 @@ export function createReplacementHistory() {
   /**
    * Create a Range object from text positions in a contentEditable element
    */
-  function createRangeFromTextPositions(
-    element: EditableEl,
-    startPos: number,
-    endPos: number
-  ): Range | null {
+  function createRangeFromTextPositions(element: EditableEl, startPos: number, endPos: number): Range | null {
     if (!element) return null
 
     const start = findTextNodeForOffset(element as Node, startPos)
@@ -117,7 +113,7 @@ export function createReplacementHistory() {
       endPos,
       originalText,
       replacementText,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     })
 
     // Keep history size manageable
@@ -193,7 +189,12 @@ export function createReplacementHistory() {
             element.dispatchEvent(new Event('input', { bubbles: true }))
           } else if (element.isContentEditable || (element as HTMLElement).contentEditable === 'true') {
             // Use Selection API to preserve formatting
-            replaceInContentEditablePreservingFormat(element, expectedReplacementPos, expectedEndPos, originalText)
+            replaceInContentEditablePreservingFormat(
+              element,
+              expectedReplacementPos,
+              expectedEndPos,
+              originalText
+            )
             element.dispatchEvent(new Event('input', { bubbles: true }))
           }
           history.splice(i, 1)
@@ -206,11 +207,15 @@ export function createReplacementHistory() {
             const endIndex = replacementIndex + replacementText.length
 
             if ('value' in element) {
-              const newValue = currentContent.substring(0, replacementIndex) +
-                              originalText +
-                              currentContent.substring(endIndex)
+              const newValue =
+                currentContent.substring(0, replacementIndex) +
+                originalText +
+                currentContent.substring(endIndex)
               element.value = newValue
-              element.setSelectionRange(replacementIndex + originalText.length, replacementIndex + originalText.length)
+              element.setSelectionRange(
+                replacementIndex + originalText.length,
+                replacementIndex + originalText.length
+              )
               element.dispatchEvent(new Event('input', { bubbles: true }))
             } else if (element.isContentEditable) {
               replaceInContentEditablePreservingFormat(element, replacementIndex, endIndex, originalText)
@@ -254,7 +259,7 @@ export function createReplacementHistory() {
   function hasHistory(element: EditableEl): boolean {
     if (!element) return false
     const elementId = getElementId(element)
-    return history.some(entry => entry.elementId === elementId)
+    return history.some((entry) => entry.elementId === elementId)
   }
 
   /**
@@ -270,7 +275,7 @@ export function createReplacementHistory() {
     clear,
     hasHistory,
     getHistoryLength,
-    getElementId
+    getElementId,
   }
 }
 

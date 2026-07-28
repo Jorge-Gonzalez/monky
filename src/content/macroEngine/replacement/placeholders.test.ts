@@ -55,8 +55,9 @@ describe('stripPlaceholders', () => {
   })
 
   it('strips all placeholders in a multi-placeholder string', () => {
-    expect(stripPlaceholders('{{greeting}} {{name}}, order {{id}} ready'))
-      .toBe('greeting name, order id ready')
+    expect(stripPlaceholders('{{greeting}} {{name}}, order {{id}} ready')).toBe(
+      'greeting name, order id ready'
+    )
   })
 })
 
@@ -73,8 +74,7 @@ describe('splitPlaceholders', () => {
   })
 
   it('splits a placeholder out of its surrounding text', () => {
-    expect(splitPlaceholders('Dear {{name}},'))
-      .toEqual([literal('Dear '), placeholder('name'), literal(',')])
+    expect(splitPlaceholders('Dear {{name}},')).toEqual([literal('Dear '), placeholder('name'), literal(',')])
   })
 
   it('emits no empty segment when a placeholder sits at either end', () => {
@@ -84,8 +84,12 @@ describe('splitPlaceholders', () => {
 
   it('keeps every placeholder and literal in source order', () => {
     expect(splitPlaceholders('{{greeting}} {{name}}, order {{id}} ready')).toEqual([
-      placeholder('greeting'), literal(' '), placeholder('name'),
-      literal(', order '), placeholder('id'), literal(' ready'),
+      placeholder('greeting'),
+      literal(' '),
+      placeholder('name'),
+      literal(', order '),
+      placeholder('id'),
+      literal(' ready'),
     ])
   })
 
@@ -95,9 +99,11 @@ describe('splitPlaceholders', () => {
 
   it('reassembles to the original text', () => {
     const text = 'Dear {{name}}, your {{item}} ships {{when}}.'
-    expect(splitPlaceholders(text).map(segment =>
-      segment.isPlaceholder ? `{{${segment.text}}}` : segment.text
-    ).join('')).toBe(text)
+    expect(
+      splitPlaceholders(text)
+        .map((segment) => (segment.isPlaceholder ? `{{${segment.text}}}` : segment.text))
+        .join('')
+    ).toBe(text)
   })
 })
 

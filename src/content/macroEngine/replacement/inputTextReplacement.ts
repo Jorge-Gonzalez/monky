@@ -59,9 +59,8 @@ export function replaceInInput(
 
     // Normalize text for input elements (remove newlines and collapse whitespace)
     // Textarea elements can have newlines, so we preserve them
-    const textToInsert = element instanceof HTMLInputElement
-      ? normalizeForInputElement(replacementText)
-      : replacementText
+    const textToInsert =
+      element instanceof HTMLInputElement ? normalizeForInputElement(replacementText) : replacementText
 
     // Perform the replacement
     element.value = before + textToInsert + after

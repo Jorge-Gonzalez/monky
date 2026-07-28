@@ -6,7 +6,7 @@ export type ImportResult = { added: number; skipped: number }
 
 export function serializeMacros(macros: Macro[]): string {
   const out: ExportedMacro[] = macros
-    .filter(m => !m.isSystemMacro)
+    .filter((m) => !m.isSystemMacro)
     .map(({ id: _id, isSystemMacro: _s, isParametric: _p, ...rest }) => rest)
   return JSON.stringify(out, null, 2)
 }
@@ -31,9 +31,13 @@ export function mergeImport(
   let added = 0
   let skipped = 0
   for (const m of incoming) {
-    if (existingCommands.has(m.command)) { skipped++; continue }
+    if (existingCommands.has(m.command)) {
+      skipped++
+      continue
+    }
     const result = add({ ...m, id: crypto.randomUUID() })
-    if (result.success) added++; else skipped++
+    if (result.success) added++
+    else skipped++
   }
   return { added, skipped }
 }

@@ -10,8 +10,7 @@ describe('useModalKeyboard', () => {
     onClose = vi.fn()
   })
 
-  const render = (active = true) =>
-    renderHook(() => useModalKeyboard(active, onClose))
+  const render = (active = true) => renderHook(() => useModalKeyboard(active, onClose))
 
   it('calls onClose on Escape', () => {
     render()

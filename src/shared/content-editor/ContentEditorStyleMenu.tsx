@@ -9,12 +9,12 @@ import { t } from '../../lib/i18n'
 type StyleOption = { type: BlockType; labelKey: string; shortLabel: string }
 
 const STYLE_OPTIONS: StyleOption[] = [
-  { type: 'paragraph', labelKey: 'contentEditor.paragraph',  shortLabel: '¶'    },
-  { type: 'h1',        labelKey: 'contentEditor.h1',         shortLabel: 'H1'   },
-  { type: 'h2',        labelKey: 'contentEditor.h2',         shortLabel: 'H2'   },
-  { type: 'h3',        labelKey: 'contentEditor.h3',         shortLabel: 'H3'   },
-  { type: 'blockquote',labelKey: 'contentEditor.blockquote', shortLabel: '❝'    },
-  { type: 'pre',       labelKey: 'contentEditor.pre',        shortLabel: '</>'  },
+  { type: 'paragraph', labelKey: 'contentEditor.paragraph', shortLabel: '¶' },
+  { type: 'h1', labelKey: 'contentEditor.h1', shortLabel: 'H1' },
+  { type: 'h2', labelKey: 'contentEditor.h2', shortLabel: 'H2' },
+  { type: 'h3', labelKey: 'contentEditor.h3', shortLabel: 'H3' },
+  { type: 'blockquote', labelKey: 'contentEditor.blockquote', shortLabel: '❝' },
+  { type: 'pre', labelKey: 'contentEditor.pre', shortLabel: '</>' },
 ]
 
 interface ContentEditorStyleMenuProps {
@@ -34,10 +34,13 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
     setOpen(false)
   }
 
-  const current = STYLE_OPTIONS.find(o => o.type === blockType) ?? STYLE_OPTIONS[0]
+  const current = STYLE_OPTIONS.find((o) => o.type === blockType) ?? STYLE_OPTIONS[0]
 
   return (
-    <div ref={wrapperRef} className="position-relative">
+    <div
+      ref={wrapperRef}
+      className="position-relative"
+    >
       <button
         type="button"
         data-component="ce-style-trigger"
@@ -46,22 +49,32 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
           ink-soft corner-sm font-sm font-medium pressable
           hover:ground-defined hover:ink
           expanded:ground-defined expanded:ink-accent"
-        onMouseDown={e => { e.preventDefault(); setOpen(o => !o) }}
+        onMouseDown={(e) => {
+          e.preventDefault()
+          setOpen((o) => !o)
+        }}
         title={t('contentEditor.textStyle')}
         aria-label={t('contentEditor.textStyle')}
         aria-expanded={open}
         aria-haspopup="listbox"
       >
         <span>{current.shortLabel}</span>
-        <span className="horizontal align-center
-          alpha-60" dangerouslySetInnerHTML={{ __html: icons.chevronDown }} />
+        <span
+          className="horizontal align-center
+            alpha-60"
+          dangerouslySetInnerHTML={{ __html: icons.chevronDown }}
+        />
       </button>
 
       {open && (
-        <div data-component="ce-style-menu" className="vertical gap-xs padding-xs attach-left attach-below-xs
-          dropdown position-absolute
-          ground rule corner-md ruled elevated" role="listbox">
-          {STYLE_OPTIONS.map(opt => (
+        <div
+          data-component="ce-style-menu"
+          className="vertical gap-xs padding-xs attach-left attach-below-xs
+            dropdown position-absolute
+            ground rule corner-md ruled elevated"
+          role="listbox"
+        >
+          {STYLE_OPTIONS.map((opt) => (
             <button
               key={opt.type}
               type="button"
@@ -74,11 +87,18 @@ export function ContentEditorStyleMenu({ blockType, editorRef }: ContentEditorSt
                 ink corner-sm font-sm text-start pressable
                 hover:ground-defined
                 selected:ground-defined selected:ink-accent"
-              onMouseDown={e => { e.preventDefault(); handleSelect(opt.type) }}
+              onMouseDown={(e) => {
+                e.preventDefault()
+                handleSelect(opt.type)
+              }}
             >
-              <span className="rigid control-inline-md
-                ink-soft font-xs font-semibold
-                parent-selected:ink-accent">{opt.shortLabel}</span>
+              <span
+                className="rigid control-inline-md
+                  ink-soft font-xs font-semibold
+                  parent-selected:ink-accent"
+              >
+                {opt.shortLabel}
+              </span>
               <span className="elastic basis-ratio">{t(opt.labelKey as Parameters<typeof t>[0])}</span>
             </button>
           ))}

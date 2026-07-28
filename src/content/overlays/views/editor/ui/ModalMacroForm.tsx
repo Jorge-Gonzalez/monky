@@ -15,9 +15,20 @@ import { CommandSuggestions, SUGGESTIONS_LISTBOX_ID, suggestionOptionId } from '
 const SAVE_TOAST_MS = 900
 
 const PopoutIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none">
-    <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-      d="M14 4h6m0 0v6m0-6L10 14M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <path
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M14 4h6m0 0v6m0-6L10 14M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"
+    />
   </svg>
 )
 
@@ -28,7 +39,7 @@ interface ModalMacroFormProps {
 }
 
 export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormProps) {
-  const prefixes = useMacroStore(s => s.config?.prefixes || ['/'])
+  const prefixes = useMacroStore((s) => s.config?.prefixes || ['/'])
   const [command, setCommand] = useState(editing?.command || '')
   const [text, setText] = useState(editing?.html || editing?.text || '')
   const [isSensitive, setSensitive] = useState(!!editing?.is_sensitive)
@@ -38,7 +49,9 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   const commandInputRef = useRef<HTMLInputElement>(null)
   const contentEditorRef = useRef<ContentEditorRef>(null)
 
-  const suggest = useCommandSuggestions(command, !editing, onLoadMacro, m => { void deleteMacro(String(m.id)) })
+  const suggest = useCommandSuggestions(command, !editing, onLoadMacro, (m) => {
+    void deleteMacro(String(m.id))
+  })
   const commandValid = isCommandValid(command, prefixes)
   const commandJoined = Boolean((command && !commandValid) || suggest.visible)
 
@@ -67,7 +80,8 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   }, [editing?.id])
 
   const isTextValid = text.trim() !== ''
-  const isDirty = !editing ||
+  const isDirty =
+    !editing ||
     command !== editing.command ||
     text !== (editing.html || editing.text) ||
     isSensitive !== !!editing.is_sensitive
@@ -75,15 +89,23 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
 
   // Open the full-page editor (a content script can't call chrome.tabs directly;
   // the background opens the tab).
-  const openFullEditor = () => { void chrome.runtime.sendMessage('open-editor') }
+  const openFullEditor = () => {
+    void chrome.runtime.sendMessage('open-editor')
+  }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
     setError(null)
 
     const commandError = validateCommand(command, prefixes)
-    if (commandError) { setError(commandError); return }
-    if (!text.trim()) { setError('Text content is required'); return }
+    if (commandError) {
+      setError(commandError)
+      return
+    }
+    if (!text.trim()) {
+      setError('Text content is required')
+      return
+    }
 
     const hasRichContent = hasRichFormatting(text)
     const plainText = extractPlainText(text)
@@ -92,7 +114,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
       command,
       text: plainText,
       html: hasRichContent ? text : undefined,
-      contentType: hasRichContent ? 'text/html' as const : 'text/plain' as const,
+      contentType: hasRichContent ? ('text/html' as const) : ('text/plain' as const),
       is_sensitive: isSensitive,
     }
 
@@ -111,11 +133,23 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   }
 
   return (
-    <form onSubmit={e => { void onSubmit(e) }} data-component="editor-form" className="vertical elastic basis-ratio gap-md min-height-none
-      position-relative">
-      <div data-component="editor-form-header" className="horizontal gap-lg align-center justify-between">
+    <form
+      onSubmit={(e) => {
+        void onSubmit(e)
+      }}
+      data-component="editor-form"
+      className="vertical elastic basis-ratio gap-md min-height-none
+        position-relative"
+    >
+      <div
+        data-component="editor-form-header"
+        className="horizontal gap-lg align-center justify-between"
+      >
         <div className="horizontal rigid gap-sm align-center">
-          <h1 data-component="editor-form-title" className="ink font-lg font-semibold">
+          <h1
+            data-component="editor-form-title"
+            className="ink font-lg font-semibold"
+          >
             {editing ? t('editor.title.editShort') : t('editor.title.newShort')}
           </h1>
           <button
@@ -133,37 +167,57 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           </button>
         </div>
 
-        <div data-component="editor-form-command" className="horizontal gap-sm align-center">
+        <div
+          data-component="editor-form-command"
+          className="horizontal gap-sm align-center"
+        >
           <span>
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 16 16">
-              <polygon fill="currentColor" points="7,9 4,9 10,0 8,7 11,7 5.417,15 "/>
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16px"
+              height="16px"
+              viewBox="0 0 16 16"
+            >
+              <polygon
+                fill="currentColor"
+                points="7,9 4,9 10,0 8,7 11,7 5.417,15 "
+              />
             </svg>
           </span>
-          <div ref={suggest.containerRef} className="elastic basis-ratio width-popover-lg
-            position-relative">
+          <div
+            ref={suggest.containerRef}
+            className="elastic basis-ratio width-popover-lg
+              position-relative"
+          >
             <input
               id="modal-macro-command"
               ref={commandInputRef}
               data-component="editor-form-command-input"
               className={`padding-block-sm padding-inline-md fill-inline ground-subtle ink rule ${commandJoined ? 'corner-top-3xl corner-bottom-none' : 'corner-3xl'} ruled recessed-soft font-md tween-rule-quick focus:rule-accent-soft focus:ring-accent-soft ${command && !commandValid ? 'rule-fail focus:rule-fail focus:recessed-fail' : ''}`}
               value={command}
-              onChange={e => setCommand(e.currentTarget.value)}
+              onChange={(e) => setCommand(e.currentTarget.value)}
               placeholder={t('macroForm.commandPlaceholder', { prefix: prefixes[0] })}
               aria-label={t('macroForm.triggerLabel')}
               aria-invalid={command && !commandValid ? true : undefined}
               role="combobox"
               aria-expanded={suggest.visible}
               aria-controls={suggest.visible ? SUGGESTIONS_LISTBOX_ID : undefined}
-              aria-activedescendant={suggest.visible && suggest.activeIndex >= 0
-                ? suggestionOptionId(suggest.activeIndex)
-                : undefined}
+              aria-activedescendant={
+                suggest.visible && suggest.activeIndex >= 0
+                  ? suggestionOptionId(suggest.activeIndex)
+                  : undefined
+              }
               aria-autocomplete="list"
               maxLength={50}
               autoComplete="off"
               {...suggest.inputProps}
             />
             {command && !commandValid && (
-              <div data-component="editor-form-command-error" className={`padding-block-xs padding-inline-sm ${suggest.visible ? 'corner-bottom-none' : 'corner-bottom-md'} ground-fail-faint ink-fail font-xs`}>
+              <div
+                data-component="editor-form-command-error"
+                className={`padding-block-xs padding-inline-sm ${suggest.visible ? 'corner-bottom-none' : 'corner-bottom-md'} ground-fail-faint ink-fail font-xs`}
+              >
                 {t('macroForm.commandPrefixError', { prefixes: prefixes.join(', ') })}
               </div>
             )}
@@ -190,13 +244,19 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
         placeholder={t('macroForm.contentPlaceholder')}
       />
 
-      <div data-component="editor-form-footer" className="horizontal rigid gap-md align-center justify-between">
-        <label data-component="editor-form-sensitive" className="horizontal gap-sm align-center
-          ink font-sm pressable">
+      <div
+        data-component="editor-form-footer"
+        className="horizontal rigid gap-md align-center justify-between"
+      >
+        <label
+          data-component="editor-form-sensitive"
+          className="horizontal gap-sm align-center
+            ink font-sm pressable"
+        >
           <input
             type="checkbox"
             checked={isSensitive}
-            onChange={e => setSensitive(e.currentTarget.checked)}
+            onChange={(e) => setSensitive(e.currentTarget.checked)}
             className="control-size-lg
               rule corner-sm ruled pressable
               focus:ring"
@@ -204,7 +264,10 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
           <span>{t('macroForm.sensitiveLabel')}</span>
         </label>
 
-        <div data-component="editor-form-actions" className="horizontal inline gap-sm">
+        <div
+          data-component="editor-form-actions"
+          className="horizontal inline gap-sm"
+        >
           {editing && (
             <button
               type="button"
@@ -239,7 +302,11 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
       </div>
 
       {(error || savedToast) && (
-        <div data-component="editor-form-toast" className={`padding-md center-x inset-bottom-3xl position-absolute corner-md ruled elevated-soft text-nowrap ${error ? 'ground-fail-faint rule-fail ink-fail' : 'ground-pass-faint rule-pass ink-pass'}`} role="status">
+        <div
+          data-component="editor-form-toast"
+          className={`padding-md center-x inset-bottom-3xl position-absolute corner-md ruled elevated-soft text-nowrap ${error ? 'ground-fail-faint rule-fail ink-fail' : 'ground-pass-faint rule-pass ink-pass'}`}
+          role="status"
+        >
           <p className="font-medium">{error ?? savedToast}</p>
         </div>
       )}

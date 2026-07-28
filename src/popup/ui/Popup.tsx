@@ -8,14 +8,17 @@ import NewMacroButton from './NewMacroButton'
 import { useAppliedTheme } from '../../theme/hooks/useAppliedTheme'
 
 export default function Popup() {
-  const macros = useMacroStore(state => state.macros)
+  const macros = useMacroStore((state) => state.macros)
 
   const popupRef = useRef<HTMLDivElement>(null)
   useAppliedTheme(popupRef)
 
   return (
-    <div ref={popupRef} className="vertical gap-sm padding-sm width-popover-xl
-      ground ink">
+    <div
+      ref={popupRef}
+      className="vertical gap-sm padding-sm width-popover-xl
+        ground ink"
+    >
       <div className="horizontal gap-sm align-center justify-between">
         <div className="horizontal grow-1 gap-sm align-center">
           <h1 className="ink font-lg font-bold">{t('popup.title')}</h1>

@@ -96,11 +96,7 @@ export interface EditableBackend {
    * No prefix-trim, no undo — the command buffer is consumed wholesale.
    * DOM: [max(0, end - buffer.length), end]. GDocs: [0, buffer.length].
    */
-  parametricRange(
-    el: EditableEl,
-    buffer: string,
-    sel: { start: number; end: number }
-  ): ReplacementRange
+  parametricRange(el: EditableEl, buffer: string, sel: { start: number; end: number }): ReplacementRange
 
   /**
    * Range for a macro picked from the suggestions overlay (replaces the typed
@@ -133,11 +129,7 @@ export interface EditableBackend {
   focusForInsertion(el: EditableEl): void
 
   /** Create the placeholder navigation session appropriate to this backend. */
-  createPlaceholderSession(
-    el: EditableEl,
-    text: string,
-    onExit: () => void
-  ): PlaceholderSession
+  createPlaceholderSession(el: EditableEl, text: string, onExit: () => void): PlaceholderSession
 }
 
 /**

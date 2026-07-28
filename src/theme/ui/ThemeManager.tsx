@@ -11,8 +11,8 @@ const MQL = window.matchMedia('(prefers-color-scheme: dark)')
  * It should be rendered once at the root of the application.
  */
 export function ThemeManager() {
-  const theme = useMacroStore(s => s.config.theme)
-  const colorTheme = useMacroStore(s => s.config.colorTheme ?? 'humo')
+  const theme = useMacroStore((s) => s.config.theme)
+  const colorTheme = useMacroStore((s) => s.config.colorTheme ?? 'humo')
 
   useEffect(() => {
     const htmlElement = document.documentElement

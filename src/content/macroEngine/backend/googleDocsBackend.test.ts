@@ -20,8 +20,7 @@ const macro = (over: Partial<Macro> = {}): Macro => ({
   ...over,
 })
 
-const key = (k: string, init: KeyboardEventInit = {}) =>
-  new KeyboardEvent('keydown', { key: k, ...init })
+const key = (k: string, init: KeyboardEventInit = {}) => new KeyboardEvent('keydown', { key: k, ...init })
 
 describe('googleDocsBackend', () => {
   beforeEach(() => {
@@ -79,8 +78,10 @@ describe('googleDocsBackend', () => {
     })
 
     it('parametricRange: [0, buffer.length]', () => {
-      expect(googleDocsBackend.parametricRange(null, ':edit/n', { start: 0, end: 0 }))
-        .toEqual({ start: 0, end: 7 })
+      expect(googleDocsBackend.parametricRange(null, ':edit/n', { start: 0, end: 0 })).toEqual({
+        start: 0,
+        end: 7,
+      })
     })
 
     it('overlayRange: [0, buffer.length]', () => {
@@ -120,7 +121,7 @@ describe('googleDocsBackend', () => {
 
     it('round-trip: type, backspace a typo, retype — matches as if typed correctly', () => {
       for (const c of ':fooo') googleDocsBackend.handleKey(key(c)) // typo: extra o
-      googleDocsBackend.handleKey(key('Backspace'))               // correct it
+      googleDocsBackend.handleKey(key('Backspace')) // correct it
       expect(recon().text).toBe(':foo')
     })
 

@@ -16,16 +16,10 @@ import { ModalNavigation } from './ModalNavigation'
  * - Global keyboard handling (Escape)
  * - View navigation
  */
-export function ModalShell({
-  isVisible,
-  onClose,
-  currentView,
-  onViewChange,
-  children
-}: ModalShellProps) {
+export function ModalShell({ isVisible, onClose, currentView, onViewChange, children }: ModalShellProps) {
   const modalRef = useRef<HTMLDivElement>(null)
 
-  const theme = useMacroStore(state => state.config.theme) // for the nav logo variant
+  const theme = useMacroStore((state) => state.config.theme) // for the nav logo variant
 
   useModalKeyboard(isVisible, onClose)
   useAppliedTheme(modalRef, isVisible)
@@ -59,7 +53,7 @@ export function ModalShell({
           role="dialog"
           aria-modal="true"
           aria-label="Monky Modal"
-          onMouseDown={e => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
         >
           <ModalNavigation
             currentView={currentView}
@@ -67,7 +61,10 @@ export function ModalShell({
             theme={theme}
           />
 
-          <div data-component="modal-content" className="vertical elastic basis-ratio hidden min-height-none">
+          <div
+            data-component="modal-content"
+            className="vertical elastic basis-ratio hidden min-height-none"
+          >
             {childrenWithProps}
           </div>
         </div>

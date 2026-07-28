@@ -5,9 +5,7 @@ import type { ModalView } from '../overlays/modal/types'
 /**
  * Unified modal coordinator that handles all modal views
  */
-export function createModalCoordinator(
-  manager: ModalManager
-): ModalCoordinator {
+export function createModalCoordinator(manager: ModalManager): ModalCoordinator {
   let isEnabled = true
 
   /**

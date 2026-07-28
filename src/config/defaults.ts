@@ -1,23 +1,23 @@
-import type { Config, Macro } from "../types"
+import type { Config, Macro } from '../types'
 
 export const defaultMacroConfig: Config = {
   disabledSites: [],
-  prefixes: ["/", ";"],
-  theme: "light",
-  colorTheme: "humo",
+  prefixes: ['/', ';'],
+  theme: 'light',
+  colorTheme: 'humo',
   useCommitKeys: false, // Default to auto-commit
-  language: "en",
-  suggestionsPopupPlacement: "bottom",
+  language: 'en',
+  suggestionsPopupPlacement: 'bottom',
   syncEnabled: false, // Hosted-backend sync is opt-in; off until a backend exists
 }
 
 export const dummyMacros: Macro[] = [
   // Plain text macros - inline content
-  { id: 1, command: "/brb", text: "Be right back", contentType: "text/plain", is_sensitive: false },
-  { id: 2, command: ";omw", text: "On my way", contentType: "text/plain", is_sensitive: false },
-  { id: 3, command: ";idk", text: "I don't know", contentType: "text/plain", is_sensitive: false },
-  { id: 4, command: "/email", text: "john.doe@example.com", contentType: "text/plain", is_sensitive: false },
-  
+  { id: 1, command: '/brb', text: 'Be right back', contentType: 'text/plain', is_sensitive: false },
+  { id: 2, command: ';omw', text: 'On my way', contentType: 'text/plain', is_sensitive: false },
+  { id: 3, command: ';idk', text: "I don't know", contentType: 'text/plain', is_sensitive: false },
+  { id: 4, command: '/email', text: 'john.doe@example.com', contentType: 'text/plain', is_sensitive: false },
+
   // Rich HTML macros - formatted content
   {
     id: '101',
@@ -42,5 +42,4 @@ export const dummyMacros: Macro[] = [
     contentType: 'text/plain',
     is_sensitive: false,
   },
-  
 ]

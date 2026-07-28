@@ -27,9 +27,15 @@ export function createModalManager() {
 
   const handleMacroSelection = (macro: Macro): void => {
     const targetElement = focusManager.getSavedState()?.element ?? null
-    if (!targetElement) { focusManager.clear(); return }
+    if (!targetElement) {
+      focusManager.clear()
+      return
+    }
     const editableElement = getActiveEditable(targetElement)
-    if (!editableElement) { focusManager.clear(); return }
+    if (!editableElement) {
+      focusManager.clear()
+      return
+    }
     focusManager.clear()
     if (onMacroSelectedCallback) {
       onMacroSelectedCallback(macro, editableElement)
@@ -106,7 +112,9 @@ export function createModalManager() {
 
   const show = (view?: ModalView, x?: number, y?: number): void => {
     if (view) currentView = view
-    if (x !== undefined && y !== undefined) {/* position unused but kept for API compat */}
+    if (x !== undefined && y !== undefined) {
+      /* position unused but kept for API compat */
+    }
     focusManager.saveFocus()
     isVisible = true
     renderModal()
@@ -120,7 +128,7 @@ export function createModalManager() {
   }
 
   const getVisibility = (): boolean => isVisible
-  const getCurrentView = (): ModalView | null => isVisible ? currentView : null
+  const getCurrentView = (): ModalView | null => (isVisible ? currentView : null)
 
   const destroy = (): void => {
     hide()
@@ -135,7 +143,16 @@ export function createModalManager() {
 
   initialize()
 
-  return { show, hide, switchView, navigateToEditor, isVisible: getVisibility, getCurrentView, destroy, setOnMacroSelected }
+  return {
+    show,
+    hide,
+    switchView,
+    navigateToEditor,
+    isVisible: getVisibility,
+    getCurrentView,
+    destroy,
+    setOnMacroSelected,
+  }
 }
 
 export type ModalManager = ReturnType<typeof createModalManager>

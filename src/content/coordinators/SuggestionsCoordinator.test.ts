@@ -57,7 +57,7 @@ describe('SuggestionsCoordinator', () => {
     describe('onDetectionUpdated', () => {
       test('saves updated buffer but does not auto-show suggestions', () => {
         vi.mocked(mockManager.isVisible).mockReturnValue(false)
-        
+
         mockActions.onDetectionUpdated('updated', { x: 250, y: 350 })
 
         expect(mockManager.show).not.toHaveBeenCalled()
@@ -130,7 +130,7 @@ describe('SuggestionsCoordinator', () => {
     describe('onCommitRequested', () => {
       test('returns false when manager is not visible', () => {
         vi.mocked(mockManager.isVisible).mockReturnValue(false)
-        
+
         const result = mockActions.onCommitRequested('buffer')
 
         expect(result).toBe(false)
@@ -148,7 +148,7 @@ describe('SuggestionsCoordinator', () => {
     describe('onNavigationRequested', () => {
       test('returns false when manager is not visible', () => {
         vi.mocked(mockManager.isVisible).mockReturnValue(false)
-        
+
         const result = mockActions.onNavigationRequested('up')
         expect(result).toBe(false)
 
@@ -158,7 +158,7 @@ describe('SuggestionsCoordinator', () => {
 
       test('returns true when manager is visible to handle navigation', () => {
         vi.mocked(mockManager.isVisible).mockReturnValue(true)
-        
+
         const result = mockActions.onNavigationRequested('left')
         expect(result).toBe(true)
 
@@ -170,7 +170,7 @@ describe('SuggestionsCoordinator', () => {
     describe('onCancelRequested', () => {
       test('returns false when manager is not visible', () => {
         vi.mocked(mockManager.isVisible).mockReturnValue(false)
-        
+
         const result = mockActions.onCancelRequested()
 
         expect(result).toBe(false)
@@ -179,7 +179,7 @@ describe('SuggestionsCoordinator', () => {
 
       test('hides suggestions and returns true when manager is visible', () => {
         vi.mocked(mockManager.isVisible).mockReturnValue(true)
-        
+
         const result = mockActions.onCancelRequested()
 
         expect(mockManager.hide).toHaveBeenCalled()
@@ -192,28 +192,28 @@ describe('SuggestionsCoordinator', () => {
     describe('attach/detach', () => {
       test('attaches click outside listener', () => {
         const addEventListenerSpy = vi.spyOn(document, 'addEventListener')
-        
+
         mockActions.attach()
-        
+
         expect(addEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function), true)
-        
+
         addEventListenerSpy.mockRestore()
       })
 
       test('detaches click outside listener', () => {
         const removeEventListenerSpy = vi.spyOn(document, 'removeEventListener')
-        
+
         mockActions.attach()
         mockActions.detach()
-        
+
         expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function), true)
-        
+
         removeEventListenerSpy.mockRestore()
       })
 
       test('hides suggestions when detaching', () => {
         mockActions.detach()
-        
+
         expect(mockManager.hide).toHaveBeenCalled()
       })
     })
@@ -222,7 +222,7 @@ describe('SuggestionsCoordinator', () => {
       test('enables coordinator', () => {
         mockActions.disable()
         expect(mockActions.isEnabled()).toBe(false)
-        
+
         mockActions.enable()
         expect(mockActions.isEnabled()).toBe(true)
       })
@@ -230,16 +230,16 @@ describe('SuggestionsCoordinator', () => {
       test('disables coordinator', () => {
         mockActions.enable()
         expect(mockActions.isEnabled()).toBe(true)
-        
+
         mockActions.disable()
         expect(mockActions.isEnabled()).toBe(false)
       })
 
       test('hides suggestions when disabling', () => {
         vi.mocked(mockManager.isVisible).mockReturnValue(true)
-        
+
         mockActions.disable()
-        
+
         expect(mockManager.hide).toHaveBeenCalled()
       })
 
@@ -254,11 +254,11 @@ describe('SuggestionsCoordinator', () => {
     test('setMacros updates both internal state and manager', () => {
       const macros = [
         { id: '1', command: '/test', text: 'Test macro' },
-        { id: '2', command: '/hello', text: 'Hello world' }
+        { id: '2', command: '/hello', text: 'Hello world' },
       ]
-      
+
       mockActions.setMacros(macros)
-      
+
       expect(mockManager.updateMacros).toHaveBeenCalledWith(macros)
     })
   })

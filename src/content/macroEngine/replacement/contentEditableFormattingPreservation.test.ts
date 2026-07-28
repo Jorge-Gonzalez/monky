@@ -3,7 +3,7 @@ import { createMacroDetector } from '../macroDetector'
 import type { DetectorActions } from '../../actions/detectorActions'
 import type { Macro } from '../../../types'
 import { typeIn } from '../../../utils/testUtils'
-import { useMacroStore } from "../../../store/useMacroStore"
+import { useMacroStore } from '../../../store/useMacroStore'
 
 describe('ContentEditable Formatting Preservation', () => {
   let detector: ReturnType<typeof createMacroDetector>
@@ -15,18 +15,18 @@ describe('ContentEditable Formatting Preservation', () => {
       id: '1',
       command: '/hello',
       text: 'Hello, World!',
-      contentType: 'text/plain'
+      contentType: 'text/plain',
     },
     {
       id: '2',
       command: '/sig',
       text: 'Best regards',
-      contentType: 'text/plain'
-    }
+      contentType: 'text/plain',
+    },
   ]
 
   beforeEach(() => {
-    useMacroStore.setState(s => ({ config: { ...s.config, useCommitKeys: true } }))
+    useMacroStore.setState((s) => ({ config: { ...s.config, useCommitKeys: true } }))
     mockActions = {
       onDetectionStarted: vi.fn(),
       onDetectionUpdated: vi.fn(),
@@ -35,7 +35,7 @@ describe('ContentEditable Formatting Preservation', () => {
       onNavigationRequested: vi.fn(),
       onCancelRequested: vi.fn(),
       onCommitRequested: vi.fn(),
-      onShowAllRequested: vi.fn()
+      onShowAllRequested: vi.fn(),
     }
 
     contentEditableDiv = document.createElement('div')
@@ -56,11 +56,11 @@ describe('ContentEditable Formatting Preservation', () => {
     it('should preserve bold text before macro', () => {
       contentEditableDiv.innerHTML = '<strong>Bold text</strong> '
       contentEditableDiv.focus()
-      
+
       // Position cursor AFTER the space (not inside the strong tag)
       const selection = window.getSelection()!
       const range = document.createRange()
-      
+
       // Get the text node that contains the space after </strong>
       // The structure is: <strong>Bold text</strong> [text node with space]
       let spaceNode: Node | null = null
@@ -71,7 +71,7 @@ describe('ContentEditable Formatting Preservation', () => {
           break
         }
       }
-      
+
       if (spaceNode) {
         // Position at end of the space text node
         range.setStart(spaceNode, spaceNode.textContent!.length)
@@ -82,13 +82,13 @@ describe('ContentEditable Formatting Preservation', () => {
         range.setStartAfter(strongElement)
         range.collapse(true)
       }
-      
+
       selection.removeAllRanges()
       selection.addRange(range)
-      
+
       // Type the macro
       typeIn(contentEditableDiv, '/hello ')
-      
+
       // Check that bold is preserved and macro was replaced
       expect(contentEditableDiv.innerHTML).toContain('<strong>Bold text</strong>')
       expect(contentEditableDiv.textContent).toContain('Hello, World!')
@@ -120,18 +120,14 @@ describe('ContentEditable Formatting Preservation', () => {
       // Position cursor at the end
       const selection = window.getSelection()!
       const range = document.createRange()
-      
-      const walker = document.createTreeWalker(
-        contentEditableDiv,
-        NodeFilter.SHOW_TEXT,
-        null
-      )
+
+      const walker = document.createTreeWalker(contentEditableDiv, NodeFilter.SHOW_TEXT, null)
       let lastTextNode: Text | null = null
       let node: Text | null = null
       while ((node = walker.nextNode() as Text)) {
         lastTextNode = node
       }
-      
+
       if (lastTextNode) {
         range.setStart(lastTextNode, lastTextNode.length)
         range.collapse(true)
@@ -166,7 +162,8 @@ describe('ContentEditable Formatting Preservation', () => {
 
   describe('Complex HTML Structure Preservation', () => {
     it('should preserve nested spans with styles', () => {
-      contentEditableDiv.innerHTML = '<span style="color: red;">Red <span style="font-size: 20px;">big</span></span> '
+      contentEditableDiv.innerHTML =
+        '<span style="color: red;">Red <span style="font-size: 20px;">big</span></span> '
       contentEditableDiv.focus()
 
       // Position after the outer span
@@ -243,16 +240,18 @@ describe('ContentEditable Formatting Preservation', () => {
 
       // Type and replace
       typeIn(contentEditableDiv, '/hello ')
-      
+
       expect(contentEditableDiv.innerHTML).toContain('<strong>Bold</strong>')
       expect(contentEditableDiv.textContent).toContain('Hello, World!')
 
       // Undo
-      contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', {
-        key: 'z',
-        ctrlKey: true,
-        bubbles: true
-      }))
+      contentEditableDiv.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(contentEditableDiv.innerHTML).toContain('<strong>Bold</strong>')
       // New behavior: undo removes the replacement without restoring the command
@@ -284,11 +283,13 @@ describe('ContentEditable Formatting Preservation', () => {
       expect(contentEditableDiv.innerHTML).toContain('<em>Italic</em>')
 
       // Undo second
-      contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', {
-        key: 'z',
-        ctrlKey: true,
-        bubbles: true
-      }))
+      contentEditableDiv.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       // New behavior: undo removes the replacement without restoring the command
       expect(contentEditableDiv.textContent).not.toContain('Best regards')
@@ -296,11 +297,13 @@ describe('ContentEditable Formatting Preservation', () => {
       expect(contentEditableDiv.innerHTML).toContain('<em>Italic</em>')
 
       // Undo first
-      contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', {
-        key: 'z',
-        ctrlKey: true,
-        bubbles: true
-      }))
+      contentEditableDiv.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       // New behavior: undo removes the first replacement too
       expect(contentEditableDiv.textContent).not.toContain('Hello, World!')
@@ -344,7 +347,7 @@ describe('ContentEditable Formatting Preservation', () => {
       selection.addRange(range)
 
       typeIn(contentEditableDiv, '/hello ')
-      
+
       // Should be replaced, not kept as /hello
       expect(contentEditableDiv.textContent).toContain('Hello, World!')
     })

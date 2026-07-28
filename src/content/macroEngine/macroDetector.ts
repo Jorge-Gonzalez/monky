@@ -1,20 +1,30 @@
-import { useMacroStore } from "../../store/useMacroStore"
-import { updateStateOnKey, isExact, getExact } from "./detector-core"
-import { getActiveEditable, getSelection, getCursorCoordinates } from "./replacement/editableUtils"
+import { useMacroStore } from '../../store/useMacroStore'
+import { updateStateOnKey, isExact, getExact } from './detector-core'
+import { getActiveEditable, getSelection, getCursorCoordinates } from './replacement/editableUtils'
 import { replaceText } from './replacement/macroReplacement'
-import type { Macro, CoreState, EditableEl } from "../../types"
-import { isPrintableKey, UNSUPPORTED_KEYS } from "./keyUtils"
-import { defaultMacroConfig } from "../../config/defaults"
-import { SYSTEM_MACROS, isSystemMacro, handleSystemMacro, parseParametricBuffer, handleParametricSystemCommand } from "../systemMacros/systemMacros"
-import type { DetectorActions } from "../actions/detectorActions"
-import { createMacroReplacement } from "./replacement/macroReplacement"
-import type { PlaceholderSession } from "./placeholderSession"
-import { hasPlaceholders } from "./replacement/placeholders"
-import { isGoogleDocs, attachToGoogleDocsIframe, isIntentionalFocusMove } from "./googledocs/googleDocsAdapter"
-import { getBackend, resetAllBackends } from "./backend/editableBackend"
-import type { ReplacementRange } from "./backend/editableBackend"
+import type { Macro, CoreState, EditableEl } from '../../types'
+import { isPrintableKey, UNSUPPORTED_KEYS } from './keyUtils'
+import { defaultMacroConfig } from '../../config/defaults'
+import {
+  SYSTEM_MACROS,
+  isSystemMacro,
+  handleSystemMacro,
+  parseParametricBuffer,
+  handleParametricSystemCommand,
+} from '../systemMacros/systemMacros'
+import type { DetectorActions } from '../actions/detectorActions'
+import { createMacroReplacement } from './replacement/macroReplacement'
+import type { PlaceholderSession } from './placeholderSession'
+import { hasPlaceholders } from './replacement/placeholders'
+import {
+  isGoogleDocs,
+  attachToGoogleDocsIframe,
+  isIntentionalFocusMove,
+} from './googledocs/googleDocsAdapter'
+import { getBackend, resetAllBackends } from './backend/editableBackend'
+import type { ReplacementRange } from './backend/editableBackend'
 
-const COMMIT_KEYS = new Set([" ", "Enter"])
+const COMMIT_KEYS = new Set([' ', 'Enter'])
 const CONFIRM_DELAY_MS = 1850
 
 /**
@@ -27,7 +37,7 @@ export function createMacroDetector(actions: DetectorActions) {
   let placeholderSession: PlaceholderSession | null = null
   let macros: Macro[] = []
   let activeEl: EditableEl = null
-  let state: CoreState = { active: false, buffer: "" }
+  let state: CoreState = { active: false, buffer: '' }
   let timer: number = 0
   let selectionOnSchedule: { start: number; end: number } | null = null
   let listenersAttached = false
@@ -50,8 +60,8 @@ export function createMacroDetector(actions: DetectorActions) {
     clearTimer()
     clearBlurTimer()
     const wasActive = state.active
-    state = { active: false, buffer: "" }
-    
+    state = { active: false, buffer: '' }
+
     if (wasActive) {
       actions.onDetectionCancelled()
     }
@@ -97,7 +107,7 @@ export function createMacroDetector(actions: DetectorActions) {
         id: 'temp-delete',
         command: '',
         text: '',
-        contentType: 'text/plain'
+        contentType: 'text/plain',
       }
       replaceText(activeEl, deleteMacro, commandStart, endPos)
       handleSystemMacro(macro)
@@ -118,7 +128,7 @@ export function createMacroDetector(actions: DetectorActions) {
       if (!buffer.startsWith(sm.command)) continue
       const rest = buffer.slice(sm.command.length)
       if (!rest) return true
-      if (config.prefixes.some(p => rest.startsWith(p))) return true
+      if (config.prefixes.some((p) => rest.startsWith(p))) return true
     }
     return false
   }
@@ -133,9 +143,15 @@ export function createMacroDetector(actions: DetectorActions) {
     getBackend(activeEl).reset()
 
     const currentSel = sel || getSelection(activeEl)
-    if (!currentSel) { cancelDetection(); return }
-    const { start: commandStart, end: endPos } =
-      getBackend(activeEl).parametricRange(activeEl, state.buffer, currentSel)
+    if (!currentSel) {
+      cancelDetection()
+      return
+    }
+    const { start: commandStart, end: endPos } = getBackend(activeEl).parametricRange(
+      activeEl,
+      state.buffer,
+      currentSel
+    )
     const deleteMacro: Macro = { id: 'temp-delete', command: '', text: '', contentType: 'text/plain' }
     replaceText(activeEl, deleteMacro, commandStart, endPos)
     handleParametricSystemCommand(systemMacroId, param)
@@ -152,11 +168,14 @@ export function createMacroDetector(actions: DetectorActions) {
     // using the same immediate/delayed logic as regular macros.
     const parametricResult = parseParametricBuffer(state.buffer, config.prefixes)
     if (parametricResult) {
-      const paramTarget = macros.find(m => m.command === parametricResult.param)
+      const paramTarget = macros.find((m) => m.command === parametricResult.param)
       if (!paramTarget) return false
 
       const isParamPrefix = macros.some(
-        m => !m.isSystemMacro && m.command.startsWith(parametricResult.param) && m.command !== parametricResult.param
+        (m) =>
+          !m.isSystemMacro &&
+          m.command.startsWith(parametricResult.param) &&
+          m.command !== parametricResult.param
       )
 
       if (!isParamPrefix) {
@@ -167,7 +186,7 @@ export function createMacroDetector(actions: DetectorActions) {
         selectionOnSchedule = sel
         timer = window.setTimeout(() => {
           const current = parseParametricBuffer(state.buffer, config.prefixes)
-          if (current && macros.find(m => m.command === current.param) && activeEl) {
+          if (current && macros.find((m) => m.command === current.param) && activeEl) {
             commitParametricSystem(String(current.systemMacro.id), current.param, null)
           } else {
             cancelDetection()
@@ -179,9 +198,9 @@ export function createMacroDetector(actions: DetectorActions) {
 
     const exactMacro = getExact(state.buffer, macros)
     if (!exactMacro) return false
-    if (exactMacro.isParametric) return false  // wait for the parameter
+    if (exactMacro.isParametric) return false // wait for the parameter
 
-    const isPrefix = macros.some(m => m.command.startsWith(state.buffer) && m.command !== state.buffer)
+    const isPrefix = macros.some((m) => m.command.startsWith(state.buffer) && m.command !== state.buffer)
 
     if (!isPrefix) {
       commitReplace(getExact(state.buffer, macros)!, sel, true)
@@ -203,11 +222,9 @@ export function createMacroDetector(actions: DetectorActions) {
 
   function startPlaceholderSession(el: EditableEl, text: string): void {
     if (!hasPlaceholders(text)) return
-    placeholderSession = getBackend(el).createPlaceholderSession(
-      el,
-      text,
-      () => { placeholderSession = null }
-    )
+    placeholderSession = getBackend(el).createPlaceholderSession(el, text, () => {
+      placeholderSession = null
+    })
   }
 
   /**
@@ -225,7 +242,13 @@ export function createMacroDetector(actions: DetectorActions) {
   function finishCommit(el: EditableEl, range: ReplacementRange, macro: Macro): void {
     const replacementText = getBackend(el).replacementTextFor(macro)
     replacement.performReplacement(
-      el, range.start, range.end, replacementText, macro, range.undoStart, range.undoEnd
+      el,
+      range.start,
+      range.end,
+      replacementText,
+      macro,
+      range.undoStart,
+      range.undoEnd
     )
     actions.onMacroCommitted(String(macro.id))
     cancelDetection()
@@ -299,13 +322,16 @@ export function createMacroDetector(actions: DetectorActions) {
     const prevStateActive = state.active
 
     // Handle navigation keys
-    if (state.active && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+    if (
+      state.active &&
+      (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')
+    ) {
       let direction: 'up' | 'down' | 'left' | 'right'
       if (e.key === 'ArrowUp') direction = 'up'
       else if (e.key === 'ArrowDown') direction = 'down'
       else if (e.key === 'ArrowLeft') direction = 'left'
       else direction = 'right'
-      
+
       const handled = actions.onNavigationRequested(direction)
       if (handled) {
         e.preventDefault()
@@ -334,7 +360,7 @@ export function createMacroDetector(actions: DetectorActions) {
       e.preventDefault()
       e.stopPropagation()
       clearBlurTimer()
-      
+
       if (actions.onShowAllRequested) {
         const coords = getCursorCoordinates()
         actions.onShowAllRequested(state.buffer, coords || undefined)
@@ -388,7 +414,7 @@ export function createMacroDetector(actions: DetectorActions) {
     }
 
     // Handle Backspace
-    if (e.key === "Backspace") {
+    if (e.key === 'Backspace') {
       clearTimer()
 
       let currentState = state
@@ -396,8 +422,7 @@ export function createMacroDetector(actions: DetectorActions) {
         // Backend supplies the reconstruction source: DOM reads the live element,
         // Google Docs reads its shadow buffer (the sentinel has no readable text).
         // Read happens BEFORE handleKey below, so it reflects the pre-keystroke state.
-        const { text: textToSearch, cursorPos } =
-          getBackend(activeEl).reconstructionSource(activeEl, sel)
+        const { text: textToSearch, cursorPos } = getBackend(activeEl).reconstructionSource(activeEl, sel)
 
         let reconstructedBuffer = ''
         for (let i = cursorPos - 1; i >= 0; i--) {
@@ -405,7 +430,7 @@ export function createMacroDetector(actions: DetectorActions) {
           if (char === ' ' || char === '\n' || char === '\t') break
           reconstructedBuffer = char + reconstructedBuffer
 
-          if (config.prefixes.some(prefix => reconstructedBuffer.startsWith(prefix))) {
+          if (config.prefixes.some((prefix) => reconstructedBuffer.startsWith(prefix))) {
             currentState = { active: true, buffer: reconstructedBuffer }
             break
           }
@@ -477,9 +502,9 @@ export function createMacroDetector(actions: DetectorActions) {
             // deferred deletion covers the full buffer.
             e.preventDefault()
           }
-          
+
           const coords = getCursorCoordinates()
-          
+
           if (!committedImmediately) {
             if (prevStateActive) {
               actions.onDetectionUpdated(state.buffer, coords || undefined)
@@ -552,8 +577,8 @@ export function createMacroDetector(actions: DetectorActions) {
 
   function attachListeners(): void {
     if (listenersAttached) return
-    window.addEventListener("keydown", onKeyDown, true)
-    window.addEventListener("blur", onBlur, true)
+    window.addEventListener('keydown', onKeyDown, true)
+    window.addEventListener('blur', onBlur, true)
     if (isGoogleDocs()) {
       gdCleanup = attachToGoogleDocsIframe(onKeyDown, onBlur)
     }
@@ -562,8 +587,8 @@ export function createMacroDetector(actions: DetectorActions) {
 
   function detachListeners(): void {
     if (!listenersAttached) return
-    window.removeEventListener("keydown", onKeyDown, true)
-    window.removeEventListener("blur", onBlur, true)
+    window.removeEventListener('keydown', onKeyDown, true)
+    window.removeEventListener('blur', onBlur, true)
     gdCleanup?.()
     gdCleanup = null
     listenersAttached = false
@@ -583,7 +608,7 @@ export function createMacroDetector(actions: DetectorActions) {
 
   function setMacros(newMacros: Macro[]): void {
     macros = [...SYSTEM_MACROS, ...newMacros]
-    
+
     // Some action sets also mirror the macro list; forward to them when present.
     const mirror = actions as DetectorActions & { setMacros?: (macros: Macro[]) => void }
     if (typeof mirror.setMacros === 'function') {

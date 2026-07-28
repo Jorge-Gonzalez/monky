@@ -8,9 +8,10 @@ function traverse(node: Node, acc: string, listCounters: number[]): string {
     let textContent = node.textContent?.replace(/\s+/g, ' ') || ''
     const blockquote = (node.parentElement as HTMLElement)?.closest('blockquote')
     if (blockquote) {
-      textContent = textContent.split('\n').map(line =>
-        line.trim() ? `> ${line}` : line
-      ).join('\n')
+      textContent = textContent
+        .split('\n')
+        .map((line) => (line.trim() ? `> ${line}` : line))
+        .join('\n')
     }
     return acc + textContent
   }
@@ -65,5 +66,7 @@ function traverse(node: Node, acc: string, listCounters: number[]): string {
 export function extractPlainText(html: string): string {
   const tempEl = document.createElement('div')
   tempEl.innerHTML = html
-  return traverse(tempEl, '', []).replace(/\n{3,}/g, '\n\n').trim()
+  return traverse(tempEl, '', [])
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
 }

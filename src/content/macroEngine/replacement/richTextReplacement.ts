@@ -1,5 +1,5 @@
-import type { EditableEl } from "../../../types"
-import { findTextNodeForOffset } from "./editableUtils"
+import type { EditableEl } from '../../../types'
+import { findTextNodeForOffset } from './editableUtils'
 
 /**
  * Metadata stored in the marker element for undo functionality
@@ -64,7 +64,7 @@ function getMarkerData(marker: HTMLElement): MacroMarkerData | null {
     macroId,
     originalCommand,
     insertedAt: parseInt(insertedAt, 10),
-    isHtml: isHtml === 'true'
+    isHtml: isHtml === 'true',
   }
 }
 
@@ -174,7 +174,7 @@ export function replaceWithMarker(
 
     return {
       markerElement: marker,
-      insertedTextLength
+      insertedTextLength,
     }
   } catch (error) {
     console.error('[RichTextReplacement] Error in replaceWithMarker:', error)
@@ -262,7 +262,7 @@ export function undoSpecificInsertion(element: EditableEl, macroId: string): boo
 export function removeAllMarkers(element: EditableEl): void {
   const markers = findMarkers(element)
 
-  markers.forEach(marker => {
+  markers.forEach((marker) => {
     // Replace marker with its contents (unwrap)
     const fragment = document.createDocumentFragment()
     while (marker.firstChild) {

@@ -10,14 +10,14 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
     it('should detect input elements', () => {
       const input = document.createElement('input')
       input.type = 'text'
-      
+
       const result = getActiveEditable(input)
       expect(result).toBe(input)
     })
 
     it('should detect textarea elements', () => {
       const textarea = document.createElement('textarea')
-      
+
       const result = getActiveEditable(textarea)
       expect(result).toBe(textarea)
     })
@@ -25,7 +25,7 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
     it('should reject password inputs', () => {
       const passwordInput = document.createElement('input')
       passwordInput.type = 'password'
-      
+
       const result = getActiveEditable(passwordInput)
       expect(result).toBeNull()
     })
@@ -33,7 +33,7 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
     it('should detect direct contenteditable elements', () => {
       const div = document.createElement('div')
       div.contentEditable = 'true'
-      
+
       const result = getActiveEditable(div)
       expect(result).toBe(div)
     })
@@ -42,7 +42,7 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
       const div = document.createElement('div')
       div.contentEditable = 'true'
       document.body.appendChild(div)
-      
+
       // isContentEditable is computed based on DOM state
       const result = getActiveEditable(div)
       expect(result).toBe(div)
@@ -58,7 +58,7 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
 
       // Get the text node
       const textNode = contentEditableDiv.firstChild
-      
+
       const result = getActiveEditable(textNode)
       expect(result).toBe(contentEditableDiv)
     })
@@ -66,11 +66,11 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
     it('should find contenteditable parent from nested bold element', () => {
       const contentEditableDiv = document.createElement('div')
       contentEditableDiv.contentEditable = 'true'
-      
+
       const paragraph = document.createElement('p')
       const boldElement = document.createElement('b')
       boldElement.textContent = 'Bold text'
-      
+
       paragraph.appendChild(boldElement)
       contentEditableDiv.appendChild(paragraph)
       document.body.appendChild(contentEditableDiv)
@@ -82,11 +82,11 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
     it('should find contenteditable parent from nested italic element', () => {
       const contentEditableDiv = document.createElement('div')
       contentEditableDiv.contentEditable = 'true'
-      
+
       const paragraph = document.createElement('p')
       const italicElement = document.createElement('i')
       italicElement.textContent = 'Italic text'
-      
+
       paragraph.appendChild(italicElement)
       contentEditableDiv.appendChild(paragraph)
       document.body.appendChild(contentEditableDiv)
@@ -98,11 +98,11 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
     it('should find contenteditable parent from list item', () => {
       const contentEditableDiv = document.createElement('div')
       contentEditableDiv.contentEditable = 'true'
-      
+
       const list = document.createElement('ul')
       const listItem = document.createElement('li')
       listItem.textContent = 'List item'
-      
+
       list.appendChild(listItem)
       contentEditableDiv.appendChild(list)
       document.body.appendChild(contentEditableDiv)
@@ -114,13 +114,13 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
     it('should find contenteditable parent from deeply nested elements', () => {
       const contentEditableDiv = document.createElement('div')
       contentEditableDiv.contentEditable = 'true'
-      
+
       // Create: div[contenteditable] > p > span > b > text
       const paragraph = document.createElement('p')
       const span = document.createElement('span')
       const bold = document.createElement('b')
       bold.textContent = 'Deeply nested text'
-      
+
       span.appendChild(bold)
       paragraph.appendChild(span)
       contentEditableDiv.appendChild(paragraph)
@@ -134,14 +134,14 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
       const outerContentEditable = document.createElement('div')
       outerContentEditable.contentEditable = 'true'
       outerContentEditable.id = 'outer'
-      
+
       const innerContentEditable = document.createElement('div')
       innerContentEditable.contentEditable = 'true'
       innerContentEditable.id = 'inner'
-      
+
       const targetElement = document.createElement('span')
       targetElement.textContent = 'Target'
-      
+
       innerContentEditable.appendChild(targetElement)
       outerContentEditable.appendChild(innerContentEditable)
       document.body.appendChild(outerContentEditable)
@@ -167,7 +167,7 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
       const div = document.createElement('div')
       const span = document.createElement('span')
       span.textContent = 'Not editable'
-      
+
       div.appendChild(span)
       document.body.appendChild(div)
 
@@ -178,7 +178,7 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
     it('should return null for contenteditable="false"', () => {
       const div = document.createElement('div')
       div.contentEditable = 'false'
-      
+
       const result = getActiveEditable(div)
       expect(result).toBeNull()
     })
@@ -186,12 +186,12 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
     it('should handle contenteditable="inherit" by traversing', () => {
       const parentDiv = document.createElement('div')
       parentDiv.contentEditable = 'true'
-      
+
       const childDiv = document.createElement('div')
       childDiv.contentEditable = 'inherit'
-      
+
       const targetSpan = document.createElement('span')
-      
+
       childDiv.appendChild(targetSpan)
       parentDiv.appendChild(childDiv)
       document.body.appendChild(parentDiv)
@@ -207,22 +207,22 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
       const editor = document.createElement('div')
       editor.contentEditable = 'true'
       editor.className = 'rich-text-editor'
-      
+
       const paragraph = document.createElement('p')
       paragraph.appendChild(document.createTextNode('Some '))
-      
+
       const bold = document.createElement('b')
       bold.textContent = 'bold'
       paragraph.appendChild(bold)
-      
+
       paragraph.appendChild(document.createTextNode(' and '))
-      
+
       const italic = document.createElement('i')
       italic.textContent = 'italic'
       paragraph.appendChild(italic)
-      
+
       paragraph.appendChild(document.createTextNode(' text'))
-      
+
       editor.appendChild(paragraph)
       document.body.appendChild(editor)
 
@@ -236,13 +236,13 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
       // Simulate: <div contenteditable><ul><li>Item 1</li><li>Item 2</li></ul></div>
       const editor = document.createElement('div')
       editor.contentEditable = 'true'
-      
+
       const list = document.createElement('ul')
       const item1 = document.createElement('li')
       item1.textContent = 'Item 1'
       const item2 = document.createElement('li')
       item2.textContent = 'Item 2'
-      
+
       list.appendChild(item1)
       list.appendChild(item2)
       editor.appendChild(list)
@@ -271,7 +271,7 @@ describe('getActiveEditable - Enhanced ContentEditable Support', () => {
       const boldElement = editor.querySelector('b')!
       const italicElement = editor.querySelector('i')!
       const listItem = editor.querySelector('li')!
-      
+
       expect(getActiveEditable(boldElement)).toBe(editor)
       expect(getActiveEditable(italicElement)).toBe(editor)
       expect(getActiveEditable(listItem)).toBe(editor)

@@ -1,10 +1,10 @@
-import type { EditableEl } from "../types"
+import type { EditableEl } from '../types'
 
 /**
  * Helper function to simulate typing in an element
  * Dispatches keydown events and updates content ONLY if preventDefault wasn't called
  * This properly simulates browser behavior where content updates are the "default action"
- * 
+ *
  * Special character handling:
  * - '\n' in string is converted to 'Enter' key press
  * - 'Enter' in contentEditable creates <br> tags (real browser behavior)
@@ -12,29 +12,29 @@ import type { EditableEl } from "../types"
  */
 export function typeIn(element: EditableEl, str: string) {
   element.focus()
-  
+
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
-    
+
     // Convert \n to Enter key for natural syntax
     const key = char === '\n' ? 'Enter' : char
-    
+
     // Dispatch keydown event FIRST
-    const keydownEvent = new KeyboardEvent('keydown', { 
-      key, 
+    const keydownEvent = new KeyboardEvent('keydown', {
+      key,
       bubbles: true,
-      cancelable: true // IMPORTANT: must be cancelable for preventDefault to work
+      cancelable: true, // IMPORTANT: must be cancelable for preventDefault to work
     })
-    
+
     const wasDefaultPrevented = !element.dispatchEvent(keydownEvent)
-    
+
     // Only update content if preventDefault was NOT called
     // This simulates the browser's default behavior
     if (!wasDefaultPrevented) {
       updateElementContent(element, key)
     }
   }
-  
+
   // Dispatch input event at the end (if any content was added)
   element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }))
 }
@@ -47,14 +47,14 @@ function updateElementContent(element: EditableEl, key: string) {
   if (element.isContentEditable || (element as HTMLElement).contentEditable === 'true') {
     let selection = window.getSelection()
     let range: Range
-    
+
     if (selection && selection.rangeCount > 0) {
       range = selection.getRangeAt(0)
     } else {
       // No selection exists, create one at the end
       selection = window.getSelection()!
       range = document.createRange()
-      
+
       // Find the last position in the contentEditable
       if (element.childNodes.length > 0) {
         const lastNode = element.childNodes[element.childNodes.length - 1]
@@ -70,10 +70,10 @@ function updateElementContent(element: EditableEl, key: string) {
       selection.removeAllRanges()
       selection.addRange(range)
     }
-    
+
     // Delete any selected content
     range.deleteContents()
-    
+
     // Insert the new character (or handle special keys)
     if (key === 'Enter') {
       // Real browser behavior: Insert <br> in contentEditable
@@ -81,11 +81,12 @@ function updateElementContent(element: EditableEl, key: string) {
       const br = document.createElement('br')
       range.insertNode(br)
       range.setStartAfter(br)
-      
+
       // Add a second <br> if we're at the end of content
       // This ensures the cursor moves to a new visible line
-      const isAtEnd = !range.startContainer.nextSibling && 
-                     range.startOffset === (range.startContainer.textContent?.length || 0)
+      const isAtEnd =
+        !range.startContainer.nextSibling &&
+        range.startOffset === (range.startContainer.textContent?.length || 0)
       if (isAtEnd) {
         const br2 = document.createElement('br')
         range.insertNode(br2)
@@ -103,17 +104,16 @@ function updateElementContent(element: EditableEl, key: string) {
       range.setStartAfter(textNode)
     }
     // Ignore special keys like 'Escape', 'Tab', 'ArrowUp', etc.
-    
+
     // Update cursor position
     range.collapse(true)
     selection.removeAllRanges()
     selection.addRange(range)
-    
   } else if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
     // For input/textarea, manipulate value and selection
     const start = element.selectionStart || 0
     const end = element.selectionEnd || 0
-    
+
     if (key === 'Enter' && element instanceof HTMLTextAreaElement) {
       // Textarea: Enter creates actual newline character
       element.value = element.value.substring(0, start) + '\n' + element.value.substring(end)
@@ -139,25 +139,25 @@ function updateElementContent(element: EditableEl, key: string) {
 export function typeInWithResult(element: EditableEl, str: string): boolean[] {
   element.focus()
   const results: boolean[] = []
-  
+
   for (let i = 0; i < str.length; i++) {
     const char = str[i]
     const key = char === '\n' ? 'Enter' : char
-    
-    const keydownEvent = new KeyboardEvent('keydown', { 
-      key, 
+
+    const keydownEvent = new KeyboardEvent('keydown', {
+      key,
       bubbles: true,
-      cancelable: true
+      cancelable: true,
     })
-    
+
     const wasDefaultPrevented = !element.dispatchEvent(keydownEvent)
     results.push(wasDefaultPrevented)
-    
+
     if (!wasDefaultPrevented) {
       updateElementContent(element, key)
     }
   }
-  
+
   element.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }))
   return results
 }
@@ -217,7 +217,7 @@ export function setCursorPosition(
 export function setCursorInside(element: HTMLElement, offset: number = 0) {
   const selection = window.getSelection()!
   const range = document.createRange()
-  
+
   if (element.firstChild && element.firstChild.nodeType === Node.TEXT_NODE) {
     // Position inside text node
     range.setStart(element.firstChild, Math.min(offset, (element.firstChild as Text).length))
@@ -225,7 +225,7 @@ export function setCursorInside(element: HTMLElement, offset: number = 0) {
     // Position inside element
     range.setStart(element, offset)
   }
-  
+
   range.collapse(true)
   selection.removeAllRanges()
   selection.addRange(range)

@@ -4,8 +4,20 @@ import { splitPlaceholders } from '../../../../macroEngine/replacement/placehold
 import { SearchResultsPanel, searchOptionId } from './SearchResultsPanel'
 
 const EditIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24">
-    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m15.5 5.5 2.828 2.83M3 21l.047-.332c.168-1.175.252-1.763.443-2.311.17-.487.401-.95.69-1.378.323-.482.743-.902 1.583-1.741L17.41 3.59a2 2 0 0 1 2.828 2.828L8.377 18.28c-.761.761-1.142 1.142-1.576 1.445-.385.269-.8.492-1.237.664-.492.193-1.02.3-2.076.513L3 21Z"/>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="13"
+    height="13"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="m15.5 5.5 2.828 2.83M3 21l.047-.332c.168-1.175.252-1.763.443-2.311.17-.487.401-.95.69-1.378.323-.482.743-.902 1.583-1.741L17.41 3.59a2 2 0 0 1 2.828 2.828L8.377 18.28c-.761.761-1.142 1.142-1.576 1.445-.385.269-.8.492-1.237.664-.492.193-1.02.3-2.076.513L3 21Z"
+    />
   </svg>
 )
 
@@ -67,7 +79,14 @@ interface MacroSearchItemProps {
   onEdit?: () => void
 }
 
-function MacroSearchItem({ optionId, macro, isSelected, isConfirmingDelete, onClick, onEdit }: MacroSearchItemProps) {
+function MacroSearchItem({
+  optionId,
+  macro,
+  isSelected,
+  isConfirmingDelete,
+  onClick,
+  onEdit,
+}: MacroSearchItemProps) {
   return (
     <div
       id={optionId}
@@ -84,26 +103,24 @@ function MacroSearchItem({ optionId, macro, isSelected, isConfirmingDelete, onCl
       data-state={isConfirmingDelete ? 'confirming-delete' : undefined}
       onClick={onClick}
     >
-      <div 
-        data-component="search-item-command" 
+      <div
+        data-component="search-item-command"
         className={`padding-right-xs padding-top-sm padding-bottom-sm padding-left-md hidden width-command tween-ground-quick font-md font-bold pressable truncate ${
-          isConfirmingDelete 
-            ? 'ink-fail' 
-            : 'ink-accent'
+          isConfirmingDelete ? 'ink-fail' : 'ink-accent'
         }`}
       >
         {macro.command}
       </div>
       {isConfirmingDelete ? (
-        <div 
-          data-component="search-item-confirm" 
+        <div
+          data-component="search-item-confirm"
           className="padding-left-xs padding-top-sm padding-bottom-sm padding-right-md hidden
             ink-fail rule-soft ruled-bottom font-md font-medium truncate"
         >
           {t('modalSearch.confirmDelete')}
         </div>
       ) : (
-        <div 
+        <div
           data-component="search-item-text"
           className="padding-left-xs padding-top-sm padding-bottom-sm padding-right-md hidden
             tween-ground-quick
@@ -123,7 +140,10 @@ function MacroSearchItem({ optionId, macro, isSelected, isConfirmingDelete, onCl
             hover:ground-defined hover:ink-accent
             parent-hover:revealed
             parent-selected:revealed"
-          onClick={e => { e.stopPropagation(); onEdit() }}
+          onClick={(e) => {
+            e.stopPropagation()
+            onEdit()
+          }}
           aria-label={t('modalSearch.editMacro')}
           // A pointer affordance only. A listbox option cannot contain a working control --
           // its children are presentational -- so rather than leave a button that appears

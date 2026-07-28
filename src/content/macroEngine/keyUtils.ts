@@ -3,6 +3,14 @@ export function isPrintableKey(e: KeyboardEvent) {
 }
 
 export const UNSUPPORTED_KEYS = [
-  "ArrowLeft","ArrowRight","ArrowUp","ArrowDown",
-  "Home","End","PageUp","PageDown","Escape","Delete"
+  'ArrowLeft',
+  'ArrowRight',
+  'ArrowUp',
+  'ArrowDown',
+  'Home',
+  'End',
+  'PageUp',
+  'PageDown',
+  'Escape',
+  'Delete',
 ]

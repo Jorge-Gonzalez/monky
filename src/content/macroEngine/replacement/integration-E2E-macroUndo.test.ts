@@ -3,7 +3,7 @@ import { createMacroDetector } from '../macroDetector'
 import type { DetectorActions } from '../../actions/detectorActions'
 import type { Macro } from '../../../types'
 import { setCursorInside, typeIn } from '../../../utils/testUtils'
-import { useMacroStore } from "../../../store/useMacroStore"
+import { useMacroStore } from '../../../store/useMacroStore'
 
 describe('MacroDetector - Undo Integration Tests', () => {
   let detector: ReturnType<typeof createMacroDetector>
@@ -21,7 +21,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
   ]
 
   beforeEach(() => {
-    useMacroStore.setState(s => ({ config: { ...s.config, useCommitKeys: true } }))
+    useMacroStore.setState((s) => ({ config: { ...s.config, useCommitKeys: true } }))
     mockActions = {
       onDetectionStarted: vi.fn(),
       onDetectionUpdated: vi.fn(),
@@ -30,10 +30,10 @@ describe('MacroDetector - Undo Integration Tests', () => {
       onNavigationRequested: vi.fn(),
       onCancelRequested: vi.fn(),
       onCommitRequested: vi.fn((macroId) => {
-        const macro = testMacros.find(m => m.id === macroId)
+        const macro = testMacros.find((m) => m.id === macroId)
         return !!macro
       }),
-      onShowAllRequested: vi.fn()
+      onShowAllRequested: vi.fn(),
     }
 
     inputElement = document.createElement('input')
@@ -60,7 +60,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
       typeIn(inputElement, 'l')
       typeIn(inputElement, 'l')
       typeIn(inputElement, 'o')
-      
+
       // expect(detector.getState().active).toBe(true)
       expect(detector.getState().buffer).toBe('/hello')
 
@@ -72,10 +72,10 @@ describe('MacroDetector - Undo Integration Tests', () => {
       expect(mockActions.onMacroCommitted).toHaveBeenCalledWith('1')
 
       // User realizes mistake and hits undo
-      const undoEvent = new KeyboardEvent('keydown', { 
-        key: 'z', 
-        ctrlKey: true, 
-        bubbles: true 
+      const undoEvent = new KeyboardEvent('keydown', {
+        key: 'z',
+        ctrlKey: true,
+        bubbles: true,
       })
       inputElement.dispatchEvent(undoEvent)
 
@@ -99,29 +99,40 @@ describe('MacroDetector - Undo Integration Tests', () => {
       expect(inputElement.value).toBe('Hi! Hello, World!')
 
       // Undo second
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
       expect(inputElement.value).toBe('Hi! ')
 
       // Undo first
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', {
-        key: 'z', ctrlKey: true, bubbles: true
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
       expect(inputElement.value).toBe(' ')
     })
 
     it('should handle undo after user continues typing', () => {
-      
       typeIn(inputElement, '/hello ')
 
       // User continues typing after replacement
       typeIn(inputElement, ' How are you?')
 
       // User wants to undo the macro
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(inputElement.value).toBe(' How are you?')
     })
@@ -135,9 +146,13 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
       expect(inputElement.value).toBe('Start text Hello, World! end text')
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(inputElement.value).toBe('Start text  end text')
     })
@@ -152,22 +167,29 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
       expect(inputElement.value).toBe('Hi!') // Shortest match
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', {
-        key: 'z', ctrlKey: true, bubbles: true
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(inputElement.value).toBe('')
     })
 
     it('should handle undo with exact vs prefix match', () => {
-
       typeIn(inputElement, '/hello ')
 
       expect(inputElement.value).toBe('Hello, World!')
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(inputElement.value).toBe('')
     })
@@ -218,12 +240,16 @@ describe('MacroDetector - Undo Integration Tests', () => {
       typeIn(contentEditableDiv, '/hello ')
 
       expect(contentEditableDiv.innerHTML).toContain('Hello, World!')
-      
+
       expect(contentEditableDiv.textContent).toContain('Hello, World!')
 
-      contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      contentEditableDiv.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(contentEditableDiv.textContent).toBe('')
     })
@@ -231,13 +257,17 @@ describe('MacroDetector - Undo Integration Tests', () => {
     it('should handle undo when contentEditable has multiple text nodes', () => {
       contentEditableDiv.focus()
       contentEditableDiv.innerHTML = 'Before<br>/hello<br>After'
-      
+
       // This is complex - contentEditable with BR tags
       // Just verify it doesn't crash
       expect(() => {
-        contentEditableDiv.dispatchEvent(new KeyboardEvent('keydown', { 
-          key: 'z', ctrlKey: true, bubbles: true 
-        }))
+        contentEditableDiv.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: 'z',
+            ctrlKey: true,
+            bubbles: true,
+          })
+        )
       }).not.toThrow()
     })
   })
@@ -259,7 +289,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
     it('should efficiently handle large text documents', () => {
       inputElement.focus()
-      
+
       // Create large text with macro in middle
       const largeText = 'x'.repeat(10000) + '/hello' + 'y'.repeat(10000)
       inputElement.value = largeText
@@ -273,9 +303,13 @@ describe('MacroDetector - Undo Integration Tests', () => {
       expect(replaceTime).toBeLessThan(100)
 
       const undoStartTime = performance.now()
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
       const undoTime = performance.now() - undoStartTime
 
       expect(undoTime).toBeLessThan(100)
@@ -311,9 +345,13 @@ describe('MacroDetector - Undo Integration Tests', () => {
       expect(detector.getUndoHistoryLength()).toBe(2)
 
       // Undo in textarea
-      textarea.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      textarea.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(textarea.value).toBe('')
       expect(inputElement.value).toBe('Hello, World!') // Unchanged
@@ -332,26 +370,33 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
       // Switch back and undo
       inputElement.focus()
-      
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(inputElement.value).toBe('')
       expect(textarea.value).toBe('Be right back!') // Unchanged
     })
 
     it('should only undo in focused element', () => {
-
       typeIn(inputElement, '/hello ')
 
       // Switch focus but try undo on wrong element
       textarea.focus()
-      
+
       // Dispatch undo on textarea (which has no history)
-      textarea.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      textarea.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       // Input should be unchanged, no undo happened
       expect(inputElement.value).toBe('Hello, World!')
@@ -360,7 +405,6 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
   describe('Error Recovery', () => {
     it('should handle corrupted history gracefully', () => {
-
       typeIn(inputElement, '/hello ')
 
       // Manually corrupt the element value
@@ -368,14 +412,17 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
       // Undo should not crash
       expect(() => {
-        inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-          key: 'z', ctrlKey: true, bubbles: true 
-        }))
+        inputElement.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: 'z',
+            ctrlKey: true,
+            bubbles: true,
+          })
+        )
       }).not.toThrow()
     })
 
     it('should handle element becoming readonly', () => {
-
       typeIn(inputElement, '/hello ')
 
       // Make readonly
@@ -383,22 +430,29 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
       // Should not crash when trying to undo
       expect(() => {
-        inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-          key: 'z', ctrlKey: true, bubbles: true 
-        }))
+        inputElement.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: 'z',
+            ctrlKey: true,
+            bubbles: true,
+          })
+        )
       }).not.toThrow()
     })
 
     it('should handle element becoming disabled', () => {
-
       typeIn(inputElement, '/hello ')
 
       inputElement.disabled = true
 
       expect(() => {
-        inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-          key: 'z', ctrlKey: true, bubbles: true 
-        }))
+        inputElement.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: 'z',
+            ctrlKey: true,
+            bubbles: true,
+          })
+        )
       }).not.toThrow()
     })
   })
@@ -411,9 +465,13 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
       typeIn(inputElement, '/hello ')
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       // Cursor should be at the position where replacement was removed
       expect(inputElement.selectionStart).toBe(7)
@@ -421,26 +479,32 @@ describe('MacroDetector - Undo Integration Tests', () => {
     })
 
     it('should handle undo at document boundaries', () => {
-
       typeIn(inputElement, '/hello ')
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', {
-        key: 'z', ctrlKey: true, bubbles: true
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(inputElement.value).toBe('')
       expect(inputElement.selectionStart).toBe(0)
     })
 
     it('should handle multiple undos without errors', () => {
-
       typeIn(inputElement, '/h')
 
       // Try undoing multiple times (more than history has)
       for (let i = 0; i < 5; i++) {
-        inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-          key: 'z', ctrlKey: true, bubbles: true 
-        }))
+        inputElement.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: 'z',
+            ctrlKey: true,
+            bubbles: true,
+          })
+        )
       }
 
       // Should not have any macros to undo (typed /h but never triggered it)
@@ -454,7 +518,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
       inputElement.addEventListener('input', inputListener)
 
       typeIn(inputElement, '/hello')
-      
+
       inputListener.mockClear()
 
       typeIn(inputElement, ' ')
@@ -464,9 +528,13 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
       inputListener.mockClear()
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       // Should dispatch input event on undo
       expect(inputListener).toHaveBeenCalled()
@@ -476,7 +544,7 @@ describe('MacroDetector - Undo Integration Tests', () => {
   describe('Timing and Race Conditions', () => {
     it('should handle rapid undo requests', () => {
       inputElement.focus()
-      
+
       // Create multiple replacements
       for (let i = 0; i < 3; i++) {
         typeIn(inputElement, '/hello ')
@@ -485,16 +553,19 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
       // Rapidly fire undo events
       for (let i = 0; i < 8; i++) {
-        inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-          key: 'z', ctrlKey: true, bubbles: true 
-        }))
+        inputElement.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            key: 'z',
+            ctrlKey: true,
+            bubbles: true,
+          })
+        )
       }
 
       expect(detector.getUndoHistoryLength()).toBe(0)
     })
 
     it('should handle undo during active detection', () => {
-
       typeIn(inputElement, '/hel')
 
       typeIn(inputElement, 'l')
@@ -502,9 +573,13 @@ describe('MacroDetector - Undo Integration Tests', () => {
       expect(detector.getState().active).toBe(true)
 
       // Try undo while detection is active (shouldn't affect detection)
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       // Detection should still be active
       expect(detector.getState().active).toBe(true)
@@ -517,9 +592,13 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
       typeIn(inputElement, '/hello ')
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(inputElement.getAttribute('aria-label')).toBe('Test input')
     })
@@ -533,9 +612,13 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
       typeIn(inputElement, '/hello ')
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(inputElement.value).toBe('')
       expect(label.textContent).toBe('Message')
@@ -545,35 +628,39 @@ describe('MacroDetector - Undo Integration Tests', () => {
   })
 
   describe('Special Character Handling', () => {
-
     it('should handle macros with special characters', () => {
-
       typeIn(inputElement, '/special ')
 
       expect(inputElement.value).toContain('Special: @#$%^&*()')
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(inputElement.value).toBe('')
     })
 
     it('should handle unicode emoji in macros', () => {
-
       typeIn(inputElement, '/wave ')
 
       expect(inputElement.value).toBe('👋 Hello!')
 
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(inputElement.value).toBe('')
     })
 
     it('should handle newlines in macro text', () => {
-
       const textarea = document.createElement('textarea')
       document.body.appendChild(textarea)
 
@@ -581,9 +668,13 @@ describe('MacroDetector - Undo Integration Tests', () => {
 
       expect(textarea.value).toBe('Line 1\nLine 2\nLine 3')
 
-      textarea.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      textarea.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(textarea.value).toBe('')
 
@@ -592,24 +683,25 @@ describe('MacroDetector - Undo Integration Tests', () => {
   })
 
   describe('Clipboard Integration', () => {
-
     it('should maintain undo after paste operations', () => {
-
       typeIn(inputElement, '/hello ')
       // Simulate paste
       inputElement.value += ' pasted text'
 
       // Undo should still work
-      inputElement.dispatchEvent(new KeyboardEvent('keydown', { 
-        key: 'z', ctrlKey: true, bubbles: true 
-      }))
+      inputElement.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'z',
+          ctrlKey: true,
+          bubbles: true,
+        })
+      )
 
       expect(inputElement.value).toBe(' pasted text')
     })
   })
 
   describe('API Usage Tests', () => {
-
     it('should expose getUndoHistoryLength correctly', () => {
       expect(detector.getUndoHistoryLength()).toBe(0)
 
@@ -619,7 +711,6 @@ describe('MacroDetector - Undo Integration Tests', () => {
     })
 
     it('should expose undoLastReplacement for programmatic undo', () => {
-
       typeIn(inputElement, '/hello ')
 
       expect(inputElement.value).toBe('Hello, World!')
@@ -636,7 +727,6 @@ describe('MacroDetector - Undo Integration Tests', () => {
     })
 
     it('should expose clearUndoHistory API', () => {
-
       typeIn(inputElement, '/hello ')
 
       expect(detector.getUndoHistoryLength()).toBe(1)

@@ -67,11 +67,23 @@ export function DeleteConfirmPopup({
         ground rule corner-lg ruled font-md elevated-soft"
       style={{ left: position.x, top: position.y, position: 'fixed' }}
     >
-      <div data-component="delete-confirm-arrow" className={`sf-callout-arrow height-none center-x position-absolute ${placement === 'top' ? 'sf-callout-arrow-top attach-below' : 'sf-callout-arrow-bottom attach-above'}`} />
-      <div id={MESSAGE_ID} data-component="delete-confirm-message" className="padding-block-sm padding-inline-md
-        ink rule-soft ruled-bottom font-sm">
+      <div
+        data-component="delete-confirm-arrow"
+        className={`sf-callout-arrow height-none center-x position-absolute ${placement === 'top' ? 'sf-callout-arrow-top attach-below' : 'sf-callout-arrow-bottom attach-above'}`}
+      />
+      <div
+        id={MESSAGE_ID}
+        data-component="delete-confirm-message"
+        className="padding-block-sm padding-inline-md
+          ink rule-soft ruled-bottom font-sm"
+      >
         {t('deleteConfirm.message')}{' '}
-        <span data-component="delete-confirm-command" className="ink-accent font-semibold font-mono">{macro.command}</span>
+        <span
+          data-component="delete-confirm-command"
+          className="ink-accent font-semibold font-mono"
+        >
+          {macro.command}
+        </span>
       </div>
       <div
         ref={optionsRef}
@@ -97,7 +109,10 @@ export function DeleteConfirmPopup({
             selected:ground-defined selected:ink-accent selected:rule-accent"
           role="option"
           aria-selected={nav.selectedIndex === 0}
-          onMouseDown={e => { e.preventDefault(); onCancel() }}
+          onMouseDown={(e) => {
+            e.preventDefault()
+            onCancel()
+          }}
         >
           {t('deleteConfirm.cancel')}
         </button>
@@ -114,16 +129,28 @@ export function DeleteConfirmPopup({
             selected:ground-fail-faint selected:ink-fail selected:rule-fail"
           role="option"
           aria-selected={nav.selectedIndex === 1}
-          onMouseDown={e => { e.preventDefault(); onConfirm() }}
+          onMouseDown={(e) => {
+            e.preventDefault()
+            onConfirm()
+          }}
         >
           {t('deleteConfirm.delete')}
         </button>
       </div>
-      <div data-component="delete-confirm-footer" className="horizontal gap-md padding-block-xs padding-inline-md justify-end
-        ground ink-soft rule font-xs">
-        <span><Keycap>Tab</Keycap> {t('deleteConfirm.footer.switch')}</span>
-        <span><Keycap>↵</Keycap> {t('deleteConfirm.footer.select')}</span>
-        <span><Keycap>Esc</Keycap> {t('deleteConfirm.footer.cancel')}</span>
+      <div
+        data-component="delete-confirm-footer"
+        className="horizontal gap-md padding-block-xs padding-inline-md justify-end
+          ground ink-soft rule font-xs"
+      >
+        <span>
+          <Keycap>Tab</Keycap> {t('deleteConfirm.footer.switch')}
+        </span>
+        <span>
+          <Keycap>↵</Keycap> {t('deleteConfirm.footer.select')}
+        </span>
+        <span>
+          <Keycap>Esc</Keycap> {t('deleteConfirm.footer.cancel')}
+        </span>
       </div>
     </div>
   )

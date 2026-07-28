@@ -7,11 +7,19 @@ vi.mock('./MacroSearch', () => ({
   MacroSearch: ({ macros }: { macros: any[] }) => (
     <div>
       <input placeholder="popup.searchPlaceholder" />
-      {macros.map(m => <div key={m.id}>{m.command}</div>)}
+      {macros.map((m) => (
+        <div key={m.id}>{m.command}</div>
+      ))}
     </div>
   ),
 }))
-vi.mock('./SiteToggle', () => ({ default: () => <div><span>popup.macrosOnThisSite</span></div> }))
+vi.mock('./SiteToggle', () => ({
+  default: () => (
+    <div>
+      <span>popup.macrosOnThisSite</span>
+    </div>
+  ),
+}))
 vi.mock('./ThemeSwitcher', () => ({ default: () => <div data-testid="theme-switcher-mock" /> }))
 vi.mock('./NewMacroButton', () => ({ default: () => <button>popup.newMacro</button> }))
 vi.mock('../../lib/i18n', () => ({ t: (key: string) => key }))

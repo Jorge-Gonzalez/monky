@@ -3,9 +3,7 @@ import type { SuggestionsOverlayManager } from '../overlays/suggestionsOverlay/S
 import { getActiveEditable } from '../macroEngine/replacement/editableUtils'
 import type { DetectorActions } from '../actions/detectorActions'
 
-export function createSuggestionsCoordinator(
-  manager: SuggestionsOverlayManager
-): SuggestionsCoordinator {
+export function createSuggestionsCoordinator(manager: SuggestionsOverlayManager): SuggestionsCoordinator {
   let isEnabled = true
   let currentMacros: Macro[] = []
 
@@ -15,8 +13,7 @@ export function createSuggestionsCoordinator(
   }
 
   const detectorActions: DetectorActions = {
-    onDetectionStarted(_buffer: string, _position?: { x: number; y: number }) {
-    },
+    onDetectionStarted(_buffer: string, _position?: { x: number; y: number }) {},
 
     onDetectionUpdated(buffer: string, _position?: { x: number; y: number }) {
       if (manager.isVisible()) {
@@ -36,7 +33,7 @@ export function createSuggestionsCoordinator(
       if (manager.isVisible()) {
         return true
       }
-      const exactMatch = currentMacros.find(m => m.command === buffer)
+      const exactMatch = currentMacros.find((m) => m.command === buffer)
       return !!exactMatch
     },
 

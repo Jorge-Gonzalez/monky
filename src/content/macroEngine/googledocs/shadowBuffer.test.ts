@@ -40,7 +40,7 @@ describe('createShadowBuffer', () => {
     sb.handlePrintable(':')
     sb.handlePrintable('f')
     sb.handlePrintable('o')
-    sb.handlePrintable('x')  // typo
+    sb.handlePrintable('x') // typo
     sb.backspace()
     expect(sb.read()).toBe(':fo')
     expect(sb.length).toBe(3)
@@ -66,9 +66,9 @@ describe('createShadowBuffer', () => {
     sb.handlePrintable(':')
     sb.handlePrintable('f')
     sb.handlePrintable('o')
-    sb.handlePrintable('x')  // typo
-    sb.backspace()            // correction
-    sb.handlePrintable('o')  // retype
+    sb.handlePrintable('x') // typo
+    sb.backspace() // correction
+    sb.handlePrintable('o') // retype
     expect(sb.read()).toBe(':foo')
   })
 
@@ -76,7 +76,7 @@ describe('createShadowBuffer', () => {
     const sb = createShadowBuffer()
     sb.handlePrintable(':')
     sb.handlePrintable('f')
-    sb.handlePrintable(' ')  // word boundary → reset
+    sb.handlePrintable(' ') // word boundary → reset
     sb.handlePrintable(':')
     sb.handlePrintable('b')
     sb.handlePrintable('a')

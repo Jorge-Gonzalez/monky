@@ -9,32 +9,61 @@ import { t } from '../../../../../lib/i18n'
 import { SettingsSection, SettingsRow, SettingsDivider, SettingsButton } from './SettingsLayout'
 
 const SunIcon = () => (
-  <svg className="boxed-inline" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
-    <g stroke="currentColor" strokeWidth="1.5">
-      <path d="M5 12H1M23 12h-4M7.05 7.05 4.222 4.222M19.778 19.778 16.95 16.95M7.05 16.95l-2.828 2.828M19.778 4.222 16.95 7.05" strokeLinecap="round" />
+  <svg
+    className="boxed-inline"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <g
+      stroke="currentColor"
+      strokeWidth="1.5"
+    >
+      <path
+        d="M5 12H1M23 12h-4M7.05 7.05 4.222 4.222M19.778 19.778 16.95 16.95M7.05 16.95l-2.828 2.828M19.778 4.222 16.95 7.05"
+        strokeLinecap="round"
+      />
       <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
-      <path d="M12 19v4M12 1v4" strokeLinecap="round" />
+      <path
+        d="M12 19v4M12 1v4"
+        strokeLinecap="round"
+      />
     </g>
   </svg>
 )
 
 const MoonIcon = () => (
-  <svg className="boxed-inline" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
-    <path d="M10.41 13.28C7.332 10.205 6.716 5.693 8.357 2c-1.23.41-2.256 1.23-3.281 2.256a10.399 10.399 0 0 0 0 14.768c4.102 4.102 10.46 3.897 14.562-.205 1.026-1.026 1.846-2.051 2.256-3.282-3.896 1.436-8.409.82-11.486-2.256Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  <svg
+    className="boxed-inline"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <path
+      d="M10.41 13.28C7.332 10.205 6.716 5.693 8.357 2c-1.23.41-2.256 1.23-3.281 2.256a10.399 10.399 0 0 0 0 14.768c4.102 4.102 10.46 3.897 14.562-.205 1.026-1.026 1.846-2.051 2.256-3.282-3.896 1.436-8.409.82-11.486-2.256Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 )
 
 const ALL_PREFIXES = ['/', ';', ':', '#', '!']
 
 const REPLACEMENT_OPTIONS = [
-  { value: 'auto' as const,   label: () => t('replacementMode.autoShort')   },
+  { value: 'auto' as const, label: () => t('replacementMode.autoShort') },
   { value: 'manual' as const, label: () => t('replacementMode.manualShort') },
 ]
 
 const THEME_OPTIONS: { value: ColorTheme; label: string }[] = [
-  { value: 'humo',  label: 'Humo'  },
+  { value: 'humo', label: 'Humo' },
   { value: 'acera', label: 'Acera' },
-  { value: 'mar',   label: 'Mar'   },
+  { value: 'mar', label: 'Mar' },
 ]
 
 const LANGUAGE_OPTIONS: { value: Lang; label: string }[] = [
@@ -43,7 +72,18 @@ const LANGUAGE_OPTIONS: { value: Lang; label: string }[] = [
 ]
 
 export function SettingsView(_props: BaseModalViewProps) {
-  const { prefixes, useCommitKeys, colorTheme, theme, language, setPrefixes, setUseCommitKeys, setColorTheme, setTheme, setLanguage } = useOptions()
+  const {
+    prefixes,
+    useCommitKeys,
+    colorTheme,
+    theme,
+    language,
+    setPrefixes,
+    setUseCommitKeys,
+    setColorTheme,
+    setTheme,
+    setLanguage,
+  } = useOptions()
   const { status: importStatus, exportMacros, importFromFile } = useMacroImportExport()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -53,15 +93,17 @@ export function SettingsView(_props: BaseModalViewProps) {
   const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ?? false
   const mode = theme === 'dark' || (theme === 'system' && systemDark) ? 'dark' : 'light'
   const MODE_OPTIONS = [
-    { value: 'light' as const, label: <SunIcon />,  ariaLabel: t('settings.lightMode') },
-    { value: 'dark'  as const, label: <MoonIcon />, ariaLabel: t('settings.darkMode') },
+    { value: 'light' as const, label: <SunIcon />, ariaLabel: t('settings.lightMode') },
+    { value: 'dark' as const, label: <MoonIcon />, ariaLabel: t('settings.darkMode') },
   ]
 
   return (
-    <div data-component="settings-view" className="vertical scroll-auto fill-block
-      ground scrollbar-subtle">
+    <div
+      data-component="settings-view"
+      className="vertical scroll-auto fill-block
+        ground scrollbar-subtle"
+    >
       <div className="padding-bottom-xl padding-top-2xl padding-right-none padding-left-none">
-
         <SettingsSection label={t('settings.sections.general')}>
           <SettingsRow label={t('options.prefixEditor.title')}>
             <SelectableGroup
@@ -76,9 +118,9 @@ export function SettingsView(_props: BaseModalViewProps) {
           </SettingsRow>
           <SettingsRow label={t('replacementMode.title')}>
             <SegmentedControl
-              options={REPLACEMENT_OPTIONS.map(o => ({ value: o.value, label: o.label() }))}
+              options={REPLACEMENT_OPTIONS.map((o) => ({ value: o.value, label: o.label() }))}
               value={replacementValue}
-              onChange={v => setUseCommitKeys(v === 'manual')}
+              onChange={(v) => setUseCommitKeys(v === 'manual')}
             />
           </SettingsRow>
         </SettingsSection>
@@ -91,12 +133,12 @@ export function SettingsView(_props: BaseModalViewProps) {
               <SegmentedControl
                 options={THEME_OPTIONS}
                 value={colorTheme}
-                onChange={v => setColorTheme(v)}
+                onChange={(v) => setColorTheme(v)}
               />
               <SegmentedControl
                 options={MODE_OPTIONS}
                 value={mode}
-                onChange={v => setTheme(v)}
+                onChange={(v) => setTheme(v)}
               />
             </div>
           </SettingsRow>
@@ -104,7 +146,7 @@ export function SettingsView(_props: BaseModalViewProps) {
             <SegmentedControl
               options={LANGUAGE_OPTIONS}
               value={language}
-              onChange={v => setLanguage(v)}
+              onChange={(v) => setLanguage(v)}
             />
           </SettingsRow>
         </SettingsSection>
@@ -125,7 +167,7 @@ export function SettingsView(_props: BaseModalViewProps) {
                 type="file"
                 accept=".json,application/json"
                 style={{ display: 'none' }}
-                onChange={e => {
+                onChange={(e) => {
                   const input = e.currentTarget
                   const file = input.files?.[0]
                   input.value = ''
@@ -137,11 +179,12 @@ export function SettingsView(_props: BaseModalViewProps) {
         </SettingsSection>
 
         {importStatus && (
-          <div className={`padding-top-xs padding-bottom-sm padding-inline-xl font-sm ${importStatus.ok ? 'ink-accent' : 'ink-fail'}`}>
+          <div
+            className={`padding-top-xs padding-bottom-sm padding-inline-xl font-sm ${importStatus.ok ? 'ink-accent' : 'ink-fail'}`}
+          >
             {importStatus.message}
           </div>
         )}
-
       </div>
     </div>
   )

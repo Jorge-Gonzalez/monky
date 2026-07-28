@@ -10,11 +10,8 @@ import { ContentEditor } from '../../shared/content-editor'
 import { validateCommand, isCommandValid } from '../../shared/macroValidation'
 import { hasRichFormatting, extractPlainText } from '../../shared/macroContent'
 
-export default function MacroForm({ editing, onDone }: {
-  editing: Macro | null,
-  onDone: () => void,
-}) {
-  const prefixes = useMacroStore(s => s.config?.prefixes || ['/'])
+export default function MacroForm({ editing, onDone }: { editing: Macro | null; onDone: () => void }) {
+  const prefixes = useMacroStore((s) => s.config?.prefixes || ['/'])
   const [command, setCommand] = useState(editing?.command || '')
   const [text, setText] = useState(editing?.html || editing?.text || '')
   const [isSensitive, setSensitive] = useState(!!editing?.is_sensitive)
@@ -49,7 +46,8 @@ export default function MacroForm({ editing, onDone }: {
 
   const commandValid = isCommandValid(command, prefixes)
   const isTextValid = text.trim() !== ''
-  const isDirty = !editing ||
+  const isDirty =
+    !editing ||
     command !== editing.command ||
     text !== (editing.html || editing.text) ||
     isSensitive !== !!editing.is_sensitive
@@ -60,8 +58,14 @@ export default function MacroForm({ editing, onDone }: {
     setError(null)
 
     const commandError = validateCommand(command, prefixes)
-    if (commandError) { setError(commandError); return }
-    if (!text.trim()) { setError('Text content is required'); return }
+    if (commandError) {
+      setError(commandError)
+      return
+    }
+    if (!text.trim()) {
+      setError('Text content is required')
+      return
+    }
 
     const hasRichContent = hasRichFormatting(text)
     const plainText = extractPlainText(text)
@@ -70,7 +74,7 @@ export default function MacroForm({ editing, onDone }: {
       command,
       text: plainText,
       html: hasRichContent ? text : undefined,
-      contentType: hasRichContent ? 'text/html' as const : 'text/plain' as const,
+      contentType: hasRichContent ? ('text/html' as const) : ('text/plain' as const),
       is_sensitive: isSensitive,
     }
 
@@ -89,10 +93,18 @@ export default function MacroForm({ editing, onDone }: {
   }
 
   return (
-    <form onSubmit={e => { void onSubmit(e) }} className="vertical gap-md">
+    <form
+      onSubmit={(e) => {
+        void onSubmit(e)
+      }}
+      className="vertical gap-md"
+    >
       <div>
-        <label htmlFor="macro-command" className="boxed
-          ink font-sm font-medium">
+        <label
+          htmlFor="macro-command"
+          className="boxed
+            ink font-sm font-medium"
+        >
           {t('macroForm.triggerLabel')}
         </label>
         <input
@@ -100,21 +112,22 @@ export default function MacroForm({ editing, onDone }: {
           ref={commandInputRef}
           className={`padding-block-sm padding-inline-md fill-inline tween-rule-quick ground-subtle ink rule corner-3xl ruled font-md recessed-soft focus:rule-accent-soft focus:ring-accent-soft ${command && !commandValid ? 'rule-fail focus:rule-fail focus:recessed-fail' : ''}`}
           value={command}
-          onChange={e => setCommand(e.currentTarget.value)}
+          onChange={(e) => setCommand(e.currentTarget.value)}
           placeholder={`e.g., ${prefixes[0]}sig`}
           maxLength={50}
           aria-invalid={command && !commandValid ? true : undefined}
         />
         {command && !commandValid && (
-          <p className="ink-fail font-xs">
-            Command must start with: {prefixes.join(', ')}
-          </p>
+          <p className="ink-fail font-xs">Command must start with: {prefixes.join(', ')}</p>
         )}
       </div>
 
       <div>
-        <label htmlFor="macro-text" className="boxed
-          ink font-sm font-medium">
+        <label
+          htmlFor="macro-text"
+          className="boxed
+            ink font-sm font-medium"
+        >
           {t('macroForm.textLabel')}
         </label>
         <ContentEditor
@@ -126,8 +139,10 @@ export default function MacroForm({ editing, onDone }: {
       </div>
 
       {error && (
-        <div className="padding-md
-          ground-fail-faint ink-fail rule-fail corner-md ruled">
+        <div
+          className="padding-md
+            ground-fail-faint ink-fail rule-fail corner-md ruled"
+        >
           <p className="font-medium">{error}</p>
         </div>
       )}
@@ -137,13 +152,17 @@ export default function MacroForm({ editing, onDone }: {
           <input
             type="checkbox"
             checked={isSensitive}
-            onChange={e => setSensitive(e.currentTarget.checked)}
+            onChange={(e) => setSensitive(e.currentTarget.checked)}
             className="control-size-lg
               rule corner-sm ruled pressable
               focus:ring"
           />
-          <span className="boxed
-            ink font-sm font-medium">{t('macroForm.sensitiveLabel')}</span>
+          <span
+            className="boxed
+              ink font-sm font-medium"
+          >
+            {t('macroForm.sensitiveLabel')}
+          </span>
         </label>
 
         <div className="horizontal inline">

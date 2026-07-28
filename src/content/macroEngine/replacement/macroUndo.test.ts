@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createMacroDetector } from '../macroDetector'
 import type { DetectorActions } from '../../actions/detectorActions'
-import type { Macro} from '../../../types'
-import { } from '../../../types'
+import type { Macro } from '../../../types'
+import {} from '../../../types'
 import { typeIn } from '../../../utils/testUtils'
-import { useMacroStore } from "../../../store/useMacroStore"
+import { useMacroStore } from '../../../store/useMacroStore'
 
 describe('MacroDetector - Undo System', () => {
   let detector: ReturnType<typeof createMacroDetector>
@@ -13,56 +13,60 @@ describe('MacroDetector - Undo System', () => {
   let textareaElement: HTMLTextAreaElement
   let contentEditableDiv: HTMLDivElement
 
-  const getUndoEvent = () => new KeyboardEvent('keydown', { 
-    key: 'z', 
-    ctrlKey: true, 
-    bubbles: true 
-  })
+  const getUndoEvent = () =>
+    new KeyboardEvent('keydown', {
+      key: 'z',
+      ctrlKey: true,
+      bubbles: true,
+    })
 
-  const getMacUndoEvent = () => new KeyboardEvent('keydown', { 
-    key: 'z', 
-    metaKey: true, 
-    bubbles: true 
-  })
+  const getMacUndoEvent = () =>
+    new KeyboardEvent('keydown', {
+      key: 'z',
+      metaKey: true,
+      bubbles: true,
+    })
 
-  const getCancelableUndoEvent = () => new KeyboardEvent('keydown', { 
-    key: 'z', 
-    ctrlKey: true, 
-    bubbles: true,
-    cancelable: true
-  })
+  const getCancelableUndoEvent = () =>
+    new KeyboardEvent('keydown', {
+      key: 'z',
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true,
+    })
 
-  const getRedoEvent = () => new KeyboardEvent('keydown', { 
-    key: 'z', 
-    ctrlKey: true, 
-    shiftKey: true,
-    bubbles: true 
-  })
+  const getRedoEvent = () =>
+    new KeyboardEvent('keydown', {
+      key: 'z',
+      ctrlKey: true,
+      shiftKey: true,
+      bubbles: true,
+    })
 
   const testMacros: Macro[] = [
     {
       id: '1',
       command: '/hello',
       text: 'Hello, World!',
-      contentType: 'text/plain'
+      contentType: 'text/plain',
     },
     {
       id: '2',
       command: '/email',
       text: 'test@example.com',
-      contentType: 'text/plain'
+      contentType: 'text/plain',
     },
     {
       id: '3',
       command: '/sig',
       text: 'Best regards,\nJohn Doe',
-      contentType: 'text/plain'
+      contentType: 'text/plain',
     },
     {
       id: '4',
       command: '/empty',
       text: '',
-      contentType: 'text/plain'
+      contentType: 'text/plain',
     },
     {
       id: '5',
@@ -80,15 +84,15 @@ describe('MacroDetector - Undo System', () => {
     },
     {
       id: '7',
-      command: "/tambien",
-      text: "Tambien a mi\n\nBlockquote:\n\n> Lo que no se tiene no se perdio, entonces por que se anhela, los anhelos y los miedos dos caras de la misma moneda la alegria y la miseria inalcanzables pero simpre presentes tranparentes.",
-      html: "<p><b>Tambien a mi</b></p><p>Blockquote:</p><blockquote>Lo que no se tiene no se perdio, entonces por que se anhela, los anhelos y los miedos dos caras de la misma moneda la alegria y la miseria inalcanzables pero simpre presentes tranparentes.</blockquote>",
-      contentType: "text/html",
-    }
+      command: '/tambien',
+      text: 'Tambien a mi\n\nBlockquote:\n\n> Lo que no se tiene no se perdio, entonces por que se anhela, los anhelos y los miedos dos caras de la misma moneda la alegria y la miseria inalcanzables pero simpre presentes tranparentes.',
+      html: '<p><b>Tambien a mi</b></p><p>Blockquote:</p><blockquote>Lo que no se tiene no se perdio, entonces por que se anhela, los anhelos y los miedos dos caras de la misma moneda la alegria y la miseria inalcanzables pero simpre presentes tranparentes.</blockquote>',
+      contentType: 'text/html',
+    },
   ]
 
   beforeEach(() => {
-    useMacroStore.setState(s => ({ config: { ...s.config, useCommitKeys: true } }))
+    useMacroStore.setState((s) => ({ config: { ...s.config, useCommitKeys: true } }))
     // Create mock actions
     mockActions = {
       onDetectionStarted: vi.fn(),
@@ -98,7 +102,7 @@ describe('MacroDetector - Undo System', () => {
       onNavigationRequested: vi.fn(),
       onCancelRequested: vi.fn(),
       onCommitRequested: vi.fn(),
-      onShowAllRequested: vi.fn()
+      onShowAllRequested: vi.fn(),
     }
 
     // Create test elements
@@ -127,9 +131,7 @@ describe('MacroDetector - Undo System', () => {
   })
 
   describe('Cursor Position After Undo', () => {
-
     it('should restore cursor position after undo in input', () => {
-
       typeIn(inputElement, '/hello ')
 
       inputElement.dispatchEvent(getUndoEvent())
@@ -154,9 +156,7 @@ describe('MacroDetector - Undo System', () => {
   })
 
   describe('Integration with Detection System', () => {
-
     it('should track undo even when detection is cancelled', () => {
-
       typeIn(inputElement, '/hello ')
 
       // Detection should be cancelled after commit
@@ -171,9 +171,8 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should not interfere with native browser undo when no macro history', () => {
-
       typeIn(inputElement, 'regular typing')
-      
+
       // Should allow default browser behavior
       const result = inputElement.dispatchEvent(getUndoEvent())
       expect(result).toBe(true) // Not prevented
@@ -181,7 +180,6 @@ describe('MacroDetector - Undo System', () => {
   })
 
   describe('Event Dispatching', () => {
-
     it('should dispatch input event after undo', () => {
       const inputListener = vi.fn()
       inputElement.addEventListener('input', inputListener)
@@ -197,25 +195,24 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should prevent default when undo is handled', () => {
-
       typeIn(inputElement, '/hello ')
-      
+
       const result = inputElement.dispatchEvent(getCancelableUndoEvent())
-      
+
       // Should be prevented when undo was handled
       expect(result).toBe(false)
     })
   })
 
   describe('Basic Undo Functionality', () => {
-
     it('should undo macro replacement with html content in input element', () => {
-
       typeIn(inputElement, '/tambien ')
 
       // Verify replacement happened - input fields normalize multiline text to single line
       // The macro's text property has newlines which get converted to spaces
-      expect(inputElement.value).toBe('Tambien a mi Blockquote: > Lo que no se tiene no se perdio, entonces por que se anhela, los anhelos y los miedos dos caras de la misma moneda la alegria y la miseria inalcanzables pero simpre presentes tranparentes.')
+      expect(inputElement.value).toBe(
+        'Tambien a mi Blockquote: > Lo que no se tiene no se perdio, entonces por que se anhela, los anhelos y los miedos dos caras de la misma moneda la alegria y la miseria inalcanzables pero simpre presentes tranparentes.'
+      )
       expect(detector.getUndoHistoryLength()).toBe(1)
 
       // Undo the replacement
@@ -227,7 +224,6 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should undo macro replacement in input element', () => {
-
       typeIn(inputElement, '/hello ')
 
       // Verify replacement happened (no trailing space - trigger was consumed)
@@ -243,7 +239,6 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should undo macro replacement in textarea element', () => {
-
       typeIn(textareaElement, '/email ')
 
       expect(textareaElement.value).toBe('test@example.com')
@@ -319,7 +314,6 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should not undo when history is empty', () => {
-
       typeIn(inputElement, 'some text')
 
       // Should not prevent default when no history
@@ -347,7 +341,6 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should undo when user typed before replacement', () => {
-
       // User types at the beginning
       typeIn(inputElement, 'prefix ')
 
@@ -361,12 +354,12 @@ describe('MacroDetector - Undo System', () => {
 
     it('should handle undo when replacement text was partially edited', () => {
       inputElement.focus()
-      
+
       typeIn(inputElement, '/hello ')
-      
+
       // User edits the replacement (removes "World")
       inputElement.value = 'Hello,  !'
-      
+
       // Undo might not work perfectly here, but shouldn't crash
       expect(() => {
         inputElement.dispatchEvent(getUndoEvent())
@@ -419,18 +412,17 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should clear history on detector destroy', () => {
-
       typeIn(inputElement, '/hello ')
 
       expect(detector.getUndoHistoryLength()).toBe(1)
 
       detector.destroy()
-      
+
       // Create new detector to verify history was cleared
       const newDetector = createMacroDetector(mockActions)
       newDetector.setMacros(testMacros)
       newDetector.initialize()
-      
+
       expect(newDetector.getUndoHistoryLength()).toBe(0)
       newDetector.destroy()
     })
@@ -438,7 +430,6 @@ describe('MacroDetector - Undo System', () => {
 
   describe('Edge Cases', () => {
     it('should not crash when element is removed from DOM', () => {
-
       typeIn(inputElement, '/hello ')
 
       // Remove element from DOM
@@ -448,7 +439,7 @@ describe('MacroDetector - Undo System', () => {
       expect(() => {
         window.dispatchEvent(getUndoEvent())
       }).not.toThrow()
-      
+
       // Prevent afterEach from trying to remove it again
       inputElement = document.createElement('input')
       inputElement.type = 'text'
@@ -456,9 +447,8 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should not undo if Shift is pressed (Ctrl+Shift+Z is redo)', () => {
-
       typeIn(inputElement, '/hello ')
-      
+
       inputElement.dispatchEvent(getRedoEvent())
 
       // Should not undo
@@ -466,7 +456,6 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should handle multiline macro replacements', () => {
-
       typeIn(textareaElement, '/sig ')
 
       expect(textareaElement.value).toBe('Best regards,\nJohn Doe')
@@ -477,7 +466,6 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should handle empty replacement text', () => {
-
       typeIn(inputElement, '/empty ')
 
       expect(inputElement.value).toBe('')
@@ -491,7 +479,6 @@ describe('MacroDetector - Undo System', () => {
 
   describe('Cursor Position After Undo', () => {
     it('should restore cursor position after undo in input', () => {
-
       typeIn(inputElement, '/hello ')
 
       inputElement.dispatchEvent(getUndoEvent())
@@ -502,7 +489,6 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should restore cursor position after undo in textarea', () => {
-
       typeIn(textareaElement, 'prefix /email ')
 
       textareaElement.dispatchEvent(getUndoEvent())
@@ -514,7 +500,6 @@ describe('MacroDetector - Undo System', () => {
 
   describe('Integration with Detection System', () => {
     it('should track undo even when detection is cancelled', () => {
-
       typeIn(inputElement, '/hello ')
 
       // Detection should be cancelled after commit
@@ -529,7 +514,6 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should not interfere with native browser undo when no macro history', () => {
-
       typeIn(inputElement, 'regular typing')
 
       // Should allow default browser behavior
@@ -554,7 +538,6 @@ describe('MacroDetector - Undo System', () => {
     })
 
     it('should prevent default when undo is handled', () => {
-
       typeIn(inputElement, '/hello ')
 
       const result = inputElement.dispatchEvent(getCancelableUndoEvent())
@@ -565,7 +548,6 @@ describe('MacroDetector - Undo System', () => {
   })
 
   describe('HTML Content Undo', () => {
-
     it('should undo HTML macro replacement in contentEditable element', () => {
       contentEditableDiv.focus()
 

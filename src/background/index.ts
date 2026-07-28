@@ -41,7 +41,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   // Developer utility: reload content scripts
   if (msg === 'reload-content-scripts') {
     void chrome.tabs.query({}, (tabs) => {
-      tabs.forEach(tab => {
+      tabs.forEach((tab) => {
         if (tab.id) {
           void chrome.tabs.reload(tab.id)
         }

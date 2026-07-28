@@ -261,12 +261,7 @@ describe('Input Text Replacement', () => {
         const sigStart = textarea.value.indexOf('/sig')
         const sigEnd = sigStart + 4
 
-        const result = replaceInInput(
-          textarea,
-          sigStart,
-          sigEnd,
-          'John Doe\nSoftware Engineer'
-        )
+        const result = replaceInInput(textarea, sigStart, sigEnd, 'John Doe\nSoftware Engineer')
 
         expect(result).toBe(true)
         expect(textarea.value).toContain('John Doe\nSoftware Engineer')
@@ -421,13 +416,7 @@ describe('Input Text Replacement', () => {
     it('should convert HTML to plain text when isHtml is true', () => {
       input.value = '/sig'
 
-      const result = replaceInInputSmart(
-        input,
-        0,
-        4,
-        '<strong>John Doe</strong><br><em>Engineer</em>',
-        true
-      )
+      const result = replaceInInputSmart(input, 0, 4, '<strong>John Doe</strong><br><em>Engineer</em>', true)
 
       expect(result).toBe(true)
       expect(input.value).toContain('John Doe')
@@ -440,13 +429,7 @@ describe('Input Text Replacement', () => {
     it('should handle HTML lists in smart mode', () => {
       input.value = '/tasks'
 
-      const result = replaceInInputSmart(
-        input,
-        0,
-        6,
-        '<ul><li>Task 1</li><li>Task 2</li></ul>',
-        true
-      )
+      const result = replaceInInputSmart(input, 0, 6, '<ul><li>Task 1</li><li>Task 2</li></ul>', true)
 
       expect(result).toBe(true)
       expect(input.value).toContain('Task 1')
@@ -459,13 +442,7 @@ describe('Input Text Replacement', () => {
       textarea.value = '/greeting'
       document.body.appendChild(textarea)
 
-      const result = replaceInInputSmart(
-        textarea,
-        0,
-        9,
-        '<p>Hello <strong>World</strong>!</p>',
-        true
-      )
+      const result = replaceInInputSmart(textarea, 0, 9, '<p>Hello <strong>World</strong>!</p>', true)
 
       expect(result).toBe(true)
       expect(textarea.value).toContain('Hello')

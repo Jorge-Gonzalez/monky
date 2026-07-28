@@ -8,15 +8,13 @@ export interface CaretCoordinates {
 /**
  * Gets the pixel coordinates of the caret/cursor in an input or textarea element
  */
-function getInputCaretCoordinates(
-  element: HTMLInputElement | HTMLTextAreaElement
-): CaretCoordinates {
+function getInputCaretCoordinates(element: HTMLInputElement | HTMLTextAreaElement): CaretCoordinates {
   const position = element.selectionStart || 0
-  
+
   // Create a mirror div to measure text
   const div = document.createElement('div')
   const style = window.getComputedStyle(element)
-  
+
   // Copy all relevant styles
   const properties = [
     'boxSizing',
@@ -69,7 +67,7 @@ function getInputCaretCoordinates(
 
   // Get text before caret
   const textBeforeCaret = element.value.substring(0, position)
-  
+
   // For multiline support, we need to preserve newlines
   const textNode = document.createTextNode(textBeforeCaret)
   div.appendChild(textNode)
@@ -82,7 +80,7 @@ function getInputCaretCoordinates(
   // Get the span's position relative to the mirror div
   const spanRect = span.getBoundingClientRect()
   const divRect = div.getBoundingClientRect()
-  
+
   // Calculate position relative to mirror div
   const relativeX = spanRect.left - divRect.left
   const relativeY = spanRect.top - divRect.top
@@ -99,7 +97,14 @@ function getInputCaretCoordinates(
   // Calculate final coordinates
   const coordinates: CaretCoordinates = {
     x: elementRect.left + window.scrollX + borderLeft + paddingLeft + relativeX - element.scrollLeft,
-    y: elementRect.top + window.scrollY + borderTop + paddingTop + relativeY - element.scrollTop + spanRect.height,
+    y:
+      elementRect.top +
+      window.scrollY +
+      borderTop +
+      paddingTop +
+      relativeY -
+      element.scrollTop +
+      spanRect.height,
   }
 
   // Cleanup
@@ -113,32 +118,32 @@ function getInputCaretCoordinates(
  */
 function getContentEditableCaretCoordinates(): CaretCoordinates | null {
   const selection = window.getSelection()
-  
+
   if (!selection || selection.rangeCount === 0) {
     return null
   }
 
   const range = selection.getRangeAt(0)
-  
+
   // Clone the range to avoid modifying the actual selection
   const clonedRange = range.cloneRange()
   clonedRange.collapse(true) // Collapse to start (caret position)
-  
+
   // Insert a temporary span at the caret position to get precise coordinates
   const span = document.createElement('span')
   span.textContent = '\u200B' // Zero-width space
   clonedRange.insertNode(span)
-  
+
   const rect = span.getBoundingClientRect()
-  
+
   const coordinates: CaretCoordinates = {
     x: rect.left + window.scrollX,
     y: rect.bottom + window.scrollY,
   }
-  
+
   // Remove the temporary span
   span.parentNode?.removeChild(span)
-  
+
   // Normalize the container to merge any split text nodes
   if (range.startContainer.parentElement) {
     range.startContainer.parentElement.normalize()
@@ -158,8 +163,7 @@ export function getCaretCoordinates(element: EditableEl): CaretCoordinates | nul
     }
 
     // Handle contentEditable elements
-    if (element.hasAttribute('contenteditable') || 
-        element.getAttribute('contenteditable') === 'true') {
+    if (element.hasAttribute('contenteditable') || element.getAttribute('contenteditable') === 'true') {
       return getContentEditableCaretCoordinates()
     }
 
@@ -183,9 +187,12 @@ export function getCaretCoordinatesDebug(element: EditableEl): CaretCoordinates 
   console.group('🔍 Getting Caret Coordinates')
   console.log('Element:', element)
   console.log('Element type:', element.constructor.name)
-  console.log('Is input/textarea:', element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)
+  console.log(
+    'Is input/textarea:',
+    element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement
+  )
   console.log('Is contentEditable:', element.hasAttribute('contenteditable'))
-  
+
   if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
     console.log('Selection start:', element.selectionStart)
     console.log('Selection end:', element.selectionEnd)
@@ -195,7 +202,7 @@ export function getCaretCoordinatesDebug(element: EditableEl): CaretCoordinates 
 
   const coords = getCaretCoordinates(element)
   console.log('Calculated coordinates:', coords)
-  
+
   if (coords) {
     console.log('Viewport position:', {
       x: coords.x - window.scrollX,
@@ -203,8 +210,8 @@ export function getCaretCoordinatesDebug(element: EditableEl): CaretCoordinates 
     })
     console.log('Element rect:', element.getBoundingClientRect())
   }
-  
+
   console.groupEnd()
-  
+
   return coords
 }

@@ -10,7 +10,11 @@ import { getActiveEditable, getSelection } from '../../macroEngine/replacement/e
 import { replaceText } from '../../macroEngine/replacement/macroReplacement'
 import { getCaretCoordinates } from './utils/caretPosition'
 import { calculateOptimalPosition } from './utils/popupPositioning'
-import { isGoogleDocs, focusGoogleDocsEditor, stealFocusFromGoogleDocs } from '../../macroEngine/googledocs/googleDocsAdapter'
+import {
+  isGoogleDocs,
+  focusGoogleDocsEditor,
+  stealFocusFromGoogleDocs,
+} from '../../macroEngine/googledocs/googleDocsAdapter'
 
 interface SavedState {
   element: EditableEl | null
@@ -19,7 +23,7 @@ interface SavedState {
 
 /** Input and textarea hold their text in .value; a contenteditable holds it as text. */
 function readContent(element: NonNullable<EditableEl>): string {
-  return 'value' in element ? element.value : element.textContent ?? ''
+  return 'value' in element ? element.value : (element.textContent ?? '')
 }
 
 interface OverlayState {
@@ -77,13 +81,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
       height: POPUP_ESTIMATED_HEIGHT,
     }
 
-
-    return calculateOptimalPosition(
-      caretCoords,
-      windowSize,
-      popupDimensions,
-      { margin: 10 }
-    )
+    return calculateOptimalPosition(caretCoords, windowSize, popupDimensions, { margin: 10 })
   }
 
   const handleSelect = (macro: Macro) => {
@@ -152,11 +150,13 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
         element.focus()
 
         // Ensure cursor is positioned at the end of the content
-        if (element instanceof HTMLInputElement ||
-            element instanceof HTMLTextAreaElement) {
+        if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
           const length = element.value.length
           element.setSelectionRange(length, length)
-        } else if (element instanceof HTMLElement && (element.isContentEditable || element.contentEditable === 'true')) {
+        } else if (
+          element instanceof HTMLElement &&
+          (element.isContentEditable || element.contentEditable === 'true')
+        ) {
           const range = document.createRange()
           range.selectNodeContents(element)
           range.collapse(false)
@@ -210,7 +210,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
       mode: 'showAll',
       filterBuffer: buffer || '', // Use the provided buffer for fuzzy filtering
     }
-    
+
     // In showAll mode, save the buffer as the trigger so we know what to replace
     // The buffer (e.g., "/si") is what should be replaced when a macro is selected
     savedState = { element: activeElement, trigger: buffer || '' }
@@ -252,7 +252,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
       mode: 'filter',
       filterBuffer: buffer,
     }
-    
+
     saveState(buffer)
     renderSuggestions()
   }
@@ -261,7 +261,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
     if (!overlayState.isVisible) return
     const elementToFocus = savedState?.element ?? null
     const wasShowAllMode = overlayState.mode === 'showAll'
-    
+
     overlayState = {
       ...overlayState,
       isVisible: false,

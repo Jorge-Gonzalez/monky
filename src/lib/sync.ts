@@ -37,7 +37,9 @@ async function setQueue(q: PendingOp[]): Promise<void> {
 }
 
 async function enqueue(op: PendingOp): Promise<void> {
-  const q = await getQueue(); q.push(op); await setQueue(q)
+  const q = await getQueue()
+  q.push(op)
+  await setQueue(q)
   chrome.runtime.sendMessage({ type: 'pendingCount', count: q.length }).catch(() => {})
 }
 
@@ -47,7 +49,10 @@ function mergeByUpdated(local: Macro[], remote: Macro[]): Macro[] {
   for (const l of local) {
     const key = String(l.id ?? l.command)
     const r = map.get(key)
-    if (!r) { map.set(key, { ...l }); continue }
+    if (!r) {
+      map.set(key, { ...l })
+      continue
+    }
     if (new Date(l.updated_at ?? 0) > new Date(r.updated_at ?? 0)) {
       map.set(key, { ...l })
     }
@@ -57,23 +62,31 @@ function mergeByUpdated(local: Macro[], remote: Macro[]): Macro[] {
 
 export async function flushQueue(): Promise<void> {
   if (!syncEnabled()) return
-  const q = await getQueue(); if (!q.length) return
+  const q = await getQueue()
+  if (!q.length) return
   const remain: PendingOp[] = []
   for (const item of q) {
     try {
       if (item.op === 'create') {
         const res = await apiFetch('/macros', { method: 'POST', body: JSON.stringify(item.macro) })
         if (!res.ok) throw new Error('net')
-        const js = await res.json() as ApiEnvelope<Macro>; if (!js.success) throw new Error('server')
+        const js = (await res.json()) as ApiEnvelope<Macro>
+        if (!js.success) throw new Error('server')
       } else if (item.op === 'update') {
-        const res = await apiFetch(`/macros/${item.macro.id}`, { method: 'PUT', body: JSON.stringify(item.macro) })
+        const res = await apiFetch(`/macros/${item.macro.id}`, {
+          method: 'PUT',
+          body: JSON.stringify(item.macro),
+        })
         if (!res.ok) throw new Error('net')
-        const js = await res.json() as ApiEnvelope<Macro>; if (!js.success) throw new Error('server')
+        const js = (await res.json()) as ApiEnvelope<Macro>
+        if (!js.success) throw new Error('server')
       } else {
         const res = await apiFetch(`/macros/${item.id}`, { method: 'DELETE' })
         if (!res.ok) throw new Error('net')
       }
-    } catch { remain.push(item) }
+    } catch {
+      remain.push(item)
+    }
   }
   await setQueue(remain)
   chrome.runtime.sendMessage({ type: 'pendingCount', count: remain.length }).catch(() => {})
@@ -85,10 +98,12 @@ export async function syncMacros(): Promise<void> {
   try {
     const res = await apiFetch('/macros')
     if (res.ok) {
-      const js = await res.json() as ApiEnvelope<Macro[]>
+      const js = (await res.json()) as ApiEnvelope<Macro[]>
       if (js.success && js.data) remote = js.data
     }
-  } catch { /* offline: fall through with the local set only */ }
+  } catch {
+    /* offline: fall through with the local set only */
+  }
   const local = useMacroStore.getState().macros
   const merged = mergeByUpdated(local, remote)
   useMacroStore.getState().setMacros(merged)
@@ -105,7 +120,8 @@ export async function pushCreate(macro: Macro): Promise<void> {
   try {
     const res = await apiFetch('/macros', { method: 'POST', body: JSON.stringify(macro) })
     if (!res.ok) throw new Error('net')
-    const js = await res.json() as ApiEnvelope<Macro>; if (!js.success) throw new Error('server')
+    const js = (await res.json()) as ApiEnvelope<Macro>
+    if (!js.success) throw new Error('server')
   } catch {
     await enqueue({ op: 'create', macro, ts: Date.now() })
   }
@@ -116,7 +132,8 @@ export async function pushUpdate(macro: MacroUpdate): Promise<void> {
   try {
     const res = await apiFetch(`/macros/${macro.id}`, { method: 'PUT', body: JSON.stringify(macro) })
     if (!res.ok) throw new Error('net')
-    const js = await res.json() as ApiEnvelope<Macro>; if (!js.success) throw new Error('server')
+    const js = (await res.json()) as ApiEnvelope<Macro>
+    if (!js.success) throw new Error('server')
   } catch {
     await enqueue({ op: 'update', macro, ts: Date.now() })
   }

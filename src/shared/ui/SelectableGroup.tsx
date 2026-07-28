@@ -4,14 +4,10 @@ import { useState } from 'react'
  * Toggle an option in/out of the selection, refusing to drop below `minSelected`.
  * Returns the next selection, or null if the change was rejected.
  */
-export function toggleSelection(
-  selected: string[],
-  option: string,
-  minSelected: number,
-): string[] | null {
+export function toggleSelection(selected: string[], option: string, minSelected: number): string[] | null {
   const isSelected = selected.includes(option)
   if (isSelected && selected.length <= minSelected) return null
-  return isSelected ? selected.filter(o => o !== option) : [...selected, option]
+  return isSelected ? selected.filter((o) => o !== option) : [...selected, option]
 }
 
 interface SelectableGroupProps {
@@ -59,8 +55,11 @@ export function SelectableGroup({
   const minClass = minSelected === 1 ? 'sf-min-selected-1' : ''
 
   return (
-    <div className={`sf-selectable-group ${minClass} ${className ?? ''}`} role="group">
-      {options.map(option => {
+    <div
+      className={`sf-selectable-group ${minClass} ${className ?? ''}`}
+      role="group"
+    >
+      {options.map((option) => {
         const isSelected = selected.includes(option)
         return (
           <button

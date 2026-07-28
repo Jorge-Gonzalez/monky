@@ -46,8 +46,8 @@ export function useKeyboardNavigation({
           break
         case 'Tab':
           if (onTab === 'cycle') {
-            e.preventDefault();
-            (e.shiftKey ? onNavigatePrev : onNavigateNext)()
+            e.preventDefault()
+            ;(e.shiftKey ? onNavigatePrev : onNavigateNext)()
           } else if (onTab) {
             e.preventDefault()
             onTab()

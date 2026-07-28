@@ -16,7 +16,7 @@ export interface SegmentedControlProps<T extends string> {
 
 export function SegmentedControl<T extends string>({ options, value, onChange }: SegmentedControlProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const selectedIndex = options.findIndex(o => o.value === value)
+  const selectedIndex = options.findIndex((o) => o.value === value)
   const prevIndex = useRef(selectedIndex)
   const [sliding, setSliding] = useState(false)
 
@@ -55,7 +55,7 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
       ref={containerRef}
       className={`sf-segmented-pill horizontal hidden position-relative ground-subtle rule corner-md ruled ${sliding ? 'is-sliding' : ''}`}
       role="radiogroup"
-      onTransitionEnd={e => {
+      onTransitionEnd={(e) => {
         // Only the pill's own (::before) transition lands on the container; button
         // colour transitions originate on the buttons. End of slide → hand the
         // background back to the button and hide the pill.
@@ -66,17 +66,17 @@ export function SegmentedControl<T extends string>({ options, value, onChange }:
         const checked = opt.value === value
         const drawRightRule = !checked && index < options.length - 1
         return (
-        <button
-          key={opt.value}
-          type="button"
-          role="radio"
-          aria-checked={opt.value === value}
-          aria-label={opt.ariaLabel}
-          className={`sf-segmented-control-option elastic basis-ratio padding-block-xs padding-inline-md content position-relative selectable ink-soft rule text-nowrap ${drawRightRule ? 'ruled-right ' : ''}font-sm text-center pressable tween-ink-quick hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse`}
-          onClick={() => onChange(opt.value)}
-        >
-          {opt.label}
-        </button>
+          <button
+            key={opt.value}
+            type="button"
+            role="radio"
+            aria-checked={opt.value === value}
+            aria-label={opt.ariaLabel}
+            className={`sf-segmented-control-option elastic basis-ratio padding-block-xs padding-inline-md content position-relative selectable ink-soft rule text-nowrap ${drawRightRule ? 'ruled-right ' : ''}font-sm text-center pressable tween-ink-quick hover:ground-defined hover:ink checked:ground-accent checked:ink-inverse`}
+            onClick={() => onChange(opt.value)}
+          >
+            {opt.label}
+          </button>
         )
       })}
     </div>

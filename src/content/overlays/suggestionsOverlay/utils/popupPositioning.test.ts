@@ -29,12 +29,7 @@ describe('Popup Positioning', () => {
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
 
-      const result = calculateOptimalPosition(
-        cursorPosition,
-        windowSize,
-        popupDimensions,
-        boundarySettings
-      )
+      const result = calculateOptimalPosition(cursorPosition, windowSize, popupDimensions, boundarySettings)
 
       expect(result.y).toBe(100 + 8) // 8px below cursor
       expect(result.placement).toBe('bottom')
@@ -46,12 +41,7 @@ describe('Popup Positioning', () => {
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
 
-      const result = calculateOptimalPosition(
-        cursorPosition,
-        windowSize,
-        popupDimensions,
-        boundarySettings
-      )
+      const result = calculateOptimalPosition(cursorPosition, windowSize, popupDimensions, boundarySettings)
 
       expect(result.y).toBe(550 - 100 - 8) // above cursor
       expect(result.placement).toBe('top')
@@ -63,12 +53,7 @@ describe('Popup Positioning', () => {
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
 
-      const result = calculateOptimalPosition(
-        cursorPosition,
-        windowSize,
-        popupDimensions,
-        boundarySettings
-      )
+      const result = calculateOptimalPosition(cursorPosition, windowSize, popupDimensions, boundarySettings)
 
       expect(result.x).toBe(400 - 100) // centered on cursor (x - width/2)
       expect(result.y).toBe(300 + 8) // below cursor
@@ -81,12 +66,7 @@ describe('Popup Positioning', () => {
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
 
-      const result = calculateOptimalPosition(
-        cursorPosition,
-        windowSize,
-        popupDimensions,
-        boundarySettings
-      )
+      const result = calculateOptimalPosition(cursorPosition, windowSize, popupDimensions, boundarySettings)
 
       expect(result.x).toBe(10) // constrained to left margin
       expect(result.placement).toBe('bottom')
@@ -98,12 +78,7 @@ describe('Popup Positioning', () => {
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
 
-      const result = calculateOptimalPosition(
-        cursorPosition,
-        windowSize,
-        popupDimensions,
-        boundarySettings
-      )
+      const result = calculateOptimalPosition(cursorPosition, windowSize, popupDimensions, boundarySettings)
 
       expect(result.x).toBe(800 - 200 - 10) // constrained to right
       expect(result.placement).toBe('bottom')
@@ -121,12 +96,7 @@ describe('Popup Positioning', () => {
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
 
-      const result = calculateOptimalPosition(
-        cursorPosition,
-        windowSize,
-        popupDimensions,
-        boundarySettings
-      )
+      const result = calculateOptimalPosition(cursorPosition, windowSize, popupDimensions, boundarySettings)
 
       // Should center on viewport position 400.
       // Viewport X is 500 (page) - 100 (scroll) = 400.
@@ -144,12 +114,7 @@ describe('Popup Positioning', () => {
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
 
-      const result = calculateOptimalPosition(
-        cursorPosition,
-        windowSize,
-        popupDimensions,
-        boundarySettings
-      )
+      const result = calculateOptimalPosition(cursorPosition, windowSize, popupDimensions, boundarySettings)
 
       // Viewport Y: 300 (cursor) + 8 (offset) = 308
       // The result should be in viewport coordinates.
@@ -167,12 +132,7 @@ describe('Popup Positioning', () => {
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
 
-      const result = calculateOptimalPosition(
-        cursorPosition,
-        windowSize,
-        popupDimensions,
-        boundarySettings
-      )
+      const result = calculateOptimalPosition(cursorPosition, windowSize, popupDimensions, boundarySettings)
 
       // Viewport position: (400 - 100, 400 + 8) = (300, 408)
       expect(result.x).toBe(300)
@@ -190,12 +150,7 @@ describe('Popup Positioning', () => {
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
 
-      const result = calculateOptimalPosition(
-        cursorPosition,
-        windowSize,
-        popupDimensions,
-        boundarySettings
-      )
+      const result = calculateOptimalPosition(cursorPosition, windowSize, popupDimensions, boundarySettings)
 
       // Viewport Y: 550 - 100 (height) - 8 (offset) = 442
       expect(result.y).toBe(442)
@@ -212,12 +167,7 @@ describe('Popup Positioning', () => {
       const popupDimensions = { width: 200, height: 100 }
       const boundarySettings = { margin: 10 }
 
-      const result = calculateOptimalPosition(
-        cursorPosition,
-        windowSize,
-        popupDimensions,
-        boundarySettings
-      )
+      const result = calculateOptimalPosition(cursorPosition, windowSize, popupDimensions, boundarySettings)
 
       // Should be constrained to the left margin in the viewport.
       // Viewport X: 10 (margin)
@@ -235,12 +185,7 @@ describe('Popup Positioning', () => {
       const popupDimensions = { width: 200, height: 500 } // very tall
       const boundarySettings = { margin: 10 }
 
-      const result = calculateOptimalPosition(
-        cursorPosition,
-        windowSize,
-        popupDimensions,
-        boundarySettings
-      )
+      const result = calculateOptimalPosition(cursorPosition, windowSize, popupDimensions, boundarySettings)
 
       // Should constrain to viewport boundaries
       expect(result.y).toBeGreaterThanOrEqual(10) // at least margin

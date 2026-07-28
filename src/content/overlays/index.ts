@@ -14,12 +14,15 @@ const suggestionsOverlayManager = createSuggestionsOverlayManager([])
 
 // Create and export singleton coordinators (public API)
 export const modalCoordinator: ModalCoordinator = createModalCoordinator(modalManager)
-export const suggestionsCoordinator: SuggestionsCoordinator = createSuggestionsCoordinator(suggestionsOverlayManager)
+export const suggestionsCoordinator: SuggestionsCoordinator =
+  createSuggestionsCoordinator(suggestionsOverlayManager)
 
 // In-page delete confirmation. Confirming deletes via macroCrud so the change is
 // pushed to sync (the same path the search view uses).
 export const deleteConfirmManager = createDeleteConfirmManager()
-deleteConfirmManager.setOnConfirm(macro => { void deleteMacro(String(macro.id)) })
+deleteConfirmManager.setOnConfirm((macro) => {
+  void deleteMacro(String(macro.id))
+})
 
 // Convenience function for updating macros
 export function updateAllMacros(macros: Macro[]): void {

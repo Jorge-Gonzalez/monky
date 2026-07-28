@@ -5,25 +5,25 @@ const PREFIXES = ['/']
 
 describe('MODAL_COMMANDS', () => {
   it('defines :new as non-parametric', () => {
-    const cmd = MODAL_COMMANDS.find(c => c.id === 'new')!
+    const cmd = MODAL_COMMANDS.find((c) => c.id === 'new')!
     expect(cmd.command).toBe(':new')
     expect(cmd.isParametric).toBe(false)
   })
 
   it('defines :edit as parametric', () => {
-    const cmd = MODAL_COMMANDS.find(c => c.id === 'edit')!
+    const cmd = MODAL_COMMANDS.find((c) => c.id === 'edit')!
     expect(cmd.command).toBe(':edit')
     expect(cmd.isParametric).toBe(true)
   })
 
   it('defines :delete as parametric', () => {
-    const cmd = MODAL_COMMANDS.find(c => c.id === 'delete')!
+    const cmd = MODAL_COMMANDS.find((c) => c.id === 'delete')!
     expect(cmd.command).toBe(':delete')
     expect(cmd.isParametric).toBe(true)
   })
 
   it('defines :settings as non-parametric', () => {
-    const cmd = MODAL_COMMANDS.find(c => c.id === 'settings')!
+    const cmd = MODAL_COMMANDS.find((c) => c.id === 'settings')!
     expect(cmd.command).toBe(':settings')
     expect(cmd.isParametric).toBe(false)
   })

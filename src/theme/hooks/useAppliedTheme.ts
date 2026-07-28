@@ -8,7 +8,7 @@ import { useThemeColors } from './useThemeColors'
  * of reciting the store reads + useThemeColors call.
  */
 export function useAppliedTheme(ref: RefObject<HTMLElement | null>, enabled = true) {
-  const theme = useMacroStore(s => s.config.theme)
-  const colorTheme = useMacroStore(s => s.config.colorTheme)
+  const theme = useMacroStore((s) => s.config.theme)
+  const colorTheme = useMacroStore((s) => s.config.colorTheme)
   useThemeColors(ref, theme, enabled, colorTheme)
 }

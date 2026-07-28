@@ -18,7 +18,12 @@ function setup(armedId: number | null = null) {
     onDisarm: vi.fn(),
   }
   const utils = render(
-    <CommandSuggestions suggestions={suggestions} activeIndex={0} armedId={armedId} {...cb} />
+    <CommandSuggestions
+      suggestions={suggestions}
+      activeIndex={0}
+      armedId={armedId}
+      {...cb}
+    />
   )
   return { ...cb, ...utils }
 }
@@ -36,7 +41,7 @@ describe('CommandSuggestions', () => {
       expect(listbox).toHaveAttribute('aria-labelledby')
       const options = listbox.querySelectorAll('[role="option"]')
       expect(options).toHaveLength(suggestions.length)
-      expect([...options].map(o => o.id)).toEqual(suggestions.map((_, i) => suggestionOptionId(i)))
+      expect([...options].map((o) => o.id)).toEqual(suggestions.map((_, i) => suggestionOptionId(i)))
       expect(options[0]).toHaveAttribute('aria-selected', 'true')
     })
 
@@ -45,7 +50,7 @@ describe('CommandSuggestions', () => {
       const listbox = container.querySelector(`#${SUGGESTIONS_LISTBOX_ID}`)!
       expect(listbox.querySelector('[data-component="editor-suggestions-label"]')).toBeNull()
       // Every direct child of the listbox is an option.
-      expect([...listbox.children].every(c => c.getAttribute('role') === 'option')).toBe(true)
+      expect([...listbox.children].every((c) => c.getAttribute('role') === 'option')).toBe(true)
     })
 
     // aria-hidden on a focusable element is the aria-hidden-focus violation: a keyboard
@@ -56,17 +61,21 @@ describe('CommandSuggestions', () => {
       const { container } = setup(1)
       // closest() rather than a descendant selector: the delete button carries aria-hidden
       // itself, so `[aria-hidden] button` would not have matched it.
-      const offenders = [...container.querySelectorAll('button, a[href], input, select, textarea')]
-        .filter(el => el.closest('[aria-hidden="true"]') && el.getAttribute('tabindex') !== '-1')
-      expect(offenders.map(el => el.getAttribute('data-component'))).toEqual([])
+      const offenders = [...container.querySelectorAll('button, a[href], input, select, textarea')].filter(
+        (el) => el.closest('[aria-hidden="true"]') && el.getAttribute('tabindex') !== '-1'
+      )
+      expect(offenders.map((el) => el.getAttribute('data-component'))).toEqual([])
     })
 
     it('hides the row controls, whose keyboard equivalents live on the field', () => {
       const { container } = setup()
       expect(trashOf(container.querySelectorAll('[role="option"]')[0])).toHaveAttribute('aria-hidden', 'true')
       const armed = setup(1)
-      expect(armed.container.querySelector('[data-component="editor-suggestions-item-confirm"]')
-        ?.closest('[aria-hidden="true"]')).not.toBeNull()
+      expect(
+        armed.container
+          .querySelector('[data-component="editor-suggestions-item-confirm"]')
+          ?.closest('[aria-hidden="true"]')
+      ).not.toBeNull()
     })
   })
 

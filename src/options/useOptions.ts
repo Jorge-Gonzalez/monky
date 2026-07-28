@@ -20,12 +20,12 @@ export interface OptionsApi {
 }
 
 export function useOptions(): OptionsApi {
-  const config = useMacroStore(s => s.config)
-  const setPrefixes = useMacroStore(s => s.setPrefixes)
-  const setUseCommitKeys = useMacroStore(s => s.setUseCommitKeys)
-  const setLanguage = useMacroStore(s => s.setLanguage)
-  const setColorTheme = useMacroStore(s => s.setColorTheme)
-  const setTheme = useMacroStore(s => s.setTheme)
+  const config = useMacroStore((s) => s.config)
+  const setPrefixes = useMacroStore((s) => s.setPrefixes)
+  const setUseCommitKeys = useMacroStore((s) => s.setUseCommitKeys)
+  const setLanguage = useMacroStore((s) => s.setLanguage)
+  const setColorTheme = useMacroStore((s) => s.setColorTheme)
+  const setTheme = useMacroStore((s) => s.setTheme)
 
   return {
     prefixes: config.prefixes,

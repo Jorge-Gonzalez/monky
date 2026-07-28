@@ -10,13 +10,23 @@ import type { ReactNode } from 'react'
  */
 export function Keycap({ children, raised }: { children: ReactNode; raised?: boolean }) {
   return raised ? (
-    <kbd data-component="keycap" className="sf-keycap sf-keycap-raised
-      horizontal align-center justify-center
-      position-relative
-      ground ink-soft rule-soft ruled font-xs font-mono">{children}</kbd>
+    <kbd
+      data-component="keycap"
+      className="sf-keycap sf-keycap-raised
+        horizontal align-center justify-center
+        position-relative
+        ground ink-soft rule-soft ruled font-xs font-mono"
+    >
+      {children}
+    </kbd>
   ) : (
-    <kbd data-component="keycap" className="sf-keycap
-      ground-subtle ink rule corner-sm ruled font-xs font-mono">{children}</kbd>
+    <kbd
+      data-component="keycap"
+      className="sf-keycap
+        ground-subtle ink rule corner-sm ruled font-xs font-mono"
+    >
+      {children}
+    </kbd>
   )
 }
 
@@ -32,8 +42,15 @@ interface ShortcutHintProps {
 export function ShortcutHint({ keys, label, last }: ShortcutHintProps) {
   return (
     <span className={`horizontal inline gap-sm align-center ${last ? '' : 'margin-right-lg'}`}>
-      {keys.map(key => <Keycap key={key} raised>{key}</Keycap>)}
-      {' '}{label}
+      {keys.map((key) => (
+        <Keycap
+          key={key}
+          raised
+        >
+          {key}
+        </Keycap>
+      ))}{' '}
+      {label}
     </span>
   )
 }

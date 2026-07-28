@@ -9,7 +9,7 @@ import { navigateInGoogleDocs } from './googleDocsAdapter'
 function strippedPositions(macroText: string) {
   const placeholders = parsePlaceholders(macroText)
   let offset = 0
-  return placeholders.map(p => {
+  return placeholders.map((p) => {
     const start = p.start - offset
     const end = start + p.label.length
     offset += 4
@@ -45,7 +45,7 @@ export function createGoogleDocsPlaceholderSession(macroText: string, onExit: ()
     window.setTimeout(() => {
       navigateInGoogleDocs([
         { key: 'ArrowLeft', shift: false, count: charsAfter },
-        { key: 'ArrowLeft', shift: true,  count: labelLen  },
+        { key: 'ArrowLeft', shift: true, count: labelLen },
       ])
     }, 0)
   }
@@ -61,7 +61,7 @@ export function createGoogleDocsPlaceholderSession(macroText: string, onExit: ()
     window.setTimeout(() => {
       navigateInGoogleDocs([
         { key: 'ArrowRight', shift: false, count: interLen },
-        { key: 'ArrowRight', shift: true,  count: labelLen },
+        { key: 'ArrowRight', shift: true, count: labelLen },
       ])
     }, 0)
   }

@@ -1,6 +1,6 @@
-import type { Macro } from "../../types"
-import { modalCoordinator, deleteConfirmManager } from "../overlays"
-import { useMacroStore } from "../../store/useMacroStore"
+import type { Macro } from '../../types'
+import { modalCoordinator, deleteConfirmManager } from '../overlays'
+import { useMacroStore } from '../../store/useMacroStore'
 
 export const SYSTEM_MACROS: Macro[] = [
   {
@@ -8,14 +8,14 @@ export const SYSTEM_MACROS: Macro[] = [
     command: '/?',
     text: '',
     isSystemMacro: true,
-    description: 'Open macro search overlay'
+    description: 'Open macro search overlay',
   },
   {
     id: 'system-new-macro',
     command: ':new',
     text: '',
     isSystemMacro: true,
-    description: 'Create a new macro'
+    description: 'Create a new macro',
   },
   {
     id: 'system-edit-macro',
@@ -23,7 +23,7 @@ export const SYSTEM_MACROS: Macro[] = [
     text: '',
     isSystemMacro: true,
     isParametric: true,
-    description: 'Edit a macro — :edit/command'
+    description: 'Edit a macro — :edit/command',
   },
   {
     id: 'system-delete-macro',
@@ -31,19 +31,19 @@ export const SYSTEM_MACROS: Macro[] = [
     text: '',
     isSystemMacro: true,
     isParametric: true,
-    description: 'Delete a macro — :delete/command'
+    description: 'Delete a macro — :delete/command',
   },
   {
     id: 'system-settings',
     command: ':settings',
     text: '',
     isSystemMacro: true,
-    description: 'Open settings'
+    description: 'Open settings',
   },
 ]
 
 export function isSystemMacro(macro: Macro): boolean {
-  return macro.isSystemMacro === true || SYSTEM_MACROS.some(sm => sm.id === macro.id)
+  return macro.isSystemMacro === true || SYSTEM_MACROS.some((sm) => sm.id === macro.id)
 }
 
 export function isParametricSystemMacro(macro: Macro): boolean {
@@ -86,7 +86,7 @@ export function handleSystemMacro(macro: Macro): boolean {
  */
 export function handleParametricSystemCommand(commandId: string, param: string): boolean {
   const { macros } = useMacroStore.getState()
-  const target = macros.find(m => m.command === param)
+  const target = macros.find((m) => m.command === param)
 
   switch (commandId) {
     case 'system-edit-macro':
@@ -117,11 +117,11 @@ export function parseParametricBuffer(
   buffer: string,
   prefixes: string[]
 ): { systemMacro: Macro; param: string } | null {
-  const parametric = SYSTEM_MACROS.filter(m => m.isParametric)
+  const parametric = SYSTEM_MACROS.filter((m) => m.isParametric)
   for (const sm of parametric) {
     if (!buffer.startsWith(sm.command)) continue
     const rest = buffer.slice(sm.command.length)
-    if (rest && prefixes.some(p => rest.startsWith(p))) {
+    if (rest && prefixes.some((p) => rest.startsWith(p))) {
       return { systemMacro: sm, param: rest }
     }
   }

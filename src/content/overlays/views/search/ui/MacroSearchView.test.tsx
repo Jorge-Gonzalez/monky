@@ -13,15 +13,17 @@ vi.mock('../../../../../lib/i18n', () => ({
 }))
 
 const mockMacros = [
-  { id: 1, command: '/sig',  text: 'My signature' },
+  { id: 1, command: '/sig', text: 'My signature' },
   { id: 2, command: '/addr', text: 'My address' },
-  { id: 3, command: '/brb',  text: 'Be right back' },
+  { id: 3, command: '/brb', text: 'Be right back' },
 ]
 
 vi.mock('../../../../../store/useMacroStore', () => ({
-  useMacroStore: vi.fn().mockImplementation((selector: (s: unknown) => unknown) =>
-    selector({ macros: mockMacros, config: { prefixes: ['/'] } })
-  ),
+  useMacroStore: vi
+    .fn()
+    .mockImplementation((selector: (s: unknown) => unknown) =>
+      selector({ macros: mockMacros, config: { prefixes: ['/'] } })
+    ),
 }))
 
 const mockDeleteMacro = vi.fn()
@@ -51,9 +53,9 @@ function press(key: string) {
 }
 
 const useStore = (macros: unknown[], prefixes: string[]) =>
-  vi.mocked(useMacroStore).mockImplementation((selector: (s: unknown) => unknown) =>
-    selector({ macros, config: { prefixes } })
-  )
+  vi
+    .mocked(useMacroStore)
+    .mockImplementation((selector: (s: unknown) => unknown) => selector({ macros, config: { prefixes } }))
 
 describe('MacroSearchView', () => {
   beforeEach(() => {
@@ -102,8 +104,9 @@ describe('MacroSearchView', () => {
     it('reports the result count in the footer', () => {
       render(<MacroSearchView {...props()} />)
       type('sig')
-      expect(document.querySelector('[data-component="search-footer-count"]')?.textContent)
-        .toContain('modalSearch.footer.macro')
+      expect(document.querySelector('[data-component="search-footer-count"]')?.textContent).toContain(
+        'modalSearch.footer.macro'
+      )
     })
   })
 
@@ -150,8 +153,9 @@ describe('MacroSearchView', () => {
       type(':')
       expect(screen.getByText(':new')).toBeInTheDocument()
       expect(screen.getByText(':settings')).toBeInTheDocument()
-      expect(document.querySelector('[data-component="search-footer-count"]')?.textContent)
-        .toContain('modalSearch.footer.commands')
+      expect(document.querySelector('[data-component="search-footer-count"]')?.textContent).toContain(
+        'modalSearch.footer.commands'
+      )
     })
 
     it('does not carry a stale selection across a mode change', () => {

@@ -41,14 +41,26 @@ export function ContentEditorLinkField({
   }
 
   const onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') { e.preventDefault(); confirm() }
-    if (e.key === 'Escape') { e.preventDefault(); cancel() }
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      confirm()
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      cancel()
+    }
   }
 
   return (
-    <div data-component="ce-link-field" className="horizontal elastic basis-ratio gap-xs align-center">
-      <span className="horizontal rigid padding-inline-xs padding-block-none align-center
-        ink-soft" dangerouslySetInnerHTML={{ __html: icons.link }} />
+    <div
+      data-component="ce-link-field"
+      className="horizontal elastic basis-ratio gap-xs align-center"
+    >
+      <span
+        className="horizontal rigid padding-inline-xs padding-block-none align-center
+          ink-soft"
+        dangerouslySetInnerHTML={{ __html: icons.link }}
+      />
       <input
         ref={inputRef}
         type="url"
@@ -57,7 +69,7 @@ export function ContentEditorLinkField({
           ground-subtle ink rule corner-sm ruled font-sm
           focus:rule-accent focus:ring"
         value={url}
-        onChange={e => setUrl(e.currentTarget.value)}
+        onChange={(e) => setUrl(e.currentTarget.value)}
         onKeyDown={onKeyDown}
         placeholder="Paste or type a URL…"
       />
@@ -68,7 +80,10 @@ export function ContentEditorLinkField({
           tween-ground-ink-quick
           ink-soft corner-sm pressable
           hover:ground-defined hover:ink"
-        onMouseDown={e => { e.preventDefault(); confirm() }}
+        onMouseDown={(e) => {
+          e.preventDefault()
+          confirm()
+        }}
         title="Apply (Enter)"
         aria-label="Apply link"
         dangerouslySetInnerHTML={{ __html: icons.check }}
@@ -80,7 +95,10 @@ export function ContentEditorLinkField({
           tween-ground-ink-quick
           ink-soft corner-sm pressable
           hover:ground-defined hover:ink"
-        onMouseDown={e => { e.preventDefault(); cancel() }}
+        onMouseDown={(e) => {
+          e.preventDefault()
+          cancel()
+        }}
         title="Cancel (Escape)"
         aria-label="Cancel"
         dangerouslySetInnerHTML={{ __html: icons.x }}

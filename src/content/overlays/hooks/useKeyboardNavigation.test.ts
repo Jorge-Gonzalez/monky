@@ -22,7 +22,9 @@ const handlers = (axis: 'vertical' | 'horizontal') => ({
 
 describe('useKeyboardNavigation', () => {
   let h: ReturnType<typeof handlers>
-  beforeEach(() => { h = handlers('horizontal') })
+  beforeEach(() => {
+    h = handlers('horizontal')
+  })
 
   it('Escape closes the overlay and consumes the key', () => {
     renderHook(() => useKeyboardNavigation(h))
@@ -80,7 +82,9 @@ describe('useKeyboardNavigation', () => {
 
   it('does nothing while inactive', () => {
     renderHook(() => useKeyboardNavigation({ ...h, isActive: false }))
-    press('Enter'); press('Escape'); press('ArrowRight')
+    press('Enter')
+    press('Escape')
+    press('ArrowRight')
     expect(h.onSelect).not.toHaveBeenCalled()
     expect(h.onClose).not.toHaveBeenCalled()
     expect(h.onNavigateNext).not.toHaveBeenCalled()

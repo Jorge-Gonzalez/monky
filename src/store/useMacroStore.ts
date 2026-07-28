@@ -11,13 +11,13 @@ type MacroStore = {
   config: Config
   /** Reserved for the hosted backend; no shape decided yet, and nothing reads it. */
   user: unknown
-  syncStatus: 'idle'|'syncing'|'error'
-  setUser: (u: unknown)=>void
-  setMacros: (m:Macro[])=>void
-  addMacro: (m:Macro) => StoreOpResult
-  updateMacro: (id:Macro['id'], patch:Partial<Macro>) => StoreOpResult
-  deleteMacro: (id:Macro['id'])=>void
-  setPrefixes: (prefixes: string[])=>void
+  syncStatus: 'idle' | 'syncing' | 'error'
+  setUser: (u: unknown) => void
+  setMacros: (m: Macro[]) => void
+  addMacro: (m: Macro) => StoreOpResult
+  updateMacro: (id: Macro['id'], patch: Partial<Macro>) => StoreOpResult
+  deleteMacro: (id: Macro['id']) => void
+  setPrefixes: (prefixes: string[]) => void
   setUseCommitKeys: (useCommitKeys: boolean) => void
   toggleSiteDisabled: (hostname: string) => void
   setTheme: (theme: ThemeMode) => void
@@ -27,7 +27,7 @@ type MacroStore = {
 
 // --- Standalone helper function ---
 function commandExists(macros: Macro[], command: string, currentId?: Macro['id']): boolean {
-  return macros.some(m => m.command === command && String(m.id) !== String(currentId))
+  return macros.some((m) => m.command === command && String(m.id) !== String(currentId))
 }
 
 // The serialized value this context most recently wrote. Used to ignore the
@@ -43,7 +43,9 @@ const chromeStorage: StateStorage = {
       const result = await chrome.storage.sync.get(name)
       const synced = result[name] as string | undefined
       if (synced != null) return synced
-    } catch { /* sync storage unavailable or over quota: fall back to local */ }
+    } catch {
+      /* sync storage unavailable or over quota: fall back to local */
+    }
     const local = await chrome.storage.local.get(name)
     return (local[name] as string | undefined) ?? null
   },
@@ -52,13 +54,12 @@ const chromeStorage: StateStorage = {
     await chrome.storage.local.set({ [name]: value })
     try {
       await chrome.storage.sync.set({ [name]: value })
-    } catch { /* sync storage unavailable or over quota: the local write above stands */ }
+    } catch {
+      /* sync storage unavailable or over quota: the local write above stands */
+    }
   },
   removeItem: async (name: string): Promise<void> => {
-    await Promise.allSettled([
-      chrome.storage.sync.remove(name),
-      chrome.storage.local.remove(name),
-    ])
+    await Promise.allSettled([chrome.storage.sync.remove(name), chrome.storage.local.remove(name)])
   },
 }
 
@@ -73,14 +74,14 @@ export const useMacroStore = create<MacroStore>()(
       config: { ...defaultMacroConfig },
 
       // --- Actions ---
-      setUser: (user)=> set({ user }),
-      setMacros: (macros)=> set({ macros }),
+      setUser: (user) => set({ user }),
+      setMacros: (macros) => set({ macros }),
       addMacro: (macro) => {
         if (commandExists(get().macros, macro.command)) {
           const error = `El comando "${macro.command}" ya existe.`
           return { success: false, error }
         }
-        set(s => ({ macros: [...s.macros, macro] }))
+        set((s) => ({ macros: [...s.macros, macro] }))
         return { success: true }
       },
       updateMacro: (id, patch) => {
@@ -88,22 +89,17 @@ export const useMacroStore = create<MacroStore>()(
           const error = `El comando "${patch.command}" ya existe.`
           return { success: false, error }
         }
-        set(s => ({ macros: s.macros.map(m => (String(m.id) === String(id) ? { ...m, ...patch } : m)) }))
+        set((s) => ({ macros: s.macros.map((m) => (String(m.id) === String(id) ? { ...m, ...patch } : m)) }))
         return { success: true }
       },
-      deleteMacro: (id)=> set((s)=> ({ macros: s.macros.filter(m=> String(m.id)!==String(id)) })),
-      setPrefixes: (prefixes) =>
-        set(s => ({ config: { ...s.config, prefixes } })),
-      setUseCommitKeys: (useCommitKeys) =>
-        set(s => ({ config: { ...s.config, useCommitKeys } })),
-      setTheme: (theme: ThemeMode) =>
-        set(s => ({ config: { ...s.config, theme } })),
-      setColorTheme: (colorTheme: ColorTheme) =>
-        set(s => ({ config: { ...s.config, colorTheme } })),
-      setLanguage: (language: Lang) =>
-        set(s => ({ config: { ...s.config, language } })),
+      deleteMacro: (id) => set((s) => ({ macros: s.macros.filter((m) => String(m.id) !== String(id)) })),
+      setPrefixes: (prefixes) => set((s) => ({ config: { ...s.config, prefixes } })),
+      setUseCommitKeys: (useCommitKeys) => set((s) => ({ config: { ...s.config, useCommitKeys } })),
+      setTheme: (theme: ThemeMode) => set((s) => ({ config: { ...s.config, theme } })),
+      setColorTheme: (colorTheme: ColorTheme) => set((s) => ({ config: { ...s.config, colorTheme } })),
+      setLanguage: (language: Lang) => set((s) => ({ config: { ...s.config, language } })),
       setSuggestionsPlacement: (placement: verticalPlacement) =>
-        set(s => ({ config: { ...s.config, suggestionsPopupPlacement: placement } })),
+        set((s) => ({ config: { ...s.config, suggestionsPopupPlacement: placement } })),
       toggleSiteDisabled: (hostname: string) =>
         set((s) => {
           const disabledSites = s.config.disabledSites || []

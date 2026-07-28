@@ -8,8 +8,8 @@ import { t } from '../../../../lib/i18n'
 export type ImportStatus = { ok: boolean; message: string } | null
 
 export function useMacroImportExport() {
-  const macros = useMacroStore(s => s.macros)
-  const addMacro = useMacroStore(s => s.addMacro)
+  const macros = useMacroStore((s) => s.macros)
+  const addMacro = useMacroStore((s) => s.addMacro)
   const [status, setStatus] = useState<ImportStatus>(null)
 
   const flash = (ok: boolean, message: string) => {
@@ -37,11 +37,14 @@ export function useMacroImportExport() {
           flash(false, t('settings.importExport.status.noValidMacros'))
           return
         }
-        const existing = new Set(macros.map(m => m.command))
+        const existing = new Set(macros.map((m) => m.command))
         const { added, skipped } = mergeImport(parsed, existing, addMacro)
-        flash(true, skipped > 0
-          ? t('settings.importExport.status.addedWithSkipped', { added, skipped })
-          : t('settings.importExport.status.added', { count: added }))
+        flash(
+          true,
+          skipped > 0
+            ? t('settings.importExport.status.addedWithSkipped', { added, skipped })
+            : t('settings.importExport.status.added', { count: added })
+        )
       } catch {
         flash(false, t('settings.importExport.status.invalidFile'))
       }

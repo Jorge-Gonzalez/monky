@@ -2,7 +2,13 @@ import type { Macro } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
 
 const TrashIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 16 16"
+    width="16"
+    height="16"
+    fill="currentColor"
+  >
     <path d="M9 14H5c-.5 0-1-.5-1-1V7H3c0 0 0 6 0 6 0 1.2.8 2 2 2h4v-1z" />
     <path d="M7 14h4c.5 0 1-.5 1-1V7h1c0 0 0 6 0 6 0 1.2-.8 2-2 2H7v-1z" />
     <path d="M6 7c0-.7 1-.7 1 0v5c0 .7-1 .7-1 0V7z" />
@@ -12,14 +18,38 @@ const TrashIcon = () => (
 )
 
 const CheckIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none">
-    <path stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" d="m5 13 4 4L19 7" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="13"
+    height="13"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <path
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m5 13 4 4L19 7"
+    />
   </svg>
 )
 
 const CloseIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none">
-    <path stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="13"
+    height="13"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <path
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M6 6l12 12M18 6 6 18"
+    />
   </svg>
 )
 
@@ -63,86 +93,125 @@ export function CommandSuggestions({
   onDisarm,
 }: CommandSuggestionsProps) {
   return (
-    <div data-component="editor-suggestions" className="hidden attach-below stretch-inline
-      dropdown position-absolute
-      ground-subtle rule-accent-soft corner-bottom-md ruled-bottom ruled-left ruled-right elevated">
-      <div id={SUGGESTIONS_LABEL_ID} data-component="editor-suggestions-label" className="padding-block-xs padding-inline-md
-        ink-soft rule ruled-bottom font-sm">
+    <div
+      data-component="editor-suggestions"
+      className="hidden attach-below stretch-inline
+        dropdown position-absolute
+        ground-subtle rule-accent-soft corner-bottom-md ruled-bottom ruled-left ruled-right elevated"
+    >
+      <div
+        id={SUGGESTIONS_LABEL_ID}
+        data-component="editor-suggestions-label"
+        className="padding-block-xs padding-inline-md
+          ink-soft rule ruled-bottom font-sm"
+      >
         {t('editor.commandSuggestionsLabel')}
       </div>
       {/* The listbox wraps the rows only. A listbox may contain nothing but options, so the
           heading above names it through aria-labelledby instead of sitting inside it. */}
-      <div id={SUGGESTIONS_LISTBOX_ID} role="listbox" aria-labelledby={SUGGESTIONS_LABEL_ID}>
-      {suggestions.map((macro, i) => {
-        const confirming = macro.id === armedId
-        return (
-          <div
-            key={macro.id}
-            id={suggestionOptionId(i)}
-            role="option"
-            data-component="editor-suggestions-item"
-            className={`horizontal gap-md padding-block-sm padding-inline-md align-center hidden tween-ground-quick pressable ${confirming ? 'ground-fail-faint' : 'selectable hover:ground selected:ground-defined'}`}
-            aria-selected={i === activeIndex ? 'true' : 'false'}
-            data-state={confirming ? 'confirming-delete' : undefined}
-            onMouseDown={e => { e.preventDefault(); onSelect(macro) }}
-          >
-            <span data-component="editor-suggestions-item-command" className="rigid
-              ink-accent font-md font-medium text-nowrap">{macro.command}</span>
-            <span data-component="editor-suggestions-item-text" className="hidden
-              ink-soft font-sm truncate">{macro.text}</span>
-            {/* Pointer affordances. A listbox option makes its descendants presentational,
+      <div
+        id={SUGGESTIONS_LISTBOX_ID}
+        role="listbox"
+        aria-labelledby={SUGGESTIONS_LABEL_ID}
+      >
+        {suggestions.map((macro, i) => {
+          const confirming = macro.id === armedId
+          return (
+            <div
+              key={macro.id}
+              id={suggestionOptionId(i)}
+              role="option"
+              data-component="editor-suggestions-item"
+              className={`horizontal gap-md padding-block-sm padding-inline-md align-center hidden tween-ground-quick pressable ${confirming ? 'ground-fail-faint' : 'selectable hover:ground selected:ground-defined'}`}
+              aria-selected={i === activeIndex ? 'true' : 'false'}
+              data-state={confirming ? 'confirming-delete' : undefined}
+              onMouseDown={(e) => {
+                e.preventDefault()
+                onSelect(macro)
+              }}
+            >
+              <span
+                data-component="editor-suggestions-item-command"
+                className="rigid
+                  ink-accent font-md font-medium text-nowrap"
+              >
+                {macro.command}
+              </span>
+              <span
+                data-component="editor-suggestions-item-text"
+                className="hidden
+                  ink-soft font-sm truncate"
+              >
+                {macro.text}
+              </span>
+              {/* Pointer affordances. A listbox option makes its descendants presentational,
                 so these cannot be exposed here whatever we do; the keyboard path is on the
                 field instead, which is where focus is. */}
-            {confirming ? (
-              <span aria-hidden="true" className="horizontal rigid gap-xs push align-center">
+              {confirming ? (
+                <span
+                  aria-hidden="true"
+                  className="horizontal rigid gap-xs push align-center"
+                >
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    data-component="editor-suggestions-item-confirm"
+                    className="horizontal rigid padding-xs align-center justify-center
+                      tween-opacity-ground-ink-quick
+                      ink-fail corner-sm pressable
+                      hover:ground-fail hover:ink-inverse"
+                    aria-label={t('editor.confirmDelete')}
+                    onMouseDown={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      onConfirmDelete(macro)
+                    }}
+                  >
+                    <CheckIcon />
+                  </button>
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    data-component="editor-suggestions-item-cancel"
+                    className="horizontal rigid padding-xs align-center justify-center
+                      tween-opacity-ground-ink-quick
+                      ink-soft corner-sm pressable
+                      hover:ground-defined hover:ink"
+                    aria-label={t('editor.cancelDelete')}
+                    onMouseDown={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      onDisarm()
+                    }}
+                  >
+                    <CloseIcon />
+                  </button>
+                </span>
+              ) : (
                 <button
                   type="button"
                   tabIndex={-1}
-                  data-component="editor-suggestions-item-confirm"
-                  className="horizontal rigid padding-xs align-center justify-center
+                  aria-hidden="true"
+                  data-component="editor-suggestions-item-delete"
+                  className="horizontal rigid padding-xs push align-center justify-center
                     tween-opacity-ground-ink-quick
-                    ink-fail corner-sm pressable
-                    hover:ground-fail hover:ink-inverse"
-                  aria-label={t('editor.confirmDelete')}
-                  onMouseDown={e => { e.preventDefault(); e.stopPropagation(); onConfirmDelete(macro) }}
+                    ink-soft corner-sm pressable concealed
+                    hover:ground-fail-faint hover:ink-fail
+                    parent-hover:revealed
+                    parent-selected:revealed"
+                  aria-label={t('editor.deleteMacro')}
+                  onMouseDown={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    onArm(macro)
+                  }}
                 >
-                  <CheckIcon />
+                  <TrashIcon />
                 </button>
-                <button
-                  type="button"
-                  tabIndex={-1}
-                  data-component="editor-suggestions-item-cancel"
-                  className="horizontal rigid padding-xs align-center justify-center
-                    tween-opacity-ground-ink-quick
-                    ink-soft corner-sm pressable
-                    hover:ground-defined hover:ink"
-                  aria-label={t('editor.cancelDelete')}
-                  onMouseDown={e => { e.preventDefault(); e.stopPropagation(); onDisarm() }}
-                >
-                  <CloseIcon />
-                </button>
-              </span>
-            ) : (
-              <button
-                type="button"
-                tabIndex={-1}
-                aria-hidden="true"
-                data-component="editor-suggestions-item-delete"
-                className="horizontal rigid padding-xs push align-center justify-center
-                  tween-opacity-ground-ink-quick
-                  ink-soft corner-sm pressable concealed
-                  hover:ground-fail-faint hover:ink-fail
-                  parent-hover:revealed
-                  parent-selected:revealed"
-                aria-label={t('editor.deleteMacro')}
-                onMouseDown={e => { e.preventDefault(); e.stopPropagation(); onArm(macro) }}
-              >
-                <TrashIcon />
-              </button>
-            )}
-          </div>
-        )
-      })}
+              )}
+            </div>
+          )
+        })}
       </div>
     </div>
   )

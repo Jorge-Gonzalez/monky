@@ -18,7 +18,7 @@ if (typeof chrome === 'undefined' || !chrome.storage) {
       local: {
         get: (key: string) => Promise.resolve({ [key]: localStorage.getItem(key) }),
         set: (items: Record<string, string>) => {
-          Object.keys(items).forEach(key => localStorage.setItem(key, items[key]))
+          Object.keys(items).forEach((key) => localStorage.setItem(key, items[key]))
           return Promise.resolve()
         },
         remove: (key: string) => {
@@ -32,8 +32,8 @@ if (typeof chrome === 'undefined' || !chrome.storage) {
 }
 
 import { useMacroStore } from '../store/useMacroStore'
-import type {MacroDetector } from "./macroEngine/macroDetector"
-import { createMacroDetector } from "./macroEngine/macroDetector"
+import type { MacroDetector } from './macroEngine/macroDetector'
+import { createMacroDetector } from './macroEngine/macroDetector'
 import { loadMacros, listenMacrosChange } from './storage/macroStorage'
 import { suggestionsCoordinator, modalCoordinator } from './overlays'
 import type { Macro } from '../types'

@@ -1,15 +1,15 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeEach, afterEach } from "vitest"
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { replaceText } from './macroReplacement'
-import type { Macro } from "../../../types"
-import { } from "./editableUtils"
+import type { Macro } from '../../../types'
+import {} from './editableUtils'
 
-describe("replaceText (contenteditable) - multi-node", () => {
+describe('replaceText (contenteditable) - multi-node', () => {
   let div: HTMLDivElement
 
   beforeEach(() => {
-    div = document.createElement("div")
-    div.contentEditable = "true"
+    div = document.createElement('div')
+    div.contentEditable = 'true'
     document.body.appendChild(div)
   })
 
@@ -17,15 +17,15 @@ describe("replaceText (contenteditable) - multi-node", () => {
     document.body.removeChild(div)
   })
 
-  it("replaces a macro inside a nested element (using absolute offsets)", () => {
+  it('replaces a macro inside a nested element (using absolute offsets)', () => {
     // make focusable in jsdom (not strictly required for this test)
     div.tabIndex = 0
-    div.appendChild(document.createTextNode("Hello "))
-    const span = document.createElement("span")
-    span.textContent = "/macro"
+    div.appendChild(document.createTextNode('Hello '))
+    const span = document.createElement('span')
+    span.textContent = '/macro'
     div.appendChild(span)
-    div.appendChild(document.createTextNode("!"))
-    const macro: Macro = { id: 1, command: "/macro", text: "world" }
+    div.appendChild(document.createTextNode('!'))
+    const macro: Macro = { id: 1, command: '/macro', text: 'world' }
 
     // Compute absolute offsets: "Hello " = 6, "/macro" = 6 chars
     const start = 6
@@ -34,7 +34,7 @@ describe("replaceText (contenteditable) - multi-node", () => {
     // Call replaceText directly with absolute offsets (avoids jsdom selection flakiness)
     replaceText(div, macro, start, end)
 
-    expect(div.textContent).toBe("Hello world!")
+    expect(div.textContent).toBe('Hello world!')
   })
 
   // it("replaces a macro that spans across multiple elements", () => {

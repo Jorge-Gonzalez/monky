@@ -20,7 +20,10 @@ export function SettingsSection({ label, children }: SettingsSectionProps) {
       >
         {label}
       </div>
-      <div data-component="settings-section-body" className="elastic basis-ratio three-quarters min-width-none">
+      <div
+        data-component="settings-section-body"
+        className="elastic basis-ratio three-quarters min-width-none"
+      >
         {children}
       </div>
     </div>
@@ -34,9 +37,15 @@ interface SettingsRowProps {
 
 export function SettingsRow({ label, children }: SettingsRowProps) {
   return (
-    <div data-component="settings-row" className="horizontal gap-lg padding-block-sm align-center justify-between">
-      <span data-component="settings-row-label" className="rigid
-        ink font-md">
+    <div
+      data-component="settings-row"
+      className="horizontal gap-lg padding-block-sm align-center justify-between"
+    >
+      <span
+        data-component="settings-row-label"
+        className="rigid
+          ink font-md"
+      >
         {label}
       </span>
       {children}
@@ -46,8 +55,11 @@ export function SettingsRow({ label, children }: SettingsRowProps) {
 
 export function SettingsDivider() {
   return (
-    <div data-component="settings-divider" className="margin-block-sm margin-inline-xl height-none
-      rule ruled-top" />
+    <div
+      data-component="settings-divider"
+      className="margin-block-sm margin-inline-xl height-none
+        rule ruled-top"
+    />
   )
 }
 

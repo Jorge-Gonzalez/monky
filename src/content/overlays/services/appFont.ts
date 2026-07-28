@@ -7,8 +7,9 @@ import { createStyleInjector } from './styleInjector'
 let registered = false
 
 function extensionBoundFontFace(): string {
-  return FONT_FACE_STYLES.replace(/url\('\/(fonts\/[^']+)'\)/g, (_, file: string) =>
-    `url('${chrome.runtime.getURL(file)}')`,
+  return FONT_FACE_STYLES.replace(
+    /url\('\/(fonts\/[^']+)'\)/g,
+    (_, file: string) => `url('${chrome.runtime.getURL(file)}')`
   )
 }
 

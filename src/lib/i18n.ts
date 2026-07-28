@@ -26,7 +26,7 @@ const translations = {
       cancelDelete: 'Cancel',
     },
     macroListEditor: {
-      noMacros: 'No macros found.'
+      noMacros: 'No macros found.',
     },
 
     macroItemEditor: {
@@ -48,7 +48,8 @@ const translations = {
       },
       importExport: {
         title: 'Import / Export',
-        description: 'Export your macros as JSON to back them up or move them to another device. Importing merges macros — duplicates (same command) are skipped.',
+        description:
+          'Export your macros as JSON to back them up or move them to another device. Importing merges macros — duplicates (same command) are skipped.',
         exportButton: 'Export',
         importButton: 'Import',
         status: {
@@ -132,7 +133,7 @@ const translations = {
     },
 
     macroList: {
-      noMacros: 'No macros found.'
+      noMacros: 'No macros found.',
     },
 
     // Macro Form
@@ -165,7 +166,8 @@ const translations = {
       autoShort: 'Automatic',
       manual: 'Manual (with Space, Enter, or Tab)',
       manualShort: 'Manual',
-      description: 'In automatic mode, text replaces on match, but if a longer macro starts the same way it waits briefly before replacing.',
+      description:
+        'In automatic mode, text replaces on match, but if a longer macro starts the same way it waits briefly before replacing.',
     },
 
     contentEditor: {
@@ -202,7 +204,7 @@ const translations = {
     },
 
     macroListEditor: {
-      noMacros: 'No hay macros creados.'
+      noMacros: 'No hay macros creados.',
     },
 
     macroItemEditor: {
@@ -224,7 +226,8 @@ const translations = {
       },
       importExport: {
         title: 'Importar / Exportar',
-        description: 'Exporta tus macros como JSON para respaldarlas o moverlas a otro dispositivo. La importación combina macros: los duplicados (mismo comando) se omiten.',
+        description:
+          'Exporta tus macros como JSON para respaldarlas o moverlas a otro dispositivo. La importación combina macros: los duplicados (mismo comando) se omiten.',
         exportButton: 'Exportar',
         importButton: 'Importar',
         status: {
@@ -308,7 +311,7 @@ const translations = {
     },
 
     macroList: {
-      noMacros: 'No hay macros creados.'
+      noMacros: 'No hay macros creados.',
     },
 
     // Macro Form
@@ -341,7 +344,8 @@ const translations = {
       autoShort: 'Automático',
       manual: 'Manual (con Espacio, Enter, o Tab)',
       manualShort: 'Manual',
-      description: 'En modo automático, el texto se reemplaza al coincidir, pero si existe un macro más largo que empieza igual, espera un instante antes de reemplazar.',
+      description:
+        'En modo automático, el texto se reemplaza al coincidir, pero si existe un macro más largo que empieza igual, espera un instante antes de reemplazar.',
     },
 
     contentEditor: {
@@ -361,13 +365,11 @@ type Language = keyof typeof translations
 
 // Helper type to flatten the nested translation object keys
 type FlattenKeys<T, P extends string = ''> = {
-  [K in keyof T]: T[K] extends string
-    ? `${P}${K & string}`
-    : FlattenKeys<T[K], `${P}${K & string}.`>
+  [K in keyof T]: T[K] extends string ? `${P}${K & string}` : FlattenKeys<T[K], `${P}${K & string}.`>
 }[keyof T]
 
 // Use the helper to generate all possible dot-notation keys
-type TranslationKeys = FlattenKeys<typeof translations['en']>
+type TranslationKeys = FlattenKeys<(typeof translations)['en']>
 
 // The old type definition, kept for reference:
 // type TranslationKeys = keyof typeof translations['en']; // 'en' is the source of truth for keys

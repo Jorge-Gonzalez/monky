@@ -67,7 +67,8 @@ export function stealFocusFromGoogleDocs(): void {
   if (!focusGuard) {
     focusGuard = document.createElement('div')
     focusGuard.setAttribute('tabindex', '-1')
-    focusGuard.style.cssText = 'position:fixed;opacity:0;pointer-events:none;width:1px;height:1px;top:-9999px;left:-9999px'
+    focusGuard.style.cssText =
+      'position:fixed;opacity:0;pointer-events:none;width:1px;height:1px;top:-9999px;left:-9999px'
     document.body.appendChild(focusGuard)
   }
   intentionalFocusMove = true
@@ -96,14 +97,16 @@ export function navigateInGoogleDocs(ops: NavOp[]): void {
   const target = doc.activeElement ?? doc.body
   for (const op of ops) {
     for (let i = 0; i < op.count; i++) {
-      target.dispatchEvent(new KeyboardEvent('keydown', {
-        key: op.key,
-        code: op.key,
-        keyCode: op.key === 'ArrowLeft' ? 37 : 39,
-        shiftKey: op.shift,
-        bubbles: true,
-        cancelable: true,
-      }))
+      target.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: op.key,
+          code: op.key,
+          keyCode: op.key === 'ArrowLeft' ? 37 : 39,
+          shiftKey: op.shift,
+          bubbles: true,
+          cancelable: true,
+        })
+      )
     }
   }
 }
@@ -132,14 +135,16 @@ export function replaceInGoogleDocs(deleteCount: number, text: string): void {
     const target = doc.activeElement ?? doc.body
 
     for (let i = 0; i < deleteCount; i++) {
-      target.dispatchEvent(new KeyboardEvent('keydown', {
-        key: 'Backspace',
-        code: 'Backspace',
-        keyCode: 8,
-        charCode: 0,
-        bubbles: true,
-        cancelable: true,
-      }))
+      target.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'Backspace',
+          code: 'Backspace',
+          keyCode: 8,
+          charCode: 0,
+          bubbles: true,
+          cancelable: true,
+        })
+      )
     }
 
     // Insert via keypress events. The event log confirms Google Docs reads
@@ -147,14 +152,16 @@ export function replaceInGoogleDocs(deleteCount: number, text: string): void {
     // events fire for real typing, so that pipeline is irrelevant here.
     for (const char of text) {
       const isNewline = char === '\n'
-      target.dispatchEvent(new KeyboardEvent('keypress', {
-        key: isNewline ? 'Enter' : char,
-        charCode: isNewline ? 13 : char.charCodeAt(0),
-        keyCode: isNewline ? 13 : char.charCodeAt(0),
-        which: isNewline ? 13 : char.charCodeAt(0),
-        bubbles: true,
-        cancelable: true,
-      }))
+      target.dispatchEvent(
+        new KeyboardEvent('keypress', {
+          key: isNewline ? 'Enter' : char,
+          charCode: isNewline ? 13 : char.charCodeAt(0),
+          keyCode: isNewline ? 13 : char.charCodeAt(0),
+          which: isNewline ? 13 : char.charCodeAt(0),
+          bubbles: true,
+          cancelable: true,
+        })
+      )
     }
   }, 0)
 }

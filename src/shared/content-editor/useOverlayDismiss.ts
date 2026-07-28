@@ -17,7 +17,7 @@ import { useEffect, useRef } from 'react'
 export function useOverlayDismiss(
   wrapperRef: RefObject<HTMLElement | null>,
   open: boolean,
-  onClose: () => void,
+  onClose: () => void
 ): void {
   const onCloseRef = useRef(onClose)
   onCloseRef.current = onClose

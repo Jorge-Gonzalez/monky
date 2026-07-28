@@ -1,4 +1,4 @@
-import type { Macro } from "../../types"
+import type { Macro } from '../../types'
 
 // The store is persisted by zustand under 'macro-storage', which chrome.storage may hand
 // back either as the object itself or as a JSON string. Everything read here is untrusted
@@ -15,7 +15,8 @@ type StoredMacro = Partial<Macro> & { id: Macro['id']; trigger?: string }
 
 function readMacros(raw: unknown): unknown {
   try {
-    const envelope = typeof raw === 'string' ? JSON.parse(raw) as PersistedEnvelope : raw as PersistedEnvelope
+    const envelope =
+      typeof raw === 'string' ? (JSON.parse(raw) as PersistedEnvelope) : (raw as PersistedEnvelope)
     return envelope?.state?.macros
   } catch (error) {
     console.warn('[MONKY] Error parsing storage:', error)
@@ -25,10 +26,10 @@ function readMacros(raw: unknown): unknown {
 
 function toMacros(raw: unknown): Macro[] {
   if (!Array.isArray(raw)) return []
-  return (raw as StoredMacro[]).map(m => ({
+  return (raw as StoredMacro[]).map((m) => ({
     id: m.id,
-    command: m.command ?? m.trigger ?? "",
-    text: m.text ?? "",
+    command: m.command ?? m.trigger ?? '',
+    text: m.text ?? '',
     html: m.html,
     contentType: m.contentType,
     is_sensitive: m.is_sensitive,
@@ -36,13 +37,13 @@ function toMacros(raw: unknown): Macro[] {
 }
 
 export async function loadMacros(): Promise<Macro[]> {
-  const result = await chrome.storage.local.get("macro-storage")
+  const result = await chrome.storage.local.get('macro-storage')
   return toMacros(readMacros(result['macro-storage']))
 }
 
 export function listenMacrosChange(callback: (macros: Macro[]) => void): void {
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === "local" && changes['macro-storage']) {
+    if (area === 'local' && changes['macro-storage']) {
       callback(toMacros(readMacros(changes['macro-storage'].newValue)))
     }
   })

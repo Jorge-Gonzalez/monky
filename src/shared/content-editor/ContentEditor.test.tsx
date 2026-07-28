@@ -7,9 +7,18 @@ import type { ContentEditorRef } from './ContentEditor'
 import { ContentEditorLinkField } from './ContentEditorLinkField'
 import { ContentEditorStyleMenu } from './ContentEditorStyleMenu'
 import {
-  toggleBold, toggleItalic, toggleUnderline, toggleStrikethrough,
-  toggleBulletList, toggleOrderedList, undo, redo, setBlockType,
-  insertLink, removeLink, toggleInlineCode,
+  toggleBold,
+  toggleItalic,
+  toggleUnderline,
+  toggleStrikethrough,
+  toggleBulletList,
+  toggleOrderedList,
+  undo,
+  redo,
+  setBlockType,
+  insertLink,
+  removeLink,
+  toggleInlineCode,
 } from './editorCommands'
 import { normalizeEditorHTML } from './normalizeHTML'
 import type { BlockType } from './types'
@@ -46,14 +55,14 @@ describe('editorCommands', () => {
 
   describe('inline format toggles', () => {
     it.each<[string, () => void, string]>([
-      ['toggleBold',          toggleBold,          'bold'],
-      ['toggleItalic',        toggleItalic,        'italic'],
-      ['toggleUnderline',     toggleUnderline,     'underline'],
+      ['toggleBold', toggleBold, 'bold'],
+      ['toggleItalic', toggleItalic, 'italic'],
+      ['toggleUnderline', toggleUnderline, 'underline'],
       ['toggleStrikethrough', toggleStrikethrough, 'strikeThrough'],
-      ['toggleBulletList',    toggleBulletList,    'insertUnorderedList'],
-      ['toggleOrderedList',   toggleOrderedList,   'insertOrderedList'],
-      ['undo',                undo,                'undo'],
-      ['redo',                redo,                'redo'],
+      ['toggleBulletList', toggleBulletList, 'insertUnorderedList'],
+      ['toggleOrderedList', toggleOrderedList, 'insertOrderedList'],
+      ['undo', undo, 'undo'],
+      ['redo', redo, 'redo'],
     ])('%s calls execCommand(%s)', (_name, fn, command) => {
       fn()
       expect(execCommandSpy).toHaveBeenCalledWith(command)
@@ -63,11 +72,11 @@ describe('editorCommands', () => {
   describe('setBlockType', () => {
     const cases: Array<[BlockType, string]> = [
       ['paragraph', 'p'],
-      ['h1',        'h1'],
-      ['h2',        'h2'],
-      ['h3',        'h3'],
-      ['blockquote','blockquote'],
-      ['pre',       'pre'],
+      ['h1', 'h1'],
+      ['h2', 'h2'],
+      ['h3', 'h3'],
+      ['blockquote', 'blockquote'],
+      ['pre', 'pre'],
     ]
     it.each(cases)('setBlockType(%s) → formatBlock with <%s>', (type, tag) => {
       setBlockType(type)
@@ -255,7 +264,12 @@ describe('ContentEditor component', () => {
     // that back. Rewriting innerHTML here would destroy the live selection, so the
     // raw DOM must be left intact.
     const onChange = vi.fn()
-    const { rerender } = render(<ContentEditor value="" onChange={onChange} />)
+    const { rerender } = render(
+      <ContentEditor
+        value=""
+        onChange={onChange}
+      />
+    )
     const body = getBody()
 
     body.innerHTML = '<p><b>x</b></p>'
@@ -265,7 +279,14 @@ describe('ContentEditor component', () => {
     expect(emitted).toBe('<p><strong>x</strong></p>') // normalized, differs from raw
 
     // The parent echoes the normalized value straight back.
-    await act(() => rerender(<ContentEditor value={emitted} onChange={onChange} />))
+    await act(() =>
+      rerender(
+        <ContentEditor
+          value={emitted}
+          onChange={onChange}
+        />
+      )
+    )
 
     // Raw DOM (and thus the selection) is preserved — not overwritten with the echo.
     expect(getBody().innerHTML).toBe('<p><b>x</b></p>')
@@ -274,7 +295,12 @@ describe('ContentEditor component', () => {
   describe('ref API', () => {
     it('getHTML returns current innerHTML', () => {
       const ref = createRef<ContentEditorRef>()
-      render(<ContentEditor ref={ref} value="<p>hello</p>" />)
+      render(
+        <ContentEditor
+          ref={ref}
+          value="<p>hello</p>"
+        />
+      )
       expect(ref.current?.getHTML()).toBe('<p>hello</p>')
     })
 
@@ -287,7 +313,12 @@ describe('ContentEditor component', () => {
 
     it('clear empties the editor', () => {
       const ref = createRef<ContentEditorRef>()
-      render(<ContentEditor ref={ref} value="<p>text</p>" />)
+      render(
+        <ContentEditor
+          ref={ref}
+          value="<p>text</p>"
+        />
+      )
       void act(() => ref.current?.clear())
       expect(getBody().innerHTML).toBe('')
     })
@@ -310,11 +341,11 @@ describe('ContentEditor keyboard shortcuts', () => {
 
   describe('inline format shortcuts', () => {
     it.each<[string, KeyboardEventInit, string]>([
-      ['Ctrl+Z', { key: 'z', ctrlKey: true },                   'undo'],
-      ['Ctrl+Y', { key: 'y', ctrlKey: true },                   'redo'],
-      ['Ctrl+B', { key: 'b', ctrlKey: true },                   'bold'],
-      ['Ctrl+I', { key: 'i', ctrlKey: true },                   'italic'],
-      ['Ctrl+U', { key: 'u', ctrlKey: true },                   'underline'],
+      ['Ctrl+Z', { key: 'z', ctrlKey: true }, 'undo'],
+      ['Ctrl+Y', { key: 'y', ctrlKey: true }, 'redo'],
+      ['Ctrl+B', { key: 'b', ctrlKey: true }, 'bold'],
+      ['Ctrl+I', { key: 'i', ctrlKey: true }, 'italic'],
+      ['Ctrl+U', { key: 'u', ctrlKey: true }, 'underline'],
       ['Ctrl+Shift+X', { key: 'x', ctrlKey: true, shiftKey: true }, 'strikeThrough'],
       ['Ctrl+Shift+8', { key: '8', ctrlKey: true, shiftKey: true }, 'insertUnorderedList'],
       ['Ctrl+Shift+7', { key: '7', ctrlKey: true, shiftKey: true }, 'insertOrderedList'],
@@ -327,10 +358,10 @@ describe('ContentEditor keyboard shortcuts', () => {
   describe('block type shortcuts', () => {
     it.each<[string, KeyboardEventInit, string]>([
       ['Ctrl+Shift+9', { key: '9', ctrlKey: true, shiftKey: true }, 'blockquote'],
-      ['Ctrl+Alt+1',   { key: '1', ctrlKey: true, altKey: true },   'h1'],
-      ['Ctrl+Alt+2',   { key: '2', ctrlKey: true, altKey: true },   'h2'],
-      ['Ctrl+Alt+3',   { key: '3', ctrlKey: true, altKey: true },   'h3'],
-      ['Ctrl+Alt+6',   { key: '6', ctrlKey: true, altKey: true },   'pre'],
+      ['Ctrl+Alt+1', { key: '1', ctrlKey: true, altKey: true }, 'h1'],
+      ['Ctrl+Alt+2', { key: '2', ctrlKey: true, altKey: true }, 'h2'],
+      ['Ctrl+Alt+3', { key: '3', ctrlKey: true, altKey: true }, 'h3'],
+      ['Ctrl+Alt+6', { key: '6', ctrlKey: true, altKey: true }, 'pre'],
     ])('%s → formatBlock(%s)', (_label, event, tag) => {
       keyDown(event)
       expect(execCommandSpy).toHaveBeenCalledWith('formatBlock', false, tag)
@@ -376,8 +407,8 @@ describe('ContentEditor markdown triggers', () => {
   }
 
   it.each<[string, string]>([
-    ['*',  'insertUnorderedList'],
-    ['-',  'insertUnorderedList'],
+    ['*', 'insertUnorderedList'],
+    ['-', 'insertUnorderedList'],
     ['1.', 'insertOrderedList'],
   ])('"%s " triggers list command', (trigger, command) => {
     triggerMarkdown(trigger)
@@ -385,10 +416,10 @@ describe('ContentEditor markdown triggers', () => {
   })
 
   it.each<[string, string]>([
-    ['#',   'h1'],
-    ['##',  'h2'],
+    ['#', 'h1'],
+    ['##', 'h2'],
     ['###', 'h3'],
-    ['>',   'blockquote'],
+    ['>', 'blockquote'],
     ['```', 'pre'],
   ])('"%s " triggers block type', (trigger, tag) => {
     triggerMarkdown(trigger)
@@ -479,18 +510,33 @@ describe('ContentEditorStyleMenu', () => {
   beforeEach(() => execCommandSpy.mockClear())
 
   it('renders the trigger button with the current block label', () => {
-    render(<ContentEditorStyleMenu blockType="paragraph" editorRef={editorRef} />)
+    render(
+      <ContentEditorStyleMenu
+        blockType="paragraph"
+        editorRef={editorRef}
+      />
+    )
     expect(screen.getByRole('button', { name: 'Text style' })).toBeInTheDocument()
   })
 
   it('opens the dropdown when the trigger is pressed', () => {
-    render(<ContentEditorStyleMenu blockType="paragraph" editorRef={editorRef} />)
+    render(
+      <ContentEditorStyleMenu
+        blockType="paragraph"
+        editorRef={editorRef}
+      />
+    )
     fireEvent.mouseDown(screen.getByRole('button', { name: 'Text style' }))
     expect(screen.getByRole('listbox')).toBeInTheDocument()
   })
 
   it('dropdown lists all style options', () => {
-    render(<ContentEditorStyleMenu blockType="paragraph" editorRef={editorRef} />)
+    render(
+      <ContentEditorStyleMenu
+        blockType="paragraph"
+        editorRef={editorRef}
+      />
+    )
     fireEvent.mouseDown(screen.getByRole('button', { name: 'Text style' }))
     const options = screen.getAllByRole('option')
     expect(options).toHaveLength(6)
@@ -500,28 +546,48 @@ describe('ContentEditorStyleMenu', () => {
   })
 
   it('selecting an option calls formatBlock', () => {
-    render(<ContentEditorStyleMenu blockType="paragraph" editorRef={editorRef} />)
+    render(
+      <ContentEditorStyleMenu
+        blockType="paragraph"
+        editorRef={editorRef}
+      />
+    )
     fireEvent.mouseDown(screen.getByRole('button', { name: 'Text style' }))
     fireEvent.mouseDown(screen.getByRole('option', { name: /Heading 1/ }))
     expect(execCommandSpy).toHaveBeenCalledWith('formatBlock', false, 'h1')
   })
 
   it('selecting the active type toggles back to paragraph', () => {
-    render(<ContentEditorStyleMenu blockType="h2" editorRef={editorRef} />)
+    render(
+      <ContentEditorStyleMenu
+        blockType="h2"
+        editorRef={editorRef}
+      />
+    )
     fireEvent.mouseDown(screen.getByRole('button', { name: 'Text style' }))
     fireEvent.mouseDown(screen.getByRole('option', { name: /Heading 2/ }))
     expect(execCommandSpy).toHaveBeenCalledWith('formatBlock', false, 'p')
   })
 
   it('closes the dropdown after selecting an option', () => {
-    render(<ContentEditorStyleMenu blockType="paragraph" editorRef={editorRef} />)
+    render(
+      <ContentEditorStyleMenu
+        blockType="paragraph"
+        editorRef={editorRef}
+      />
+    )
     fireEvent.mouseDown(screen.getByRole('button', { name: 'Text style' }))
     fireEvent.mouseDown(screen.getByRole('option', { name: /Heading 1/ }))
     expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
   })
 
   it('closes when mousedown fires outside the component in the regular DOM', () => {
-    render(<ContentEditorStyleMenu blockType="paragraph" editorRef={editorRef} />)
+    render(
+      <ContentEditorStyleMenu
+        blockType="paragraph"
+        editorRef={editorRef}
+      />
+    )
     fireEvent.mouseDown(screen.getByRole('button', { name: 'Text style' }))
     expect(screen.getByRole('listbox')).toBeInTheDocument()
 
@@ -530,7 +596,12 @@ describe('ContentEditorStyleMenu', () => {
   })
 
   it('does not close when mousedown fires inside the dropdown', () => {
-    render(<ContentEditorStyleMenu blockType="paragraph" editorRef={editorRef} />)
+    render(
+      <ContentEditorStyleMenu
+        blockType="paragraph"
+        editorRef={editorRef}
+      />
+    )
     fireEvent.mouseDown(screen.getByRole('button', { name: 'Text style' }))
     const listbox = screen.getByRole('listbox')
 
@@ -539,7 +610,12 @@ describe('ContentEditorStyleMenu', () => {
   })
 
   it('closes on Escape and stops propagation so the modal does not also close', () => {
-    render(<ContentEditorStyleMenu blockType="paragraph" editorRef={editorRef} />)
+    render(
+      <ContentEditorStyleMenu
+        blockType="paragraph"
+        editorRef={editorRef}
+      />
+    )
 
     fireEvent.mouseDown(screen.getByRole('button', { name: 'Text style' }))
     expect(screen.getByRole('listbox')).toBeInTheDocument()
@@ -644,18 +720,30 @@ describe('ContentEditorLinkField', () => {
 
 describe('normalizeEditorHTML', () => {
   it.each<[string, string, string]>([
-    ['<b>',      '<p><b>text</b></p>',      '<p><strong>text</strong></p>'],
-    ['<i>',      '<p><i>text</i></p>',      '<p><em>text</em></p>'],
+    ['<b>', '<p><b>text</b></p>', '<p><strong>text</strong></p>'],
+    ['<i>', '<p><i>text</i></p>', '<p><em>text</em></p>'],
     ['<strike>', '<p><strike>text</strike></p>', '<p><s>text</s></p>'],
   ])('replaces %s with semantic equivalent', (_tag, input, expected) => {
     expect(normalizeEditorHTML(input)).toBe(expected)
   })
 
   it.each<[string, string, string]>([
-    ['font-weight:bold',              '<p><span style="font-weight: bold">text</span></p>',              '<p><strong>text</strong></p>'],
-    ['font-style:italic',             '<p><span style="font-style: italic">text</span></p>',             '<p><em>text</em></p>'],
-    ['text-decoration:underline',     '<p><span style="text-decoration: underline">text</span></p>',     '<p><u>text</u></p>'],
-    ['text-decoration:line-through',  '<p><span style="text-decoration: line-through">text</span></p>', '<p><s>text</s></p>'],
+    [
+      'font-weight:bold',
+      '<p><span style="font-weight: bold">text</span></p>',
+      '<p><strong>text</strong></p>',
+    ],
+    ['font-style:italic', '<p><span style="font-style: italic">text</span></p>', '<p><em>text</em></p>'],
+    [
+      'text-decoration:underline',
+      '<p><span style="text-decoration: underline">text</span></p>',
+      '<p><u>text</u></p>',
+    ],
+    [
+      'text-decoration:line-through',
+      '<p><span style="text-decoration: line-through">text</span></p>',
+      '<p><s>text</s></p>',
+    ],
   ])('converts span with %s to semantic tag', (_style, input, expected) => {
     expect(normalizeEditorHTML(input)).toBe(expected)
   })

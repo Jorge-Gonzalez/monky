@@ -1,9 +1,9 @@
-import { useMacroStore } from "../store/useMacroStore"
-import type {MacroDetector } from "./macroEngine/macroDetector"
-import { createMacroDetector } from "./macroEngine/macroDetector"
-import { loadMacros, listenMacrosChange } from "./storage/macroStorage"
-import { updateAllMacros, suggestionsCoordinator, modalCoordinator } from "./overlays"
-import type { Macro } from "../types"
+import { useMacroStore } from '../store/useMacroStore'
+import type { MacroDetector } from './macroEngine/macroDetector'
+import { createMacroDetector } from './macroEngine/macroDetector'
+import { loadMacros, listenMacrosChange } from './storage/macroStorage'
+import { updateAllMacros, suggestionsCoordinator, modalCoordinator } from './overlays'
+import type { Macro } from '../types'
 
 // Module-level state
 let macroEngine: MacroDetector | null = null

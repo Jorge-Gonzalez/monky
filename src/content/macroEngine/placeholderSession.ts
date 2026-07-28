@@ -60,10 +60,11 @@ export function createPlaceholderSession(element: EditableEl, onExit: () => void
     if (!active) return
     const text = getTextContent(element)
     const valid =
-      text.length >= prefix.length + suffix.length &&
-      text.startsWith(prefix) &&
-      text.endsWith(suffix)
-    if (!valid) { exit(); return }
+      text.length >= prefix.length + suffix.length && text.startsWith(prefix) && text.endsWith(suffix)
+    if (!valid) {
+      exit()
+      return
+    }
     if (parsePlaceholders(text).length === 0) exit()
   }
 

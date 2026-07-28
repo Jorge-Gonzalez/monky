@@ -17,7 +17,7 @@
     "lint:css": "stylelint \"src/**/*.css\"",
     "audit:styles": "npm run build && node scripts/style-coverage-audit.mjs",
     "lint:css:fix": "stylelint \"src/**/*.css\" --fix",
-    "format": "prettier --write .",
+    "format": "prettier --write src",
     "serve": "node scripts/live-reload-server.js",
     "dev:full": "concurrently --kill-others-on-fail --names 'VITE,RELOAD' --prefix-colors 'blue,green' 'npm run dev' 'npm run serve'",
     "dev:stop": "./scripts/stop-dev.sh",
@@ -31,7 +31,8 @@
     "format:paragraphs:check": "node scripts/format-paragraphs.mjs --check",
     "styles:reconcile": "node scripts/reconcile-styles.mjs",
     "styles:reconcile:check": "node scripts/reconcile-styles.mjs --check",
-    "debug:browser": "./scripts/debug-browser.sh"
+    "debug:browser": "./scripts/debug-browser.sh",
+    "format:check": "prettier --check src"
   },
   "dependencies": {
     "fuzzysort": "^3.1.0",

@@ -1,13 +1,29 @@
 import type { BlockType } from './types'
 
-export function toggleBold() { document.execCommand('bold') }
-export function toggleItalic() { document.execCommand('italic') }
-export function toggleUnderline() { document.execCommand('underline') }
-export function toggleStrikethrough() { document.execCommand('strikeThrough') }
-export function toggleBulletList() { document.execCommand('insertUnorderedList') }
-export function toggleOrderedList() { document.execCommand('insertOrderedList') }
-export function undo() { document.execCommand('undo') }
-export function redo() { document.execCommand('redo') }
+export function toggleBold() {
+  document.execCommand('bold')
+}
+export function toggleItalic() {
+  document.execCommand('italic')
+}
+export function toggleUnderline() {
+  document.execCommand('underline')
+}
+export function toggleStrikethrough() {
+  document.execCommand('strikeThrough')
+}
+export function toggleBulletList() {
+  document.execCommand('insertUnorderedList')
+}
+export function toggleOrderedList() {
+  document.execCommand('insertOrderedList')
+}
+export function undo() {
+  document.execCommand('undo')
+}
+export function redo() {
+  document.execCommand('redo')
+}
 
 export function setBlockType(type: BlockType) {
   const tag = type === 'paragraph' ? 'p' : type

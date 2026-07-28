@@ -8,29 +8,29 @@ const SYSTEM_MACROS: Macro[] = [
     command: '/?',
     text: '', // No replacement text - this triggers an action
     isSystemMacro: true,
-    description: 'Open macro search overlay'
+    description: 'Open macro search overlay',
   },
   {
     id: 'system-help',
     command: '/help',
     text: '', // No replacement text - this triggers an action
     isSystemMacro: true,
-    description: 'Show keyboard shortcuts help'
+    description: 'Show keyboard shortcuts help',
   },
   {
     id: 'system-list-macros',
     command: '/macros',
     text: '', // No replacement text - this triggers an action
     isSystemMacro: true,
-    description: 'List all available macros'
+    description: 'List all available macros',
   },
   {
     id: 'system-toggle-new-suggestions',
     command: '/>',
     text: '', // No replacement text - this triggers an action
     isSystemMacro: true,
-    description: 'Toggle new suggestions overlay visibility'
-  }
+    description: 'Toggle new suggestions overlay visibility',
+  },
 ]
 
 /**
@@ -38,7 +38,7 @@ const SYSTEM_MACROS: Macro[] = [
  * instead of text replacement.
  */
 function isSystemMacro(macro: Macro): boolean {
-  return macro.isSystemMacro === true || SYSTEM_MACROS.some(sm => sm.id === macro.id)
+  return macro.isSystemMacro === true || SYSTEM_MACROS.some((sm) => sm.id === macro.id)
 }
 
 describe('System Macros - Toggle New Suggestions Overlay', () => {
@@ -47,7 +47,7 @@ describe('System Macros - Toggle New Suggestions Overlay', () => {
     command: '/>',
     text: '',
     isSystemMacro: true,
-    description: 'Toggle new suggestions overlay visibility'
+    description: 'Toggle new suggestions overlay visibility',
   }
 
   test('SYSTEM_MACROS includes the toggle macro', () => {

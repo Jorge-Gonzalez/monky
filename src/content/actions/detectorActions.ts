@@ -57,7 +57,6 @@ export interface DetectorActions {
    * @param buffer - The buffer text that should be replaced
    */
   onMacroSelectedFromOverlay?(macro: Macro, buffer: string): void
-
 }
 
 /**

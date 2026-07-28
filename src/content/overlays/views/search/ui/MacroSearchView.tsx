@@ -31,17 +31,15 @@ export function MacroSearchView({
   const [pendingDelete, setPendingDelete] = useState<Macro | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const macros = useMacroStore(state => state.macros)
-  const prefixes = useMacroStore(state => state.config.prefixes)
+  const macros = useMacroStore((state) => state.macros)
+  const prefixes = useMacroStore((state) => state.config.prefixes)
 
   const parsed = useMemo(() => parseModalQuery(searchQuery, prefixes), [searchQuery, prefixes])
 
   // For normal search, filter against the raw query.
   // For parametric mode, filter against the param (e.g. '/no').
   const macroSearchQuery =
-    parsed.mode === 'search' ? searchQuery :
-    parsed.mode === 'parametric' ? parsed.param :
-    ''
+    parsed.mode === 'search' ? searchQuery : parsed.mode === 'parametric' ? parsed.param : ''
   const filteredMacros = useMacroSearch(macros, macroSearchQuery)
 
   const showMacros = parsed.mode === 'search' || parsed.mode === 'parametric'
@@ -52,8 +50,9 @@ export function MacroSearchView({
   // Destructured rather than held as one object: useListNavigation memoises each
   // callback but returns them in a fresh literal, so depending on the object meant
   // depending on every render. The callbacks themselves are stable.
-  const { selectedIndex, navigateNext, navigatePrev, reset, selectIndex } =
-    useListNavigation(listLength, { allowEmpty: true })
+  const { selectedIndex, navigateNext, navigatePrev, reset, selectIndex } = useListNavigation(listLength, {
+    allowEmpty: true,
+  })
 
   // Reset selection on mode switches (e.g. search ↔ command discovery).
   // Disabled pending removal: no path was found where this is observable. The mode only
@@ -65,52 +64,70 @@ export function MacroSearchView({
   // query untouched -- is covered in MacroSearchView.test.tsx.
   // useEffect(() => { reset() }, [parsed.mode, reset])
   // On mount, clear any stale state
-  useEffect(() => { setSearchQuery(''); reset() }, [reset])
+  useEffect(() => {
+    setSearchQuery('')
+    reset()
+  }, [reset])
   // Auto-select first result when query is active; clear selection when query is empty
   useEffect(() => {
     if (searchQuery.trim()) selectIndex(0)
     else reset()
   }, [searchQuery, selectIndex, reset])
   // Disarm a pending delete when the user navigates away or edits the query.
-  useEffect(() => { setPendingDelete(null) }, [selectedIndex, searchQuery])
+  useEffect(() => {
+    setPendingDelete(null)
+  }, [selectedIndex, searchQuery])
 
   // --- Handlers ---
 
-  const handleMacroSelect = useCallback((macro: Macro) => {
-    onSelectMacro(macro)
-    onClose()
-  }, [onSelectMacro, onClose])
+  const handleMacroSelect = useCallback(
+    (macro: Macro) => {
+      onSelectMacro(macro)
+      onClose()
+    },
+    [onSelectMacro, onClose]
+  )
 
-  const handleParametricSelect = useCallback((macro: Macro, command: ModalCommand) => {
-    if (command.id === 'edit') {
-      setSearchQuery('')
-      onNavigateToEditor(macro)
-      return
-    }
-    if (command.id === 'delete') {
-      // Two-step: first select arms the row, a second select on it confirms.
-      if (pendingDelete?.id === macro.id) {
-        void deleteMacro(String(macro.id))
-        setPendingDelete(null)
+  const handleParametricSelect = useCallback(
+    (macro: Macro, command: ModalCommand) => {
+      if (command.id === 'edit') {
         setSearchQuery('')
-      } else {
-        setPendingDelete(macro)
+        onNavigateToEditor(macro)
+        return
       }
-    }
-  }, [onNavigateToEditor, pendingDelete])
+      if (command.id === 'delete') {
+        // Two-step: first select arms the row, a second select on it confirms.
+        if (pendingDelete?.id === macro.id) {
+          void deleteMacro(String(macro.id))
+          setPendingDelete(null)
+          setSearchQuery('')
+        } else {
+          setPendingDelete(macro)
+        }
+      }
+    },
+    [onNavigateToEditor, pendingDelete]
+  )
 
-  const handleCommandSelect = useCallback((command: ModalCommand) => {
-    setSearchQuery('')
-    switch (command.id) {
-      case 'new':      onNavigateToEditor(undefined); break
-      case 'settings': onViewChange('settings'); break
-      // Parametric commands: selecting from discovery list enters awaiting mode
-      case 'edit':
-      case 'delete':
-        setSearchQuery(command.command)
-        break
-    }
-  }, [onNavigateToEditor, onViewChange])
+  const handleCommandSelect = useCallback(
+    (command: ModalCommand) => {
+      setSearchQuery('')
+      switch (command.id) {
+        case 'new':
+          onNavigateToEditor(undefined)
+          break
+        case 'settings':
+          onViewChange('settings')
+          break
+        // Parametric commands: selecting from discovery list enters awaiting mode
+        case 'edit':
+        case 'delete':
+          setSearchQuery(command.command)
+          break
+      }
+    },
+    [onNavigateToEditor, onViewChange]
+  )
 
   const handleEdit = useCallback(() => {
     if (!showMacros) return
@@ -131,8 +148,15 @@ export function MacroSearchView({
       const macro = filteredMacros[selectedIndex]
       if (macro) handleMacroSelect(macro)
     }
-  }, [parsed, visibleCommands, filteredMacros, selectedIndex,
-      handleCommandSelect, handleParametricSelect, handleMacroSelect])
+  }, [
+    parsed,
+    visibleCommands,
+    filteredMacros,
+    selectedIndex,
+    handleCommandSelect,
+    handleParametricSelect,
+    handleMacroSelect,
+  ])
 
   useAutoFocus(inputRef, true)
   useKeyboardNavigation({
@@ -169,8 +193,11 @@ export function MacroSearchView({
     if (parsed.mode === 'awaiting') {
       return (
         <SearchResultsPanel>
-          <div className="span-all padding-lg
-            font-md text-center" role="status">
+          <div
+            className="span-all padding-lg
+              font-md text-center"
+            role="status"
+          >
             {t('modalSearch.awaitingHint')}
           </div>
         </SearchResultsPanel>
@@ -182,9 +209,9 @@ export function MacroSearchView({
         macros={filteredMacros}
         selectedIndex={selectedIndex}
         searchQuery={macroSearchQuery}
-        onSelect={parsed.mode === 'parametric'
-          ? (m) => handleParametricSelect(m, parsed.command)
-          : handleMacroSelect}
+        onSelect={
+          parsed.mode === 'parametric' ? (m) => handleParametricSelect(m, parsed.command) : handleMacroSelect
+        }
         onEdit={parsed.mode === 'search' ? onNavigateToEditor : undefined}
         confirmingDeleteId={pendingDelete?.id}
       />
@@ -197,10 +224,7 @@ export function MacroSearchView({
 
   // A panel only becomes a listbox once it holds options; 'instant' shows a single
   // pre-selected command, every other mode follows the navigation cursor.
-  const optionCount =
-    parsed.mode === 'instant' ? 1 :
-    parsed.mode === 'awaiting' ? 0 :
-    footerCount
+  const optionCount = parsed.mode === 'instant' ? 1 : parsed.mode === 'awaiting' ? 0 : footerCount
   const activeIndex = parsed.mode === 'instant' ? 0 : selectedIndex
 
   return (
@@ -210,7 +234,9 @@ export function MacroSearchView({
         onChange={setSearchQuery}
         inputRef={inputRef}
         listboxId={optionCount > 0 ? SEARCH_LISTBOX_ID : undefined}
-        activeOptionId={activeIndex >= 0 && activeIndex < optionCount ? searchOptionId(activeIndex) : undefined}
+        activeOptionId={
+          activeIndex >= 0 && activeIndex < optionCount ? searchOptionId(activeIndex) : undefined
+        }
       />
       {renderResults()}
       <MacroSearchFooter

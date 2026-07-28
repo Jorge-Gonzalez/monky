@@ -1,8 +1,14 @@
 import type { RefObject } from 'react'
 import type { EditorFormatState } from './types'
 import {
-  toggleBold, toggleItalic, toggleUnderline, toggleStrikethrough,
-  toggleBulletList, toggleOrderedList, undo, redo,
+  toggleBold,
+  toggleItalic,
+  toggleUnderline,
+  toggleStrikethrough,
+  toggleBulletList,
+  toggleOrderedList,
+  undo,
+  redo,
 } from './editorCommands'
 import { ContentEditorStyleMenu } from './ContentEditorStyleMenu'
 import { ContentEditorLinkField } from './ContentEditorLinkField'
@@ -34,7 +40,10 @@ function Btn({ icon, title, active, onAction }: BtnProps) {
         ink-soft corner-sm pressable
         hover:ground-defined hover:ink
         pressed:ground-defined pressed:ink-accent"
-      onMouseDown={e => { e.preventDefault(); onAction() }}
+      onMouseDown={(e) => {
+        e.preventDefault()
+        onAction()
+      }}
       title={title}
       aria-label={title}
       aria-pressed={active}
@@ -44,8 +53,13 @@ function Btn({ icon, title, active, onAction }: BtnProps) {
 }
 
 function Sep() {
-  return <span className="rigid margin-inline-xs margin-block-none separator-mark-xs
-    rule ruled-left" aria-hidden />
+  return (
+    <span
+      className="rigid margin-inline-xs margin-block-none separator-mark-xs
+        rule ruled-left"
+      aria-hidden
+    />
+  )
 }
 
 export function ContentEditorToolbar({
@@ -58,8 +72,12 @@ export function ContentEditorToolbar({
 }: ContentEditorToolbarProps) {
   if (linkMode) {
     return (
-      <div data-region="ce-toolbar" data-component="ce-toolbar" className="horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed
-        ground">
+      <div
+        data-region="ce-toolbar"
+        data-component="ce-toolbar"
+        className="horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed
+          ground"
+      >
         <ContentEditorLinkField
           savedRange={savedRange}
           existingHref={formatState.linkHref}
@@ -71,26 +89,72 @@ export function ContentEditorToolbar({
   }
 
   return (
-    <div data-region="ce-toolbar" className="horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed
-      ground" role="toolbar" aria-label="Formatting">
-      <Btn icon={icons.undo} title="Undo (Ctrl+Z)" onAction={undo} />
-      <Btn icon={icons.redo} title="Redo (Ctrl+Y)" onAction={redo} />
+    <div
+      data-region="ce-toolbar"
+      className="horizontal rigid gap-xs padding-block-xs padding-inline-sm align-center wrap-allowed
+        ground"
+      role="toolbar"
+      aria-label="Formatting"
+    >
+      <Btn
+        icon={icons.undo}
+        title="Undo (Ctrl+Z)"
+        onAction={undo}
+      />
+      <Btn
+        icon={icons.redo}
+        title="Redo (Ctrl+Y)"
+        onAction={redo}
+      />
 
       <Sep />
 
-      <Btn icon={icons.bold}          title="Bold (Ctrl+B)"          active={formatState.bold}          onAction={toggleBold} />
-      <Btn icon={icons.italic}        title="Italic (Ctrl+I)"        active={formatState.italic}        onAction={toggleItalic} />
-      <Btn icon={icons.underline}     title="Underline (Ctrl+U)"     active={formatState.underline}     onAction={toggleUnderline} />
-      <Btn icon={icons.strikethrough} title="Strikethrough (Ctrl+Shift+X)" active={formatState.strikethrough} onAction={toggleStrikethrough} />
+      <Btn
+        icon={icons.bold}
+        title="Bold (Ctrl+B)"
+        active={formatState.bold}
+        onAction={toggleBold}
+      />
+      <Btn
+        icon={icons.italic}
+        title="Italic (Ctrl+I)"
+        active={formatState.italic}
+        onAction={toggleItalic}
+      />
+      <Btn
+        icon={icons.underline}
+        title="Underline (Ctrl+U)"
+        active={formatState.underline}
+        onAction={toggleUnderline}
+      />
+      <Btn
+        icon={icons.strikethrough}
+        title="Strikethrough (Ctrl+Shift+X)"
+        active={formatState.strikethrough}
+        onAction={toggleStrikethrough}
+      />
 
       <Sep />
 
-      <Btn icon={icons.bulletList}  title="Bullet list (Ctrl+Shift+8)"   active={formatState.bulletList}  onAction={toggleBulletList} />
-      <Btn icon={icons.orderedList} title="Numbered list (Ctrl+Shift+7)" active={formatState.orderedList} onAction={toggleOrderedList} />
+      <Btn
+        icon={icons.bulletList}
+        title="Bullet list (Ctrl+Shift+8)"
+        active={formatState.bulletList}
+        onAction={toggleBulletList}
+      />
+      <Btn
+        icon={icons.orderedList}
+        title="Numbered list (Ctrl+Shift+7)"
+        active={formatState.orderedList}
+        onAction={toggleOrderedList}
+      />
 
       <Sep />
 
-      <ContentEditorStyleMenu blockType={formatState.blockType} editorRef={editorRef} />
+      <ContentEditorStyleMenu
+        blockType={formatState.blockType}
+        editorRef={editorRef}
+      />
 
       <Sep />
 

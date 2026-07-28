@@ -9,7 +9,7 @@ vi.mock('./systemMacros', async () => {
   const actual = await vi.importActual('./systemMacros')
   return {
     ...actual,
-    handleSystemMacro: vi.fn().mockReturnValue(true)
+    handleSystemMacro: vi.fn().mockReturnValue(true),
   }
 })
 
@@ -21,7 +21,6 @@ vi.mock('../store/useMacroStore', () => ({
 }))
 
 describe('System Macros Integration', () => {
-
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -38,7 +37,7 @@ describe('System Macros Integration', () => {
       // This test now verifies the source of truth for the detector.
       const userMacros: Macro[] = [
         { id: '1', command: '/sig', text: 'Jorge L. Gonzalez' },
-        { id: '2', command: '/email', text: 'jorge@example.com' }
+        { id: '2', command: '/email', text: 'jorge@example.com' },
       ]
 
       // In the new architecture, we'd create a detector and set macros.
@@ -48,15 +47,15 @@ describe('System Macros Integration', () => {
       // Since we can't directly access the internal macros array,
       // we'll test this by checking that system macros are defined properly
       expect(SYSTEM_MACROS).toHaveLength(5)
-      expect(SYSTEM_MACROS.find(m => m.command === '/?')).toBeDefined()
-      expect(SYSTEM_MACROS.find(m => m.command === ':new')).toBeDefined()
-      expect(SYSTEM_MACROS.find(m => m.command === ':edit')).toBeDefined()
-      expect(SYSTEM_MACROS.find(m => m.command === ':delete')).toBeDefined()
-      expect(SYSTEM_MACROS.find(m => m.command === ':settings')).toBeDefined()
+      expect(SYSTEM_MACROS.find((m) => m.command === '/?')).toBeDefined()
+      expect(SYSTEM_MACROS.find((m) => m.command === ':new')).toBeDefined()
+      expect(SYSTEM_MACROS.find((m) => m.command === ':edit')).toBeDefined()
+      expect(SYSTEM_MACROS.find((m) => m.command === ':delete')).toBeDefined()
+      expect(SYSTEM_MACROS.find((m) => m.command === ':settings')).toBeDefined()
     })
 
     it('should maintain system macro properties', () => {
-      SYSTEM_MACROS.forEach(macro => {
+      SYSTEM_MACROS.forEach((macro) => {
         expect(macro.isSystemMacro).toBe(true)
         expect(macro.text).toBe('')
         expect(macro.description).toBeTruthy()
@@ -69,7 +68,7 @@ describe('System Macros Integration', () => {
     it('should not conflict with user macro commands', () => {
       const userMacros: Macro[] = [
         { id: '1', command: '/signature', text: 'Jorge L. Gonzalez' },
-        { id: '2', command: '/help-user', text: 'This is user help' }
+        { id: '2', command: '/help-user', text: 'This is user help' },
       ]
 
       // In the new architecture, we'd create a detector and set macros.
@@ -77,10 +76,10 @@ describe('System Macros Integration', () => {
       detector.setMacros(userMacros)
 
       // System macros should have different commands than user macros
-      const systemCommands = SYSTEM_MACROS.map(m => m.command)
-      const userCommands = userMacros.map(m => m.command)
-      
-      systemCommands.forEach(sysCmd => {
+      const systemCommands = SYSTEM_MACROS.map((m) => m.command)
+      const userCommands = userMacros.map((m) => m.command)
+
+      systemCommands.forEach((sysCmd) => {
         expect(userCommands).not.toContain(sysCmd)
       })
     })
@@ -88,31 +87,31 @@ describe('System Macros Integration', () => {
 
   describe('System Macro Commands', () => {
     it('should define search overlay shortcut', () => {
-      const searchMacro = SYSTEM_MACROS.find(m => m.command === '/?')
+      const searchMacro = SYSTEM_MACROS.find((m) => m.command === '/?')
       expect(searchMacro).toBeDefined()
       expect(searchMacro?.id).toBe('system-search-overlay')
     })
 
     it('should define new macro command', () => {
-      const newMacro = SYSTEM_MACROS.find(m => m.command === ':new')
+      const newMacro = SYSTEM_MACROS.find((m) => m.command === ':new')
       expect(newMacro).toBeDefined()
       expect(newMacro?.id).toBe('system-new-macro')
     })
 
     it('should define edit macro command', () => {
-      const editMacro = SYSTEM_MACROS.find(m => m.command === ':edit')
+      const editMacro = SYSTEM_MACROS.find((m) => m.command === ':edit')
       expect(editMacro).toBeDefined()
       expect(editMacro?.id).toBe('system-edit-macro')
     })
 
     it('should define delete macro command', () => {
-      const deleteMacro = SYSTEM_MACROS.find(m => m.command === ':delete')
+      const deleteMacro = SYSTEM_MACROS.find((m) => m.command === ':delete')
       expect(deleteMacro).toBeDefined()
       expect(deleteMacro?.id).toBe('system-delete-macro')
     })
 
     it('should define settings command', () => {
-      const settingsMacro = SYSTEM_MACROS.find(m => m.command === ':settings')
+      const settingsMacro = SYSTEM_MACROS.find((m) => m.command === ':settings')
       expect(settingsMacro).toBeDefined()
       expect(settingsMacro?.id).toBe('system-settings')
     })
@@ -122,10 +121,10 @@ describe('System Macros Integration', () => {
     it('should solve the /? not working issue', () => {
       // This test verifies that /? is now defined as a system macro
       // so it will be detected and handled properly
-      const searchMacro = SYSTEM_MACROS.find(m => m.command === '/?')
+      const searchMacro = SYSTEM_MACROS.find((m) => m.command === '/?')
       expect(searchMacro).toBeDefined()
       expect(searchMacro?.isSystemMacro).toBe(true)
-      
+
       // When user types /?, it should be detected as a valid macro
       // and trigger the system action instead of being ignored
     })
@@ -133,9 +132,9 @@ describe('System Macros Integration', () => {
     it('should provide keyboard shortcuts through macro system', () => {
       // Verify that all expected keyboard shortcuts are available as macros
       const expectedCommands = ['/?', ':new', ':edit', ':delete', ':settings']
-      
-      expectedCommands.forEach(command => {
-        const macro = SYSTEM_MACROS.find(m => m.command === command)
+
+      expectedCommands.forEach((command) => {
+        const macro = SYSTEM_MACROS.find((m) => m.command === command)
         expect(macro).toBeDefined()
         expect(macro?.isSystemMacro).toBe(true)
       })
@@ -143,9 +142,7 @@ describe('System Macros Integration', () => {
 
     it('should not interfere with regular macro functionality', () => {
       // System macros should not break existing macro replacement
-      const userMacros: Macro[] = [
-        { id: '1', command: '/sig', text: 'Jorge L. Gonzalez' }
-      ]
+      const userMacros: Macro[] = [{ id: '1', command: '/sig', text: 'Jorge L. Gonzalez' }]
 
       // This should work without throwing errors
       const detector = createMacroDetector({} as DetectorActions)
@@ -160,7 +157,7 @@ describe('System Macros Integration', () => {
   describe('Architecture Benefits', () => {
     it('should leverage existing macro detection infrastructure', () => {
       // System macros use the same detection mechanism as user macros
-      SYSTEM_MACROS.forEach(macro => {
+      SYSTEM_MACROS.forEach((macro) => {
         expect(macro.command).toBeTruthy()
         expect(typeof macro.command).toBe('string')
         expect(macro.id).toBeTruthy()
@@ -175,7 +172,7 @@ describe('System Macros Integration', () => {
 
     it('should maintain type safety', () => {
       // All system macros should conform to the Macro type
-      SYSTEM_MACROS.forEach(macro => {
+      SYSTEM_MACROS.forEach((macro) => {
         expect(typeof macro.id).toBeTruthy()
         expect(typeof macro.command).toBe('string')
         expect(typeof macro.text).toBe('string')

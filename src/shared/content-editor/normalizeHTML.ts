@@ -26,7 +26,7 @@ function unwrap(el: Element): void {
 }
 
 function normalizeElement(el: Element): void {
-  Array.from(el.children).forEach(child => normalizeElement(child))
+  Array.from(el.children).forEach((child) => normalizeElement(child))
 
   const tag = el.tagName.toLowerCase()
 
@@ -58,6 +58,6 @@ export function normalizeEditorHTML(html: string): string {
   if (!html) return html
   const div = document.createElement('div')
   div.innerHTML = html
-  Array.from(div.children).forEach(child => normalizeElement(child))
+  Array.from(div.children).forEach((child) => normalizeElement(child))
   return div.innerHTML
 }

@@ -10,14 +10,14 @@ vi.mock('../../store/useMacroStore', () => ({
     getState: vi.fn(() => ({
       config: {
         useCommitKeys: false,
-        prefixes: ['/', ';', '!'],  // Test with multiple prefixes
+        prefixes: ['/', ';', '!'], // Test with multiple prefixes
         disabledSites: [],
-        theme: 'light' as const
+        theme: 'light' as const,
       },
-      macros: []
+      macros: [],
     })),
-    subscribe: vi.fn()
-  }
+    subscribe: vi.fn(),
+  },
 }))
 
 vi.mock('../overlays/services/reactRenderer', () => ({
@@ -28,14 +28,14 @@ vi.mock('../overlays/services/reactRenderer', () => ({
     clear: vi.fn(),
     destroy: vi.fn(),
     getShadowRoot: vi.fn(() => null),
-  }))
+  })),
 }))
 
 vi.mock('../overlays/services/styleInjector', () => ({
   createStyleInjector: vi.fn(() => ({
     inject: vi.fn(),
     remove: vi.fn(),
-  }))
+  })),
 }))
 
 vi.mock('../overlays/suggestionsOverlay/utils/caretPosition', () => ({
@@ -65,7 +65,7 @@ describe('Multi-Prefix Support', () => {
       command: '!urgent',
       text: 'This is urgent',
       contentType: 'text/plain',
-    }
+    },
   ]
 
   let detector: ReturnType<typeof createMacroDetector>

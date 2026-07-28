@@ -87,7 +87,13 @@ describe('MacroSuggestions', () => {
     })
 
     test('renders all macros in showAll mode', () => {
-      render(<MacroSuggestions {...defaultProps} mode="showAll" filterBuffer="" />)
+      render(
+        <MacroSuggestions
+          {...defaultProps}
+          mode="showAll"
+          filterBuffer=""
+        />
+      )
 
       expect(screen.getByText('test-macro')).toBeInTheDocument()
       expect(screen.getByText('another-test')).toBeInTheDocument()
@@ -95,7 +101,13 @@ describe('MacroSuggestions', () => {
     })
 
     test('uses fuzzy search in showAll mode with buffer', () => {
-      render(<MacroSuggestions {...defaultProps} mode="showAll" filterBuffer="test" />)
+      render(
+        <MacroSuggestions
+          {...defaultProps}
+          mode="showAll"
+          filterBuffer="test"
+        />
+      )
 
       // Should show macros that fuzzy match "test"
       expect(screen.getByText('test-macro')).toBeInTheDocument()
@@ -105,14 +117,22 @@ describe('MacroSuggestions', () => {
     })
 
     test('returns null when invisible', () => {
-      const { container } = render(<MacroSuggestions {...defaultProps} isVisible={false} />)
+      const { container } = render(
+        <MacroSuggestions
+          {...defaultProps}
+          isVisible={false}
+        />
+      )
 
       expect(container.firstChild).toBeNull()
     })
 
     test('returns null when no matching macros', () => {
       const { container } = render(
-        <MacroSuggestions {...defaultProps} filterBuffer="xyz" />
+        <MacroSuggestions
+          {...defaultProps}
+          filterBuffer="xyz"
+        />
       )
 
       expect(container.firstChild).toBeNull()
@@ -120,7 +140,11 @@ describe('MacroSuggestions', () => {
 
     test('returns null when filter buffer is empty in filter mode', () => {
       const { container } = render(
-        <MacroSuggestions {...defaultProps} filterBuffer="" mode="filter" />
+        <MacroSuggestions
+          {...defaultProps}
+          filterBuffer=""
+          mode="filter"
+        />
       )
 
       expect(container.firstChild).toBeNull()
@@ -134,7 +158,13 @@ describe('MacroSuggestions', () => {
         updated_at: String(new Date()),
       }))
 
-      render(<MacroSuggestions {...defaultProps} macros={manyMacros} filterBuffer="test" />)
+      render(
+        <MacroSuggestions
+          {...defaultProps}
+          macros={manyMacros}
+          filterBuffer="test"
+        />
+      )
 
       const buttons = screen.getAllByRole('option')
       expect(buttons.length).toBe(5)
@@ -143,21 +173,36 @@ describe('MacroSuggestions', () => {
 
   describe('Filtering Logic', () => {
     test('filters macros that start with buffer', () => {
-      render(<MacroSuggestions {...defaultProps} filterBuffer="test" />)
+      render(
+        <MacroSuggestions
+          {...defaultProps}
+          filterBuffer="test"
+        />
+      )
 
       expect(screen.getByText('test-macro')).toBeInTheDocument()
       expect(screen.queryByText('different')).not.toBeInTheDocument()
     })
 
     test('filters macros that contain buffer', () => {
-      render(<MacroSuggestions {...defaultProps} filterBuffer="other" />)
+      render(
+        <MacroSuggestions
+          {...defaultProps}
+          filterBuffer="other"
+        />
+      )
 
       expect(screen.getByText('another-test')).toBeInTheDocument()
       expect(screen.queryByText('test-macro')).not.toBeInTheDocument()
     })
 
     test('filtering is case-insensitive', () => {
-      render(<MacroSuggestions {...defaultProps} filterBuffer="TEST" />)
+      render(
+        <MacroSuggestions
+          {...defaultProps}
+          filterBuffer="TEST"
+        />
+      )
 
       expect(screen.getByText('test-macro')).toBeInTheDocument()
       expect(screen.getByText('another-test')).toBeInTheDocument()
@@ -165,7 +210,10 @@ describe('MacroSuggestions', () => {
 
     test('shows no results for non-matching buffer', () => {
       const { container } = render(
-        <MacroSuggestions {...defaultProps} filterBuffer="nonexistent" />
+        <MacroSuggestions
+          {...defaultProps}
+          filterBuffer="nonexistent"
+        />
       )
 
       expect(container.firstChild).toBeNull()
@@ -203,7 +251,12 @@ describe('MacroSuggestions', () => {
   describe('User Interactions', () => {
     test('calls onSelectMacro when item is clicked', () => {
       const mockOnSelect = vi.fn()
-      render(<MacroSuggestions {...defaultProps} onSelectMacro={mockOnSelect} />)
+      render(
+        <MacroSuggestions
+          {...defaultProps}
+          onSelectMacro={mockOnSelect}
+        />
+      )
 
       const firstItem = screen.getByText('test-macro')
       fireEvent.mouseDown(firstItem)
@@ -214,7 +267,12 @@ describe('MacroSuggestions', () => {
 
     test('calls onSelectMacro with correct macro when second item clicked', () => {
       const mockOnSelect = vi.fn()
-      render(<MacroSuggestions {...defaultProps} onSelectMacro={mockOnSelect} />)
+      render(
+        <MacroSuggestions
+          {...defaultProps}
+          onSelectMacro={mockOnSelect}
+        />
+      )
 
       const secondItem = screen.getByText('another-test')
       fireEvent.mouseDown(secondItem)
@@ -224,7 +282,12 @@ describe('MacroSuggestions', () => {
 
     test('prevents default behavior on mousedown to avoid blur on input', () => {
       const mockOnSelect = vi.fn()
-      render(<MacroSuggestions {...defaultProps} onSelectMacro={mockOnSelect} />)
+      render(
+        <MacroSuggestions
+          {...defaultProps}
+          onSelectMacro={mockOnSelect}
+        />
+      )
 
       const firstItem = screen.getByText('test-macro')
       const mouseDownEvent = new MouseEvent('mousedown', { bubbles: true, cancelable: true })
@@ -255,9 +318,9 @@ describe('MacroSuggestions', () => {
       }
 
       render(
-        <MacroSuggestions 
-          {...defaultProps} 
-          macros={[longTextMacro]} 
+        <MacroSuggestions
+          {...defaultProps}
+          macros={[longTextMacro]}
           filterBuffer="test"
         />
       )
@@ -288,7 +351,7 @@ describe('MacroSuggestions', () => {
       render(<MacroSuggestions {...defaultProps} />)
 
       expect(screen.getByRole('listbox')).toBeInTheDocument()
-      
+
       const options = screen.getAllByRole('option')
       expect(options.length).toBeGreaterThan(0)
     })
@@ -311,7 +374,10 @@ describe('MacroSuggestions', () => {
   describe('Edge Cases', () => {
     test('handles empty macros array', () => {
       const { container } = render(
-        <MacroSuggestions {...defaultProps} macros={[]} />
+        <MacroSuggestions
+          {...defaultProps}
+          macros={[]}
+        />
       )
 
       expect(container.firstChild).toBeNull()
@@ -319,9 +385,9 @@ describe('MacroSuggestions', () => {
 
     test('handles undefined cursor position gracefully', () => {
       const { container } = render(
-        <MacroSuggestions 
-          {...defaultProps} 
-          position={{ x: 0, y: 0 }} 
+        <MacroSuggestions
+          {...defaultProps}
+          position={{ x: 0, y: 0 }}
         />
       )
 
@@ -334,19 +400,39 @@ describe('MacroSuggestions', () => {
 
       expect(screen.getByText('test-macro')).toBeInTheDocument()
 
-      rerender(<MacroSuggestions {...defaultProps} filterBuffer="another" />)
+      rerender(
+        <MacroSuggestions
+          {...defaultProps}
+          filterBuffer="another"
+        />
+      )
 
       expect(screen.queryByText('test-macro')).not.toBeInTheDocument()
       expect(screen.getByText('another-test')).toBeInTheDocument()
     })
 
     test('handles rapid visibility toggles', () => {
-      const { rerender } = render(<MacroSuggestions {...defaultProps} isVisible={true} />)
+      const { rerender } = render(
+        <MacroSuggestions
+          {...defaultProps}
+          isVisible={true}
+        />
+      )
 
       expect(screen.getByText('test-macro')).toBeInTheDocument()
 
-      rerender(<MacroSuggestions {...defaultProps} isVisible={false} />)
-      rerender(<MacroSuggestions {...defaultProps} isVisible={true} />)
+      rerender(
+        <MacroSuggestions
+          {...defaultProps}
+          isVisible={false}
+        />
+      )
+      rerender(
+        <MacroSuggestions
+          {...defaultProps}
+          isVisible={true}
+        />
+      )
 
       expect(screen.getByText('test-macro')).toBeInTheDocument()
     })
@@ -355,13 +441,21 @@ describe('MacroSuggestions', () => {
   describe('Mode Switching', () => {
     test('switches from filter to showAll mode correctly', () => {
       const { rerender } = render(
-        <MacroSuggestions {...defaultProps} mode="filter" filterBuffer="test" />
+        <MacroSuggestions
+          {...defaultProps}
+          mode="filter"
+          filterBuffer="test"
+        />
       )
 
       expect(screen.queryByText('different')).not.toBeInTheDocument()
 
       rerender(
-        <MacroSuggestions {...defaultProps} mode="showAll" filterBuffer="" />
+        <MacroSuggestions
+          {...defaultProps}
+          mode="showAll"
+          filterBuffer=""
+        />
       )
 
       expect(screen.getByText('different')).toBeInTheDocument()
@@ -369,13 +463,21 @@ describe('MacroSuggestions', () => {
 
     test('switches from showAll to filter mode correctly', () => {
       const { rerender } = render(
-        <MacroSuggestions {...defaultProps} mode="showAll" filterBuffer="" />
+        <MacroSuggestions
+          {...defaultProps}
+          mode="showAll"
+          filterBuffer=""
+        />
       )
 
       expect(screen.getByText('different')).toBeInTheDocument()
 
       rerender(
-        <MacroSuggestions {...defaultProps} mode="filter" filterBuffer="test" />
+        <MacroSuggestions
+          {...defaultProps}
+          mode="filter"
+          filterBuffer="test"
+        />
       )
 
       expect(screen.queryByText('different')).not.toBeInTheDocument()
@@ -383,31 +485,55 @@ describe('MacroSuggestions', () => {
   })
 })
 
-
 // The overlay must not take focus in showAll -- the user is still typing into the host
 // page's field -- and aria-activedescendant cannot help, because it is an IDREF and the
 // overlay renders behind a shadow boundary. A live region carries text instead.
 describe('MacroSuggestions announcements', () => {
-  const announced = () =>
-    document.querySelector('[data-component="monky-announcer"]')?.textContent
+  const announced = () => document.querySelector('[data-component="monky-announcer"]')?.textContent
 
-  beforeEach(() => { removeAnnouncer() })
+  beforeEach(() => {
+    removeAnnouncer()
+  })
 
   test('announces the active row in showAll, where nothing has focus', () => {
-    render(<MacroSuggestions {...defaultProps} mode="showAll" filterBuffer="" />)
+    render(
+      <MacroSuggestions
+        {...defaultProps}
+        mode="showAll"
+        filterBuffer=""
+      />
+    )
     // command, text, and the position in the list -- what a sighted user reads off the row.
     expect(announced()).toBe('test-macro, This is a test macro, 1 of 3')
   })
 
   test('stays silent in filter mode, where the focused button announces itself', () => {
-    render(<MacroSuggestions {...defaultProps} mode="filter" />)
+    render(
+      <MacroSuggestions
+        {...defaultProps}
+        mode="filter"
+      />
+    )
     expect(announced()).toBe('')
   })
 
   test('clears when the overlay is hidden, so reopening speaks again', () => {
-    const { rerender } = render(<MacroSuggestions {...defaultProps} mode="showAll" filterBuffer="" />)
+    const { rerender } = render(
+      <MacroSuggestions
+        {...defaultProps}
+        mode="showAll"
+        filterBuffer=""
+      />
+    )
     expect(announced()).not.toBe('')
-    rerender(<MacroSuggestions {...defaultProps} mode="showAll" filterBuffer="" isVisible={false} />)
+    rerender(
+      <MacroSuggestions
+        {...defaultProps}
+        mode="showAll"
+        filterBuffer=""
+        isVisible={false}
+      />
+    )
     expect(announced()).toBe('')
   })
 })

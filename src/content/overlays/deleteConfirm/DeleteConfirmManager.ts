@@ -30,22 +30,26 @@ export function createDeleteConfirmManager() {
     renderer.initialize()
     const shadowRoot = renderer.getShadowRoot()
     ensureAppFontFace()
-    styleInjector = createStyleInjector(
-      'macro-delete-confirm-styles',
-      DELETE_CONFIRM_BUNDLE,
-      shadowRoot
-    )
+    styleInjector = createStyleInjector('macro-delete-confirm-styles', DELETE_CONFIRM_BUNDLE, shadowRoot)
     styleInjector.inject()
   }
 
-  const renderPopup = (macro: Macro, position: { x: number; y: number }, placement: 'top' | 'bottom'): void => {
+  const renderPopup = (
+    macro: Macro,
+    position: { x: number; y: number },
+    placement: 'top' | 'bottom'
+  ): void => {
     renderer.render(
       createElement(DeleteConfirmPopup, {
         macro,
         position,
         placement,
         isVisible: true,
-        onConfirm: () => { const m = pending; hide(); if (onConfirm && m) onConfirm(m) },
+        onConfirm: () => {
+          const m = pending
+          hide()
+          if (onConfirm && m) onConfirm(m)
+        },
         onCancel: hide,
       })
     )
@@ -85,9 +89,15 @@ export function createDeleteConfirmManager() {
     focusManager.restoreFocus()
   }
 
-  const setOnConfirm = (cb: (macro: Macro) => void): void => { onConfirm = cb }
+  const setOnConfirm = (cb: (macro: Macro) => void): void => {
+    onConfirm = cb
+  }
   const isVisible = (): boolean => visible
-  const destroy = (): void => { hide(); renderer.destroy(); styleInjector?.remove() }
+  const destroy = (): void => {
+    hide()
+    renderer.destroy()
+    styleInjector?.remove()
+  }
 
   initialize()
 

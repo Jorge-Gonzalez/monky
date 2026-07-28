@@ -24,8 +24,11 @@ export async function apiFetch(path: string, opts: RequestInit = {}): Promise<Re
     // Cannot create a Response with status 0.
     // Return a custom object that mimics a failed response for network errors.
     return {
-      ok: false, status: 0, statusText: 'NetworkError',
-      json: () => Promise.resolve({}), text: () => Promise.resolve(''),
+      ok: false,
+      status: 0,
+      statusText: 'NetworkError',
+      json: () => Promise.resolve({}),
+      text: () => Promise.resolve(''),
     } as Response
   }
   if (res.status !== 401) return res
@@ -33,10 +36,10 @@ export async function apiFetch(path: string, opts: RequestInit = {}): Promise<Re
   const r = await fetch(`${base}/auth/refresh`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refresh })
+    body: JSON.stringify({ refresh }),
   })
   if (!r.ok) return res
-  const data = await r.json() as RefreshResponse
+  const data = (await r.json()) as RefreshResponse
   if (!data.success) return res
   await setTokens({ access: data.access, refresh: data.refresh })
   const headers2 = new Headers(opts.headers ?? {})

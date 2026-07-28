@@ -36,16 +36,16 @@ export function useCommandSuggestions(
   command: string,
   enabled: boolean,
   onLoad: (macro: Macro) => void,
-  onDelete: (macro: Macro) => void,
+  onDelete: (macro: Macro) => void
 ) {
-  const macros = useMacroStore(s => s.macros)
+  const macros = useMacroStore((s) => s.macros)
   const containerRef = useRef<HTMLDivElement>(null)
   const [state, setState] = useState<SuggestionsState>({ layer: 'field' })
 
   const suggestions = useMemo(() => {
     if (!enabled || !command.trim()) return []
     const q = command.toLowerCase()
-    return macros.filter(m => m.command.toLowerCase().includes(q)).slice(0, MAX_SUGGESTIONS)
+    return macros.filter((m) => m.command.toLowerCase().includes(q)).slice(0, MAX_SUGGESTIONS)
   }, [macros, command, enabled])
 
   const visible = state.layer !== 'field' && suggestions.length > 0
@@ -57,7 +57,7 @@ export function useCommandSuggestions(
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
-    const onFocusIn = () => setState(s => (s.layer === 'field' ? { layer: 'list', active: NONE } : s))
+    const onFocusIn = () => setState((s) => (s.layer === 'field' ? { layer: 'list', active: NONE } : s))
     const onFocusOut = (e: FocusEvent) => {
       const next = e.relatedTarget as Node | null
       if (next && container.contains(next)) return
@@ -80,29 +80,45 @@ export function useCommandSuggestions(
   }, [command])
 
   const arm = useCallback((macro: Macro) => {
-    setState(s => ({ layer: 'armed', active: s.layer === 'field' ? NONE : s.active, armedId: macro.id }))
+    setState((s) => ({ layer: 'armed', active: s.layer === 'field' ? NONE : s.active, armedId: macro.id }))
   }, [])
 
   const disarm = useCallback(() => {
-    setState(s => (s.layer === 'armed' ? { layer: 'list', active: s.active } : s))
+    setState((s) => (s.layer === 'armed' ? { layer: 'list', active: s.active } : s))
   }, [])
 
-  const confirmDelete = useCallback((macro: Macro) => {
-    onDelete(macro)
-    setState(s => (s.layer === 'armed' ? { layer: 'list', active: NONE } : s))
-  }, [onDelete])
+  const confirmDelete = useCallback(
+    (macro: Macro) => {
+      onDelete(macro)
+      setState((s) => (s.layer === 'armed' ? { layer: 'list', active: NONE } : s))
+    },
+    [onDelete]
+  )
 
-  const select = useCallback((macro: Macro) => {
-    setState({ layer: 'field' })
-    onLoad(macro)
-  }, [onLoad])
+  const select = useCallback(
+    (macro: Macro) => {
+      setState({ layer: 'field' })
+      onLoad(macro)
+    },
+    [onLoad]
+  )
 
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     // Innermost layer first: while a row is armed, Enter and Escape belong to it.
     if (state.layer === 'armed') {
-      const armed = suggestions.find(m => m.id === state.armedId)
-      if (e.key === 'Enter' && armed) { e.preventDefault(); e.stopPropagation(); confirmDelete(armed); return }
-      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); disarm(); return }
+      const armed = suggestions.find((m) => m.id === state.armedId)
+      if (e.key === 'Enter' && armed) {
+        e.preventDefault()
+        e.stopPropagation()
+        confirmDelete(armed)
+        return
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        e.stopPropagation()
+        disarm()
+        return
+      }
     }
 
     if (!visible) return
@@ -136,7 +152,7 @@ export function useCommandSuggestions(
         select(suggestions[active])
         return
       }
-      const exact = suggestions.find(m => m.command.toLowerCase() === command.toLowerCase())
+      const exact = suggestions.find((m) => m.command.toLowerCase() === command.toLowerCase())
       if (exact) {
         e.preventDefault()
         select(exact)

@@ -29,7 +29,6 @@ const press = (key: string, opts: KeyboardEventInit = {}) =>
   fireEvent.keyDown(document, { key, bubbles: true, cancelable: true, ...opts })
 
 describe('DeleteConfirmPopup', () => {
-
   // A screen reader reads what has focus. Nothing here was focused before, so the popup
   // was drawn, operated and dismissed without a word of it being announced.
   describe('announcement contract', () => {

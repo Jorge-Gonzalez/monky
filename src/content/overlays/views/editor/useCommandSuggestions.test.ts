@@ -4,11 +4,11 @@ import { describe, it, expect, vi } from 'vitest'
 import { useCommandSuggestions } from './useCommandSuggestions'
 
 const macros = [
-  { id: 1, command: '/sig',  text: 'My signature' },
+  { id: 1, command: '/sig', text: 'My signature' },
   { id: 2, command: '/silk', text: 'Silk' },
   { id: 3, command: '/sigh', text: 'Ugh' },
   { id: 4, command: '/slow', text: 'Slow' },
-  { id: 5, command: '/br',   text: 'Be right back' },
+  { id: 5, command: '/br', text: 'Be right back' },
   { id: 6, command: '/snap', text: 'Snap' },
 ] as any
 

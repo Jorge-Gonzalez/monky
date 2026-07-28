@@ -32,8 +32,9 @@ let port: ReturnType<typeof io>
 const props = { onClose: vi.fn(), onViewChange: vi.fn(), onNavigateToEditor: vi.fn() }
 
 const rowLabelled = (label: string) =>
-  [...document.querySelectorAll('[data-component="settings-row"]')]
-    .find(row => row.querySelector('[data-component="settings-row-label"]')?.textContent === label)!
+  [...document.querySelectorAll('[data-component="settings-row"]')].find(
+    (row) => row.querySelector('[data-component="settings-row-label"]')?.textContent === label
+  )!
 
 describe('SettingsView', () => {
   beforeEach(() => {
@@ -48,8 +49,9 @@ describe('SettingsView', () => {
   describe('layout', () => {
     it('renders the three sections, each with its label', () => {
       render(<SettingsView {...props} />)
-      const labels = [...document.querySelectorAll('[data-component="settings-section-label"]')]
-        .map(n => n.textContent)
+      const labels = [...document.querySelectorAll('[data-component="settings-section-label"]')].map(
+        (n) => n.textContent
+      )
       expect(labels).toEqual([
         'settings.sections.general',
         'settings.sections.appearance',

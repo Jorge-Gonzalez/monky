@@ -52,8 +52,7 @@ describe('domBackend', () => {
     })
 
     it('returns empty text for null element', () => {
-      expect(domBackend.reconstructionSource(null, { start: 0, end: 0 }))
-        .toEqual({ text: '', cursorPos: 0 })
+      expect(domBackend.reconstructionSource(null, { start: 0, end: 0 })).toEqual({ text: '', cursorPos: 0 })
     })
   })
 
@@ -84,7 +83,7 @@ describe('domBackend', () => {
         sel: { start: 7, end: 7 },
         textContent: 'hi /sig',
       })
-      expect(r!.start).toBe(3)        // points at "/", space at 2 survives
+      expect(r!.start).toBe(3) // points at "/", space at 2 survives
       expect(r!.end).toBe(7)
     })
 

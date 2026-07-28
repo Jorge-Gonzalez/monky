@@ -1,5 +1,4 @@
 export function createStyleInjector(styleId: string, styles: string, shadowRoot?: ShadowRoot | null) {
-
   const inject = (): void => {
     const targetRoot = shadowRoot || document
 

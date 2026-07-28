@@ -1,10 +1,17 @@
-import type { RefObject} from 'react'
+import type { RefObject } from 'react'
 import { useEffect, useRef } from 'react'
 import type { EditorFormatState, BlockType } from './types'
 import {
-  toggleBold, toggleItalic, toggleUnderline, toggleStrikethrough,
-  toggleInlineCode, toggleBulletList, toggleOrderedList, setBlockType,
-  undo, redo,
+  toggleBold,
+  toggleItalic,
+  toggleUnderline,
+  toggleStrikethrough,
+  toggleInlineCode,
+  toggleBulletList,
+  toggleOrderedList,
+  setBlockType,
+  undo,
+  redo,
 } from './editorCommands'
 
 type MarkdownTrigger = {
@@ -68,19 +75,25 @@ function deleteTriggerText(editorEl: HTMLElement) {
     sel.removeAllRanges()
     sel.addRange(range)
     document.execCommand('delete')
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
 }
 
 export function useEditorShortcuts(
   editorRef: RefObject<HTMLDivElement>,
   formatState: EditorFormatState,
-  onLinkRequest: () => void,
+  onLinkRequest: () => void
 ) {
   // Use refs so the keydown listener never needs to be re-registered
   const stateRef = useRef(formatState)
   const linkRequestRef = useRef(onLinkRequest)
-  useEffect(() => { stateRef.current = formatState }, [formatState])
-  useEffect(() => { linkRequestRef.current = onLinkRequest }, [onLinkRequest])
+  useEffect(() => {
+    stateRef.current = formatState
+  }, [formatState])
+  useEffect(() => {
+    linkRequestRef.current = onLinkRequest
+  }, [onLinkRequest])
 
   useEffect(() => {
     const el = editorRef.current
@@ -91,17 +104,57 @@ export function useEditorShortcuts(
       const { blockType } = stateRef.current
 
       if (ctrl && !e.altKey) {
-        if (e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); return }
-        if (e.key === 'y' || (e.key === 'z' && e.shiftKey)) { e.preventDefault(); redo(); return }
-        if (e.key === 'b') { e.preventDefault(); toggleBold(); return }
-        if (e.key === 'i') { e.preventDefault(); toggleItalic(); return }
-        if (e.key === 'u') { e.preventDefault(); toggleUnderline(); return }
-        if (e.key === 'e') { e.preventDefault(); toggleInlineCode(); return }
-        if (e.key === 'k') { e.preventDefault(); linkRequestRef.current(); return }
+        if (e.key === 'z' && !e.shiftKey) {
+          e.preventDefault()
+          undo()
+          return
+        }
+        if (e.key === 'y' || (e.key === 'z' && e.shiftKey)) {
+          e.preventDefault()
+          redo()
+          return
+        }
+        if (e.key === 'b') {
+          e.preventDefault()
+          toggleBold()
+          return
+        }
+        if (e.key === 'i') {
+          e.preventDefault()
+          toggleItalic()
+          return
+        }
+        if (e.key === 'u') {
+          e.preventDefault()
+          toggleUnderline()
+          return
+        }
+        if (e.key === 'e') {
+          e.preventDefault()
+          toggleInlineCode()
+          return
+        }
+        if (e.key === 'k') {
+          e.preventDefault()
+          linkRequestRef.current()
+          return
+        }
         if (e.shiftKey) {
-          if (e.key === 'X' || e.key === 'x') { e.preventDefault(); toggleStrikethrough(); return }
-          if (e.key === '8' || e.key === '*') { e.preventDefault(); toggleBulletList(); return }
-          if (e.key === '7' || e.key === '&') { e.preventDefault(); toggleOrderedList(); return }
+          if (e.key === 'X' || e.key === 'x') {
+            e.preventDefault()
+            toggleStrikethrough()
+            return
+          }
+          if (e.key === '8' || e.key === '*') {
+            e.preventDefault()
+            toggleBulletList()
+            return
+          }
+          if (e.key === '7' || e.key === '&') {
+            e.preventDefault()
+            toggleOrderedList()
+            return
+          }
           if (e.key === '9' || e.key === '(') {
             e.preventDefault()
             setBlockType(blockType === 'blockquote' ? 'paragraph' : 'blockquote')
@@ -111,16 +164,32 @@ export function useEditorShortcuts(
       }
 
       if (ctrl && e.altKey) {
-        if (e.key === '1') { e.preventDefault(); setBlockType(blockType === 'h1' ? 'paragraph' : 'h1'); return }
-        if (e.key === '2') { e.preventDefault(); setBlockType(blockType === 'h2' ? 'paragraph' : 'h2'); return }
-        if (e.key === '3') { e.preventDefault(); setBlockType(blockType === 'h3' ? 'paragraph' : 'h3'); return }
-        if (e.key === '6') { e.preventDefault(); setBlockType(blockType === 'pre' ? 'paragraph' : 'pre'); return }
+        if (e.key === '1') {
+          e.preventDefault()
+          setBlockType(blockType === 'h1' ? 'paragraph' : 'h1')
+          return
+        }
+        if (e.key === '2') {
+          e.preventDefault()
+          setBlockType(blockType === 'h2' ? 'paragraph' : 'h2')
+          return
+        }
+        if (e.key === '3') {
+          e.preventDefault()
+          setBlockType(blockType === 'h3' ? 'paragraph' : 'h3')
+          return
+        }
+        if (e.key === '6') {
+          e.preventDefault()
+          setBlockType(blockType === 'pre' ? 'paragraph' : 'pre')
+          return
+        }
       }
 
       // Markdown triggers on Space
       if (e.key === ' ' && !ctrl && !e.altKey && !e.shiftKey) {
         const text = getLineTextBeforeCursor(el)
-        const trigger = MARKDOWN_TRIGGERS.find(t => t.pattern.test(text))
+        const trigger = MARKDOWN_TRIGGERS.find((t) => t.pattern.test(text))
         if (trigger) {
           e.preventDefault()
           deleteTriggerText(el)

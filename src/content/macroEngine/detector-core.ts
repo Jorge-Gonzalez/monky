@@ -14,12 +14,12 @@ export function updateStateOnKey(
   macros: Macro[],
   prefixes: string[] = defaultMacroConfig.prefixes
 ): CoreState {
-  const matches = (p: string) => macros.some(m => m.command.startsWith(p))
+  const matches = (p: string) => macros.some((m) => m.command.startsWith(p))
 
-  if (key === "Backspace") {
-    if (!state.buffer) return { active: false, buffer: "" }
+  if (key === 'Backspace') {
+    if (!state.buffer) return { active: false, buffer: '' }
     const buffer = state.buffer.slice(0, -1)
-    if (!buffer) return { active: false, buffer: "" }
+    if (!buffer) return { active: false, buffer: '' }
 
     const isActive = matches(buffer) || prefixes.includes(buffer)
     return { active: isActive, buffer }
@@ -29,20 +29,20 @@ export function updateStateOnKey(
     // If there is a buffer, append to it. Otherwise, start a new buffer with the key.
     const newBuffer = state.buffer ? state.buffer + key : key
     // If we are starting a new buffer, it must begin with a valid prefix.
-    if (!state.buffer && !prefixes.includes(key)) return { active: false, buffer: "" }
+    if (!state.buffer && !prefixes.includes(key)) return { active: false, buffer: '' }
     const isActive = matches(newBuffer) || prefixes.includes(newBuffer)
     return { active: isActive, buffer: newBuffer }
   }
 
   // Other keys cancel
-  return { active: false, buffer: "" }
+  return { active: false, buffer: '' }
 }
 
 // Checks if the current buffer exactly matches any macro command
 export function isExact(buffer: string, macros: Macro[]) {
-  return !!macros.find(macro => macro.command === buffer)
+  return !!macros.find((macro) => macro.command === buffer)
 }
 
 export function getExact(buffer: string, macros: Macro[]): Macro | null {
-  return macros.find(m => m.command === buffer) || null
+  return macros.find((m) => m.command === buffer) || null
 }

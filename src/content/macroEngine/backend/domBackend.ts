@@ -1,9 +1,5 @@
 import type { EditableEl, Macro } from '../../../types'
-import type {
-  EditableBackend,
-  ReplacementRange,
-  CommitRangeArgs,
-} from './editableBackend'
+import type { EditableBackend, ReplacementRange, CommitRangeArgs } from './editableBackend'
 import { createPlaceholderSession } from '../placeholderSession'
 
 /**

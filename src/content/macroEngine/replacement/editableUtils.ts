@@ -26,10 +26,7 @@ export function getActiveEditable(target: EventTarget | null): EditableEl {
     // Cross-realm: events from inside the iframe (different JS realm). The link has to be
     // read structurally for the same reason instanceof fails -- the constructors differ.
     const node = target as { ownerDocument?: Document | null }
-    if (
-      typeof node.ownerDocument !== 'undefined' &&
-      node.ownerDocument !== document
-    ) {
+    if (typeof node.ownerDocument !== 'undefined' && node.ownerDocument !== document) {
       return GOOGLE_DOCS_SENTINEL
     }
     // Same-realm: document.activeElement is the iframe element itself
@@ -39,7 +36,7 @@ export function getActiveEditable(target: EventTarget | null): EditableEl {
   }
 
   if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
-    if (target.type === "password") return null
+    if (target.type === 'password') return null
     return target
   }
 
@@ -55,7 +52,7 @@ export function getActiveEditable(target: EventTarget | null): EditableEl {
   }
 
   while (element) {
-    if (element.isContentEditable || element.contentEditable === "true") {
+    if (element.isContentEditable || element.contentEditable === 'true') {
       return element
     }
     element = element.parentElement
@@ -83,12 +80,15 @@ export function getTextContent(element: EditableEl): string {
  * Given a root node and a character offset, finds the text node and offset within
  * that text node that corresponds to the character offset.
  */
-export function findTextNodeForOffset(root: Node, offset: number): { node: Text; offsetInNode: number } | null {
+export function findTextNodeForOffset(
+  root: Node,
+  offset: number
+): { node: Text; offsetInNode: number } | null {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null)
   let currentNode: Node | null = walker.nextNode()
   let accumulatedOffset = 0
   while (currentNode) {
-    const nodeLength = (currentNode.textContent ?? "").length
+    const nodeLength = (currentNode.textContent ?? '').length
     if (accumulatedOffset + nodeLength >= offset) {
       const offsetInNode = offset - accumulatedOffset
       // If we are at the very end of a text node, and there's a next text node,
@@ -127,7 +127,7 @@ export function getSelection(el: EditableEl): { start: number; end: number } | n
   if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
     return { start: el.selectionStart ?? 0, end: el.selectionEnd ?? 0 }
   }
-  if (el instanceof HTMLElement && (el.isContentEditable || el.contentEditable === "true")) {
+  if (el instanceof HTMLElement && (el.isContentEditable || el.contentEditable === 'true')) {
     const sel = window.getSelection()
     if (!sel || sel.rangeCount === 0) return null
     const range = sel.getRangeAt(0)

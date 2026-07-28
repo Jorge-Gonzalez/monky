@@ -31,7 +31,7 @@ vi.mock('../../store/useMacroStore', () => ({
 const PREFIXES = ['/']
 
 const notaMacro = { id: '1', command: '/nota', text: 'Hello nota', contentType: 'text/plain' as const }
-const sigMacro  = { id: '2', command: '/sig',  text: 'Jorge',      contentType: 'text/plain' as const }
+const sigMacro = { id: '2', command: '/sig', text: 'Jorge', contentType: 'text/plain' as const }
 const mockDeleteMacro = vi.fn()
 
 beforeEach(() => {
@@ -46,7 +46,7 @@ beforeEach(() => {
 
 describe('SYSTEM_MACROS', () => {
   it('contains :new, :edit, :delete, :settings, /?', () => {
-    const commands = SYSTEM_MACROS.map(m => m.command)
+    const commands = SYSTEM_MACROS.map((m) => m.command)
     expect(commands).toContain(':new')
     expect(commands).toContain(':edit')
     expect(commands).toContain(':delete')
@@ -55,13 +55,13 @@ describe('SYSTEM_MACROS', () => {
   })
 
   it(':edit and :delete are parametric', () => {
-    expect(SYSTEM_MACROS.find(m => m.command === ':edit')?.isParametric).toBe(true)
-    expect(SYSTEM_MACROS.find(m => m.command === ':delete')?.isParametric).toBe(true)
+    expect(SYSTEM_MACROS.find((m) => m.command === ':edit')?.isParametric).toBe(true)
+    expect(SYSTEM_MACROS.find((m) => m.command === ':delete')?.isParametric).toBe(true)
   })
 
   it(':new, :settings and /? are not parametric', () => {
     for (const cmd of [':new', ':settings', '/?']) {
-      expect(SYSTEM_MACROS.find(m => m.command === cmd)?.isParametric).toBeFalsy()
+      expect(SYSTEM_MACROS.find((m) => m.command === cmd)?.isParametric).toBeFalsy()
     }
   })
 
@@ -91,13 +91,13 @@ describe('isSystemMacro', () => {
 
 describe('isParametricSystemMacro', () => {
   it('returns true for :edit and :delete', () => {
-    expect(isParametricSystemMacro(SYSTEM_MACROS.find(m => m.command === ':edit')!)).toBe(true)
-    expect(isParametricSystemMacro(SYSTEM_MACROS.find(m => m.command === ':delete')!)).toBe(true)
+    expect(isParametricSystemMacro(SYSTEM_MACROS.find((m) => m.command === ':edit')!)).toBe(true)
+    expect(isParametricSystemMacro(SYSTEM_MACROS.find((m) => m.command === ':delete')!)).toBe(true)
   })
 
   it('returns false for non-parametric system macros', () => {
     for (const cmd of [':new', ':settings', '/?']) {
-      expect(isParametricSystemMacro(SYSTEM_MACROS.find(m => m.command === cmd)!)).toBe(false)
+      expect(isParametricSystemMacro(SYSTEM_MACROS.find((m) => m.command === cmd)!)).toBe(false)
     }
   })
 })
@@ -152,29 +152,29 @@ describe('parseParametricBuffer', () => {
 
 describe('handleSystemMacro', () => {
   it('opens editor for :new', () => {
-    handleSystemMacro(SYSTEM_MACROS.find(m => m.command === ':new')!)
+    handleSystemMacro(SYSTEM_MACROS.find((m) => m.command === ':new')!)
     expect(modalCoordinator.show).toHaveBeenCalledWith('editor')
     expect(modalCoordinator.navigateToEditor).toHaveBeenCalledWith(undefined)
   })
 
   it('opens settings for :settings', () => {
-    handleSystemMacro(SYSTEM_MACROS.find(m => m.command === ':settings')!)
+    handleSystemMacro(SYSTEM_MACROS.find((m) => m.command === ':settings')!)
     expect(modalCoordinator.show).toHaveBeenCalledWith('settings')
   })
 
   it('opens search overlay for /?', () => {
-    handleSystemMacro(SYSTEM_MACROS.find(m => m.command === '/?')!)
+    handleSystemMacro(SYSTEM_MACROS.find((m) => m.command === '/?')!)
     expect(modalCoordinator.show).toHaveBeenCalledWith('search')
   })
 
   it('returns false and does nothing for :edit (parametric — needs a param)', () => {
-    const result = handleSystemMacro(SYSTEM_MACROS.find(m => m.command === ':edit')!)
+    const result = handleSystemMacro(SYSTEM_MACROS.find((m) => m.command === ':edit')!)
     expect(result).toBe(false)
     expect(modalCoordinator.show).not.toHaveBeenCalled()
   })
 
   it('returns false and does nothing for :delete (parametric — needs a param)', () => {
-    const result = handleSystemMacro(SYSTEM_MACROS.find(m => m.command === ':delete')!)
+    const result = handleSystemMacro(SYSTEM_MACROS.find((m) => m.command === ':delete')!)
     expect(result).toBe(false)
     expect(modalCoordinator.show).not.toHaveBeenCalled()
   })
@@ -184,7 +184,7 @@ describe('handleSystemMacro', () => {
     expect(modalCoordinator.show).not.toHaveBeenCalled()
   })
   it('navigates before showing for :new (so the editor mounts once, preserving focus)', () => {
-    handleSystemMacro(SYSTEM_MACROS.find(m => m.command === ':new')!)
+    handleSystemMacro(SYSTEM_MACROS.find((m) => m.command === ':new')!)
     const navOrder = (modalCoordinator.navigateToEditor as any).mock.invocationCallOrder[0]
     const showOrder = (modalCoordinator.show as any).mock.invocationCallOrder[0]
     expect(navOrder).toBeLessThan(showOrder)

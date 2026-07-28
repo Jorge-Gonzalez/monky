@@ -1,4 +1,3 @@
-
 export type ModalCommandId = 'new' | 'edit' | 'delete' | 'settings'
 
 export interface ModalCommand {
@@ -9,17 +8,17 @@ export interface ModalCommand {
 }
 
 export const MODAL_COMMANDS: ModalCommand[] = [
-  { id: 'new',      command: ':new',      description: 'Create a new macro',    isParametric: false },
-  { id: 'edit',     command: ':edit',     description: 'Edit a macro',          isParametric: true  },
-  { id: 'delete',   command: ':delete',   description: 'Delete a macro',        isParametric: true  },
-  { id: 'settings', command: ':settings', description: 'Open settings',         isParametric: false },
+  { id: 'new', command: ':new', description: 'Create a new macro', isParametric: false },
+  { id: 'edit', command: ':edit', description: 'Edit a macro', isParametric: true },
+  { id: 'delete', command: ':delete', description: 'Delete a macro', isParametric: true },
+  { id: 'settings', command: ':settings', description: 'Open settings', isParametric: false },
 ]
 
 export type ParsedModalQuery =
   | { mode: 'search' }
   | { mode: 'discovery'; commands: ModalCommand[] }
-  | { mode: 'instant';   command: ModalCommand }
-  | { mode: 'awaiting';  command: ModalCommand }
+  | { mode: 'instant'; command: ModalCommand }
+  | { mode: 'awaiting'; command: ModalCommand }
   | { mode: 'parametric'; command: ModalCommand; param: string }
 
 export function parseModalQuery(raw: string, prefixes: string[]): ParsedModalQuery {
@@ -29,10 +28,10 @@ export function parseModalQuery(raw: string, prefixes: string[]): ParsedModalQue
     return { mode: 'discovery', commands: MODAL_COMMANDS }
   }
 
-  const cmd = MODAL_COMMANDS.find(c => raw.startsWith(c.command))
+  const cmd = MODAL_COMMANDS.find((c) => raw.startsWith(c.command))
   if (!cmd) {
     // Partial ':' or unknown command — show discovery filtered by what's typed
-    const filtered = MODAL_COMMANDS.filter(c => c.command.startsWith(raw))
+    const filtered = MODAL_COMMANDS.filter((c) => c.command.startsWith(raw))
     return { mode: 'discovery', commands: filtered }
   }
 
@@ -45,7 +44,7 @@ export function parseModalQuery(raw: string, prefixes: string[]): ParsedModalQue
   // Parametric command — needs a macro prefix to follow
   if (!rest) return { mode: 'awaiting', command: cmd }
 
-  if (prefixes.some(p => rest.startsWith(p))) {
+  if (prefixes.some((p) => rest.startsWith(p))) {
     return { mode: 'parametric', command: cmd, param: rest }
   }
 

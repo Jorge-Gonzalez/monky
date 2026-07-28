@@ -34,18 +34,19 @@ describe('ThemeManager component', () => {
     MOCK_MATCH_MEDIA.matches = false
   })
 
-  const mockConfig = (overrides: object) => ({
-    config: { disabledSites: [], prefixes: ['/'], theme: 'light', colorTheme: 'humo', ...overrides }
-  } as any)
+  const mockConfig = (overrides: object) =>
+    ({
+      config: { disabledSites: [], prefixes: ['/'], theme: 'light', colorTheme: 'humo', ...overrides },
+    }) as any
 
   it('should not apply dark class for light theme', () => {
-    mockedUseMacroStore.mockImplementation(selector => selector(mockConfig({ theme: 'light' })) as any)
+    mockedUseMacroStore.mockImplementation((selector) => selector(mockConfig({ theme: 'light' })) as any)
     render(<ThemeManager />)
     expect(document.documentElement.classList.contains('dark')).toBe(false)
   })
 
   it('should apply dark class for dark theme', () => {
-    mockedUseMacroStore.mockImplementation(selector => selector(mockConfig({ theme: 'dark' })) as any)
+    mockedUseMacroStore.mockImplementation((selector) => selector(mockConfig({ theme: 'dark' })) as any)
     render(<ThemeManager />)
     expect(document.documentElement.classList.contains('dark')).toBe(true)
   })
@@ -53,26 +54,26 @@ describe('ThemeManager component', () => {
   describe('system theme', () => {
     it('should use light mode when system preference is light', () => {
       MOCK_MATCH_MEDIA.matches = false
-      mockedUseMacroStore.mockImplementation(selector => selector(mockConfig({ theme: 'system' })) as any)
+      mockedUseMacroStore.mockImplementation((selector) => selector(mockConfig({ theme: 'system' })) as any)
       render(<ThemeManager />)
       expect(document.documentElement.classList.contains('dark')).toBe(false)
     })
 
     it('should use dark mode when system preference is dark', () => {
       MOCK_MATCH_MEDIA.matches = true
-      mockedUseMacroStore.mockImplementation(selector => selector(mockConfig({ theme: 'system' })) as any)
+      mockedUseMacroStore.mockImplementation((selector) => selector(mockConfig({ theme: 'system' })) as any)
       render(<ThemeManager />)
       expect(document.documentElement.classList.contains('dark')).toBe(true)
     })
 
     it('should react to system preference changes', () => {
       MOCK_MATCH_MEDIA.matches = false
-      mockedUseMacroStore.mockImplementation(selector => selector(mockConfig({ theme: 'system' })) as any)
+      mockedUseMacroStore.mockImplementation((selector) => selector(mockConfig({ theme: 'system' })) as any)
       render(<ThemeManager />)
       expect(document.documentElement.classList.contains('dark')).toBe(false)
 
       const changeHandler = MOCK_MATCH_MEDIA.addEventListener.mock.calls.find(
-        (call) => call[0] === 'change',
+        (call) => call[0] === 'change'
       )?.[1]
       expect(changeHandler).toBeDefined()
 
@@ -87,8 +88,8 @@ describe('ThemeManager component', () => {
   describe('color theme CSS variables', () => {
     it('applies the correct accent color for each color theme in light mode', () => {
       for (const colorTheme of ['humo', 'acera', 'mar'] as const) {
-        mockedUseMacroStore.mockImplementation(selector =>
-          selector(mockConfig({ theme: 'light', colorTheme })) as any
+        mockedUseMacroStore.mockImplementation(
+          (selector) => selector(mockConfig({ theme: 'light', colorTheme })) as any
         )
         render(<ThemeManager />)
         const expected = themeSocketVars(colorTheme, false)['--accent']
@@ -98,8 +99,8 @@ describe('ThemeManager component', () => {
 
     it('applies the correct accent color for each color theme in dark mode', () => {
       for (const colorTheme of ['humo', 'acera', 'mar'] as const) {
-        mockedUseMacroStore.mockImplementation(selector =>
-          selector(mockConfig({ theme: 'dark', colorTheme })) as any
+        mockedUseMacroStore.mockImplementation(
+          (selector) => selector(mockConfig({ theme: 'dark', colorTheme })) as any
         )
         render(<ThemeManager />)
         const expected = themeSocketVars(colorTheme, true)['--accent']
@@ -109,8 +110,9 @@ describe('ThemeManager component', () => {
 
     it('defaults to humo when colorTheme is not set', () => {
       // Deliberately omit colorTheme to exercise ThemeManager's runtime fallback.
-      mockedUseMacroStore.mockImplementation(selector =>
-        selector({ config: { disabledSites: [], prefixes: ['/'], theme: 'light' } } as any) as any
+      mockedUseMacroStore.mockImplementation(
+        (selector) =>
+          selector({ config: { disabledSites: [], prefixes: ['/'], theme: 'light' } } as any) as any
       )
       render(<ThemeManager />)
       const expected = themeSocketVars('humo', false)['--accent']

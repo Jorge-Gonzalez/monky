@@ -27,13 +27,17 @@ function layer(name: string, css: string): string {
 // sole grammar source now that the temporary legacy sheet is retired (U8); modal,
 // suggestion, and confirmation bundles assemble identically around it.
 export function composeShadowBundle(options: ShadowBundleOptions = {}): string {
-  return [
-    STYLE_LAYER_ORDER,
-    layer('reset', BASE_SHADOW_STYLE_INPUTS.reset),
-    layer('theme', BASE_SHADOW_STYLE_INPUTS.theme),
-    layer('grammar', options.generatedGrammar ?? GENERATED_GRAMMAR_STYLES),
-    layer('fragments', BASE_SHADOW_STYLE_INPUTS.fragments),
-    layer('components', (options.componentStyles ?? []).join('\n')),
-    layer('overrides', options.overrides ?? ''),
-  ].filter(Boolean).join('\n\n') + '\n'
+  return (
+    [
+      STYLE_LAYER_ORDER,
+      layer('reset', BASE_SHADOW_STYLE_INPUTS.reset),
+      layer('theme', BASE_SHADOW_STYLE_INPUTS.theme),
+      layer('grammar', options.generatedGrammar ?? GENERATED_GRAMMAR_STYLES),
+      layer('fragments', BASE_SHADOW_STYLE_INPUTS.fragments),
+      layer('components', (options.componentStyles ?? []).join('\n')),
+      layer('overrides', options.overrides ?? ''),
+    ]
+      .filter(Boolean)
+      .join('\n\n') + '\n'
+  )
 }

@@ -3,7 +3,10 @@ import { serializeMacros, parseMacroImport, mergeImport } from './macroIO'
 import type { Macro } from '../types'
 
 const plain = (command: string, text: string, id: string | number = '1'): Macro => ({
-  id, command, text, contentType: 'text/plain',
+  id,
+  command,
+  text,
+  contentType: 'text/plain',
 })
 
 // ─── serializeMacros ─────────────────────────────────────────────────────────
@@ -26,10 +29,7 @@ describe('serializeMacros', () => {
   })
 
   it('excludes system macros entirely', () => {
-    const macros: Macro[] = [
-      plain('/sig', 'Jorge'),
-      { ...plain(':new', ''), isSystemMacro: true },
-    ]
+    const macros: Macro[] = [plain('/sig', 'Jorge'), { ...plain(':new', ''), isSystemMacro: true }]
     const json = JSON.parse(serializeMacros(macros))
     expect(json).toHaveLength(1)
     expect(json[0].command).toBe('/sig')
@@ -92,22 +92,14 @@ describe('parseMacroImport', () => {
 describe('mergeImport', () => {
   it('adds macros not present in existing set', () => {
     const add = vi.fn(() => ({ success: true }))
-    const { added } = mergeImport(
-      [{ command: '/sig', text: 'Jorge' }],
-      new Set(),
-      add
-    )
+    const { added } = mergeImport([{ command: '/sig', text: 'Jorge' }], new Set(), add)
     expect(add).toHaveBeenCalledTimes(1)
     expect(added).toBe(1)
   })
 
   it('skips macros whose command already exists', () => {
     const add = vi.fn(() => ({ success: true }))
-    const { added, skipped } = mergeImport(
-      [{ command: '/sig', text: 'Jorge' }],
-      new Set(['/sig']),
-      add
-    )
+    const { added, skipped } = mergeImport([{ command: '/sig', text: 'Jorge' }], new Set(['/sig']), add)
     expect(add).not.toHaveBeenCalled()
     expect(added).toBe(0)
     expect(skipped).toBe(1)
@@ -115,18 +107,17 @@ describe('mergeImport', () => {
 
   it('counts add failures as skipped', () => {
     const add = vi.fn(() => ({ success: false }))
-    const { added, skipped } = mergeImport(
-      [{ command: '/sig', text: 'Jorge' }],
-      new Set(),
-      add
-    )
+    const { added, skipped } = mergeImport([{ command: '/sig', text: 'Jorge' }], new Set(), add)
     expect(added).toBe(0)
     expect(skipped).toBe(1)
   })
 
   it('assigns a fresh id to each imported macro', () => {
     let captured: Macro | undefined
-    const add = vi.fn((m: Macro) => { captured = m; return { success: true } })
+    const add = vi.fn((m: Macro) => {
+      captured = m
+      return { success: true }
+    })
     mergeImport([{ command: '/sig', text: 'Jorge' }], new Set(), add)
     expect(captured?.id).toBeDefined()
     expect(typeof captured?.id).toBe('string')
@@ -142,7 +133,11 @@ describe('mergeImport', () => {
   it('correctly tallies mixed added and skipped', () => {
     const add = vi.fn(() => ({ success: true }))
     const result = mergeImport(
-      [{ command: '/a', text: '1' }, { command: '/b', text: '2' }, { command: '/c', text: '3' }],
+      [
+        { command: '/a', text: '1' },
+        { command: '/b', text: '2' },
+        { command: '/c', text: '3' },
+      ],
       new Set(['/b']),
       add
     )

@@ -1,6 +1,6 @@
 import type { RefObject } from 'react'
 import { useState, useEffect } from 'react'
-import type { BlockType, EditorFormatState} from './types'
+import type { BlockType, EditorFormatState } from './types'
 import { DEFAULT_FORMAT_STATE } from './types'
 
 function getBlockType(): BlockType {
