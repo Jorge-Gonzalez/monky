@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/preact'
 import '@testing-library/jest-dom'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { MacroSuggestions } from './MacroSuggestions'
+import { removeAnnouncer } from '../../services/announcer'
 import type { Macro } from '../../../../types'
 
 // Mock the hooks used in the component
@@ -379,5 +380,34 @@ describe('MacroSuggestions', () => {
 
       expect(screen.queryByText('different')).not.toBeInTheDocument()
     })
+  })
+})
+
+
+// The overlay must not take focus in showAll -- the user is still typing into the host
+// page's field -- and aria-activedescendant cannot help, because it is an IDREF and the
+// overlay renders behind a shadow boundary. A live region carries text instead.
+describe('MacroSuggestions announcements', () => {
+  const announced = () =>
+    document.querySelector('[data-component="monky-announcer"]')?.textContent
+
+  beforeEach(() => { removeAnnouncer() })
+
+  test('announces the active row in showAll, where nothing has focus', () => {
+    render(<MacroSuggestions {...defaultProps} mode="showAll" filterBuffer="" />)
+    // command, text, and the position in the list -- what a sighted user reads off the row.
+    expect(announced()).toBe('test-macro, This is a test macro, 1 of 3')
+  })
+
+  test('stays silent in filter mode, where the focused button announces itself', () => {
+    render(<MacroSuggestions {...defaultProps} mode="filter" />)
+    expect(announced()).toBe('')
+  })
+
+  test('clears when the overlay is hidden, so reopening speaks again', () => {
+    const { rerender } = render(<MacroSuggestions {...defaultProps} mode="showAll" filterBuffer="" />)
+    expect(announced()).not.toBe('')
+    rerender(<MacroSuggestions {...defaultProps} mode="showAll" filterBuffer="" isVisible={false} />)
+    expect(announced()).toBe('')
   })
 })

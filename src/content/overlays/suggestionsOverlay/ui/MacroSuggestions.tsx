@@ -6,6 +6,7 @@ import { useAppliedTheme } from '../../../../theme/hooks/useAppliedTheme'
 import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation'
 import { useListNavigation } from '../../hooks/useListNavigation'
 import { Keycap } from '../../../../shared/ui/Keycap'
+import { announce } from '../../services/announcer'
 
 /** Options are addressed by position, so a controller can name the active one by index. */
 export const SUGGESTIONS_OVERLAY_LISTBOX_ID = 'monky-suggestions-overlay'
@@ -145,6 +146,24 @@ export function MacroSuggestions({
       }
     }
   }, [visibleMacros.length, navigation.selectedIndex, isVisible, mode])
+
+  // showAll keeps focus where it was, so nothing announces the highlight moving. filter
+  // mode focuses the option button just above, and a focused button announces itself --
+  // saying it twice would be worse than not saying it.
+  useEffect(() => {
+    if (!isVisible || mode !== 'showAll') {
+      announce('')
+      return
+    }
+    const active = visibleMacros[navigation.selectedIndex]
+    if (!active) return
+    announce(t('macroSuggestions.activeOption', {
+      command: active.command,
+      text: active.text,
+      index: navigation.selectedIndex + 1,
+      total: visibleMacros.length,
+    }))
+  }, [isVisible, mode, navigation.selectedIndex, visibleMacros])
 
   useKeyboardNavigation({
     isActive: isVisible,

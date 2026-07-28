@@ -95,6 +95,7 @@ const translations = {
 
     macroSuggestions: {
       listLabel: 'Matching macros',
+      activeOption: '{{command}}, {{text}}, {{index}} of {{total}}',
       footer: {
         navigate: 'Navigate',
         select: 'Select',
@@ -270,6 +271,7 @@ const translations = {
 
     macroSuggestions: {
       listLabel: 'Macros coincidentes',
+      activeOption: '{{command}}, {{text}}, {{index}} de {{total}}',
       footer: {
         navigate: 'Navegar',
         select: 'Seleccionar',

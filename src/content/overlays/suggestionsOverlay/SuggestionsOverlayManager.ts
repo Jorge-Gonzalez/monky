@@ -4,6 +4,7 @@ import { MacroSuggestions } from './ui/MacroSuggestions'
 import { createReactRenderer } from '../services/reactRenderer'
 import { createStyleInjector } from '../services/styleInjector'
 import { ensureAppFontFace } from '../services/appFont'
+import { removeAnnouncer } from '../services/announcer'
 import { SUGGESTIONS_OVERLAY_BUNDLE } from './SuggestionsOverlayStyles'
 import { getActiveEditable, getSelection } from '../../macroEngine/replacement/editableUtils'
 import { replaceText } from '../../macroEngine/replacement/macroReplacement'
@@ -300,6 +301,7 @@ export function createSuggestionsOverlayManager(macros: Macro[]) {
     hide()
     renderer.destroy()
     styleInjector?.remove()
+    removeAnnouncer()
   }
 
   const setOnMacroSelected = (callback: (macro: Macro, buffer: string, element: EditableEl) => void) => {
