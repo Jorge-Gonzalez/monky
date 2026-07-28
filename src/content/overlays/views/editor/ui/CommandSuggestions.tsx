@@ -90,6 +90,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
               <span aria-hidden="true" className="horizontal rigid gap-xs push align-center">
                 <button
                   type="button"
+                  tabIndex={-1}
                   data-component="editor-suggestions-item-confirm"
                   className="horizontal rigid padding-xs align-center justify-center
                     tween-opacity-ground-ink-quick
@@ -102,6 +103,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
                 </button>
                 <button
                   type="button"
+                  tabIndex={-1}
                   data-component="editor-suggestions-item-cancel"
                   className="horizontal rigid padding-xs align-center justify-center
                     tween-opacity-ground-ink-quick
@@ -116,6 +118,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
             ) : (
               <button
                 type="button"
+                tabIndex={-1}
                 aria-hidden="true"
                 data-component="editor-suggestions-item-delete"
                 className="horizontal rigid padding-xs push align-center justify-center

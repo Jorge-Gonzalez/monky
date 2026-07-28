@@ -44,6 +44,20 @@ describe('CommandSuggestions', () => {
       expect([...listbox.children].every(c => c.getAttribute('role') === 'option')).toBe(true)
     })
 
+    // aria-hidden on a focusable element is the aria-hidden-focus violation: a keyboard
+    // user can land on something that has been removed from the accessibility tree, so the
+    // screen reader goes silent while focus is somewhere real. Hiding a control and
+    // leaving it tab-reachable is worse than either alone.
+    it('leaves nothing focusable inside an aria-hidden subtree', () => {
+      const { container } = setup()
+      fireEvent.mouseDown(trashOf(container.querySelectorAll('[role="option"]')[0]))
+      // closest() rather than a descendant selector: the delete button carries aria-hidden
+      // itself, so `[aria-hidden] button` would not have matched it.
+      const offenders = [...container.querySelectorAll('button, a[href], input, select, textarea')]
+        .filter(el => el.closest('[aria-hidden="true"]') && el.getAttribute('tabindex') !== '-1')
+      expect(offenders.map(el => el.getAttribute('data-component'))).toEqual([])
+    })
+
     it('hides the row controls, which no keyboard or AT path can reach', () => {
       const { container } = setup()
       const rows = container.querySelectorAll('[role="option"]')
