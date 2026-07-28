@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import type { Macro } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
 
@@ -34,9 +33,14 @@ const SUGGESTIONS_LABEL_ID = `${SUGGESTIONS_LISTBOX_ID}-label`
 
 interface CommandSuggestionsProps {
   suggestions: Macro[]
-  selectedIndex: number
+  /** The row the field points at, carried alongside focus rather than holding it. */
+  activeIndex: number
+  /** The row awaiting confirmation, if any. */
+  armedId: Macro['id'] | null
   onSelect: (macro: Macro) => void
-  onDelete: (macro: Macro) => void
+  onArm: (macro: Macro) => void
+  onConfirmDelete: (macro: Macro) => void
+  onDisarm: () => void
 }
 
 /**
@@ -44,16 +48,20 @@ interface CommandSuggestionsProps {
  * Each row can be loaded for editing (select) or deleted via an inline two-step:
  * the trash icon arms the row, then a confirm (check) deletes / cancel (x) backs out.
  *
- * Those buttons are pointer-only by construction — the input's blur closes the dropdown —
- * so they are hidden from the accessibility tree rather than advertised and unreachable.
- * Deleting a suggestion has no keyboard path today; that is a product gap, not a wiring one.
+ * The component holds no state: which row is current and which is armed both belong to
+ * useCommandSuggestions, because Enter and Escape have to dispatch on the innermost of
+ * those layers and the key handler lives there. Every control here has a keyboard
+ * equivalent on the field — Shift+Delete arms, Enter confirms, Escape disarms.
  */
-export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDelete }: CommandSuggestionsProps) {
-  const [confirmingId, setConfirmingId] = useState<Macro['id'] | null>(null)
-
-  // Disarm when the list changes (deleted macro, edited query, dropdown reuse).
-  useEffect(() => { setConfirmingId(null) }, [suggestions])
-
+export function CommandSuggestions({
+  suggestions,
+  activeIndex,
+  armedId,
+  onSelect,
+  onArm,
+  onConfirmDelete,
+  onDisarm,
+}: CommandSuggestionsProps) {
   return (
     <div data-component="editor-suggestions" className="hidden attach-below stretch-inline
       dropdown position-absolute
@@ -66,7 +74,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
           heading above names it through aria-labelledby instead of sitting inside it. */}
       <div id={SUGGESTIONS_LISTBOX_ID} role="listbox" aria-labelledby={SUGGESTIONS_LABEL_ID}>
       {suggestions.map((macro, i) => {
-        const confirming = macro.id === confirmingId
+        const confirming = macro.id === armedId
         return (
           <div
             key={macro.id}
@@ -74,7 +82,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
             role="option"
             data-component="editor-suggestions-item"
             className={`horizontal gap-md padding-block-sm padding-inline-md align-center hidden tween-ground-quick pressable ${confirming ? 'ground-fail-faint' : 'selectable hover:ground selected:ground-defined'}`}
-            aria-selected={i === selectedIndex ? 'true' : 'false'}
+            aria-selected={i === activeIndex ? 'true' : 'false'}
             data-state={confirming ? 'confirming-delete' : undefined}
             onMouseDown={e => { e.preventDefault(); onSelect(macro) }}
           >
@@ -82,10 +90,9 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
               ink-accent font-md font-medium text-nowrap">{macro.command}</span>
             <span data-component="editor-suggestions-item-text" className="hidden
               ink-soft font-sm truncate">{macro.text}</span>
-            {/* These controls are pointer-only for everyone, not just assistive tech: the
-                input's onBlur closes the dropdown, so tabbing towards them dismisses it.
-                A listbox option also makes its descendants presentational. Marked hidden so
-                the tree matches what is actually reachable — see the note in the header. */}
+            {/* Pointer affordances. A listbox option makes its descendants presentational,
+                so these cannot be exposed here whatever we do; the keyboard path is on the
+                field instead, which is where focus is. */}
             {confirming ? (
               <span aria-hidden="true" className="horizontal rigid gap-xs push align-center">
                 <button
@@ -97,7 +104,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
                     ink-fail corner-sm pressable
                     hover:ground-fail hover:ink-inverse"
                   aria-label={t('editor.confirmDelete')}
-                  onMouseDown={e => { e.preventDefault(); e.stopPropagation(); onDelete(macro); setConfirmingId(null) }}
+                  onMouseDown={e => { e.preventDefault(); e.stopPropagation(); onConfirmDelete(macro) }}
                 >
                   <CheckIcon />
                 </button>
@@ -110,7 +117,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
                     ink-soft corner-sm pressable
                     hover:ground-defined hover:ink"
                   aria-label={t('editor.cancelDelete')}
-                  onMouseDown={e => { e.preventDefault(); e.stopPropagation(); setConfirmingId(null) }}
+                  onMouseDown={e => { e.preventDefault(); e.stopPropagation(); onDisarm() }}
                 >
                   <CloseIcon />
                 </button>
@@ -128,7 +135,7 @@ export function CommandSuggestions({ suggestions, selectedIndex, onSelect, onDel
                   parent-hover:revealed
                   parent-selected:revealed"
                 aria-label={t('editor.deleteMacro')}
-                onMouseDown={e => { e.preventDefault(); e.stopPropagation(); setConfirmingId(macro.id) }}
+                onMouseDown={e => { e.preventDefault(); e.stopPropagation(); onArm(macro) }}
               >
                 <TrashIcon />
               </button>

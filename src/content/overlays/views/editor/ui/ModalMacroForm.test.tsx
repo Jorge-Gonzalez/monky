@@ -31,10 +31,11 @@ vi.mock('../../../../../store/useMacroStore', () => ({
 type CrudResult = { success: boolean; error?: string }
 const mockCreate = vi.fn((..._args: any[]): Promise<CrudResult> => Promise.resolve({ success: true }))
 const mockUpdate = vi.fn((..._args: any[]): Promise<CrudResult> => Promise.resolve({ success: true }))
+const mockDelete = vi.fn()
 vi.mock('../../../../../store/macroCrud', () => ({
   createMacro: (data: any) => mockCreate(data),
   updateMacro: (id: any, data: any) => mockUpdate(id, data),
-  deleteMacro: vi.fn(),
+  deleteMacro: (id: string) => mockDelete(id),
 }))
 
 function setEditorContent(html: string) {
@@ -195,6 +196,63 @@ describe('ModalMacroForm', () => {
       expect(parentHandler).not.toHaveBeenCalled()
 
       input.parentElement!.removeEventListener('keydown', parentHandler)
+    })
+
+    // The three layers -- field, list, armed -- are one value, so Enter and Escape need no
+    // conditionals: they act on the innermost layer present, and Escape peels exactly one.
+    describe('layered keyboard model', () => {
+      const openList = () => {
+        render(<ModalMacroForm editing={null} onDone={onDone} onLoadMacro={onLoadMacro} />)
+        const input = getCommandInput()
+        focusAndType(input, '/si')
+        return input
+      }
+      const armed = () => document.querySelector('[data-state="confirming-delete"]')
+
+      it('Shift+Delete arms the highlighted row; a bare Delete is left to the field', () => {
+        const input = openList()
+        fireEvent.keyDown(input, { key: 'ArrowDown' })
+        fireEvent.keyDown(input, { key: 'Delete' })
+        expect(armed()).toBeNull()
+        fireEvent.keyDown(input, { key: 'Delete', shiftKey: true })
+        expect(armed()).not.toBeNull()
+      })
+
+      it('Escape peels one layer: armed, then the list', () => {
+        const input = openList()
+        fireEvent.keyDown(input, { key: 'ArrowDown' })
+        fireEvent.keyDown(input, { key: 'Delete', shiftKey: true })
+
+        fireEvent.keyDown(input, { key: 'Escape' })
+        expect(armed()).toBeNull()
+        expect(screen.queryByText('editor.commandSuggestionsLabel')).toBeInTheDocument()
+
+        fireEvent.keyDown(input, { key: 'Escape' })
+        expect(screen.queryByText('editor.commandSuggestionsLabel')).not.toBeInTheDocument()
+      })
+
+      it('Enter confirms the armed row rather than loading it', () => {
+        const input = openList()
+        fireEvent.keyDown(input, { key: 'ArrowDown' })
+        fireEvent.keyDown(input, { key: 'Delete', shiftKey: true })
+        fireEvent.keyDown(input, { key: 'Enter' })
+        expect(mockDelete).toHaveBeenCalled()
+        expect(onLoadMacro).not.toHaveBeenCalled()
+      })
+
+      it('Enter loads the highlighted row when nothing is armed', () => {
+        const input = openList()
+        fireEvent.keyDown(input, { key: 'ArrowDown' })
+        fireEvent.keyDown(input, { key: 'Enter' })
+        expect(onLoadMacro).toHaveBeenCalled()
+        expect(mockDelete).not.toHaveBeenCalled()
+      })
+
+      it('Tab moves the highlight instead of leaving the field', () => {
+        const input = openList()
+        fireEvent.keyDown(input, { key: 'Tab' })
+        expect(input.getAttribute('aria-activedescendant')).toBeTruthy()
+      })
     })
 
     it('resets dismissed state when the command changes', () => {

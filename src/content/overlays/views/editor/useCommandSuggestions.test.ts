@@ -19,33 +19,33 @@ vi.mock('../../../../store/useMacroStore', () => ({
 describe('useCommandSuggestions', () => {
   it('matches on the command field, not the text', () => {
     // "signature" appears in /sig's text but in no command → no match
-    const { result } = renderHook(() => useCommandSuggestions('signature', true, vi.fn()))
+    const { result } = renderHook(() => useCommandSuggestions('signature', true, vi.fn(), vi.fn()))
     expect(result.current.suggestions).toEqual([])
   })
 
   it('matches commands by substring', () => {
-    const { result } = renderHook(() => useCommandSuggestions('/sig', true, vi.fn()))
+    const { result } = renderHook(() => useCommandSuggestions('/sig', true, vi.fn(), vi.fn()))
     // '/sig' is a substring of both '/sig' and '/sigh'
     expect(result.current.suggestions.map((m: any) => m.command)).toEqual(['/sig', '/sigh'])
   })
 
   it('caps suggestions at 5', () => {
-    const { result } = renderHook(() => useCommandSuggestions('/s', true, vi.fn()))
+    const { result } = renderHook(() => useCommandSuggestions('/s', true, vi.fn(), vi.fn()))
     expect(result.current.suggestions.length).toBeLessThanOrEqual(5)
   })
 
   it('returns nothing when disabled (editing an existing macro)', () => {
-    const { result } = renderHook(() => useCommandSuggestions('/s', false, vi.fn()))
+    const { result } = renderHook(() => useCommandSuggestions('/s', false, vi.fn(), vi.fn()))
     expect(result.current.suggestions).toEqual([])
   })
 
   it('returns nothing for a blank command', () => {
-    const { result } = renderHook(() => useCommandSuggestions('   ', true, vi.fn()))
+    const { result } = renderHook(() => useCommandSuggestions('   ', true, vi.fn(), vi.fn()))
     expect(result.current.suggestions).toEqual([])
   })
 
-  it('is hidden until the input is focused', () => {
-    const { result } = renderHook(() => useCommandSuggestions('/s', true, vi.fn()))
+  it('is hidden until focus enters the widget', () => {
+    const { result } = renderHook(() => useCommandSuggestions('/s', true, vi.fn(), vi.fn()))
     expect(result.current.visible).toBe(false)
   })
 })

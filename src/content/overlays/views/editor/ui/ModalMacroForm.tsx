@@ -38,7 +38,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   const commandInputRef = useRef<HTMLInputElement>(null)
   const contentEditorRef = useRef<ContentEditorRef>(null)
 
-  const suggest = useCommandSuggestions(command, !editing, onLoadMacro)
+  const suggest = useCommandSuggestions(command, !editing, onLoadMacro, m => { void deleteMacro(String(m.id)) })
   const commandValid = isCommandValid(command, prefixes)
   const commandJoined = Boolean((command && !commandValid) || suggest.visible)
 
@@ -139,7 +139,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
               <polygon fill="currentColor" points="7,9 4,9 10,0 8,7 11,7 5.417,15 "/>
             </svg>
           </span>
-          <div className="elastic basis-ratio width-popover-lg
+          <div ref={suggest.containerRef} className="elastic basis-ratio width-popover-lg
             position-relative">
             <input
               id="modal-macro-command"
@@ -154,8 +154,8 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
               role="combobox"
               aria-expanded={suggest.visible}
               aria-controls={suggest.visible ? SUGGESTIONS_LISTBOX_ID : undefined}
-              aria-activedescendant={suggest.visible && suggest.selectedIndex >= 0
-                ? suggestionOptionId(suggest.selectedIndex)
+              aria-activedescendant={suggest.visible && suggest.activeIndex >= 0
+                ? suggestionOptionId(suggest.activeIndex)
                 : undefined}
               aria-autocomplete="list"
               maxLength={50}
@@ -170,9 +170,12 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
             {suggest.visible && (
               <CommandSuggestions
                 suggestions={suggest.suggestions}
-                selectedIndex={suggest.selectedIndex}
+                activeIndex={suggest.activeIndex}
+                armedId={suggest.armedId}
                 onSelect={suggest.select}
-                onDelete={m => { void deleteMacro(String(m.id)) }}
+                onArm={suggest.arm}
+                onConfirmDelete={suggest.confirmDelete}
+                onDisarm={suggest.disarm}
               />
             )}
           </div>

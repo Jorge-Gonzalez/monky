@@ -10,13 +10,17 @@ const suggestions = [
   { id: 2, command: '/sigh', text: 'Ugh', contentType: 'text/plain' as const },
 ]
 
-function setup() {
-  const onSelect = vi.fn()
-  const onDelete = vi.fn()
+function setup(armedId: number | null = null) {
+  const cb = {
+    onSelect: vi.fn(),
+    onArm: vi.fn(),
+    onConfirmDelete: vi.fn(),
+    onDisarm: vi.fn(),
+  }
   const utils = render(
-    <CommandSuggestions suggestions={suggestions} selectedIndex={0} onSelect={onSelect} onDelete={onDelete} />
+    <CommandSuggestions suggestions={suggestions} activeIndex={0} armedId={armedId} {...cb} />
   )
-  return { onSelect, onDelete, ...utils }
+  return { ...cb, ...utils }
 }
 
 const trashOf = (row: Element) => row.querySelector('[aria-label="editor.deleteMacro"]') as HTMLElement
@@ -49,8 +53,7 @@ describe('CommandSuggestions', () => {
     // screen reader goes silent while focus is somewhere real. Hiding a control and
     // leaving it tab-reachable is worse than either alone.
     it('leaves nothing focusable inside an aria-hidden subtree', () => {
-      const { container } = setup()
-      fireEvent.mouseDown(trashOf(container.querySelectorAll('[role="option"]')[0]))
+      const { container } = setup(1)
       // closest() rather than a descendant selector: the delete button carries aria-hidden
       // itself, so `[aria-hidden] button` would not have matched it.
       const offenders = [...container.querySelectorAll('button, a[href], input, select, textarea')]
@@ -58,13 +61,12 @@ describe('CommandSuggestions', () => {
       expect(offenders.map(el => el.getAttribute('data-component'))).toEqual([])
     })
 
-    it('hides the row controls, which no keyboard or AT path can reach', () => {
+    it('hides the row controls, whose keyboard equivalents live on the field', () => {
       const { container } = setup()
-      const rows = container.querySelectorAll('[role="option"]')
-      expect(trashOf(rows[0])).toHaveAttribute('aria-hidden', 'true')
-      fireEvent.mouseDown(trashOf(rows[0]))
-      expect(container.querySelector('[data-component="editor-suggestions-item-confirm"]')?.closest('[aria-hidden="true"]'))
-        .not.toBeNull()
+      expect(trashOf(container.querySelectorAll('[role="option"]')[0])).toHaveAttribute('aria-hidden', 'true')
+      const armed = setup(1)
+      expect(armed.container.querySelector('[data-component="editor-suggestions-item-confirm"]')
+        ?.closest('[aria-hidden="true"]')).not.toBeNull()
     })
   })
 
@@ -74,10 +76,17 @@ describe('CommandSuggestions', () => {
     expect(screen.queryByLabelText('editor.confirmDelete')).toBeNull()
   })
 
-  it('arming a row swaps trash for confirm/cancel and tints only that row', () => {
-    const { container } = setup()
+  it('the trash asks the hook to arm that row, rather than arming it here', () => {
+    const { container, onArm } = setup()
+    fireEvent.mouseDown(trashOf(container.querySelectorAll('[aria-selected]')[1]))
+    expect(onArm).toHaveBeenCalledWith(suggestions[1])
+    // Nothing changed locally: the component holds no state of its own.
+    expect(container.querySelector('[data-state]')).toBeNull()
+  })
+
+  it('renders the armed row from armedId, tinting only that one', () => {
+    const { container } = setup(2)
     const rows = container.querySelectorAll('[aria-selected]')
-    fireEvent.mouseDown(trashOf(rows[1]))
 
     expect(rows[1]).toHaveAttribute('data-state', 'confirming-delete')
     expect(rows[0]).not.toHaveAttribute('data-state')
@@ -88,24 +97,19 @@ describe('CommandSuggestions', () => {
   })
 
   it('confirming deletes that macro; the row click never fires select', () => {
-    const { container, onDelete, onSelect } = setup()
-    const rows = container.querySelectorAll('[aria-selected]')
-    fireEvent.mouseDown(trashOf(rows[1]))
+    const { onConfirmDelete, onSelect } = setup(2)
     fireEvent.mouseDown(screen.getByLabelText('editor.confirmDelete'))
 
-    expect(onDelete).toHaveBeenCalledWith(suggestions[1])
+    expect(onConfirmDelete).toHaveBeenCalledWith(suggestions[1])
     expect(onSelect).not.toHaveBeenCalled()
   })
 
-  it('cancel disarms without deleting', () => {
-    const { container, onDelete } = setup()
-    const rows = container.querySelectorAll('[aria-selected]')
-    fireEvent.mouseDown(trashOf(rows[1]))
+  it('cancel asks to disarm without deleting', () => {
+    const { onConfirmDelete, onDisarm } = setup(2)
     fireEvent.mouseDown(screen.getByLabelText('editor.cancelDelete'))
 
-    expect(onDelete).not.toHaveBeenCalled()
-    expect(rows[1]).not.toHaveAttribute('data-state')
-    expect(screen.getAllByLabelText('editor.deleteMacro')).toHaveLength(2)
+    expect(onDisarm).toHaveBeenCalled()
+    expect(onConfirmDelete).not.toHaveBeenCalled()
   })
 
   it('backs the selected suggestion with aria-selected', () => {
