@@ -38,6 +38,26 @@ describe('createDeleteConfirmManager', () => {
 
   afterEach(() => mgr.destroy()) // removes the document listener between tests
 
+  // The popup takes focus so it is announced, which is only safe if the caret goes back
+  // where it was -- the user is mid-edit in the host page.
+  it('restores focus to the element that had it before the popup opened', () => {
+    vi.useFakeTimers()
+    const field = document.createElement('input')
+    document.body.appendChild(field)
+    field.focus()
+    expect(document.activeElement).toBe(field)
+
+    mgr.show(macro)
+    // The popup renders into a shadow root, so simulate focus leaving the field.
+    field.blur()
+    expect(document.activeElement).not.toBe(field)
+
+    mgr.hide()
+    vi.runAllTimers()
+    expect(document.activeElement).toBe(field)
+    vi.useRealTimers()
+  })
+
   it('show renders the popup and marks the manager visible', () => {
     mgr.show(macro)
     expect(mgr.isVisible()).toBe(true)

@@ -3,6 +3,7 @@ import type { Macro } from '../../../types'
 import { DeleteConfirmPopup } from './DeleteConfirmPopup'
 import { createReactRenderer } from '../services/reactRenderer'
 import { createStyleInjector } from '../services/styleInjector'
+import { createFocusManager } from '../services/focusManager'
 import { ensureAppFontFace } from '../services/appFont'
 import { composeShadowBundle } from '../../../styles/baseBundle'
 import { getActiveEditable } from '../../macroEngine/replacement/editableUtils'
@@ -20,6 +21,7 @@ const DELETE_CONFIRM_BUNDLE = composeShadowBundle()
 export function createDeleteConfirmManager() {
   const renderer = createReactRenderer('macro-delete-confirm', true, 'sf-foreign-overlay-host')
   let styleInjector: ReturnType<typeof createStyleInjector>
+  const focusManager = createFocusManager()
   let onConfirm: ((macro: Macro) => void) | null = null
   let pending: Macro | null = null
   let visible = false
@@ -68,6 +70,8 @@ export function createDeleteConfirmManager() {
     )
     pending = macro
     visible = true
+    // The popup takes focus so it is announced; remember where the caret was first.
+    focusManager.saveFocus()
     renderPopup(macro, { x: optimal.x, y: optimal.y }, optimal.placement)
     document.addEventListener('mousedown', handleOutsideMouseDown, true)
   }
@@ -78,6 +82,7 @@ export function createDeleteConfirmManager() {
     pending = null
     document.removeEventListener('mousedown', handleOutsideMouseDown, true)
     renderer.clear()
+    focusManager.restoreFocus()
   }
 
   const setOnConfirm = (cb: (macro: Macro) => void): void => { onConfirm = cb }

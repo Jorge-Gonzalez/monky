@@ -29,6 +29,38 @@ const press = (key: string, opts: KeyboardEventInit = {}) =>
   fireEvent.keyDown(document, { key, bubbles: true, cancelable: true, ...opts })
 
 describe('DeleteConfirmPopup', () => {
+
+  // A screen reader reads what has focus. Nothing here was focused before, so the popup
+  // was drawn, operated and dismissed without a word of it being announced.
+  describe('announcement contract', () => {
+    it('is an alertdialog named by its message', () => {
+      setup()
+      const dialog = screen.getByRole('alertdialog')
+      const labelledBy = dialog.getAttribute('aria-labelledby')!
+      expect(document.getElementById(labelledBy)?.textContent).toContain('deleteConfirm.message')
+    })
+
+    it('takes focus when it opens, so there is something to announce', () => {
+      setup()
+      expect(document.activeElement).toBe(screen.getByRole('listbox'))
+    })
+
+    it('points aria-activedescendant at the armed option and follows the selection', () => {
+      setup()
+      const listbox = screen.getByRole('listbox')
+      const options = screen.getAllByRole('option')
+      expect(listbox.getAttribute('aria-activedescendant')).toBe(options[0].id)
+      press('ArrowRight')
+      expect(listbox.getAttribute('aria-activedescendant')).toBe(options[1].id)
+    })
+
+    it('keeps the options out of the tab order, since the listbox owns focus', () => {
+      setup()
+      for (const option of screen.getAllByRole('option')) {
+        expect(option).toHaveAttribute('tabIndex', '-1')
+      }
+    })
+  })
   beforeEach(() => vi.clearAllMocks())
 
   it('shows the macro command and both options', () => {
