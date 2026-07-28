@@ -122,9 +122,18 @@ describe('SettingsView', () => {
       const { container } = render(<SettingsView {...props} />)
       const input = container.querySelector('input[type="file"]') as HTMLInputElement
       const file = new File(['[]'], 'macros.json', { type: 'application/json' })
-      // A native dispatch rather than fireEvent.change: testing-library assigns the
-      // target properties first, and a file input's `files` is read-only, so the change
-      // never reaches Preact's handler. Defining files then dispatching does.
+      // A native dispatch rather than fireEvent.change, because the two libraries disagree
+      // about this one case. preact/compat rewrites onChange to the input event for inputs
+      // *except* type file, checkbox and radio (compat/src/render.js, `onChangeInputType`),
+      // so a file input's handler really is listening for `change`. But
+      // @testing-library/preact renames change -> input whenever compat is detected, with
+      // no such exemption (fire-event.js, `renameEventCompat`), so fireEvent.change fires
+      // `input` at an element that is not listening for it.
+      //
+      // The component is correct: a browser fires `change` on a file input, which is what
+      // it handles. Only the test helper is wrong, so the test dispatches what the browser
+      // would. Verified by bisection -- it fails with no `target` option at all, and a
+      // text input in the same file passes, so it is not about `files` being read-only.
       Object.defineProperty(input, 'files', { value: [file], configurable: true })
       input.dispatchEvent(new Event('change', { bubbles: true }))
       expect(port.importFromFile).toHaveBeenCalledWith(file)

@@ -287,16 +287,27 @@ fails 10 of 20, deleting on the first Enter fails both delete tests, dropping th
 effect fails exactly one.
 
 **When a test needs a workaround, diagnose before you write it.** `SettingsView`'s file
-input would not respond to `fireEvent.change`, so that test dispatches a native event
-instead — and the comment next to it names a cause (`files` is read-only, so
-testing-library's target assignment fails) that was **inferred, not verified**. That is a
-green test resting on a guess. If the real cause is something else — preact/compat routing
-`onChange` differently for that input type, say — then a production bug is sitting behind a
-passing test, and the workaround is what is hiding it.
+input would not respond to `fireEvent.change`, and the first comment written next to the
+workaround named a cause that was inferred rather than checked (`files` is read-only, so
+testing-library's target assignment fails). Bisecting killed it: the call fails with **no**
+`target` option at all, and a text input in the same file passes.
 
-The general shape: reaching below the framework to make a test pass means the test no longer
-exercises the path a user takes. Sometimes that is the only option, but it has to be a
-decision with a confirmed reason, not a way of getting to green.
+The real cause is a disagreement between two libraries. preact/compat rewrites `onChange`
+to the `input` event for inputs *except* `file`, `checkbox` and `radio`
+(`compat/src/render.js`, `onChangeInputType`), so a file input genuinely listens for
+`change`. `@testing-library/preact` renames `change` → `input` whenever compat is detected,
+with no such exemption (`fire-event.js`, `renameEventCompat`). So `fireEvent.change` fires
+`input` at an element listening for `change`.
+
+Two things follow, and they are the reason it was worth checking. The component is
+**correct** — a browser fires `change` on a file input — so nothing was hiding behind the
+green test. And the trap is not limited to file inputs: it applies to checkboxes and radios
+too, which is where to look first if one of those ever tests green while doing nothing. (In
+this codebase they are all driven with `fireEvent.click`, which is unaffected.)
+
+The general shape still holds: reaching below the framework means the test no longer
+exercises the path a user takes, so it has to be a decision with a confirmed reason. The
+difference between the two comments above is the difference between a note and a guess.
 
 ## What not to raise
 
