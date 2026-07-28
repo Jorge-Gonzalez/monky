@@ -34,9 +34,14 @@ npm run format:paragraphs:check -- --ermine-root ../ermine
 npm run styles:reconcile:check  -- --ermine-root ../ermine
 ```
 
-The one known-red gate is `npm run test:styles`, on a pre-existing 298px/295px baseline
-drift in the delete-confirm popup. It is unrelated to any component pass; do not let it
-block one, and do not "fix" it by re-baselining without deciding which number is correct.
+`npm run test:styles` is **red on purpose** and is expected to stay red until the type
+scale is settled. The 298px/295px drift in the delete-confirm popup is a consequence of an
+undecided font size, not a regression.
+
+The risk here is the opposite of the usual one. Nobody is going to ignore a red gate —
+somebody is going to *fix* it, by re-baselining to whatever the current render produces,
+which would freeze a number that has not been chosen. Leave it. It goes green when the
+font-size decision lands, and not before.
 
 The lint config carries deliberate decisions, each with its reasoning written next to it in
 `eslint.config.js`. Two are worth knowing before you trust or change it:
@@ -102,6 +107,19 @@ strings and the reviewer cannot see the actual change.
    it cannot run against work in progress. Expect a commit-pointer-only diff; if the
    vocabulary or declaration count moves, a class word was added and that is worth saying
    out loud in the message.
+
+## Do the extraction by hand
+
+Every extraction here is a structural edit to JSX — moving an open tag, its matching close,
+and everything between. **Do not do it with regex or `sed`/`perl`.** In this project that
+has failed twice destructively: a `perl` substitution using `|` as both delimiter and
+pattern content corrupted `SuggestionsOverlayManager.tsx` into unusable output, and a
+pattern-driven attempt at the settings extraction matched the opening tags but not their
+closers and left the tree unbalanced. Both were reverted from the last commit; neither was
+caught by the pattern itself, only by `tsc` afterwards.
+
+A regex sees text; the edit is on a tree. Rewrite the render by hand, or use a real codemod.
+Hand-writing a forty-line render is faster than debugging a substitution that half-worked.
 
 ## What counts as a structural finding
 
@@ -268,6 +286,18 @@ restore. Record what died in the commit message. For the search view: disabling 
 fails 10 of 20, deleting on the first Enter fails both delete tests, dropping the disarm
 effect fails exactly one.
 
+**When a test needs a workaround, diagnose before you write it.** `SettingsView`'s file
+input would not respond to `fireEvent.change`, so that test dispatches a native event
+instead — and the comment next to it names a cause (`files` is read-only, so
+testing-library's target assignment fails) that was **inferred, not verified**. That is a
+green test resting on a guess. If the real cause is something else — preact/compat routing
+`onChange` differently for that input type, say — then a production bug is sitting behind a
+passing test, and the workaround is what is hiding it.
+
+The general shape: reaching below the framework to make a test pass means the test no longer
+exercises the path a user takes. Sometimes that is the only option, but it has to be a
+decision with a confirmed reason, not a way of getting to green.
+
 ## What not to raise
 
 - Anything `tsc`, `eslint` or the paragraph formatter reports. Run them; they are not
@@ -346,13 +376,30 @@ still untested — it is a 22-line wrapper, so the value is low and it is last. 
 untested files are the components this work created (`SearchResultsPanel`, `SettingsLayout`)
 plus `MacroSearchInput` and `MacroCommandResults`, all covered through their parents.
 
-**Next, in order.** The `ModalMacroForm` / `MacroForm` pair: read them together, decide
-whether they are one form or two, and take the three shared paragraphs with that decision.
-Then the options page (`Settings`, `PrefixEditor`, `ReplacementMode`), which repeats the
-settings-row shape that already has a component on the overlay side — check whether
-`SettingsLayout` should move to `shared/ui` rather than being duplicated. Then
-`ContentEditorStyleMenu`'s contract, and last the focus-management decision for the two
-overlay popups.
+## What is left is not all the same kind of work
+
+The remaining duplication is **blocked on product scope, not waiting on a refactor**, and
+an earlier version of this document had it backwards — it listed the biggest cross-file
+duplication as the next thing to extract. Do not.
+
+`ModalMacroForm` / `MacroForm`, and `Settings` / `PrefixEditor` / `ReplacementMode`, share
+paragraphs because the standalone editor and options pages **predate the decision to move
+the interface into the modal**. The standalone editor exists to give editing more room; the
+standalone settings page is a candidate to be dropped; the popup's role is being redefined;
+and the editor page may turn out to be a media-query variant rather than a separate
+surface.
+
+Extracting a shared component now would freeze a relationship that is about to change, and
+the extraction would have to be undone in whichever direction the scope lands. **The
+duplication is a symptom of an open product question. Leave it until the question closes** —
+then the extraction is obvious and small, or unnecessary because a surface went away.
+
+What is genuinely ready, in order:
+
+1. `ContentEditorStyleMenu`'s listbox contract — the last one with the original defect.
+2. `MacroEditorView`'s first test — a 22-line wrapper, so low value; last.
+
+Everything else on the duplication scan is downstream of the scope decision.
 
 ---
 
