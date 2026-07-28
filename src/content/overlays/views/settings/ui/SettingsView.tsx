@@ -68,6 +68,8 @@ export function SettingsView(_props: BaseModalViewProps) {
               options={ALL_PREFIXES}
               selected={prefixes}
               onChange={setPrefixes}
+              // At least one: with no prefix there is no character that can start a macro.
+              minSelected={1}
               className="horizontal gap-sm"
               buttonClassName="btn pressable padding-none corner-md font-md font-medium focus:ring active:ground-accent active:ink-inverse disabled:blocked disabled:ground-subtle disabled:ink-soft disabled:alpha-60 ground-subtle ink ruled rule font-mono settings-prefix-btn horizontal control-box-xl align-center justify-center rigid"
             />

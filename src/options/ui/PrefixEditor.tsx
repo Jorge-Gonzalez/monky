@@ -17,6 +17,8 @@ export default function PrefixEditor({ prefixes, onChange }: PrefixEditorProps) 
       ground-subtle rule corner-md ruled">
       <h3 className="font-lg">{t('options.prefixEditor.title')}</h3>
       <SelectableGroup
+        // At least one: with no prefix there is no character that can start a macro.
+        minSelected={1}
         options={ALL_PREFIXES}
         selected={prefixes}
         onChange={onChange}

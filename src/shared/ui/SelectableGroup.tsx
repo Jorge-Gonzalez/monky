@@ -18,8 +18,12 @@ interface SelectableGroupProps {
   options: string[]
   selected: string[]
   onChange: (next: string[]) => void
-  /** Minimum that must stay selected. Default 1. */
-  minSelected?: number
+  /**
+   * Minimum that must stay selected. Required rather than defaulted: how many a group
+   * must keep is a rule about what the group is *for*, and a generic toggle group has no
+   * business having an opinion on it.
+   */
+  minSelected: number
   /** Extra classes on the group wrapper (layout). */
   className?: string
   /** Base classes for each toggle button. */
@@ -36,7 +40,7 @@ export function SelectableGroup({
   options,
   selected,
   onChange,
-  minSelected = 1,
+  minSelected,
   className,
   buttonClassName,
 }: SelectableGroupProps) {

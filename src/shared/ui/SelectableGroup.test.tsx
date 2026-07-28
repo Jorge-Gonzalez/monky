@@ -26,7 +26,7 @@ describe('SelectableGroup', () => {
   afterEach(() => { vi.useRealTimers() })
 
   it('renders an option button per option with aria-checked', () => {
-    render(<SelectableGroup options={['/', '#', ';']} selected={['/', '#']} onChange={vi.fn()} />)
+    render(<SelectableGroup options={['/', '#', ';']} selected={['/', '#']} onChange={vi.fn()} minSelected={1} />)
     expect(screen.getByRole('switch', { name: '/' })).toHaveAttribute('aria-checked', 'true')
     expect(screen.getByRole('switch', { name: '#' })).toHaveAttribute('aria-checked', 'true')
     expect(screen.getByRole('switch', { name: ';' })).toHaveAttribute('aria-checked', 'false')
@@ -34,21 +34,21 @@ describe('SelectableGroup', () => {
 
   it('calls onChange with the option added', () => {
     const onChange = vi.fn()
-    render(<SelectableGroup options={['/', '#', ';']} selected={['/']} onChange={onChange} />)
+    render(<SelectableGroup options={['/', '#', ';']} selected={['/']} onChange={onChange} minSelected={1} />)
     fireEvent.click(screen.getByRole('switch', { name: ';' }))
     expect(onChange).toHaveBeenCalledWith(['/', ';'])
   })
 
   it('calls onChange with the option removed', () => {
     const onChange = vi.fn()
-    render(<SelectableGroup options={['/', '#']} selected={['/', '#']} onChange={onChange} />)
+    render(<SelectableGroup options={['/', '#']} selected={['/', '#']} onChange={onChange} minSelected={1} />)
     fireEvent.click(screen.getByRole('switch', { name: '#' }))
     expect(onChange).toHaveBeenCalledWith(['/'])
   })
 
   it('refuses to remove the last selected and shakes instead', () => {
     const onChange = vi.fn()
-    render(<SelectableGroup options={['/', '#']} selected={['/']} onChange={onChange} />)
+    render(<SelectableGroup options={['/', '#']} selected={['/']} onChange={onChange} minSelected={1} />)
     const slash = screen.getByRole('switch', { name: '/' })
 
     fireEvent.click(slash)
@@ -60,7 +60,7 @@ describe('SelectableGroup', () => {
   })
 
   it('applies the sf-min-selected-1 fragment when minSelected is 1', () => {
-    const { container } = render(<SelectableGroup options={['/']} selected={['/']} onChange={vi.fn()} />)
+    const { container } = render(<SelectableGroup options={['/']} selected={['/']} onChange={vi.fn()} minSelected={1} />)
     expect(container.querySelector('.sf-selectable-group')).toHaveClass('sf-min-selected-1')
   })
 })
