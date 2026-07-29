@@ -116,7 +116,7 @@ function MacroSearchItem({
           data-component="search-item-confirm"
           className="sf-narrow-text
             padding-left-xs padding-block-sm padding-right-md hidden
-            ink-fail rule-soft ruled-bottom font-sm font-medium truncate"
+            ink-fail rule-soft ruled-bottom font-md font-medium truncate"
         >
           {t('modalSearch.confirmDelete')}
         </div>
@@ -126,7 +126,7 @@ function MacroSearchItem({
           className="sf-narrow-text
             padding-left-xs padding-block-sm padding-right-md hidden
             tween-ground-quick
-            ink font-sm pressable truncate
+            ink font-md pressable truncate
             parent-selected:overflow-visible parent-selected:text-wrap"
         >
           <PlaceholderText text={macro.text} />
