@@ -96,9 +96,11 @@ function MacroSearchItem({
       }`}
       role="option"
       aria-selected={isSelected}
-      // ARIA gives `option` presentational children: everything below is dropped from the
-      // accessibility tree, so the armed state has to be carried by the row's own name
-      // rather than by anything nested inside it.
+      // `option` takes its accessible name from its content, and ARIA makes its descendants
+      // presentational -- they lose their own roles, they do not disappear. So the row text
+      // still composes the name (verified in Chrome: "/sig My signature"), while a nested
+      // role="alert" is simply not an alert and never announces. The armed state therefore
+      // has to override the name here rather than rely on anything inside it.
       aria-label={isConfirmingDelete ? `${macro.command} ${t('modalSearch.confirmDelete')}` : undefined}
       data-state={isConfirmingDelete ? 'confirming-delete' : undefined}
       onClick={onClick}
@@ -147,11 +149,13 @@ function MacroSearchItem({
             onEdit()
           }}
           aria-label={t('modalSearch.editMacro')}
-          // A pointer affordance only. A listbox option cannot contain a working control --
-          // its children are presentational -- so rather than leave a button that appears
-          // in the markup but not in the accessibility tree, it is hidden explicitly. The
+          // A pointer affordance only. Inside an option a button loses its button role, so
+          // it is not operable by assistive tech whatever we do; hiding it explicitly makes
+          // the tree say that rather than leaving a control that reads as text. The
           // keyboard path is Tab, which MacroSearchView routes to the editor, and the
           // footer announces that shortcut whenever there is a selection.
+          // The tension is real and not local: a listbox has no room for per-row actions.
+          // Recorded upstream in Ermine as GAP-U-selection-content-model.
           aria-hidden="true"
           tabIndex={-1}
         >
