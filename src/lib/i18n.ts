@@ -25,13 +25,16 @@ const translations = {
       confirmDelete: 'Confirm delete',
       cancelDelete: 'Cancel',
     },
-    macroListEditor: {
-      noMacros: 'No macros found.',
-    },
-
-    macroItemEditor: {
-      edit: '✏️ Edit',
-      delete: '🗑 Delete',
+    macroPanel: {
+      label: 'Your macros',
+      toolbarLabel: 'Macro list actions',
+      empty: 'No macros yet. Create one on the left.',
+      selectedCount: '{{count}} selected',
+      clearSelection: 'Clear',
+      edit: 'Edit',
+      delete: 'Delete',
+      confirmDelete: 'Delete {{count}}',
+      cancelDelete: 'Cancel',
     },
 
     // Settings
@@ -203,13 +206,16 @@ const translations = {
       cancelDelete: 'Cancelar',
     },
 
-    macroListEditor: {
-      noMacros: 'No hay macros creados.',
-    },
-
-    macroItemEditor: {
-      edit: '✏️ Editar',
-      delete: '🗑 Eliminar',
+    macroPanel: {
+      label: 'Tus macros',
+      toolbarLabel: 'Acciones de la lista de macros',
+      empty: 'Aún no hay macros. Crea uno a la izquierda.',
+      selectedCount: '{{count}} seleccionados',
+      clearSelection: 'Limpiar',
+      edit: 'Editar',
+      delete: 'Eliminar',
+      confirmDelete: 'Eliminar {{count}}',
+      cancelDelete: 'Cancelar',
     },
 
     // Settings

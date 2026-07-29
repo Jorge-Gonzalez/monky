@@ -797,6 +797,95 @@
       "id": "page-container",
       "classString": "vertical gap-lg padding-2xl centered flush-block max-width-2xl fill-viewport",
       "backing": []
+    },
+    {
+      "id": "editor-page-columns",
+      "classString": "horizontal gap-xl align-start wrap-allowed",
+      "backing": []
+    },
+    {
+      "id": "editor-page-form-column",
+      "classString": "vertical grow-2 shrink-1 basis-ratio gap-lg min-width-lg",
+      "backing": []
+    },
+    {
+      "id": "editor-page-macro-panel",
+      "classString": "vertical grow-1 shrink-1 basis-ratio gap-sm min-width-md",
+      "backing": []
+    },
+    {
+      "id": "options-page-container",
+      "classString": "vertical gap-lg padding-2xl centered flush-block max-width-xl fill-viewport",
+      "backing": []
+    },
+    {
+      "id": "macro-list-toolbar",
+      "classString": "horizontal rigid gap-sm align-center justify-between min-height-control-3xl",
+      "backing": []
+    },
+    {
+      "id": "macro-list-count",
+      "classString": "ink-soft font-sm tabular",
+      "backing": []
+    },
+    {
+      "id": "macro-list-action",
+      "classString": "padding-block-xs padding-inline-md tween-quick ground ink rule corner-md ruled font-sm font-medium pressable hover:ground-defined focus:ring disabled:ground-subtle disabled:ink-soft disabled:blocked disabled:alpha-60",
+      "backing": []
+    },
+    {
+      "id": "macro-list-action-delete",
+      "classString": "padding-block-xs padding-inline-md tween-quick ground ink-fail rule corner-md ruled font-sm font-medium pressable hover:ground-fail-faint focus:ring disabled:ground-subtle disabled:ink-soft disabled:blocked disabled:alpha-60",
+      "backing": []
+    },
+    {
+      "id": "macro-list-action-confirm-delete",
+      "classString": "padding-block-xs padding-inline-md tween-quick ground-fail ink-inverse rule corner-md ruled font-sm font-medium pressable hover:ground-fail focus:ring disabled:ground-subtle disabled:ink-soft disabled:blocked disabled:alpha-60",
+      "backing": []
+    },
+    {
+      "id": "macro-list",
+      "classString": "vertical elastic gap-xs padding-xs scroll-auto max-height-results-md min-height-none ground rule corner-lg ruled scrollbar-subtle focus:ring-accent-soft",
+      "backing": []
+    },
+    {
+      "id": "macro-list-empty",
+      "classString": "padding-lg ink-soft font-md text-center",
+      "backing": []
+    },
+    {
+      "id": "macro-option",
+      "classString": "horizontal gap-sm padding-block-sm padding-inline-sm align-center tween-ground-quick selectable corner-md hover:ground-subtle selected:ground-defined",
+      "backing": [
+        "aria-selected"
+      ],
+      "context": {
+        "parentClasses": "vertical elastic gap-xs padding-xs scroll-auto max-height-results-md min-height-none ground rule corner-lg ruled scrollbar-subtle"
+      }
+    },
+    {
+      "id": "macro-option-mark",
+      "classString": "horizontal rigid align-center justify-center control-box-lg tween-ground-quick ink-inverse rule corner-sm ruled parent-selected:ground-accent parent-selected:rule-accent",
+      "backing": [],
+      "context": {
+        "parentClasses": "horizontal gap-sm padding-block-sm padding-inline-sm align-center selectable"
+      }
+    },
+    {
+      "id": "macro-option-command",
+      "classString": "rigid max-width-command ink-accent font-md font-semibold font-mono truncate",
+      "backing": [],
+      "context": {
+        "parentClasses": "horizontal gap-sm padding-block-sm padding-inline-sm align-center selectable"
+      }
+    },
+    {
+      "id": "macro-option-text",
+      "classString": "elastic basis-ratio min-width-none ink-soft font-sm truncate",
+      "backing": [],
+      "context": {
+        "parentClasses": "horizontal gap-sm padding-block-sm padding-inline-sm align-center selectable"
+      }
     }
   ]
 }

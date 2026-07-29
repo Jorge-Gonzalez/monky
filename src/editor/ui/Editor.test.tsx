@@ -14,16 +14,14 @@ vi.mock('./MacroForm', () => ({
     </div>
   ),
 }))
-vi.mock('./Settings', () => ({ default: () => <div>Settings Component</div> }))
-vi.mock('./MacroListEditor', () => ({
-  default: ({ macros, onEdit }: any) => (
+vi.mock('./MacroPanel', () => ({
+  MacroPanel: ({ macros, onEdit }: any) => (
     <div>
-      <span>MacroListEditor</span>
+      <span>MacroPanel</span>
       <button onClick={() => onEdit(macros[0])}>Edit</button>
     </div>
   ),
 }))
-vi.mock('../../store/macroCrud', () => ({ deleteMacros: vi.fn() }))
 
 const mockMacros = [
   { id: 1, command: '/brb', text: 'Be right back' },
@@ -34,12 +32,32 @@ vi.mock('../../store/useMacroStore', () => ({
 }))
 
 describe('Editor page', () => {
-  it('renders all main sections', () => {
+  it('renders the title, the form and the macro panel', () => {
     render(<Editor />)
     expect(screen.getByText('editor.pageTitle')).toBeInTheDocument()
     expect(screen.getByText('MacroForm')).toBeInTheDocument()
-    expect(screen.getByText('Settings Component')).toBeInTheDocument()
-    expect(screen.getByText('MacroListEditor')).toBeInTheDocument()
+    expect(screen.getByText('MacroPanel')).toBeInTheDocument()
+  })
+
+  it('carries no settings', () => {
+    // Settings live on the options page. A page that both edits a macro and configures the
+    // extension is two pages, and this one is the editor.
+    render(<Editor />)
+    expect(screen.queryByText(/[Ss]ettings/)).not.toBeInTheDocument()
+  })
+
+  it('lays the form and the panel out as two columns that are allowed to wrap', () => {
+    // The stacking is intrinsic: each column has a minimum inline size and the row may wrap,
+    // so no breakpoint is named anywhere. Losing `wrap-allowed` would leave the columns
+    // squeezing past their minimums rather than stacking, and jsdom computes no layout, so
+    // this is the only place that failure is visible to a test.
+    const { container } = render(<Editor />)
+    const columns = container.querySelector('[data-component="editor-columns"]')
+    expect(columns?.className).toContain('horizontal')
+    expect(columns?.className).toContain('wrap-allowed')
+    expect(container.querySelector('[data-component="editor-form-column"]')?.className).toContain(
+      'min-width-lg'
+    )
   })
 
   it('loads a macro for editing on Edit and clears it on Done', async () => {

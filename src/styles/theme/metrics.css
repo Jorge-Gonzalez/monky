@@ -39,9 +39,17 @@
   --type-2xl: 21px;
   --type-3xl: 25px;
 
-  /* Ermine layout size scale binding. */
+  /* Ermine layout size scale binding. Five steps were bound when the editor page went to
+     two columns: the columns wrap when the row cannot hold `lg + md`, so those two steps are
+     what decides the stacking point, and no breakpoint has to be named to get it.
+
+     `2xl` moved from 42rem to the two-column page measure, and the old value became `xl`.
+     The options page, the only other reader, now asks for `xl` and is unchanged. */
   --size-sm: 140px;
-  --size-2xl: 42rem;
+  --size-md: 20rem;
+  --size-lg: 26rem;
+  --size-xl: 42rem;
+  --size-2xl: 76rem;
 
   /* Ermine role-measured dimension bindings. */
   --measure-dialog-inline: 600px;

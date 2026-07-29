@@ -7,7 +7,7 @@ export default function Options() {
   const { prefixes, useCommitKeys, setPrefixes, setUseCommitKeys } = useOptions()
 
   return (
-    <div className="vertical gap-lg padding-2xl centered flush-block max-width-2xl fill-viewport">
+    <div className="vertical gap-lg padding-2xl centered flush-block max-width-xl fill-viewport">
       <h1 className="font-2xl">{t('options.title')}</h1>
       <PrefixEditor
         prefixes={prefixes}
