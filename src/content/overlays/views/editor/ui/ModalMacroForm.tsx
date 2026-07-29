@@ -1,13 +1,10 @@
-import { useEffect, useState, useRef } from 'react'
+import { useState } from 'react'
 import type { FormEvent } from 'react'
 import type { Macro } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
-import { createMacro, updateMacro, deleteMacro } from '../../../../../store/macroCrud'
-import type { ContentEditorRef } from '../../../../../shared/content-editor'
+import { deleteMacro } from '../../../../../store/macroCrud'
 import { ContentEditor } from '../../../../../shared/content-editor'
-import { useMacroStore } from '../../../../../store/useMacroStore'
-import { validateCommand, isCommandValid } from '../../../../../shared/macroValidation'
-import { hasRichFormatting, extractPlainText } from '../../../../../shared/macroContent'
+import { useMacroForm } from '../../../../../shared/useMacroForm'
 import { useCommandSuggestions } from '../useCommandSuggestions'
 import { CommandSuggestions, SUGGESTIONS_LISTBOX_ID, suggestionOptionId } from './CommandSuggestions'
 
@@ -39,53 +36,27 @@ interface ModalMacroFormProps {
 }
 
 export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormProps) {
-  const prefixes = useMacroStore((s) => s.config?.prefixes || ['/'])
-  const [command, setCommand] = useState(editing?.command || '')
-  const [text, setText] = useState(editing?.html || editing?.text || '')
-  const [isSensitive, setSensitive] = useState(!!editing?.is_sensitive)
-  const [error, setError] = useState<string | null>(null)
+  const {
+    prefixes,
+    command,
+    setCommand,
+    text,
+    setText,
+    isSensitive,
+    setSensitive,
+    error,
+    commandValid,
+    isFormValid,
+    commandInputRef,
+    contentEditorRef,
+    submit,
+  } = useMacroForm(editing)
   const [savedToast, setSavedToast] = useState<string | null>(null)
-
-  const commandInputRef = useRef<HTMLInputElement>(null)
-  const contentEditorRef = useRef<ContentEditorRef>(null)
 
   const suggest = useCommandSuggestions(command, !editing, onLoadMacro, (m) => {
     void deleteMacro(String(m.id))
   })
-  const commandValid = isCommandValid(command, prefixes)
   const commandJoined = Boolean((command && !commandValid) || suggest.visible)
-
-  useEffect(() => {
-    if (editing) {
-      setCommand(editing.command)
-      setText(editing.html || editing.text)
-      setSensitive(!!editing.is_sensitive)
-    } else {
-      setCommand('')
-      setText('')
-      setSensitive(false)
-    }
-    setError(null)
-  }, [editing])
-
-  // Clear any error as soon as the user edits either field. Setting state to the value
-  // it already holds is a no-op, so this needs no guard -- and therefore no dependency
-  // on `error`, which would otherwise clear the error on the render that set it.
-  useEffect(() => {
-    setError(null)
-  }, [command, text])
-
-  useEffect(() => {
-    commandInputRef.current?.focus()
-  }, [editing?.id])
-
-  const isTextValid = text.trim() !== ''
-  const isDirty =
-    !editing ||
-    command !== editing.command ||
-    text !== (editing.html || editing.text) ||
-    isSensitive !== !!editing.is_sensitive
-  const isFormValid = commandValid && isTextValid && isDirty
 
   // Open the full-page editor (a content script can't call chrome.tabs directly;
   // the background opens the tab).
@@ -95,41 +66,13 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
-    setError(null)
-
-    const commandError = validateCommand(command, prefixes)
-    if (commandError) {
-      setError(commandError)
-      return
-    }
-    if (!text.trim()) {
-      setError('Text content is required')
-      return
-    }
-
-    const hasRichContent = hasRichFormatting(text)
-    const plainText = extractPlainText(text)
-
-    const macroData = {
-      command,
-      text: plainText,
-      html: hasRichContent ? text : undefined,
-      contentType: hasRichContent ? ('text/html' as const) : ('text/plain' as const),
-      is_sensitive: isSensitive,
-    }
-
-    const result = editing?.id
-      ? await updateMacro(String(editing.id), macroData)
-      : await createMacro(macroData)
-
-    if (result.success) {
+    const outcome = await submit()
+    if (outcome.status === 'created' || outcome.status === 'updated') {
       // Confirm the save, then close the modal. Both create and edit finish the
       // same way — the editor is a task you complete and dismiss.
-      setSavedToast(editing ? t('macroForm.updatedToast') : t('macroForm.savedToast'))
+      setSavedToast(t(outcome.status === 'updated' ? 'macroForm.updatedToast' : 'macroForm.savedToast'))
       window.setTimeout(onDone, SAVE_TOAST_MS)
-      return
     }
-    if (result.error) setError(result.error)
   }
 
   return (

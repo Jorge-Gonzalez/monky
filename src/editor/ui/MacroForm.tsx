@@ -1,95 +1,38 @@
-import { useEffect, useState, useRef } from 'react'
 import type { FormEvent } from 'react'
-import { useMacroStore } from '../../store/useMacroStore'
-import { createMacro, updateMacro } from '../../store/macroCrud'
-import type { Result } from '../../store/macroCrud'
 import { t } from '../../lib/i18n'
 import type { Macro } from '../../types'
-import type { ContentEditorRef } from '../../shared/content-editor'
 import { ContentEditor } from '../../shared/content-editor'
-import { validateCommand, isCommandValid } from '../../shared/macroValidation'
-import { hasRichFormatting, extractPlainText } from '../../shared/macroContent'
+import { useMacroForm } from '../../shared/useMacroForm'
 
 export default function MacroForm({ editing, onDone }: { editing: Macro | null; onDone: () => void }) {
-  const prefixes = useMacroStore((s) => s.config?.prefixes || ['/'])
-  const [command, setCommand] = useState(editing?.command || '')
-  const [text, setText] = useState(editing?.html || editing?.text || '')
-  const [isSensitive, setSensitive] = useState(!!editing?.is_sensitive)
-  const [error, setError] = useState<string | null>(null)
-
-  const commandInputRef = useRef<HTMLInputElement>(null)
-  const contentEditorRef = useRef<ContentEditorRef>(null)
-
-  useEffect(() => {
-    if (editing) {
-      setCommand(editing.command)
-      setText(editing.html || editing.text)
-      setSensitive(!!editing.is_sensitive)
-    } else {
-      setCommand('')
-      setText('')
-      setSensitive(false)
-    }
-    setError(null)
-  }, [editing])
-
-  // Clear any error as soon as the user edits either field. Setting state to the value
-  // it already holds is a no-op, so this needs no guard -- and therefore no dependency
-  // on `error`, which would otherwise clear the error on the render that set it.
-  useEffect(() => {
-    setError(null)
-  }, [command, text])
-
-  useEffect(() => {
-    commandInputRef.current?.focus()
-  }, [editing?.id])
-
-  const commandValid = isCommandValid(command, prefixes)
-  const isTextValid = text.trim() !== ''
-  const isDirty =
-    !editing ||
-    command !== editing.command ||
-    text !== (editing.html || editing.text) ||
-    isSensitive !== !!editing.is_sensitive
-  const isFormValid = commandValid && isTextValid && isDirty
+  const {
+    prefixes,
+    command,
+    setCommand,
+    text,
+    setText,
+    isSensitive,
+    setSensitive,
+    error,
+    commandValid,
+    isFormValid,
+    commandInputRef,
+    contentEditorRef,
+    submit,
+  } = useMacroForm(editing)
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
-    setError(null)
-
-    const commandError = validateCommand(command, prefixes)
-    if (commandError) {
-      setError(commandError)
-      return
+    const outcome = await submit()
+    // An update finishes the task; a create leaves the form open for the next one.
+    if (outcome.status === 'updated') onDone()
+    if (outcome.status === 'created') {
+      setCommand('')
+      setText('')
+      // is_sensitive deliberately survives, as it did before this was extracted: several
+      // sensitive macros in a row is the case that behaviour serves. Whether it should is
+      // a product question, not something to change inside a refactor.
     }
-    if (!text.trim()) {
-      setError('Text content is required')
-      return
-    }
-
-    const hasRichContent = hasRichFormatting(text)
-    const plainText = extractPlainText(text)
-
-    const macroData = {
-      command,
-      text: plainText,
-      html: hasRichContent ? text : undefined,
-      contentType: hasRichContent ? ('text/html' as const) : ('text/plain' as const),
-      is_sensitive: isSensitive,
-    }
-
-    let result: Result
-    if (editing && editing.id) {
-      result = await updateMacro(String(editing.id), macroData)
-      if (result.success) onDone()
-    } else {
-      result = await createMacro(macroData)
-      if (result.success) {
-        setCommand('')
-        setText('')
-      }
-    }
-    if (!result.success && result.error) setError(result.error)
   }
 
   return (
