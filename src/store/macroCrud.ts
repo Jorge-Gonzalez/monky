@@ -31,8 +31,14 @@ export async function updateMacro(id: string, data: Partial<Macro>): Promise<Res
   return { success: true }
 }
 
-export async function deleteMacro(id: string): Promise<Result> {
-  useMacroStore.getState().deleteMacro(id)
-  await pushDelete(id)
+// Takes an array because deleting a selection is one action, not a run of them. Looping a
+// single-id delete from the UI would make the caller decompose the user's intent and then own
+// what a partial loop means; here the local write is atomic and the pushes fan out from it.
+// The backend has no bulk endpoint (`DELETE /macros/:id`), so the network side is still one
+// request per id -- but in parallel rather than serialised behind each other's awaits.
+export async function deleteMacros(ids: string[]): Promise<Result> {
+  if (ids.length === 0) return { success: true }
+  useMacroStore.getState().deleteMacros(ids)
+  await Promise.all(ids.map((id) => pushDelete(id)))
   return { success: true }
 }

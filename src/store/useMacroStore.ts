@@ -16,7 +16,7 @@ type MacroStore = {
   setMacros: (m: Macro[]) => void
   addMacro: (m: Macro) => StoreOpResult
   updateMacro: (id: Macro['id'], patch: Partial<Macro>) => StoreOpResult
-  deleteMacro: (id: Macro['id']) => void
+  deleteMacros: (ids: Macro['id'][]) => void
   setPrefixes: (prefixes: string[]) => void
   setUseCommitKeys: (useCommitKeys: boolean) => void
   toggleSiteDisabled: (hostname: string) => void
@@ -92,7 +92,13 @@ export const useMacroStore = create<MacroStore>()(
         set((s) => ({ macros: s.macros.map((m) => (String(m.id) === String(id) ? { ...m, ...patch } : m)) }))
         return { success: true }
       },
-      deleteMacro: (id) => set((s) => ({ macros: s.macros.filter((m) => String(m.id) !== String(id)) })),
+      // Takes every id at once so that deleting a multiple selection is one state transition:
+      // one filter pass, one notification, and no render showing the list half-deleted.
+      deleteMacros: (ids) =>
+        set((s) => {
+          const gone = new Set(ids.map(String))
+          return { macros: s.macros.filter((m) => !gone.has(String(m.id))) }
+        }),
       setPrefixes: (prefixes) => set((s) => ({ config: { ...s.config, prefixes } })),
       setUseCommitKeys: (useCommitKeys) => set((s) => ({ config: { ...s.config, useCommitKeys } })),
       setTheme: (theme: ThemeMode) => set((s) => ({ config: { ...s.config, theme } })),

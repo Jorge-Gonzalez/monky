@@ -38,7 +38,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   ;(useMacroStore.getState as ReturnType<typeof vi.fn>).mockReturnValue({
     macros: [notaMacro, sigMacro],
-    deleteMacro: mockDeleteMacro,
+    deleteMacros: mockDeleteMacro,
   })
 })
 

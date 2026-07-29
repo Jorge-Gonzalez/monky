@@ -5,7 +5,7 @@ import type { ModalCoordinator } from '../coordinators/ModalCoordinator'
 import { createModalCoordinator } from '../coordinators/ModalCoordinator'
 import type { SuggestionsCoordinator } from '../coordinators/SuggestionsCoordinator'
 import { createSuggestionsCoordinator } from '../coordinators/SuggestionsCoordinator'
-import { deleteMacro } from '../../store/macroCrud'
+import { deleteMacros } from '../../store/macroCrud'
 import type { Macro } from '../../types'
 
 // Create managers (private, only used by coordinators)
@@ -21,7 +21,7 @@ export const suggestionsCoordinator: SuggestionsCoordinator =
 // pushed to sync (the same path the search view uses).
 export const deleteConfirmManager = createDeleteConfirmManager()
 deleteConfirmManager.setOnConfirm((macro) => {
-  void deleteMacro(String(macro.id))
+  void deleteMacros([String(macro.id)])
 })
 
 // Convenience function for updating macros

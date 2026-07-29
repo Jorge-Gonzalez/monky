@@ -2,7 +2,7 @@ import MacroForm from './MacroForm'
 import MacroListEditor from './MacroListEditor'
 import Settings from './Settings'
 import { useMacroStore } from '../../store/useMacroStore'
-import { deleteMacro } from '../../store/macroCrud'
+import { deleteMacros } from '../../store/macroCrud'
 import { useMacroEditor } from '../useMacroEditor'
 import { t } from '../../lib/i18n'
 
@@ -23,7 +23,7 @@ export default function Editor() {
         macros={macros}
         onEdit={setEditingMacro}
         onDelete={(id) => {
-          void deleteMacro(id)
+          void deleteMacros([id])
         }}
       />
     </div>

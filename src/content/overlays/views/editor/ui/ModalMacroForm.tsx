@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import type { Macro } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
-import { deleteMacro } from '../../../../../store/macroCrud'
+import { deleteMacros } from '../../../../../store/macroCrud'
 import { ContentEditor } from '../../../../../shared/content-editor'
 import { useMacroForm } from '../../../../../shared/useMacroForm'
 import { useCommandSuggestions } from '../useCommandSuggestions'
@@ -54,7 +54,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   const [savedToast, setSavedToast] = useState<string | null>(null)
 
   const suggest = useCommandSuggestions(command, !editing, onLoadMacro, (m) => {
-    void deleteMacro(String(m.id))
+    void deleteMacros([String(m.id)])
   })
   const commandJoined = Boolean((command && !commandValid) || suggest.visible)
 

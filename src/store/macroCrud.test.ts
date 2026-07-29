@@ -8,14 +8,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const addMacro = vi.fn()
 const updateMacroInStore = vi.fn()
-const deleteMacroInStore = vi.fn()
+const deleteMacrosInStore = vi.fn()
 
 vi.mock('./useMacroStore', () => ({
   useMacroStore: {
     getState: () => ({
       addMacro,
       updateMacro: updateMacroInStore,
-      deleteMacro: deleteMacroInStore,
+      deleteMacros: deleteMacrosInStore,
     }),
   },
 }))
@@ -36,7 +36,7 @@ vi.mock('../lib/errors', () => ({
   getErrorMessage: (error: string, command: string) => `friendly(${error}|${command})`,
 }))
 
-import { createMacro, updateMacro, deleteMacro } from './macroCrud'
+import { createMacro, updateMacro, deleteMacros } from './macroCrud'
 
 const DUP = 'El comando "/sig" ya existe.'
 
@@ -104,12 +104,30 @@ describe('updateMacro', () => {
   })
 })
 
-describe('deleteMacro', () => {
+describe('deleteMacros', () => {
   it('deletes from the store, pushes the delete by id, and reports success', async () => {
-    const result = await deleteMacro('42')
+    const result = await deleteMacros(['42'])
 
-    expect(deleteMacroInStore).toHaveBeenCalledWith('42')
+    expect(deleteMacrosInStore).toHaveBeenCalledWith(['42'])
     expect(pushDelete).toHaveBeenCalledWith('42')
+    expect(result).toEqual({ success: true })
+  })
+
+  it('writes a whole selection to the store once, then pushes each id', async () => {
+    // One local write is the point of the array: several would leave renders showing the
+    // list part-way through a delete the user asked for as a single action.
+    await deleteMacros(['1', '2', '3'])
+
+    expect(deleteMacrosInStore).toHaveBeenCalledTimes(1)
+    expect(deleteMacrosInStore).toHaveBeenCalledWith(['1', '2', '3'])
+    expect(pushDelete.mock.calls.map(([id]) => id)).toEqual(['1', '2', '3'])
+  })
+
+  it('does nothing at all when the selection is empty', async () => {
+    const result = await deleteMacros([])
+
+    expect(deleteMacrosInStore).not.toHaveBeenCalled()
+    expect(pushDelete).not.toHaveBeenCalled()
     expect(result).toEqual({ success: true })
   })
 })

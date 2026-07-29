@@ -35,7 +35,7 @@ const mockDelete = vi.fn()
 vi.mock('../../../../../store/macroCrud', () => ({
   createMacro: (data: any) => mockCreate(data),
   updateMacro: (id: any, data: any) => mockUpdate(id, data),
-  deleteMacro: (id: string) => mockDelete(id),
+  deleteMacros: (ids: string[]) => mockDelete(ids),
 }))
 
 function setEditorContent(html: string) {

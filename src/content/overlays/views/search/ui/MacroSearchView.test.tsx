@@ -28,7 +28,7 @@ vi.mock('../../../../../store/useMacroStore', () => ({
 
 const mockDeleteMacro = vi.fn()
 vi.mock('../../../../../store/macroCrud', () => ({
-  deleteMacro: (id: string) => mockDeleteMacro(id),
+  deleteMacros: (ids: string[]) => mockDeleteMacro(ids),
 }))
 
 const props = () => ({
@@ -237,7 +237,7 @@ describe('MacroSearchView', () => {
       expect(selectedOption()).toHaveAttribute('data-state', 'confirming-delete')
       expect(mockDeleteMacro).not.toHaveBeenCalled()
       press('Enter')
-      expect(mockDeleteMacro).toHaveBeenCalledWith('1')
+      expect(mockDeleteMacro).toHaveBeenCalledWith(['1'])
     })
 
     it('disarms when the query changes', () => {

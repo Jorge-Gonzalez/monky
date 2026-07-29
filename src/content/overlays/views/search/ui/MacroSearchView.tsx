@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import type { Macro } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
 import { useMacroStore } from '../../../../../store/useMacroStore'
-import { deleteMacro } from '../../../../../store/macroCrud'
+import { deleteMacros } from '../../../../../store/macroCrud'
 import { useMacroSearch } from '../../../../../shared/useMacroSearch'
 import { useListNavigation } from '../../../hooks/useListNavigation'
 import { useKeyboardNavigation } from '../../../hooks/useKeyboardNavigation'
@@ -98,7 +98,7 @@ export function MacroSearchView({
       if (command.id === 'delete') {
         // Two-step: first select arms the row, a second select on it confirms.
         if (pendingDelete?.id === macro.id) {
-          void deleteMacro(String(macro.id))
+          void deleteMacros([String(macro.id)])
           setPendingDelete(null)
           setSearchQuery('')
         } else {

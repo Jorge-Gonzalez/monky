@@ -23,7 +23,7 @@ vi.mock('./MacroListEditor', () => ({
     </div>
   ),
 }))
-vi.mock('../../store/macroCrud', () => ({ deleteMacro: vi.fn() }))
+vi.mock('../../store/macroCrud', () => ({ deleteMacros: vi.fn() }))
 
 const mockMacros = [
   { id: 1, command: '/brb', text: 'Be right back' },
