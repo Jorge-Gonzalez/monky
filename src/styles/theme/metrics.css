@@ -23,25 +23,21 @@
   --radius-2xl: 16px;
   --radius-3xl: 24px;
 
-  /* Font size scale */
-  --text-xs: 12px;
-  --text-sm: 13px;
-  --text-base: 14px;
-  --text-md: 15px;
-  --text-lg: 16px;
-  --text-xl: 19px;
-  --text-2xl: 21px;
-  --text-3xl: 25px;
+  /* Ermine type scale. Seven steps, one list, no aliases.
 
-  /* Ermine type scale binding. Monky adopts Ermine's T-shirt scale; the
-     historical --text-base token bridges to the middle step. */
-  --type-xs: var(--text-xs);
-  --type-sm: var(--text-sm);
-  --type-md: var(--text-base);
-  --type-lg: var(--text-lg);
-  --type-xl: var(--text-xl);
-  --type-2xl: var(--text-2xl);
-  --type-3xl: var(--text-3xl);
+     The pre-Ermine scale had eight tokens because it carried a 15px step between the
+     middle and 16px. That step was never referenced, before the adoption or after, so
+     seven names absorbed eight values without losing one that was in use. The aliases
+     that recorded the bridge are gone: while they existed there were two tokens called
+     `md` -- the live one at 14px and a dead one at 15px -- and the dead one read as the
+     canonical spelling. */
+  --type-xs: 12px;
+  --type-sm: 13px;
+  --type-md: 14px;
+  --type-lg: 16px;
+  --type-xl: 19px;
+  --type-2xl: 21px;
+  --type-3xl: 25px;
 
   /* Ermine layout size scale binding. */
   --size-sm: 140px;

@@ -17,7 +17,7 @@ export default function MacroItemEditor({
     >
       <div>
         <span className="font-semibold font-mono">{macro.command}</span>
-        <span style={{ marginLeft: '8px', fontSize: 'var(--text-sm)', color: 'var(--ink-soft)' }}>
+        <span style={{ marginLeft: '8px', fontSize: 'var(--type-sm)', color: 'var(--ink-soft)' }}>
           {macro.text.slice(0, 80)}
           {macro.text.length > 80 ? '…' : ''}
         </span>
