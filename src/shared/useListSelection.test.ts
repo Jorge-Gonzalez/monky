@@ -141,6 +141,39 @@ describe('useListSelection — items leaving the list', () => {
     expect(result.current.lead).toBeNull()
   })
 
+  it('does not resurrect a selection if the list grows back', () => {
+    // The list only ever shrinks by deletion today, so this is unobservable in the app. It
+    // pins the invariant instead: the selection is a subset of the list on write, not just in
+    // the derived view, so a filtered-out id cannot ride along inside an operation.
+    const { result, rerender } = renderHook(({ ids }: { ids: readonly string[] }) => useListSelection(ids), {
+      initialProps: { ids: IDS },
+    })
+    void act(() => result.current.toggle('e'))
+    rerender({ ids: ['a', 'b', 'c'] })
+    void act(() => result.current.toggle('a'))
+    rerender({ ids: IDS })
+    expect(sel(result)).toEqual(['a'])
+  })
+
+  // Asserting on `selected` alone would prove nothing here: the derived view prunes an
+  // unlisted id whether the operation was rejected or not. The anchor is where the difference
+  // shows, because a bogus anchor silently turns the next extend into a single selection.
+  it('leaves the anchor untouched when replace is given an id not in the list', () => {
+    const { result } = render()
+    void act(() => result.current.replace('a'))
+    void act(() => result.current.replace('zzz'))
+    void act(() => result.current.extend('c'))
+    expect(sel(result)).toEqual(['a', 'b', 'c'])
+  })
+
+  it('leaves the anchor untouched when toggle is given an id not in the list', () => {
+    const { result } = render()
+    void act(() => result.current.toggle('a'))
+    void act(() => result.current.toggle('zzz'))
+    void act(() => result.current.extend('c'))
+    expect(sel(result)).toEqual(['a', 'b', 'c'])
+  })
+
   it('ranges over the current list after a reorder', () => {
     const { result, rerender } = renderHook(({ ids }: { ids: readonly string[] }) => useListSelection(ids), {
       initialProps: { ids: IDS },

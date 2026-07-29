@@ -14,6 +14,13 @@
 // there is nothing for an anchor to be. `extend` is therefore modifier-only by nature, not by
 // omission.
 //
+// The one invariant is that the selection is a subset of `ids`. It holds on write as well as
+// on read, so there is no memory of ids that have left the list and nothing can reappear if
+// the list grows back. That is not a limitation to work around: `ids` is the whole list as far
+// as this hook can see, and it is never handed anything wider, so every operation is fully
+// defined over it. A second tier for "selected but not currently listed" would be the thing
+// that made `replace` and `selectAll` ambiguous, not the thing that resolved them.
+//
 // Nothing here touches the DOM or reads an event. Callers decide which operation an
 // interaction means; see `selectionIntent`.
 import { useCallback, useMemo, useState } from 'react'
@@ -54,18 +61,30 @@ export function useListSelection<Id>(ids: readonly Id[]): ListSelection<Id> {
   const selected = useMemo(() => new Set(ids.filter((id) => state.selected.has(id))), [state.selected, ids])
   const lead = state.lead !== null && present.has(state.lead) ? state.lead : null
 
-  const replace = useCallback((id: Id) => {
-    setState({ selected: new Set([id]), anchor: id, lead: id })
-  }, [])
+  const replace = useCallback(
+    (id: Id) => {
+      if (!present.has(id)) return
+      setState({ selected: new Set([id]), anchor: id, lead: id })
+    },
+    [present]
+  )
 
-  const toggle = useCallback((id: Id) => {
-    setState((prev) => {
-      const next = new Set(prev.selected)
-      if (!next.delete(id)) next.add(id)
-      // The anchor follows a toggle, so a Shift that comes next ranges from here.
-      return { selected: next, anchor: id, lead: id }
-    })
-  }, [])
+  const toggle = useCallback(
+    (id: Id) => {
+      setState((prev) => {
+        if (!present.has(id)) return prev
+        // Normalised against the list on write, like the other three operations, so the
+        // invariant `selection is a subset of ids` holds in the stored state and not only in
+        // the derived view. Copying `prev.selected` wholesale would carry ids that have left
+        // the list, and they would reappear if it ever grew back.
+        const next = new Set(ids.filter((candidate) => prev.selected.has(candidate)))
+        if (!next.delete(id)) next.add(id)
+        // The anchor follows a toggle, so a Shift that comes next ranges from here.
+        return { selected: next, anchor: id, lead: id }
+      })
+    },
+    [ids, present]
+  )
 
   const extend = useCallback(
     (id: Id) => {
