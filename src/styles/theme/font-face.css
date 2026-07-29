@@ -7,6 +7,11 @@
   font-family: 'IBM Plex Sans';
   src: url('/fonts/ibm-plex-sans-var.woff2') format('woff2');
   font-weight: 100 700;
+  /* The file carries wdth 85–100 as well as wght. Without the range declared the browser
+     treats the face as normal-width only and never engages the axis, so font-stretch would
+     silently do nothing. Note `condensed` is 75% — below the minimum, so it clamps to 85;
+     `semi-condensed` (87.5%) is the keyword that lands inside the range. */
+  font-stretch: 85% 100%;
   font-style: normal;
   font-display: swap;
 }

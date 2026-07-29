@@ -282,3 +282,18 @@
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--accent-dim) !important;
 }
+
+/* sf-narrow-text: the variable face's width axis at its narrowest, 85%. Roughly 9.3% more
+   text per line, measured, which is what a dense list of macro previews wants.
+
+   A fragment rather than an Ermine word: the grammar has no font-width vocabulary at all,
+   and one site is well under the admission bar. If a second surface wants it, that is the
+   evidence to take upstream.
+
+   Requires the font-stretch range on the @font-face, or the axis never engages. The
+   narrowest the file offers is 85; the `condensed` keyword is 75% and would simply clamp,
+   and the static Condensed cuts in public/fonts are not declared -- we are on the variable
+   file. */
+.sf-narrow-text {
+  font-stretch: 85%;
+}

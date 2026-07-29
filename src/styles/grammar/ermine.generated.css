@@ -594,16 +594,16 @@
   max-height: var(--measure-results-sm);
 }
 
-.padding-block-lg {
-  padding-block: var(--spacing-lg);
-}
-
 .padding-left-xs {
   padding-left: var(--spacing-xs);
 }
 
 .padding-right-md {
   padding-right: var(--spacing-md);
+}
+
+.padding-block-lg {
+  padding-block: var(--spacing-lg);
 }
 
 .padding-right-xs {
