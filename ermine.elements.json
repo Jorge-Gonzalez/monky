@@ -53,7 +53,7 @@
     },
     {
       "id": "search-input-container",
-      "classString": "padding-top-xs padding-bottom-md padding-right-xl padding-left-xl",
+      "classString": "padding-top-xs padding-bottom-md padding-inline-xl",
       "backing": []
     },
     {
@@ -86,7 +86,7 @@
     },
     {
       "id": "search-item-command-cell",
-      "classString": "padding-right-xs padding-top-lg padding-bottom-lg padding-left-none hidden width-command tween-ground-quick ink-accent rule-soft ruled-bottom font-lg font-medium pressable truncate",
+      "classString": "padding-right-xs padding-block-lg padding-left-none hidden width-command tween-ground-quick ink-accent rule-soft ruled-bottom font-lg font-medium pressable truncate",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -94,7 +94,7 @@
     },
     {
       "id": "search-item-text-cell",
-      "classString": "padding-left-xs padding-right-md padding-top-lg padding-bottom-lg hidden tween-ground-quick ink rule-soft ruled-bottom font-lg pressable truncate parent-selected:overflow-visible parent-selected:text-wrap",
+      "classString": "padding-left-xs padding-right-md padding-block-lg hidden tween-ground-quick ink rule-soft ruled-bottom font-lg pressable truncate parent-selected:overflow-visible parent-selected:text-wrap",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -107,12 +107,12 @@
     },
     {
       "id": "search-item-confirm-cell",
-      "classString": "padding-left-xs padding-right-md padding-top-lg padding-bottom-lg hidden ink-fail rule-soft ruled-bottom font-lg font-medium truncate",
+      "classString": "padding-left-xs padding-right-md padding-block-lg hidden ink-fail rule-soft ruled-bottom font-lg font-medium truncate",
       "backing": []
     },
     {
       "id": "search-command-name-cell",
-      "classString": "padding-right-xs padding-top-lg padding-bottom-lg padding-left-none hidden width-command tween-ground-quick ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate",
+      "classString": "padding-right-xs padding-block-lg padding-left-none hidden width-command tween-ground-quick ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -120,7 +120,7 @@
     },
     {
       "id": "search-command-description-cell",
-      "classString": "padding-left-xs padding-right-md padding-top-lg padding-bottom-lg tween-ground-quick ink rule-soft font-lg",
+      "classString": "padding-left-xs padding-right-md padding-block-lg tween-ground-quick ink rule-soft font-lg",
       "backing": [],
       "context": {
         "parentClasses": "subgrid span-all position-relative selectable"
@@ -173,7 +173,7 @@
     },
     {
       "id": "settings-body",
-      "classString": "padding-bottom-xl padding-top-2xl padding-right-none padding-left-none",
+      "classString": "padding-bottom-xl padding-top-2xl padding-inline-none",
       "backing": []
     },
     {
@@ -626,7 +626,7 @@
     },
     {
       "id": "phase-b-content-editor-body",
-      "classString": "elastic basis-ratio padding-top-md padding-bottom-md padding-left-md padding-right-xl margin-right-xs scroll-auto min-height-none ground-subtle ink font-md",
+      "classString": "elastic basis-ratio padding-block-md padding-left-md padding-right-xl margin-right-xs scroll-auto min-height-none ground-subtle ink font-md",
       "backing": []
     },
     {

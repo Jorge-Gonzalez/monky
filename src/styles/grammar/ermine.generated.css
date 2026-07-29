@@ -361,12 +361,8 @@
   outline-offset: var(--ring-offset, 0px);
 }
 
-.padding-top-md {
-  padding-top: var(--spacing-md);
-}
-
-.padding-bottom-md {
-  padding-bottom: var(--spacing-md);
+.padding-block-md {
+  padding-block: var(--spacing-md);
 }
 
 .padding-left-md {
@@ -598,20 +594,16 @@
   max-height: var(--measure-results-sm);
 }
 
+.padding-block-lg {
+  padding-block: var(--spacing-lg);
+}
+
 .padding-left-xs {
   padding-left: var(--spacing-xs);
 }
 
 .padding-right-md {
   padding-right: var(--spacing-md);
-}
-
-.padding-top-lg {
-  padding-top: var(--spacing-lg);
-}
-
-.padding-bottom-lg {
-  padding-bottom: var(--spacing-lg);
 }
 
 .padding-right-xs {
@@ -659,8 +651,8 @@
   padding-top: var(--spacing-xs);
 }
 
-.padding-left-xl {
-  padding-left: var(--spacing-xl);
+.padding-bottom-md {
+  padding-bottom: var(--spacing-md);
 }
 
 .subgrid {
@@ -731,6 +723,10 @@
   padding-right: var(--spacing-lg);
 }
 
+.padding-left-xl {
+  padding-left: var(--spacing-xl);
+}
+
 .content-align-start {
   align-content: start;
 }
@@ -761,10 +757,6 @@
 
 .padding-top-2xl {
   padding-top: var(--spacing-2xl);
-}
-
-.padding-right-none {
-  padding-right: 0;
 }
 
 .columns-12 {
@@ -915,6 +907,10 @@
 
 .padding-right-sm {
   padding-right: var(--spacing-sm);
+}
+
+.padding-top-md {
+  padding-top: var(--spacing-md);
 }
 
 .padding-bottom-none {

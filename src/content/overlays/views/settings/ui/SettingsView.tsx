@@ -103,7 +103,7 @@ export function SettingsView(_props: BaseModalViewProps) {
       className="vertical scroll-auto fill-block
         ground scrollbar-subtle"
     >
-      <div className="padding-bottom-xl padding-top-2xl padding-right-none padding-left-none">
+      <div className="padding-bottom-xl padding-top-2xl padding-inline-none">
         <SettingsSection label={t('settings.sections.general')}>
           <SettingsRow label={t('options.prefixEditor.title')}>
             <SelectableGroup

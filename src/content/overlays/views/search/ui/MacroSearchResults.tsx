@@ -105,7 +105,7 @@ function MacroSearchItem({
     >
       <div
         data-component="search-item-command"
-        className={`padding-right-xs padding-top-sm padding-bottom-sm padding-left-md hidden width-command tween-ground-quick font-md font-bold pressable truncate ${
+        className={`padding-right-xs padding-block-sm padding-left-md hidden width-command tween-ground-quick font-md font-bold pressable truncate ${
           isConfirmingDelete ? 'ink-fail' : 'ink-accent'
         }`}
       >
@@ -114,7 +114,7 @@ function MacroSearchItem({
       {isConfirmingDelete ? (
         <div
           data-component="search-item-confirm"
-          className="padding-left-xs padding-top-sm padding-bottom-sm padding-right-md hidden
+          className="padding-left-xs padding-block-sm padding-right-md hidden
             ink-fail rule-soft ruled-bottom font-md font-medium truncate"
         >
           {t('modalSearch.confirmDelete')}
@@ -122,7 +122,7 @@ function MacroSearchItem({
       ) : (
         <div
           data-component="search-item-text"
-          className="padding-left-xs padding-top-sm padding-bottom-sm padding-right-md hidden
+          className="padding-left-xs padding-block-sm padding-right-md hidden
             tween-ground-quick
             ink font-md pressable truncate
             parent-selected:overflow-visible parent-selected:text-wrap"

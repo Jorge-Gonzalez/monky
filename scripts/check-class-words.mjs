@@ -90,9 +90,17 @@ function literalsIn(expression) {
   return out
 }
 
+// tests/style-smoke-fixture.ts is markup too: it renders against the same stylesheet, and
+// Ermine's paragraph formatter already treats it as a source of class paragraphs. Leaving it
+// out is how a rule removed from the grammar can silently change what the smoke test measures.
+const MARKUP_FILES = () => [
+  ...walk(SRC, (n) => /\.(tsx|jsx|ts|js)$/.test(n) && !/\.test\./.test(n)),
+  join(ROOT, 'tests/style-smoke-fixture.ts'),
+]
+
 function usedWords() {
   const used = new Map()
-  for (const file of walk(SRC, (n) => /\.(tsx|jsx|ts|js)$/.test(n) && !/\.test\./.test(n))) {
+  for (const file of MARKUP_FILES()) {
     for (const value of classValues(readFileSync(file, 'utf8'))) {
       for (const word of value.split(/\s+/).filter(Boolean)) {
         if (!/^[a-z][a-z0-9:-]*$/.test(word)) continue

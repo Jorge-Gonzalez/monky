@@ -47,7 +47,7 @@ export function MacroCommandResults({ commands, selectedIndex, onSelect }: Macro
         >
           <div
             data-component="search-item-command"
-            className="padding-right-xs padding-left-md padding-top-lg padding-bottom-lg hidden width-command
+            className="padding-right-xs padding-left-md padding-block-lg hidden width-command
               tween-ground-quick
               ink-accent rule-soft ruled-bottom font-lg font-semibold font-mono truncate"
           >
@@ -55,7 +55,7 @@ export function MacroCommandResults({ commands, selectedIndex, onSelect }: Macro
           </div>
           <em
             data-component="search-item-text"
-            className="padding-left-xs padding-right-md padding-top-lg padding-bottom-lg
+            className="padding-left-xs padding-right-md padding-block-lg
               tween-ground-quick
               ink rule-soft font-lg"
           >

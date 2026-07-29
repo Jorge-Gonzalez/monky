@@ -21,7 +21,7 @@ export function MacroSearchInput({
   return (
     <div
       data-component="search-input-container"
-      className="padding-top-xs padding-bottom-md padding-right-xl padding-left-xl"
+      className="padding-top-xs padding-bottom-md padding-inline-xl"
     >
       <input
         ref={inputRef}
