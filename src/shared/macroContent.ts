@@ -1,6 +1,21 @@
+// Structure counts as formatting. The first version listed only inline tags, so a paste made of a
+// heading and paragraphs -- an article, the ordinary case -- answered `false`, was stored as
+// `text/plain`, and lost its structure on the way in.
+//
+// `p` and `div` are deliberately absent, and that is the line this draws. Both are generic line
+// wrappers rather than formatting: Chrome puts a `div` around every typed line, a pasted paragraph
+// of unadorned prose is a `p`, and in both cases the plain-text path already carries the breaks.
+// Counting them would push simple text macros down the rich path, which inserts the wrapper into
+// the host and adds block spacing nobody asked for. A heading, a list, a quote or any inline
+// emphasis says something plain text cannot.
+//
+// `\b` rather than `\s` so `<a>` counts alongside `<a href=...>`, and `<h2>` alongside `<h2
+// style=...>`.
+const RICH_ELEMENTS =
+  /<(?:strong|b|em|i|u|s|mark|code|sub|sup|a|span|br|hr|ul|ol|li|blockquote|pre|h[1-6]|table|thead|tbody|tr|td|th)\b/i
+
 export function hasRichFormatting(html: string): boolean {
-  const richElements = /<(?:strong|b|em|i|u|ul|ol|li|br|a\s|span\s)/i
-  return richElements.test(html) || html.includes('<br')
+  return RICH_ELEMENTS.test(html)
 }
 
 function traverse(node: Node, acc: string, listCounters: number[]): string {

@@ -1,4 +1,4 @@
-import { stripThemeAppearance } from '../macroAppearance'
+import { stripForeignPresentation } from '../macroPresentation'
 
 const TAG_REPLACEMENTS: Record<string, string> = {
   b: 'strong',
@@ -59,10 +59,10 @@ function normalizeElement(el: Element): void {
 export function normalizeEditorHTML(html: string): string {
   if (!html) return html
   const div = document.createElement('div')
-  // Theme-bearing colour goes first, before the span rules run. Order matters: a pasted
-  // `<span style="font-weight: bold; color: #c00">` becomes a bare `<strong>` this way, whereas
-  // colour-only spans collapse entirely instead of surviving as empty wrappers.
-  div.innerHTML = stripThemeAppearance(html)
+  div.innerHTML = html
   Array.from(div.children).forEach((child) => normalizeElement(child))
-  return div.innerHTML
+  // Presentation goes last, after the semantic conversion rather than before it. `spanStyleToTag`
+  // reads `font-weight: bold` off the style attribute to decide on `<strong>`, so stripping first
+  // would throw the bold away along with the page's design.
+  return stripForeignPresentation(div.innerHTML)
 }

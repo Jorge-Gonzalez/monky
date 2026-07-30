@@ -1,5 +1,5 @@
 import type { EditableEl } from '../../../types'
-import { stripThemeAppearance } from '../../../shared/macroAppearance'
+import { stripForeignPresentation } from '../../../shared/macroPresentation'
 import { findTextNodeForOffset } from './editableUtils'
 
 /**
@@ -150,12 +150,12 @@ export function replaceWithMarker(
     if (markerData.isHtml) {
       // For HTML content, parse and append as DOM nodes.
       //
-      // The colour strip is repeated here rather than trusted from the editor, because this is
-      // the only point that sees macros stored before it existed. Doing it here fixes them with
-      // no migration, and the host is where the mismatch actually hurts: the composer may be dark
-      // while the page the content was pasted from was light.
+      // The strip is repeated here rather than trusted from the editor, because this is the only
+      // point that sees macros stored before it existed. Doing it here fixes them with no
+      // migration, and the host is where the mismatch actually hurts: the composer may be dark,
+      // or set in its own type, while the page the content was pasted from was neither.
       const tempDiv = document.createElement('div')
-      tempDiv.innerHTML = stripThemeAppearance(contentHtml)
+      tempDiv.innerHTML = stripForeignPresentation(contentHtml)
 
       // Move all parsed nodes into the marker
       while (tempDiv.firstChild) {
