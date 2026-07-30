@@ -1,3 +1,5 @@
+import { stripThemeAppearance } from '../macroAppearance'
+
 const TAG_REPLACEMENTS: Record<string, string> = {
   b: 'strong',
   i: 'em',
@@ -57,7 +59,10 @@ function normalizeElement(el: Element): void {
 export function normalizeEditorHTML(html: string): string {
   if (!html) return html
   const div = document.createElement('div')
-  div.innerHTML = html
+  // Theme-bearing colour goes first, before the span rules run. Order matters: a pasted
+  // `<span style="font-weight: bold; color: #c00">` becomes a bare `<strong>` this way, whereas
+  // colour-only spans collapse entirely instead of surviving as empty wrappers.
+  div.innerHTML = stripThemeAppearance(html)
   Array.from(div.children).forEach((child) => normalizeElement(child))
   return div.innerHTML
 }
