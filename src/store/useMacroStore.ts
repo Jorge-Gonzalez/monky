@@ -35,17 +35,31 @@ function commandExists(macros: Macro[], command: string, currentId?: Macro['id']
 // which would otherwise re-read storage and re-notify subscribers needlessly.
 let lastWrittenValue: string | null = null
 
-// Tiered storage: writes go to local (reliable) and sync (best-effort cross-device).
-// Reads prefer sync so cross-device changes are picked up; local is the fallback.
+// Whether the last attempt to copy state to chrome.storage.sync succeeded. Only used to report
+// the transition into staleness once, rather than on every write.
+let syncCopyHealthy = true
+
+// `chrome.storage.local` is the authority, and the only thing read back.
+//
+// It used to read `chrome.storage.sync` first and fall back to local, while writing local
+// always and sync best-effort inside a swallowed catch. Those two halves combine badly. Sync
+// caps an item at 8192 bytes -- measured, this state was 7971 of them, 221 short -- and past
+// that line the write rejects, the catch eats it, and sync silently freezes at its last good
+// value. That frozen value is not null, so it goes on winning the read: the store hydrates
+// stale and the next write persists the stale state back over the good local copy. MDN says
+// the same thing in the abstract about storage.sync, that "server values take precedence
+// during sync, potentially overwriting local updates".
+//
+// Reading local only, rather than local-first, is what the usage model allows: macros are not
+// edited on two machines at once, so hydration has nothing to gain from consulting sync and a
+// whole failure mode to lose. Sync stops being a silent input. Cross-device recovery belongs
+// to an explicit, confirmed restore, where the user is present to see which copy they chose.
+//
+// Sync is still written, best-effort, so that a restore has something to find. A rejection
+// there is now reported rather than swallowed: it means the backup is stale, which the user
+// is entitled to know.
 const chromeStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
-    try {
-      const result = await chrome.storage.sync.get(name)
-      const synced = result[name] as string | undefined
-      if (synced != null) return synced
-    } catch {
-      /* sync storage unavailable or over quota: fall back to local */
-    }
     const local = await chrome.storage.local.get(name)
     return (local[name] as string | undefined) ?? null
   },
@@ -54,8 +68,19 @@ const chromeStorage: StateStorage = {
     await chrome.storage.local.set({ [name]: value })
     try {
       await chrome.storage.sync.set({ [name]: value })
-    } catch {
-      /* sync storage unavailable or over quota: the local write above stands */
+      syncCopyHealthy = true
+    } catch (error) {
+      // Over quota, rate limited, or no browser account. The local write above stands, so
+      // nothing is lost -- but the sync copy is now behind, and silence is what let that
+      // matter last time.
+      //
+      // Reported on the transition rather than on every write. The condition is sticky: once
+      // the state is too large for sync it stays too large, so warning each time would bury
+      // the one message that carries information under a stream of identical ones.
+      if (syncCopyHealthy) {
+        syncCopyHealthy = false
+        console.warn('[MONKY] chrome.storage.sync copy is now stale; local storage is unaffected:', error)
+      }
     }
   },
   removeItem: async (name: string): Promise<void> => {
@@ -152,15 +177,18 @@ export const useMacroStore = create<MacroStore>()(
  */
 if (typeof chrome !== 'undefined' && chrome.storage?.onChanged) {
   chrome.storage.onChanged.addListener((changes, area) => {
-    // Rehydrate when either local (same-device context switch) or sync (cross-device) changes.
-    if (area === 'local' || area === 'sync') {
+    // Local only, because local is the only area read back. A sync change used to rehydrate
+    // too, which is how a stale sync copy reached the UI; now it would only re-read local and
+    // find what is already there. Same rule as the content script's own listener, which has
+    // watched local alone all along -- the two contexts no longer disagree about which storage
+    // area is authoritative.
+    if (area === 'local') {
       const storeName = useMacroStore.persist.getOptions().name
       const change = storeName ? changes[storeName] : undefined
-      // Ignore the echo of our own writes: a change whose value matches what we
-      // just persisted carries no new information, and re-reading it here (sync
-      // is read first and can be stale under rate-limiting) is what caused the
-      // settings controls to flicker back to a stale value. Genuine external
-      // changes (popup, another device) carry a different value and still rehydrate.
+      // Ignore the echo of our own writes: a change whose value matches what we just persisted
+      // carries no new information, and re-reading it is what made the settings controls
+      // flicker. Genuine external changes (the popup, the editor page) carry a different value
+      // and still rehydrate.
       if (change && change.newValue !== lastWrittenValue) {
         void useMacroStore.persist.rehydrate()
       }
