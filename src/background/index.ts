@@ -1,4 +1,5 @@
 import { syncMacros } from '../lib/sync'
+import { startMacroSnapshots } from '../store/macroSnapshotWatcher'
 
 // A sync failure here has no UI to surface it, so every call logs rather than
 // rejecting into nothing. The chrome.* registrations are genuinely fire-and-forget
@@ -19,6 +20,12 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 
 // initial sync
 runSync('startup')
+
+// Automatic local backups. Registered here because the service worker is the one context that
+// sees macro changes from every surface -- editor page, popup, content script -- so none of them
+// has to know backups exist. Registration is a storage listener, which is what wakes the worker,
+// so it survives suspension.
+startMacroSnapshots()
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg === 'online') {
