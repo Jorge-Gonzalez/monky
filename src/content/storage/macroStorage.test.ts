@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { loadMacros, listenMacrosChange } from './macroStorage'
+import { loadMacros, listenMacrosChange, loadStoredMacros } from './macroStorage'
 
 // Mock chrome APIs
 const mockGet = vi.fn()
@@ -116,6 +116,36 @@ describe('macroStorage', () => {
       const result = await loadMacros()
 
       expect(result).toEqual([])
+    })
+  })
+
+  describe('loadStoredMacros', () => {
+    it('returns the stored macros without reshaping them', async () => {
+      // The narrowing view keeps six fields; a backup has to keep whatever was written, or a
+      // restore silently drops what it never knew about.
+      const stored = [
+        {
+          id: 1,
+          command: '/a',
+          text: 'A',
+          contentType: 'text/plain',
+          updated_at: '2026-07-31T06:25:07.947Z',
+        },
+      ]
+      mockGet.mockResolvedValue({ 'macro-storage': JSON.stringify({ state: { macros: stored } }) })
+      expect(await loadStoredMacros()).toEqual(stored)
+    })
+
+    it('returns null rather than an empty list when there is nothing stored', async () => {
+      // The difference matters to the baseline snapshot: absent storage must not be recorded as
+      // a library with nothing in it, which would put an empty backup at the head of the history.
+      mockGet.mockResolvedValue({})
+      expect(await loadStoredMacros()).toBeNull()
+    })
+
+    it('returns null when the stored value is not a macro list', async () => {
+      mockGet.mockResolvedValue({ 'macro-storage': JSON.stringify({ state: { macros: 'broken' } }) })
+      expect(await loadStoredMacros()).toBeNull()
     })
   })
 

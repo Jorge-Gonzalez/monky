@@ -41,6 +41,32 @@ export async function loadMacros(): Promise<Macro[]> {
   return toMacros(readMacros(result['macro-storage']))
 }
 
+/**
+ * The stored macros exactly as persisted, for callers that must not normalise them.
+ *
+ * `toMacros` narrows to the six fields the detector needs, which is right for expansion and wrong
+ * for a backup: a backup that reshapes its input is not a backup. It was silently dropping
+ * `updated_at` -- the field the backend merge orders by -- so a restore would have made every
+ * macro look as though it had never been edited. Any field added later would have gone the same
+ * way, which is why this reads the array rather than adding one name to the narrowing.
+ */
+export async function loadStoredMacros(): Promise<Macro[] | null> {
+  const result = await chrome.storage.local.get('macro-storage')
+  const stored = readMacros(result['macro-storage'])
+  // null rather than [] for absent or unreadable storage, so a caller can tell "no library yet"
+  // from "a library with nothing in it" -- a backup should not record the second as the first.
+  return Array.isArray(stored) ? (stored as Macro[]) : null
+}
+
+export function listenStoredMacrosChange(callback: (macros: Macro[]) => void): void {
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes['macro-storage']) {
+      const stored = readMacros(changes['macro-storage'].newValue)
+      if (Array.isArray(stored)) callback(stored as Macro[])
+    }
+  })
+}
+
 export function listenMacrosChange(callback: (macros: Macro[]) => void): void {
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'local' && changes['macro-storage']) {

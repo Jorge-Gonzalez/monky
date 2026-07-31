@@ -6,17 +6,39 @@
 // about bursts: an import adds macros one at a time, so without it a single import would spend
 // every one of the five recent retention slots on intermediate states of itself, which is exactly
 // the churn the tiering exists to prevent. Ordinary edits arrive far apart and are unaffected.
+//
+// It reads the stored array verbatim rather than through the detector's narrowing view, because a
+// backup that reshapes what it stores cannot restore what it was given.
 import type { Macro } from '../types'
-import { listenMacrosChange } from '../content/storage/macroStorage'
-import { takeSnapshot } from './macroSnapshots'
+import { listenStoredMacrosChange, loadStoredMacros } from '../content/storage/macroStorage'
+import { listSnapshots, takeSnapshot } from './macroSnapshots'
 
 const DEBOUNCE_MS = 5000
+
+/**
+ * Record the library as found, once, when nothing has been recorded yet.
+ *
+ * Without this the first snapshot is the state *after* the first change, so the first mistake on
+ * any install is the one thing not protected -- backups that begin at the first change protect
+ * everything except the first change. Found by looking at a real profile whose index was still at
+ * revision 1, holding the library as it was after a macro was added and not as it was before.
+ */
+async function recordBaseline(): Promise<void> {
+  if ((await listSnapshots()).length > 0) return
+  const macros = await loadStoredMacros()
+  if (macros === null) return
+  await takeSnapshot(macros)
+}
 
 export function startMacroSnapshots({ debounceMs = DEBOUNCE_MS } = {}): () => void {
   let timer: ReturnType<typeof setTimeout> | undefined
   let pending: Macro[] | null = null
 
-  listenMacrosChange((macros) => {
+  void recordBaseline().catch((error: unknown) => {
+    console.warn('[MONKY] could not record a baseline macro snapshot:', error)
+  })
+
+  listenStoredMacrosChange((macros) => {
     pending = macros
     if (timer !== undefined) clearTimeout(timer)
     timer = setTimeout(() => {
