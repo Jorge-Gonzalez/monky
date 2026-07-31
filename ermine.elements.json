@@ -886,6 +886,31 @@
       "context": {
         "parentClasses": "horizontal gap-sm padding-block-sm padding-inline-sm align-center selectable"
       }
+    },
+    {
+      "id": "snapshot-list",
+      "classString": "vertical gap-xs scroll-auto max-height-results-sm scrollbar-subtle",
+      "backing": []
+    },
+    {
+      "id": "snapshot-row",
+      "classString": "horizontal gap-sm padding-block-xs align-center justify-between",
+      "backing": []
+    },
+    {
+      "id": "snapshot-empty",
+      "classString": "ink-soft font-sm",
+      "backing": []
+    },
+    {
+      "id": "snapshot-when",
+      "classString": "ink font-sm",
+      "backing": []
+    },
+    {
+      "id": "snapshot-count",
+      "classString": "ink-soft font-xs tabular",
+      "backing": []
     }
   ]
 }

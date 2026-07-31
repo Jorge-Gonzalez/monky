@@ -119,6 +119,28 @@ export function planRetention(
   }
 }
 
+/**
+ * Which day a snapshot belongs to, from the user's point of view rather than the clock's. The
+ * value of this feature is realized at the moment of panic, so the list has to read as "earlier
+ * today" and "yesterday" -- not as timestamps the reader has to subtract.
+ *
+ * Calendar days in local time, and yesterday is found by stepping the date back rather than by
+ * subtracting 24 hours, which would land an hour out on the days the clocks change.
+ */
+export function snapshotBucket(takenAt: string, now: number): 'today' | 'yesterday' | 'earlier' {
+  // An unreadable date needs no guard of its own: every comparison below is false against NaN, so
+  // it falls through to 'earlier' on its own. A guard here looked prudent and was unreachable.
+  const then = new Date(takenAt)
+  const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
+  const thatDay = startOfDay(then)
+  const today = startOfDay(new Date(now))
+  if (thatDay >= today) return 'today'
+
+  const yesterday = new Date(now)
+  yesterday.setDate(yesterday.getDate() - 1)
+  return thatDay === startOfDay(yesterday) ? 'yesterday' : 'earlier'
+}
+
 async function readIndex(): Promise<SnapshotIndex> {
   const stored = await chrome.storage.local.get(INDEX_KEY)
   const index = stored[INDEX_KEY] as SnapshotIndex | undefined

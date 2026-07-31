@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useMacroStore } from '../../../../store/useMacroStore'
 import { serializeMacros, parseMacroImport, mergeImport } from '../../../../lib/macroIO'
+import { takeSnapshot } from '../../../../store/macroSnapshots'
 import { t } from '../../../../lib/i18n'
 
 export type ImportStatus = { ok: boolean; message: string } | null
@@ -37,6 +38,10 @@ export function useMacroImportExport() {
           flash(false, t('settings.importExport.status.noValidMacros'))
           return
         }
+        // Snapshot the library as it stands before an import changes it, forced past the
+        // duplicate check. An import is one of the two operations most likely to want undoing,
+        // and the burst of adds that follows would otherwise be the only thing recorded.
+        void takeSnapshot(macros, { force: true })
         const existing = new Set(macros.map((m) => m.command))
         const { added, skipped } = mergeImport(parsed, existing, addMacro)
         flash(

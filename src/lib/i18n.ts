@@ -49,6 +49,22 @@ const translations = {
         appearance: 'Appearance',
         data: 'Data',
       },
+      snapshots: {
+        title: 'Automatic backups',
+        description: 'Your macros are backed up here as you change them.',
+        empty: 'No backups yet. One is kept each time your macros change.',
+        today: 'Earlier today, {{time}}',
+        yesterday: 'Yesterday, {{time}}',
+        earlier: '{{date}}, {{time}}',
+        count: '{{count}} macros',
+        restore: 'Restore',
+        confirm: 'Replace my macros',
+        cancel: 'Cancel',
+        status: {
+          restored: 'Restored {{count}} macros. The previous set was backed up first.',
+          unreadable: 'That backup could not be read, so nothing was changed.',
+        },
+      },
       importExport: {
         title: 'Import / Export',
         description:
@@ -229,6 +245,22 @@ const translations = {
         general: 'General',
         appearance: 'Apariencia',
         data: 'Datos',
+      },
+      snapshots: {
+        title: 'Copias automáticas',
+        description: 'Tus macros se copian aquí cada vez que los cambias.',
+        empty: 'Aún no hay copias. Se guarda una cada vez que cambian tus macros.',
+        today: 'Hoy, {{time}}',
+        yesterday: 'Ayer, {{time}}',
+        earlier: '{{date}}, {{time}}',
+        count: '{{count}} macros',
+        restore: 'Restaurar',
+        confirm: 'Reemplazar mis macros',
+        cancel: 'Cancelar',
+        status: {
+          restored: 'Se restauraron {{count}} macros. El conjunto anterior se copió antes.',
+          unreadable: 'No se pudo leer esa copia, así que no se cambió nada.',
+        },
       },
       importExport: {
         title: 'Importar / Exportar',

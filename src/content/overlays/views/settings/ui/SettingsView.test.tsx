@@ -60,12 +60,20 @@ describe('SettingsView', () => {
     })
 
     it('puts every control in a labelled row', () => {
+      // Naming the labels rather than counting them: a bare count says nothing about which row
+      // went missing, and it fails identically whether a row was added or lost.
       render(<SettingsView {...props} />)
-      const rows = document.querySelectorAll('[data-component="settings-row"]')
-      expect(rows).toHaveLength(5)
-      for (const row of rows) {
-        expect(row.querySelector('[data-component="settings-row-label"]')?.textContent).toBeTruthy()
-      }
+      const rows = [...document.querySelectorAll('[data-component="settings-row"]')]
+      expect(
+        rows.map((row) => row.querySelector('[data-component="settings-row-label"]')?.textContent)
+      ).toEqual([
+        'options.prefixEditor.title',
+        'replacementMode.title',
+        'settings.colorTheme',
+        'settings.language',
+        'settings.importExport.title',
+        'settings.snapshots.title',
+      ])
     })
   })
 

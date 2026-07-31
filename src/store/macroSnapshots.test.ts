@@ -7,6 +7,7 @@ import {
   takeSnapshot,
   listSnapshots,
   readSnapshot,
+  snapshotBucket,
   type SnapshotMeta,
 } from './macroSnapshots'
 
@@ -72,6 +73,38 @@ describe('checksumMacros', () => {
     // here is a backup silently not taken.
     const macros = [macro('a'), macro('b')]
     expect(checksumMacros(macros).startsWith(`${JSON.stringify(macros).length}-`)).toBe(true)
+  })
+})
+
+describe('snapshotBucket', () => {
+  // Local calendar days, because "earlier today" is the user's day rather than the clock's.
+  const noon = Date.parse('2026-07-30T12:00:00.000Z')
+  const local = (iso: string) => new Date(iso).toISOString()
+
+  it('calls anything on the same local day today', () => {
+    const justNow = new Date(noon - 60_000).toISOString()
+    expect(snapshotBucket(justNow, noon)).toBe('today')
+  })
+
+  it('calls the previous local day yesterday', () => {
+    const yesterday = new Date(noon)
+    yesterday.setDate(yesterday.getDate() - 1)
+    expect(snapshotBucket(local(yesterday.toISOString()), noon)).toBe('yesterday')
+  })
+
+  it('steps the date back rather than subtracting a day, so the clock changes do not shift it', () => {
+    // Two days back is never "yesterday" whatever the offset did in between.
+    const twoDaysBack = new Date(noon)
+    twoDaysBack.setDate(twoDaysBack.getDate() - 2)
+    expect(snapshotBucket(local(twoDaysBack.toISOString()), noon)).toBe('earlier')
+  })
+
+  it('calls a future timestamp today rather than inventing a label for it', () => {
+    expect(snapshotBucket(new Date(noon + 60_000).toISOString(), noon)).toBe('today')
+  })
+
+  it('falls back to earlier for a date it cannot read', () => {
+    expect(snapshotBucket('not a date', noon)).toBe('earlier')
   })
 })
 
