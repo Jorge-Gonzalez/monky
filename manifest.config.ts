@@ -5,7 +5,9 @@ export default defineManifest({
   name: 'Monky - Macro Text Expander',
   version: '0.1.0',
   description: 'Reemplaza macros por texto en inputs y textareas con prefijos configurables.',
-  permissions: ['storage', 'tabs'],
+  // `alarms` is the browser-account backup's debounce. A setTimeout cannot do it: an MV3 service
+  // worker is torn down when idle and takes pending timers with it.
+  permissions: ['storage', 'alarms', 'tabs'],
   host_permissions: ['http://localhost:5173/*'],
   content_security_policy: {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"

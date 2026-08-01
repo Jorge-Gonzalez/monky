@@ -3,7 +3,7 @@
   "name": "Monky - Macro Text Expander",
   "version": "0.1.0",
   "description": "Reemplaza macros por texto en inputs y textareas con prefijos configurables.",
-  "permissions": ["storage", "tabs"],
+  "permissions": ["storage", "alarms", "tabs"],
   "browser_specific_settings": {
     "gecko": {
       "id": "monky@jorge.gonzalez",

@@ -67,6 +67,28 @@ export function listenStoredMacrosChange(callback: (macros: Macro[]) => void): v
   })
 }
 
+/**
+ * Both sides of a change, for callers that need to say what happened rather than what is now true.
+ *
+ * The change event already carries `oldValue`, which is the only reason the edit log can describe a
+ * change without keeping state of its own. That matters in a service worker: anything remembered
+ * between events is lost when the worker is suspended, and a log that silently stopped describing
+ * changes after every suspension would be worse than no log.
+ *
+ * `before` is null when storage held nothing readable, which is a first write rather than an edit.
+ */
+export function listenStoredMacrosDiff(
+  callback: (before: Macro[] | null, after: Macro[]) => void
+): void {
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== 'local' || !changes['macro-storage']) return
+    const after = readMacros(changes['macro-storage'].newValue)
+    if (!Array.isArray(after)) return
+    const before = readMacros(changes['macro-storage'].oldValue)
+    callback(Array.isArray(before) ? (before as Macro[]) : null, after as Macro[])
+  })
+}
+
 export function listenMacrosChange(callback: (macros: Macro[]) => void): void {
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'local' && changes['macro-storage']) {

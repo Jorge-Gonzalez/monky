@@ -10,6 +10,19 @@ import { useMacroImportExport } from '../useMacroImportExport'
 vi.mock('../../../../../lib/i18n', () => ({ t: (key: string) => key }))
 vi.mock('../../../../../options', () => ({ useOptions: vi.fn() }))
 vi.mock('../useMacroImportExport', () => ({ useMacroImportExport: vi.fn() }))
+// The cloud-backup row talks to chrome.storage.sync in an effect; this file is about wiring,
+// not about that conversation, which useSyncBackup's own tests cover.
+vi.mock('../useSyncBackup', () => ({
+  useSyncBackup: () => ({
+    manifest: null,
+    usage: null,
+    log: [],
+    fromAnotherDevice: false,
+    status: null,
+    restore: vi.fn(),
+    refresh: vi.fn(),
+  }),
+}))
 
 const options = () => ({
   prefixes: ['/'],
@@ -24,7 +37,7 @@ const options = () => ({
   setLanguage: vi.fn(),
 })
 
-const io = () => ({ status: undefined, exportMacros: vi.fn(), importFromFile: vi.fn() })
+const io = () => ({ status: undefined, nudge: null, exportMacros: vi.fn(), importFromFile: vi.fn() })
 
 let opts: ReturnType<typeof options>
 let port: ReturnType<typeof io>
@@ -73,6 +86,7 @@ describe('SettingsView', () => {
         'settings.language',
         'settings.importExport.title',
         'settings.snapshots.title',
+        'settings.cloudBackup.title',
       ])
     })
   })

@@ -1,22 +1,50 @@
 // Pattern: Store-Hook — macro import/export behavior. Keeps the import/export
 // "conversation" out of SettingsView (which is about config settings).
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useMacroStore } from '../../../../store/useMacroStore'
 import { serializeMacros, parseMacroImport, mergeImport } from '../../../../lib/macroIO'
 import { takeSnapshot } from '../../../../store/macroSnapshots'
+import { editsSince, readEditLog } from '../../../../store/editLog'
+import { hasDivergedFromExport, readLastExport, recordExport, type LastExport } from '../../../../store/exportTracking'
 import { t } from '../../../../lib/i18n'
 
 export type ImportStatus = { ok: boolean; message: string } | null
+
+/** What to tell the user about the gap between their library and their last exported file. */
+export interface ExportNudge {
+  lastExport: LastExport
+  /** How many changes are known to have happened since; a floor when `truncated`. */
+  n: number
+  truncated: boolean
+}
 
 export function useMacroImportExport() {
   const macros = useMacroStore((s) => s.macros)
   const addMacro = useMacroStore((s) => s.addMacro)
   const [status, setStatus] = useState<ImportStatus>(null)
+  const [nudge, setNudge] = useState<ExportNudge | null>(null)
 
   const flash = (ok: boolean, message: string) => {
     setStatus({ ok, message })
     setTimeout(() => setStatus(null), 4000)
   }
+
+  // The nudge only ever appears for someone who has exported at least once. Prompting a user who
+  // never has would be advertising a feature rather than warning about a gap, and the gap is the
+  // only part worth interrupting anyone over.
+  const refreshNudge = useCallback(async () => {
+    const lastExport = await readLastExport()
+    if (lastExport === null || !hasDivergedFromExport(macros, lastExport)) {
+      setNudge(null)
+      return
+    }
+    const { n, truncated } = editsSince(await readEditLog(), lastExport.at)
+    setNudge({ lastExport, n, truncated })
+  }, [macros])
+
+  useEffect(() => {
+    void refreshNudge()
+  }, [refreshNudge])
 
   const exportMacros = () => {
     const json = serializeMacros(macros)
@@ -27,6 +55,10 @@ export function useMacroImportExport() {
     a.download = 'monky-macros.json'
     a.click()
     URL.revokeObjectURL(url)
+    // Recorded against the live library rather than the serialized file, because that is what the
+    // nudge later compares. serializeMacros drops system macros and ids, so a checksum of its
+    // output would differ from the library's on the very next read and nag immediately.
+    void recordExport(macros).then(refreshNudge)
   }
 
   const importFromFile = (file: File) => {
@@ -57,5 +89,5 @@ export function useMacroImportExport() {
     reader.readAsText(file)
   }
 
-  return { status, exportMacros, importFromFile }
+  return { status, nudge, exportMacros, importFromFile }
 }

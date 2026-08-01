@@ -39,7 +39,23 @@ vi.stubGlobal('chrome', {
       set: vi.fn().mockResolvedValue(undefined),
       remove: vi.fn().mockResolvedValue(undefined),
     },
+    // The browser-account backup reads and writes here. Stubbed alongside local so that a component
+    // touching it in an effect resolves to "nothing backed up yet" rather than rejecting into an
+    // unhandled promise that belongs to no test.
+    sync: {
+      get: vi.fn().mockResolvedValue({}),
+      set: vi.fn().mockResolvedValue(undefined),
+      remove: vi.fn().mockResolvedValue(undefined),
+      getBytesInUse: vi.fn().mockResolvedValue(0),
+    },
     onChanged: {
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+    },
+  },
+  alarms: {
+    create: vi.fn().mockResolvedValue(undefined),
+    onAlarm: {
       addListener: vi.fn(),
       removeListener: vi.fn(),
     },

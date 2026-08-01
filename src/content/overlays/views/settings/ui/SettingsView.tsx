@@ -8,6 +8,7 @@ import { SelectableGroup } from '../../../../../shared/ui/SelectableGroup'
 import { t } from '../../../../../lib/i18n'
 import { SettingsSection, SettingsRow, SettingsDivider, SettingsButton } from './SettingsLayout'
 import { SnapshotList } from './SnapshotList'
+import { CloudBackup } from './CloudBackup'
 
 const SunIcon = () => (
   <svg
@@ -85,7 +86,7 @@ export function SettingsView(_props: BaseModalViewProps) {
     setTheme,
     setLanguage,
   } = useOptions()
-  const { status: importStatus, exportMacros, importFromFile } = useMacroImportExport()
+  const { status: importStatus, nudge, exportMacros, importFromFile } = useMacroImportExport()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const replacementValue = useCommitKeys ? 'manual' : 'auto'
@@ -156,30 +157,57 @@ export function SettingsView(_props: BaseModalViewProps) {
 
         <SettingsSection label={t('settings.sections.data')}>
           <SettingsRow label={t('settings.importExport.title')}>
-            <div className="horizontal gap-sm">
-              <SettingsButton onClick={exportMacros}>
-                {t('settings.importExport.exportButton')}
-              </SettingsButton>
-              <SettingsButton onClick={() => fileInputRef.current?.click()}>
-                {t('settings.importExport.importButton')}
-              </SettingsButton>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".json,application/json"
-                style={{ display: 'none' }}
-                onChange={(e) => {
-                  const input = e.currentTarget
-                  const file = input.files?.[0]
-                  input.value = ''
-                  if (file) importFromFile(file)
-                }}
-              />
+            <div className="vertical gap-xs">
+              <div className="horizontal gap-sm">
+                <SettingsButton onClick={exportMacros}>
+                  {t('settings.importExport.exportButton')}
+                </SettingsButton>
+                <SettingsButton onClick={() => fileInputRef.current?.click()}>
+                  {t('settings.importExport.importButton')}
+                </SettingsButton>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".json,application/json"
+                  style={{ display: 'none' }}
+                  onChange={(e) => {
+                    const input = e.currentTarget
+                    const file = input.files?.[0]
+                    input.value = ''
+                    if (file) importFromFile(file)
+                  }}
+                />
+              </div>
+              {/* Only ever shown to someone who has exported before: it is a warning about a gap,
+                  not an advertisement for the button next to it. */}
+              {nudge && (
+                <span
+                  data-component="export-nudge"
+                  className="ink-soft font-xs"
+                >
+                  {t(
+                    nudge.truncated
+                      ? 'settings.importExport.nudgeTruncated'
+                      : 'settings.importExport.nudge',
+                    {
+                      count: String(nudge.n),
+                      when: new Date(nudge.lastExport.at).toLocaleDateString(language, {
+                        day: 'numeric',
+                        month: 'short',
+                      }),
+                    }
+                  )}
+                </span>
+              )}
             </div>
           </SettingsRow>
 
           <SettingsRow label={t('settings.snapshots.title')}>
             <SnapshotList language={language} />
+          </SettingsRow>
+
+          <SettingsRow label={t('settings.cloudBackup.title')}>
+            <CloudBackup language={language} />
           </SettingsRow>
         </SettingsSection>
 

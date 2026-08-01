@@ -42,9 +42,9 @@ something to find, and a rejection is now reported instead of swallowed.
 revision, timestamp and checksum. Debounced on change; a snapshot identical to the last is
 skipped. Retention is tiered, not a flat ring. Forced snapshots before restore and before import.
 
-**Layer 2 — chunked backup to the browser account.** Deferred, designed, not built. Serialize,
-split into sub-8KB chunks, write a manifest last carrying chunk count, checksum and a monotonic
-revision. Two alternating slots, A and B, with the manifest naming the live one. Backup is
+**Layer 2 — chunked backup to the browser account.** Built, 2026-08-01; see the amendment below.
+Serialize, split into sub-8KB chunks, write a manifest last carrying chunk count, checksum and a
+monotonic revision. Two alternating slots, A and B, with the manifest naming the live one. Backup is
 automatic and debounced; **restore is explicit**, because overwriting a local library is exactly
 the kind of operation a user should confirm.
 
@@ -209,6 +209,50 @@ is for.
 `unlimitedStorage` was considered and declined. It moves the wall rather than removing it, and it
 would mean adding a permission for unbuilt headroom in the same breath as `alarms` was dropped.
 Revisit if real libraries turn out large.
+
+## Amendment, 2026-08-01 — layer 2 built, and what the building taught
+
+Layer 2 landed as designed. Four things are worth recording because they were not obvious from the
+design and would cost the next reader real time.
+
+**Chunk sizes have to be measured, not estimated.** The quota counts a key's length plus the *JSON
+stringification* of its value, and a serialized macro library is dense with quotes, each of which
+doubles under escaping. A chunk sized by raw string length overshoots the 8192-byte item cap by
+about a fifth and fails on a user's machine with nothing to see. So the split walks the text
+charging each character what escaping will actually cost it, and refuses to cut between the halves
+of a surrogate pair — the two chunks would each carry a lone surrogate, and the text would come back
+mangled rather than failing loudly.
+
+**The obvious stale-chunk cleanup is wrong, and its wrongness is invisible.** Comparing the new
+chunk count against `manifest.chunks` never fires: the manifest read before a write describes the
+slot being written *away from*. The slot being written was last touched two cycles ago and nothing
+records how long it was then. Rather than track a second length, the write clears the whole tail a
+slot could hold — `remove` on absent keys is free and `MAX_CHUNKS` bounds it. This was caught by a
+test, not by review.
+
+**The debounce must be an alarm.** An MV3 service worker is torn down when idle and takes pending
+timers with it, so the one-minute `setTimeout` the earlier draft called for would simply never fire.
+Creating an alarm with an existing name replaces it, so rescheduling *is* the debounce. This is why
+the `alarms` permission returns after having been dropped with the backend.
+
+**Results are discriminated on a string, not on `ok: boolean`.** This project does not enable
+`strictNullChecks`, and without it TypeScript will not narrow a union on a boolean discriminant —
+`if (!result.ok)` leaves `result.reason` a type error. String discriminants narrow either way, so
+the results stay checkable without a project-wide tsconfig change, and `'incomplete'` says more at
+a call site than `!ok` does.
+
+The three failure modes of a read are kept distinct rather than collapsed, because only one of them
+is worth retrying: `none` (nothing backed up), `incomplete` (the manifest arrived ahead of its
+chunks — wait and try again), and `corrupt` (everything present, everything parseable, and the
+checksum disagrees, which is the stale-chunk case the A/B design exists to make detectable).
+
+**Layers 34–36 alongside it.** The quota readout ships with the backup rather than after it, because
+it is what decides whether compressing the payload is ever warranted — a number to measure rather
+than guess. The edit log landed in its own sync key as the amendment above specified. The export
+nudge compares by checksum rather than by count, since the most common drift is a macro *edited*
+rather than added or removed, which leaves the total identical; it is tracked in local storage, not
+sync, because "when did *this* machine last export" is the question worth answering — a file
+exported on the laptop is not on the desktop.
 
 ## Consequences
 
