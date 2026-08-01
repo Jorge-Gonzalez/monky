@@ -182,6 +182,38 @@ describe('planRetention — the daily window', () => {
   })
 })
 
+describe('takeSnapshot — overlapping callers', () => {
+  it('does not write the same library twice when two calls overlap', async () => {
+    // Found on a real profile as revisions 5 and 6 holding byte-identical libraries. takeSnapshot
+    // is a read-modify-write over one index key and chrome.storage has no transaction, so without
+    // serialising, both calls read the same index, both find their checksum different from the
+    // same newest entry, and both write. Reachable in ordinary use: an import forces a snapshot
+    // while the storage change it causes schedules a debounced one.
+    installStorage()
+    const macros = [macro('a')]
+    const [first, second] = await Promise.all([takeSnapshot(macros), takeSnapshot(macros)])
+    expect([first, second].filter(Boolean)).toHaveLength(1)
+    expect(await listSnapshots()).toHaveLength(1)
+  })
+
+  it('still honours a forced snapshot that overlaps an automatic one', async () => {
+    // Forcing exists for the write that must never be coalesced away -- the one taken immediately
+    // before a restore or an import. Serialising must not turn it into a no-op.
+    installStorage()
+    const macros = [macro('a')]
+    await Promise.all([takeSnapshot(macros), takeSnapshot(macros, { force: true })])
+    expect(await listSnapshots()).toHaveLength(2)
+  })
+
+  it('keeps serving later callers after one of them fails', async () => {
+    const store = installStorage()
+    store.local.set.mockRejectedValueOnce(new Error('quota'))
+    await expect(takeSnapshot([macro('a')])).rejects.toThrow('quota')
+    // A wedged queue would make every later snapshot silently never happen.
+    expect(await takeSnapshot([macro('b')])).not.toBeNull()
+  })
+})
+
 describe('planRetention — the byte budget', () => {
   // The tiers bound how many snapshots survive, never how large they are, so the wall moves with
   // the library: ~42 copies of a 250 KB library is the whole 10 MB of chrome.storage.local.

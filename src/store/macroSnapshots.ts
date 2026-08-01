@@ -214,7 +214,38 @@ async function readIndex(): Promise<SnapshotIndex> {
  *
  * Returns the snapshot written, or null when it was a duplicate.
  */
-export async function takeSnapshot(macros: Macro[], { force = false } = {}): Promise<SnapshotMeta | null> {
+export async function takeSnapshot(macros: Macro[], options: { force?: boolean } = {}): Promise<SnapshotMeta | null> {
+  return serialize(() => writeSnapshot(macros, options.force ?? false))
+}
+
+/**
+ * One snapshot at a time.
+ *
+ * `writeSnapshot` is a read-modify-write over a single index key and `chrome.storage` offers no
+ * transaction, so two overlapping calls both read the same index, both find their checksum
+ * different from the same newest entry, and both write. The result is two identical snapshots
+ * spending two retention slots -- found on a real profile, as revisions 5 and 6 holding byte-identical
+ * libraries.
+ *
+ * It is reachable in ordinary use, not only under a reloading dev worker: an import takes a forced
+ * snapshot while the storage change it causes schedules a debounced one.
+ *
+ * A promise chain serialises the callers inside one context, which is where the overlap observed
+ * here came from. It cannot serialise across contexts -- the settings page forcing a snapshot at
+ * the same moment as the service worker's timer is still possible -- and that is left alone
+ * deliberately: the cost is a duplicated snapshot, never a lost one, and the cure for it is the
+ * cross-context lock this design has already rejected once.
+ */
+let queue: Promise<unknown> = Promise.resolve()
+
+function serialize<T>(work: () => Promise<T>): Promise<T> {
+  const next = queue.then(work, work)
+  // The chain must survive a rejection, or one failed snapshot would wedge every later one.
+  queue = next.catch(() => undefined)
+  return next
+}
+
+async function writeSnapshot(macros: Macro[], force: boolean): Promise<SnapshotMeta | null> {
   const { checksum, bytes } = measureMacros(macros)
   const index = await readIndex()
   // By revision rather than by position. The index is written sorted, so the first entry is

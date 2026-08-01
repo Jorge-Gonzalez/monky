@@ -20,6 +20,7 @@ vi.mock('../useSyncBackup', () => ({
     fromAnotherDevice: false,
     status: null,
     restore: vi.fn(),
+    backupNow: vi.fn(),
     refresh: vi.fn(),
   }),
 }))

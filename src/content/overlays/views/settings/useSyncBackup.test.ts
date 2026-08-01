@@ -9,6 +9,7 @@ vi.mock('../../../../lib/i18n', () => ({
   t: (key: string, opts?: Record<string, string>) => (opts ? `${key}:${Object.values(opts).join(',')}` : key),
 }))
 
+const writeBackup = vi.fn<() => Promise<{ status: string; manifest?: BackupManifest; needed?: number }>>()
 const backupStatus = vi.fn<() => Promise<BackupManifest | null>>()
 const readBackup = vi.fn<() => Promise<BackupReadResult>>()
 const syncUsage = vi.fn<() => Promise<SyncUsage>>()
@@ -16,6 +17,7 @@ vi.mock('../../../../store/syncBackup', () => ({
   backupStatus: () => backupStatus(),
   readBackup: () => readBackup(),
   syncUsage: () => syncUsage(),
+  writeBackup: (...a: unknown[]) => writeBackup(...(a as [])),
 }))
 
 const readEditLog = vi.fn<() => Promise<EditEvent[]>>()
@@ -56,6 +58,7 @@ beforeEach(() => {
   syncUsage.mockResolvedValue({ used: 1024, total: 102_400, fraction: 0.01 })
   readEditLog.mockResolvedValue([])
   takeSnapshot.mockResolvedValue(null)
+  writeBackup.mockResolvedValue({ status: 'written', manifest: manifest() })
 })
 
 describe('useSyncBackup', () => {
@@ -80,6 +83,62 @@ describe('useSyncBackup', () => {
     const { result } = renderHook(() => useSyncBackup())
     await waitFor(() => expect(result.current.usage).not.toBeNull())
     expect(result.current.fromAnotherDevice).toBe(false)
+  })
+
+  describe('backupNow', () => {
+    // The automatic path runs in the service worker, where a rejection reaches a console nobody
+    // opens. This is the only route by which a failed sync write reaches the person it affects --
+    // which is how a backup that had never once succeeded still reported "not backed up yet"
+    // without ever explaining itself.
+    it('reports what was written', async () => {
+      const { result } = renderHook(() => useSyncBackup())
+      await act(async () => {
+        await result.current.backupNow()
+      })
+      expect(result.current.status).toEqual({ ok: true, message: 'settings.cloudBackup.status.backedUp:2' })
+    })
+
+    it('says so when there was nothing new to write', async () => {
+      writeBackup.mockResolvedValue({ status: 'unchanged' })
+      const { result } = renderHook(() => useSyncBackup())
+      await act(async () => {
+        await result.current.backupNow()
+      })
+      expect(result.current.status).toEqual({ ok: true, message: 'settings.cloudBackup.status.upToDate' })
+    })
+
+    it('surfaces a library that no longer fits', async () => {
+      writeBackup.mockResolvedValue({ status: 'too-large', needed: 9 })
+      const { result } = renderHook(() => useSyncBackup())
+      await act(async () => {
+        await result.current.backupNow()
+      })
+      expect(result.current.status).toEqual({ ok: false, message: 'settings.cloudBackup.status.tooLarge' })
+    })
+
+    it('surfaces the thrown message rather than swallowing it', async () => {
+      writeBackup.mockRejectedValue(new Error('QUOTA_BYTES quota exceeded'))
+      const { result } = renderHook(() => useSyncBackup())
+      await act(async () => {
+        await result.current.backupNow()
+      })
+      expect(result.current.status).toEqual({
+        ok: false,
+        message: 'settings.cloudBackup.status.failed:QUOTA_BYTES quota exceeded',
+      })
+    })
+
+    it('does not print [object Object] for a thrown value that is not an Error', async () => {
+      // chrome.* rejects with plain objects in places, and String() on one of those produces
+      // exactly the uninformative message this path exists to avoid.
+      writeBackup.mockRejectedValue({ message: 'odd shape' })
+      const { result } = renderHook(() => useSyncBackup())
+      await act(async () => {
+        await result.current.backupNow()
+      })
+      expect(result.current.status?.message).not.toContain('[object Object]')
+      expect(result.current.status?.message).toContain('odd shape')
+    })
   })
 
   describe('restore', () => {

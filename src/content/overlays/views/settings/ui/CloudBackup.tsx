@@ -19,7 +19,7 @@ function describeWhen(iso: string, language: Lang): string {
 }
 
 export function CloudBackup({ language }: { language: Lang }) {
-  const { manifest, usage, fromAnotherDevice, status, restore } = useSyncBackup()
+  const { manifest, usage, fromAnotherDevice, status, restore, backupNow } = useSyncBackup()
   const [armed, setArmed] = useState(false)
 
   const nearlyFull = usage !== null && usage.fraction > 0.8
@@ -30,7 +30,14 @@ export function CloudBackup({ language }: { language: Lang }) {
       className="vertical gap-xs"
     >
       {manifest === null ? (
-        <p className="ink-soft font-sm">{t('settings.cloudBackup.empty')}</p>
+        // No backup yet: the only useful control is the one that makes one, and it is also the one
+        // that will say why if it cannot.
+        <div className="horizontal gap-sm align-center justify-between">
+          <span className="ink-soft font-sm">{t('settings.cloudBackup.empty')}</span>
+          <SettingsButton onClick={() => void backupNow()}>
+            {t('settings.cloudBackup.backUpNow')}
+          </SettingsButton>
+        </div>
       ) : (
         <div className="horizontal gap-sm padding-block-xs align-center justify-between">
           <span className="vertical">
@@ -69,9 +76,14 @@ export function CloudBackup({ language }: { language: Lang }) {
           ) : (
             // Restore is the one direction that stays explicit. The backup half happens on its own;
             // replacing a library is something a user should be present for.
-            <SettingsButton onClick={() => setArmed(true)}>
-              {t('settings.cloudBackup.restore')}
-            </SettingsButton>
+            <span className="horizontal inline gap-sm">
+              <SettingsButton onClick={() => void backupNow()}>
+                {t('settings.cloudBackup.backUpNow')}
+              </SettingsButton>
+              <SettingsButton onClick={() => setArmed(true)}>
+                {t('settings.cloudBackup.restore')}
+              </SettingsButton>
+            </span>
           )}
         </div>
       )}
