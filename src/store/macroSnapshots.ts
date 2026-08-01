@@ -27,6 +27,23 @@ const DAY_MS = 24 * HOUR_MS
 const HOURLY_WINDOW_MS = DAY_MS
 const DAILY_WINDOW_MS = 14 * DAY_MS
 
+/**
+ * How much of `chrome.storage.local` the whole snapshot set may occupy.
+ *
+ * The tiers alone bound the snapshot *count* at about 42, not the bytes, so the wall moves with the
+ * library: 42 copies of a 250 KB library is the entire 10 MB quota. Half of it is deliberately left
+ * free because the two failures are not comparable -- losing an old snapshot is a disappointment,
+ * whereas filling the quota breaks the write of the live library, which is the thing all of this
+ * exists to protect.
+ */
+export const SNAPSHOT_BUDGET_BYTES = 5 * 1024 * 1024
+
+/**
+ * Kept whatever the budget says. Without a floor a library larger than the budget retains nothing,
+ * which is worse than not having the feature: the user would be told backups exist and find none.
+ */
+const FLOOR_KEEP = 3
+
 export interface SnapshotMeta {
   rev: number
   /** ISO timestamp, for bucketing and for telling the user which one they are restoring. */
@@ -34,7 +51,25 @@ export interface SnapshotMeta {
   checksum: string
   /** How many macros it holds, so the UI can say so without reading the payload. */
   count: number
+  /**
+   * Serialized size, so the budget can weigh the set without reading every payload back.
+   *
+   * UTF-16 code units rather than UTF-8 bytes, which undercounts accented text -- fine for a
+   * budget, and would not be for an exact quota assertion. Optional because snapshots written
+   * before the budget existed carry none; those weigh zero and age out through the tiers instead,
+   * which is the harmless direction to be wrong in.
+   */
+  bytes?: number
 }
+
+/** Which rule earned an entry its place, and so the order in which places are given up. */
+type Tier = 'recent' | 'hourly' | 'daily' | 'unplaced'
+
+// Least valuable first. `unplaced` leads because those entries are kept only because their
+// timestamp could not be trusted enough to bucket them, so they are the least defensible thing to
+// be spending the budget on; `recent` is last because the fine grain is what a panicking user
+// reaches for.
+const EVICTION_ORDER: readonly Tier[] = ['unplaced', 'daily', 'hourly', 'recent']
 
 interface SnapshotIndex {
   rev: number
@@ -58,9 +93,17 @@ function fnv1a(text: string): string {
   return hash.toString(16).padStart(8, '0')
 }
 
-export function checksumMacros(macros: Macro[]): string {
+/**
+ * Digest and size in one pass, because both come from the same serialization and computing it
+ * twice to get two facts about it would be silly.
+ */
+export function measureMacros(macros: Macro[]): { checksum: string; bytes: number } {
   const serialized = JSON.stringify(macros)
-  return `${serialized.length}-${fnv1a(serialized)}`
+  return { checksum: `${serialized.length}-${fnv1a(serialized)}`, bytes: serialized.length }
+}
+
+export function checksumMacros(macros: Macro[]): string {
+  return measureMacros(macros).checksum
 }
 
 /**
@@ -74,12 +117,11 @@ export function checksumMacros(macros: Macro[]): string {
  */
 export function planRetention(
   entries: SnapshotMeta[],
-  now: number
+  now: number,
+  { budgetBytes = SNAPSHOT_BUDGET_BYTES } = {}
 ): { keep: SnapshotMeta[]; drop: SnapshotMeta[] } {
   const newestFirst = [...entries].sort((a, b) => b.rev - a.rev)
-  const keep = new Set<number>()
-
-  for (const entry of newestFirst.slice(0, RECENT_KEEP)) keep.add(entry.rev)
+  const tier = new Map<number, Tier>()
 
   const seenHour = new Set<number>()
   const seenDay = new Set<number>()
@@ -87,35 +129,50 @@ export function planRetention(
     const takenAt = Date.parse(entry.takenAt)
     // An unparseable date cannot be bucketed, and discarding it would be deciding that a snapshot
     // we cannot place is a snapshot we do not need. Keep it and let the recent slots age it out.
-    if (Number.isNaN(takenAt)) {
-      keep.add(entry.rev)
+    // Future-dated means the clock moved, which is not this function's to adjudicate either.
+    if (Number.isNaN(takenAt) || now - takenAt < 0) {
+      tier.set(entry.rev, 'unplaced')
       continue
     }
     const age = now - takenAt
-    // Future-dated, so the clock moved. Not this function's problem to adjudicate, and dropping
-    // a snapshot over it would be the wrong way to be opinionated.
-    if (age < 0) {
-      keep.add(entry.rev)
-      continue
-    }
     if (age <= HOURLY_WINDOW_MS) {
       const bucket = Math.floor(takenAt / HOUR_MS)
       if (!seenHour.has(bucket)) {
         seenHour.add(bucket)
-        keep.add(entry.rev)
+        tier.set(entry.rev, 'hourly')
       }
     } else if (age <= DAILY_WINDOW_MS) {
       const bucket = Math.floor(takenAt / DAY_MS)
       if (!seenDay.has(bucket)) {
         seenDay.add(bucket)
-        keep.add(entry.rev)
+        tier.set(entry.rev, 'daily')
       }
     }
   }
 
+  // Last, so that a recent entry which also happens to open an hourly bucket is labelled by the
+  // rule that should protect it longest. Membership is the same union as before; only the label
+  // differs, and the label is what the budget pass spends.
+  for (const entry of newestFirst.slice(0, RECENT_KEEP)) tier.set(entry.rev, 'recent')
+
+  // The budget, spent cheapest-tier-first and oldest-first within a tier. The floor is taken by
+  // revision rather than by timestamp so that a skewed clock cannot talk us out of the newest
+  // snapshots -- revisions are monotonic, wall time is not.
+  let total = newestFirst.reduce((sum, e) => (tier.has(e.rev) ? sum + (e.bytes ?? 0) : sum), 0)
+  if (total > budgetBytes) {
+    const floor = new Set(newestFirst.slice(0, FLOOR_KEEP).map((e) => e.rev))
+    const oldestFirst = [...newestFirst].reverse()
+    for (const victim of EVICTION_ORDER.flatMap((t) => oldestFirst.filter((e) => tier.get(e.rev) === t))) {
+      if (total <= budgetBytes) break
+      if (floor.has(victim.rev)) continue
+      total -= victim.bytes ?? 0
+      tier.delete(victim.rev)
+    }
+  }
+
   return {
-    keep: newestFirst.filter((entry) => keep.has(entry.rev)),
-    drop: newestFirst.filter((entry) => !keep.has(entry.rev)),
+    keep: newestFirst.filter((entry) => tier.has(entry.rev)),
+    drop: newestFirst.filter((entry) => !tier.has(entry.rev)),
   }
 }
 
@@ -158,7 +215,7 @@ async function readIndex(): Promise<SnapshotIndex> {
  * Returns the snapshot written, or null when it was a duplicate.
  */
 export async function takeSnapshot(macros: Macro[], { force = false } = {}): Promise<SnapshotMeta | null> {
-  const checksum = checksumMacros(macros)
+  const { checksum, bytes } = measureMacros(macros)
   const index = await readIndex()
   // By revision rather than by position. The index is written sorted, so the first entry is
   // normally the newest -- but "normally" is doing work there, and comparing against the wrong
@@ -171,6 +228,7 @@ export async function takeSnapshot(macros: Macro[], { force = false } = {}): Pro
     takenAt: new Date().toISOString(),
     checksum,
     count: macros.length,
+    bytes,
   }
   const { keep, drop } = planRetention([meta, ...index.entries], Date.now())
 

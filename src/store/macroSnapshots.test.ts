@@ -48,6 +48,12 @@ const at = (rev: number, msAgo: number, checksum = `c${rev}`): SnapshotMeta => (
   count: 1,
 })
 
+/** Same, with a weight, for the tests that are about the byte budget rather than the clock. */
+const sized = (rev: number, msAgo: number, bytes: number): SnapshotMeta => ({
+  ...at(rev, msAgo),
+  bytes,
+})
+
 describe('checksumMacros', () => {
   it('is stable for the same library and different for a changed one', () => {
     expect(checksumMacros([macro('a')])).toBe(checksumMacros([macro('a')]))
@@ -173,6 +179,80 @@ describe('planRetention — the daily window', () => {
     // 6 and 5 share a day; the newer wins. 2 is past the fortnight, 1 long past it.
     expect(keep.map((e) => e.rev).sort((a, b) => a - b)).toEqual([3, 4, 6, 7, 8, 9, 10])
     expect(drop.map((e) => e.rev).sort((a, b) => a - b)).toEqual([1, 2, 5])
+  })
+})
+
+describe('planRetention — the byte budget', () => {
+  // The tiers bound how many snapshots survive, never how large they are, so the wall moves with
+  // the library: ~42 copies of a 250 KB library is the whole 10 MB of chrome.storage.local.
+  //
+  // Every case here uses more than RECENT_KEEP entries on purpose. An earlier draft used exactly
+  // five, which labels every one of them `recent` -- the assertions still passed, because
+  // oldest-first inside a single tier happens to give the same answer, so the tier ordering these
+  // tests exist for was never exercised at all.
+  //
+  // The budget is passed explicitly rather than leaning on the 5 MB default: that number is policy
+  // and should be free to move without rewriting the tests that describe the mechanism.
+  const ladder = (): SnapshotMeta[] => [
+    sized(10, 0, 100), // recent
+    sized(9, 60_000, 100), // recent
+    sized(8, 120_000, 100), // recent
+    sized(7, 180_000, 100), // recent
+    sized(6, 240_000, 100), // recent
+    sized(5, 2 * HOUR, 100), // hourly
+    sized(4, 5 * HOUR, 100), // hourly
+    sized(3, 2 * DAY, 100), // daily
+    sized(2, 4 * DAY, 100), // daily
+    sized(1, 6 * DAY, 100), // daily
+  ]
+
+  it('leaves the tiers alone while the set fits', () => {
+    expect(planRetention(ladder(), NOW, { budgetBytes: 10_000 }).drop).toEqual([])
+  })
+
+  it('gives up the daily tier before the hourly one', () => {
+    // Room for eight of the ten: both go from the daily end, and the hourly pair is untouched.
+    const { keep, drop } = planRetention(ladder(), NOW, { budgetBytes: 800 })
+    expect(drop.map((e) => e.rev)).toEqual([2, 1])
+    expect(keep.map((e) => e.rev)).toEqual([10, 9, 8, 7, 6, 5, 4, 3])
+  })
+
+  it('moves on to the hourly tier only once the daily one is exhausted', () => {
+    const { drop } = planRetention(ladder(), NOW, { budgetBytes: 600 })
+    expect(drop.map((e) => e.rev)).toEqual([4, 3, 2, 1])
+  })
+
+  it('gives up the least defensible entries first — those it could not place at all', () => {
+    // rev 5 claims to be from the future, so it is kept only because the clock cannot be trusted.
+    // That makes it the first thing to stop paying for.
+    const entries = [...ladder().filter((e) => e.rev !== 5), sized(5, -2 * DAY, 100)]
+    expect(planRetention(entries, NOW, { budgetBytes: 900 }).drop.map((e) => e.rev)).toEqual([5])
+  })
+
+  it('keeps the three newest however small the budget', () => {
+    // A library larger than the whole budget must not retain nothing: being told backups exist and
+    // finding none is worse than never having offered them.
+    const { keep } = planRetention(ladder(), NOW, { budgetBytes: 10 })
+    expect(keep.map((e) => e.rev)).toEqual([10, 9, 8])
+  })
+
+  it('protects the newest by revision, not by timestamp', () => {
+    // A skewed clock must not argue the newest snapshots out of the floor. rev 10 says it is a
+    // week old; it is still the highest revision and still survives a budget of nothing.
+    const entries = [...ladder().filter((e) => e.rev !== 10), sized(10, 7 * DAY, 100)]
+    expect(planRetention(entries, NOW, { budgetBytes: 10 }).keep.map((e) => e.rev)).toContain(10)
+  })
+
+  it('stops evicting the moment the set fits, rather than draining the tier', () => {
+    const { keep } = planRetention(ladder(), NOW, { budgetBytes: 900 })
+    expect(keep.map((e) => e.rev)).toEqual([10, 9, 8, 7, 6, 5, 4, 3, 2])
+  })
+
+  it('treats a snapshot written before the budget as weightless rather than as free to drop', () => {
+    // No `bytes` means "unknown", and unknown must not read as "huge" -- these predate the field
+    // and are left to age out through the tiers instead.
+    const entries = ladder().map(({ bytes: _bytes, ...rest }) => rest)
+    expect(planRetention(entries, NOW, { budgetBytes: 1 }).drop).toEqual([])
   })
 })
 
