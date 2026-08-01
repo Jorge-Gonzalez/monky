@@ -168,6 +168,18 @@ describe('writeBackup', () => {
     }
   })
 
+  it('clears the pre-layer-2 envelope, but only once a real backup is in place', async () => {
+    // That key held the only cross-device copy there was. Removing it before a complete backup
+    // exists would be deleting a backup, not tidying one up.
+    store.area.set('macro-storage', '{"state":{"macros":[]}}')
+    const tooBig = await writeBackup(libraryOf(200, 900), 'dev-1')
+    expect(tooBig.status).toBe('too-large')
+    expect(store.area.has('macro-storage')).toBe(true)
+
+    await writeBackup(libraryOf(2), 'dev-1')
+    expect(store.area.has('macro-storage')).toBe(false)
+  })
+
   it('records the device that wrote it', async () => {
     await writeBackup(libraryOf(1), 'laptop')
     expect((store.area.get('backup-manifest') as BackupManifest).device).toBe('laptop')

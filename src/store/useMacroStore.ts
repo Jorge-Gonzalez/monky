@@ -43,10 +43,6 @@ function commandExists(macros: Macro[], command: string, currentId?: Macro['id']
 // which would otherwise re-read storage and re-notify subscribers needlessly.
 let lastWrittenValue: string | null = null
 
-// Whether the last attempt to copy state to chrome.storage.sync succeeded. Only used to report
-// the transition into staleness once, rather than on every write.
-let syncCopyHealthy = true
-
 // `chrome.storage.local` is the authority, and the only thing read back.
 //
 // It used to read `chrome.storage.sync` first and fall back to local, while writing local
@@ -63,9 +59,16 @@ let syncCopyHealthy = true
 // whole failure mode to lose. Sync stops being a silent input. Cross-device recovery belongs
 // to an explicit, confirmed restore, where the user is present to see which copy they chose.
 //
-// Sync is still written, best-effort, so that a restore has something to find. A rejection
-// there is now reported rather than swallowed: it means the backup is stale, which the user
-// is entitled to know.
+// The best-effort sync copy that used to live here is gone, and its removal is the point rather
+// than a tidy-up. It wrote the *whole persisted envelope* under one key, and that envelope stopped
+// fitting the 8192-byte item cap some time ago -- so every macro change since had been attempting a
+// write that could only reject, while a stale copy squatted on ~7.4 KB of the browser account's
+// quota. Measured on a real profile: 26 macros frozen against 28 live ones, and it was the entire
+// 8 KB the settings readout was reporting.
+//
+// Layer 2 replaces it properly -- chunked under the item cap, checksummed, written on a debounce
+// and read back only on an explicit restore. Two mechanisms writing the same library to the same
+// storage area, one of them permanently broken, is worse than one that works.
 const chromeStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
     const local = await chrome.storage.local.get(name)
@@ -74,25 +77,9 @@ const chromeStorage: StateStorage = {
   setItem: async (name: string, value: string): Promise<void> => {
     lastWrittenValue = value
     await chrome.storage.local.set({ [name]: value })
-    try {
-      await chrome.storage.sync.set({ [name]: value })
-      syncCopyHealthy = true
-    } catch (error) {
-      // Over quota, rate limited, or no browser account. The local write above stands, so
-      // nothing is lost -- but the sync copy is now behind, and silence is what let that
-      // matter last time.
-      //
-      // Reported on the transition rather than on every write. The condition is sticky: once
-      // the state is too large for sync it stays too large, so warning each time would bury
-      // the one message that carries information under a stream of identical ones.
-      if (syncCopyHealthy) {
-        syncCopyHealthy = false
-        console.warn('[MONKY] chrome.storage.sync copy is now stale; local storage is unaffected:', error)
-      }
-    }
   },
   removeItem: async (name: string): Promise<void> => {
-    await Promise.allSettled([chrome.storage.sync.remove(name), chrome.storage.local.remove(name)])
+    await chrome.storage.local.remove(name)
   },
 }
 

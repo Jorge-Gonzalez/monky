@@ -9,6 +9,7 @@
 //
 // Creating an alarm with a name that already exists replaces it, so rescheduling on every change is
 // the debounce, with no bookkeeping of our own.
+import type { Macro } from '../types'
 import { listenStoredMacrosDiff, loadStoredMacros } from '../content/storage/macroStorage'
 import { deviceId } from '../lib/deviceId'
 import { appendEditEvents, summarizeChange } from './editLog'
@@ -47,16 +48,26 @@ export async function runSyncBackup(): Promise<void> {
  * has to be remembered across a suspension to produce it.
  */
 export function startSyncBackup({ delayInMinutes = DELAY_MINUTES } = {}): void {
+  // Guarded rather than assumed. If the `alarms` permission is absent -- which is exactly the state
+  // an extension is in after the manifest gained it but before the extension was reloaded -- then
+  // `chrome.alarms` is undefined and registering the listener below throws at module scope. That
+  // would abort the rest of background/index.ts, so the symptom would be several unrelated features
+  // quietly not working rather than one permission being missing. Fail narrow, and say so.
+  if (typeof chrome.alarms === 'undefined') {
+    console.warn(
+      '[MONKY] chrome.alarms is unavailable, so the browser-account backup cannot be scheduled. ' +
+        'If the manifest just gained the "alarms" permission, reload the extension.'
+    )
+    return
+  }
+
   listenStoredMacrosDiff((before, after) => {
-    void (async () => {
-      const summary = summarizeChange(before, after)
-      if (summary.length > 0) {
-        await appendEditEvents(summary, await deviceId())
-      }
-      await chrome.alarms.create(ALARM, { delayInMinutes })
-    })().catch((error: unknown) => {
-      console.warn('[MONKY] could not schedule a browser-account backup:', error)
-    })
+    // Scheduled first, and independently of the log. An earlier version awaited the edit-log write
+    // before creating the alarm, which let a failed write to sync -- no browser account, over
+    // quota, rate limited -- cancel the backup entirely. The log is a label on the backup; it must
+    // never be able to prevent one.
+    void schedule(delayInMinutes)
+    void record(before, after)
   })
 
   chrome.alarms.onAlarm.addListener((alarm) => {
@@ -67,4 +78,22 @@ export function startSyncBackup({ delayInMinutes = DELAY_MINUTES } = {}): void {
       console.warn('[MONKY] browser-account backup failed:', error)
     })
   })
+}
+
+async function schedule(delayInMinutes: number): Promise<void> {
+  try {
+    await chrome.alarms.create(ALARM, { delayInMinutes })
+  } catch (error: unknown) {
+    console.warn('[MONKY] could not schedule a browser-account backup:', error)
+  }
+}
+
+async function record(before: Macro[] | null, after: Macro[]): Promise<void> {
+  try {
+    const summary = summarizeChange(before, after)
+    if (summary.length === 0) return
+    await appendEditEvents(summary, await deviceId())
+  } catch (error: unknown) {
+    console.warn('[MONKY] could not record what changed; the backup itself is unaffected:', error)
+  }
 }

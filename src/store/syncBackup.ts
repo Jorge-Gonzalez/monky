@@ -21,6 +21,19 @@ import { measureMacros } from './macroSnapshots'
 
 const MANIFEST_KEY = 'backup-manifest'
 
+/**
+ * The pre-layer-2 copy: the store's whole persisted envelope under its own key, written by the
+ * persist adapter on every change until it outgrew the 8192-byte item cap and began rejecting every
+ * time. It is dead weight now -- nothing reads it, it cannot be updated, and on a real profile it
+ * was holding 26 stale macros in ~7.4 KB, which was the entire browser-account quota the settings
+ * readout reported.
+ *
+ * Removed only after a complete backup has been written, never before. Until that moment it is the
+ * only cross-device copy there is, and however stale a copy may be, deleting the sole one is not a
+ * cleanup.
+ */
+const LEGACY_KEY = 'macro-storage'
+
 /** `chrome.storage.sync` limits, named rather than sprinkled as numbers. */
 const QUOTA_BYTES = 102_400
 const QUOTA_BYTES_PER_ITEM = 8_192
@@ -182,6 +195,10 @@ export async function writeBackup(macros: Macro[], device: string): Promise<Back
   const tail: string[] = []
   for (let index = chunks.length; index < MAX_CHUNKS; index++) tail.push(chunkKey(slot, index))
   if (tail.length > 0) await chrome.storage.sync.remove(tail)
+
+  // Safe here and nowhere earlier: a complete, checksummed backup now exists in this same storage
+  // area, so the stale envelope is genuinely redundant rather than merely old.
+  await chrome.storage.sync.remove(LEGACY_KEY)
 
   return { status: 'written', manifest: next }
 }

@@ -32,6 +32,7 @@ beforeEach(() => {
   listeners.length = 0
   vi.clearAllMocks()
   writeBackup.mockResolvedValue({ status: 'written' })
+  appendEditEvents.mockResolvedValue(null)
   loadStoredMacros.mockResolvedValue([macro('a')])
   const handlers: ((a: { name: string }) => void)[] = []
   alarms = {
@@ -93,6 +94,33 @@ describe('startSyncBackup', () => {
     listeners[0](null, [macro('a')])
     await settle()
     expect(alarms.create).toHaveBeenCalled()
+  })
+
+  it('schedules the backup even when recording the change fails', async () => {
+    // The regression that made this a separate function. Awaiting the edit-log write before
+    // creating the alarm let a failed write to sync -- no browser account, over quota, rate
+    // limited -- cancel the backup entirely. The log is a label on the backup; it must never be
+    // able to prevent one.
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    appendEditEvents.mockRejectedValue(new Error('sync unavailable'))
+    startSyncBackup()
+    listeners[0]([macro('a'), macro('b')], [macro('a')])
+    await settle()
+    expect(alarms.create).toHaveBeenCalledWith('sync-backup', { delayInMinutes: 1 })
+    warn.mockRestore()
+  })
+
+  it('gives up narrowly when the alarms permission is absent', () => {
+    // The state an extension is in after the manifest gains a permission but before it is
+    // reloaded. Registering the listener would throw at module scope and abort the rest of
+    // background/index.ts, so the symptom would be several unrelated features quietly failing.
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    ;(globalThis as unknown as { chrome: Record<string, unknown> }).chrome = {}
+    expect(() => startSyncBackup()).not.toThrow()
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('reload the extension'))
+    // And it registered nothing, rather than half-wiring itself.
+    expect(listeners).toHaveLength(0)
+    warn.mockRestore()
   })
 
   it('backs up when its own alarm fires, and ignores everybody else’s', async () => {
