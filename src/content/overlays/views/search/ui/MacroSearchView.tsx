@@ -98,7 +98,7 @@ export function MacroSearchView({
       if (command.id === 'delete') {
         // Two-step: first select arms the row, a second select on it confirms.
         if (pendingDelete?.id === macro.id) {
-          void deleteMacros([String(macro.id)])
+          deleteMacros([String(macro.id)])
           setPendingDelete(null)
           setSearchQuery('')
         } else {

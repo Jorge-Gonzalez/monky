@@ -1,25 +1,4 @@
-import { syncMacros } from '../lib/sync'
 import { startMacroSnapshots } from '../store/macroSnapshotWatcher'
-
-// A sync failure here has no UI to surface it, so every call logs rather than
-// rejecting into nothing. The chrome.* registrations are genuinely fire-and-forget
-// and are voided explicitly to say so.
-function runSync(reason: string): void {
-  syncMacros().catch((error: unknown) => {
-    console.warn(`[MONKY] sync failed (${reason}):`, error)
-  })
-}
-
-chrome.runtime.onInstalled.addListener(() => {
-  void chrome.alarms.create('sync-macros', { periodInMinutes: 15 })
-})
-
-chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === 'sync-macros') runSync('alarm')
-})
-
-// initial sync
-runSync('startup')
 
 // Automatic local backups. Registered here because the service worker is the one context that
 // sees macro changes from every surface -- editor page, popup, content script -- so none of them
@@ -28,16 +7,6 @@ runSync('startup')
 startMacroSnapshots()
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (msg === 'online') {
-    syncMacros()
-      .then(() => sendResponse({ ok: true }))
-      .catch((error: unknown) => {
-        console.warn('[MONKY] sync failed (online):', error)
-        sendResponse({ ok: false })
-      })
-    return true
-  }
-
   // Open the full-page editor (content scripts can't call chrome.tabs directly).
   if (msg === 'open-editor') {
     void chrome.tabs.create({ url: chrome.runtime.getURL('src/editor/index.html') })

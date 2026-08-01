@@ -28,9 +28,6 @@ export type Config = {
   colorTheme: ColorTheme
   language: Lang
   suggestionsPopupPlacement?: verticalPlacement
-  // Opt-in sync to the hosted backend (lib/sync). Off until a backend exists;
-  // local persistence and chrome.storage browser-sync work regardless.
-  syncEnabled?: boolean
 }
 
 export type CoreState = { active: boolean; buffer: string }

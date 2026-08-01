@@ -29,8 +29,10 @@ vi.mock('../../../../../store/useMacroStore', () => ({
 }))
 
 type CrudResult = { success: boolean; error?: string }
-const mockCreate = vi.fn((..._args: any[]): Promise<CrudResult> => Promise.resolve({ success: true }))
-const mockUpdate = vi.fn((..._args: any[]): Promise<CrudResult> => Promise.resolve({ success: true }))
+// Synchronous, mirroring macroCrud since the backend push was dropped: these return a result
+// rather than a promise of one, and a mock that still resolved would read as a failed write.
+const mockCreate = vi.fn((..._args: any[]): CrudResult => ({ success: true }))
+const mockUpdate = vi.fn((..._args: any[]): CrudResult => ({ success: true }))
 const mockDelete = vi.fn()
 vi.mock('../../../../../store/macroCrud', () => ({
   createMacro: (data: any) => mockCreate(data),
@@ -61,8 +63,8 @@ describe('ModalMacroForm', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    mockCreate.mockResolvedValue({ success: true })
-    mockUpdate.mockResolvedValue({ success: true })
+    mockCreate.mockReturnValue({ success: true })
+    mockUpdate.mockReturnValue({ success: true })
   })
 
   // ---------------------------------------------------------------------------
@@ -467,7 +469,7 @@ describe('ModalMacroForm', () => {
     })
 
     it('shows error message when coordinator returns a failure', async () => {
-      mockCreate.mockResolvedValue({ success: false, error: 'Duplicate command' })
+      mockCreate.mockReturnValue({ success: false, error: 'Duplicate command' })
       render(
         <ModalMacroForm
           editing={null}

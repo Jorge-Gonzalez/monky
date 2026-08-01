@@ -8,7 +8,6 @@ export const defaultMacroConfig: Config = {
   useCommitKeys: false, // Default to auto-commit
   language: 'en',
   suggestionsPopupPlacement: 'bottom',
-  syncEnabled: false, // Hosted-backend sync is opt-in; off until a backend exists
 }
 
 export const dummyMacros: Macro[] = [

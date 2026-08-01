@@ -5,7 +5,7 @@ export default defineManifest({
   name: 'Monky - Macro Text Expander',
   version: '0.1.0',
   description: 'Reemplaza macros por texto en inputs y textareas con prefijos configurables.',
-  permissions: ['storage', 'alarms', 'tabs'],
+  permissions: ['storage', 'tabs'],
   host_permissions: ['http://localhost:5173/*'],
   content_security_policy: {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"

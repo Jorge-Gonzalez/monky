@@ -55,7 +55,9 @@ export function useMacroForm(editing: Macro | null) {
     isSensitive !== !!editing.is_sensitive
   const isFormValid = commandValid && text.trim() !== '' && isDirty
 
-  const submit = async (): Promise<SubmitOutcome> => {
+  // Synchronous since the store is the only destination. It was async while each write also had
+  // to reach a backend; nothing waits on anything now.
+  const submit = (): SubmitOutcome => {
     setError(null)
 
     const commandError = validateCommand(command, prefixes)
@@ -80,7 +82,7 @@ export function useMacroForm(editing: Macro | null) {
     }
 
     const editingId = editing?.id
-    const result = editingId ? await updateMacro(String(editingId), payload) : await createMacro(payload)
+    const result = editingId ? updateMacro(String(editingId), payload) : createMacro(payload)
     if (!result.success) {
       if (result.error) setError(result.error)
       return { status: 'failed', error: result.error ?? '' }

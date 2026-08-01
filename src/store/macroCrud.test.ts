@@ -1,10 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// Boundaries: the store is the local source of truth (write + dup-check), lib/sync
-// is the backend push, lib/errors formats a raw store error into a friendly string.
-// We mock all three and assert macroCrud's own responsibilities: stamp metadata,
-// delegate, and — the load-bearing invariant — push to the backend ONLY when the
-// local write succeeded.
+// Boundaries: the store is the source of truth (write + dup-check), lib/errors formats a raw store
+// error into a friendly string. Both are mocked and macroCrud's own responsibilities are asserted:
+// stamp metadata, delegate, and report the outcome.
+//
+// These tests used to centre on a second invariant -- push to the backend ONLY when the local write
+// succeeded -- which went away with the backend. What survives is the half that was always local:
+// a rejected write must produce a formatted error and change nothing.
 
 const addMacro = vi.fn()
 const updateMacroInStore = vi.fn()
@@ -18,16 +20,6 @@ vi.mock('./useMacroStore', () => ({
       deleteMacros: deleteMacrosInStore,
     }),
   },
-}))
-
-const pushCreate = vi.fn()
-const pushUpdate = vi.fn()
-const pushDelete = vi.fn()
-
-vi.mock('../lib/sync', () => ({
-  pushCreate: (m: any) => pushCreate(m),
-  pushUpdate: (m: any) => pushUpdate(m),
-  pushDelete: (id: any) => pushDelete(id),
 }))
 
 // Format raw store error → friendly string. Its own mapping is covered in
@@ -47,87 +39,79 @@ beforeEach(() => {
 })
 
 describe('createMacro', () => {
-  it('stamps an id and updated_at, writes to the store, then pushes that macro to sync', async () => {
-    const result = await createMacro({ command: '/sig', text: 'Signature', contentType: 'text/plain' })
+  it('stamps an id and updated_at, then writes to the store', () => {
+    const result = createMacro({ command: '/sig', text: 'Signature', contentType: 'text/plain' })
 
     expect(addMacro).toHaveBeenCalledTimes(1)
     const stamped = addMacro.mock.calls[0][0]
     expect(stamped).toMatchObject({ command: '/sig', text: 'Signature' })
     expect(stamped.id).toEqual(expect.any(String))
+    // Outlived the backend that ordered merges by it: "when was this last changed" is worth
+    // knowing regardless, and the restore UI is the next thing that wants it.
     expect(stamped.updated_at).toEqual(expect.any(String))
-
-    // The exact macro the store accepted is the one pushed to the backend.
-    expect(pushCreate).toHaveBeenCalledWith(stamped)
     expect(result).toEqual({ success: true })
   })
 
-  it('does NOT push to the backend when the local write is rejected (duplicate)', async () => {
+  it('reports a rejected write as a formatted error, having written nothing', () => {
     addMacro.mockReturnValue({ success: false, error: DUP })
 
-    const result = await createMacro({ command: '/sig', text: 'Signature', contentType: 'text/plain' })
+    const result = createMacro({ command: '/sig', text: 'Signature', contentType: 'text/plain' })
 
-    expect(pushCreate).not.toHaveBeenCalled()
     // Raw store error is threaded through the formatter with the macro's command.
     expect(result).toEqual({ success: false, error: `friendly(${DUP}|/sig)` })
   })
 })
 
 describe('updateMacro', () => {
-  it('stamps updated_at, patches the store, then pushes the patch with its id', async () => {
-    const result = await updateMacro('42', { text: 'Updated' })
+  it('stamps updated_at and patches the store', () => {
+    const result = updateMacro('42', { text: 'Updated' })
 
     expect(updateMacroInStore).toHaveBeenCalledTimes(1)
     const [id, patch] = updateMacroInStore.mock.calls[0]
     expect(id).toBe('42')
     expect(patch).toMatchObject({ text: 'Updated' })
     expect(patch.updated_at).toEqual(expect.any(String))
-
-    expect(pushUpdate).toHaveBeenCalledWith(expect.objectContaining({ id: '42', text: 'Updated' }))
     expect(result).toEqual({ success: true })
   })
 
-  it('does NOT push when the update is rejected; formats the error against the incoming command', async () => {
+  it('formats a rejected update against the incoming command', () => {
     updateMacroInStore.mockReturnValue({ success: false, error: DUP })
 
-    const result = await updateMacro('42', { command: '/sig' })
+    const result = updateMacro('42', { command: '/sig' })
 
-    expect(pushUpdate).not.toHaveBeenCalled()
     expect(result).toEqual({ success: false, error: `friendly(${DUP}|/sig)` })
   })
 
-  it('formats the error against an empty command when the patch carries none', async () => {
+  it('formats the error against an empty command when the patch carries none', () => {
     updateMacroInStore.mockReturnValue({ success: false, error: DUP })
 
-    const result = await updateMacro('42', { text: 'no command here' })
+    const result = updateMacro('42', { text: 'no command here' })
 
     expect(result).toEqual({ success: false, error: `friendly(${DUP}|)` })
   })
 })
 
 describe('deleteMacros', () => {
-  it('deletes from the store, pushes the delete by id, and reports success', async () => {
-    const result = await deleteMacros(['42'])
+  it('deletes from the store and reports success', () => {
+    const result = deleteMacros(['42'])
 
     expect(deleteMacrosInStore).toHaveBeenCalledWith(['42'])
-    expect(pushDelete).toHaveBeenCalledWith('42')
     expect(result).toEqual({ success: true })
   })
 
-  it('writes a whole selection to the store once, then pushes each id', async () => {
+  it('writes a whole selection to the store in one pass', () => {
     // One local write is the point of the array: several would leave renders showing the
     // list part-way through a delete the user asked for as a single action.
-    await deleteMacros(['1', '2', '3'])
+    deleteMacros(['1', '2', '3'])
 
     expect(deleteMacrosInStore).toHaveBeenCalledTimes(1)
     expect(deleteMacrosInStore).toHaveBeenCalledWith(['1', '2', '3'])
-    expect(pushDelete.mock.calls.map(([id]) => id)).toEqual(['1', '2', '3'])
   })
 
-  it('does nothing at all when the selection is empty', async () => {
-    const result = await deleteMacros([])
+  it('does nothing at all when the selection is empty', () => {
+    const result = deleteMacros([])
 
     expect(deleteMacrosInStore).not.toHaveBeenCalled()
-    expect(pushDelete).not.toHaveBeenCalled()
     expect(result).toEqual({ success: true })
   })
 })

@@ -54,7 +54,7 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
   const [savedToast, setSavedToast] = useState<string | null>(null)
 
   const suggest = useCommandSuggestions(command, !editing, onLoadMacro, (m) => {
-    void deleteMacros([String(m.id)])
+    deleteMacros([String(m.id)])
   })
   const commandJoined = Boolean((command && !commandValid) || suggest.visible)
 
@@ -64,9 +64,9 @@ export function ModalMacroForm({ editing, onDone, onLoadMacro }: ModalMacroFormP
     void chrome.runtime.sendMessage('open-editor')
   }
 
-  async function onSubmit(e: FormEvent) {
+  function onSubmit(e: FormEvent) {
     e.preventDefault()
-    const outcome = await submit()
+    const outcome = submit()
     if (outcome.status === 'created' || outcome.status === 'updated') {
       // Confirm the save, then close the modal. Both create and edit finish the
       // same way — the editor is a task you complete and dismiss.

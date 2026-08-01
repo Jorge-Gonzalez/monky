@@ -37,7 +37,7 @@ export function MacroPanel({ macros, onEdit }: MacroPanelProps) {
   }
 
   const confirmDelete = () => {
-    void deleteMacros([...selection.selected].map(String))
+    deleteMacros([...selection.selected].map(String))
     setConfirmingDelete(false)
     // The selection needs no clearing: the ids leave the list, and the selection is a subset
     // of the list.

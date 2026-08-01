@@ -21,9 +21,9 @@ export default function MacroForm({ editing, onDone }: { editing: Macro | null; 
     submit,
   } = useMacroForm(editing)
 
-  async function onSubmit(e: FormEvent) {
+  function onSubmit(e: FormEvent) {
     e.preventDefault()
-    const outcome = await submit()
+    const outcome = submit()
     // An update finishes the task; a create leaves the form open for the next one.
     if (outcome.status === 'updated') onDone()
     if (outcome.status === 'created') {

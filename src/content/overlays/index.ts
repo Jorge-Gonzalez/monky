@@ -21,7 +21,7 @@ export const suggestionsCoordinator: SuggestionsCoordinator =
 // pushed to sync (the same path the search view uses).
 export const deleteConfirmManager = createDeleteConfirmManager()
 deleteConfirmManager.setOnConfirm((macro) => {
-  void deleteMacros([String(macro.id)])
+  deleteMacros([String(macro.id)])
 })
 
 // Convenience function for updating macros
