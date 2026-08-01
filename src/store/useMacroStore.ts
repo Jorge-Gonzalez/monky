@@ -9,10 +9,6 @@ type StoreOpResult = { success: boolean; error?: string }
 type MacroStore = {
   macros: Macro[]
   config: Config
-  /** Reserved for the hosted backend; no shape decided yet, and nothing reads it. */
-  user: unknown
-  syncStatus: 'idle' | 'syncing' | 'error'
-  setUser: (u: unknown) => void
   setMacros: (m: Macro[]) => void
   addMacro: (m: Macro) => StoreOpResult
   updateMacro: (id: Macro['id'], patch: Partial<Macro>) => StoreOpResult
@@ -24,6 +20,18 @@ type MacroStore = {
   setColorTheme: (colorTheme: ColorTheme) => void
   setLanguage: (language: Lang) => void
 }
+
+/**
+ * The slice that actually reaches storage, which is currently the whole of the state worth
+ * keeping. Declared anyway: bytes here are spent against the 8192 `chrome.storage.sync` allows an
+ * item, a budget this state was measured 221 short of, so what goes in wants deciding rather than
+ * inheriting. The rule is the one the snapshot layer follows -- store what has to be restored, and
+ * nothing else.
+ *
+ * It has already earned its keep once. `user` and `syncStatus` were persisted for a hosted backend
+ * that was never switched on; both were written to disk on every change and read nowhere.
+ */
+type PersistedMacroStore = Pick<MacroStore, 'macros' | 'config'>
 
 // --- Standalone helper function ---
 function commandExists(macros: Macro[], command: string, currentId?: Macro['id']): boolean {
@@ -92,14 +100,11 @@ export const useMacroStore = create<MacroStore>()(
   persist(
     (set, get) => ({
       macros: dummyMacros,
-      user: null,
-      syncStatus: 'idle',
       // Seed the full defaults so config is always complete (the persist merge
       // backfills any field missing from older persisted state).
       config: { ...defaultMacroConfig },
 
       // --- Actions ---
-      setUser: (user) => set({ user }),
       setMacros: (macros) => set({ macros }),
       addMacro: (macro) => {
         if (commandExists(get().macros, macro.command)) {
@@ -150,22 +155,25 @@ export const useMacroStore = create<MacroStore>()(
     {
       name: 'macro-storage',
       storage: createJSONStorage(() => chromeStorage),
+      partialize: (state): PersistedMacroStore => ({ macros: state.macros, config: state.config }),
       /**
-       * A custom merge function to perform a deep merge on the `config` object.
-       * This ensures that new default values in `defaultMacroConfig` are not
-       * overwritten by an older persisted state that might not have them.
-       * @param persistedState The state loaded from storage.
-       * @param currentState The current (initial) state.
-       * @returns The merged state.
+       * Deep-merges `config` so that new defaults added to `defaultMacroConfig` survive an older
+       * persisted state that predates them, and takes `macros` verbatim when storage holds any --
+       * an empty array is a library the user emptied, not an absent one, so it must win over the
+       * seeded defaults.
+       *
+       * Reading through the two named fields rather than spreading the whole persisted object also
+       * migrates state written before `partialize`: `user` and `syncStatus` are simply not carried
+       * across, so the first write after this lands drops them without a version bump.
        */
-      merge: (persistedState: unknown, currentState) => ({
-        ...currentState,
-        ...(persistedState as MacroStore),
-        config: {
-          ...currentState.config,
-          ...(persistedState as MacroStore).config,
-        },
-      }),
+      merge: (persistedState: unknown, currentState) => {
+        const persisted = persistedState as Partial<PersistedMacroStore> | undefined
+        return {
+          ...currentState,
+          macros: persisted?.macros ?? currentState.macros,
+          config: { ...currentState.config, ...persisted?.config },
+        }
+      },
     }
   )
 )
