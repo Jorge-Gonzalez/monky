@@ -18,6 +18,7 @@
 // present for, and it is the one moment two devices' libraries meet.
 import type { Macro } from '../types'
 import { measureMacros } from './macroSnapshots'
+import { decodeWith, encodeBackup, type BackupEncoding } from './backupCodec'
 
 const MANIFEST_KEY = 'backup-manifest'
 
@@ -84,6 +85,12 @@ export interface BackupManifest {
   count: number
   takenAt: string
   device: string
+  /**
+   * How the chunks were written. Absent on backups made before compression, which is exactly why a
+   * reader must consult it rather than assume -- the copy someone restores may well predate the
+   * version restoring it.
+   */
+  encoding?: BackupEncoding
 }
 
 // Discriminated on a string rather than a boolean `ok`, which is not a style preference: this
@@ -199,7 +206,12 @@ export async function writeBackup(macros: Macro[], device: string): Promise<Back
   const manifest = await readManifest()
   if (manifest?.checksum === checksum) return { status: 'unchanged' }
 
-  const size = byteLength(serialized)
+  // Compressed first, then measured: the budget applies to what is actually stored, so the ceiling
+  // is the compressed one. On a library of email templates -- text and html held side by side, each
+  // a near-duplicate of the other -- that is the difference between roughly 38 macros and several
+  // hundred.
+  const payload = await encodeBackup(serialized)
+  const size = byteLength(payload)
   if (size > SLOT_BUDGET_BYTES) return { status: 'too-large', needed: size }
 
   const slot = standbySlot(manifest)
@@ -212,7 +224,7 @@ export async function writeBackup(macros: Macro[], device: string): Promise<Back
   let budget = CHUNK_CONTENT_BUDGET
   let chunks: string[] = []
   for (;;) {
-    chunks = splitIntoChunks(serialized, budget)
+    chunks = splitIntoChunks(payload, budget)
     try {
       await chrome.storage.sync.set(Object.fromEntries(chunks.map((c, i) => [chunkKey(slot, i), c])))
       break
@@ -232,6 +244,7 @@ export async function writeBackup(macros: Macro[], device: string): Promise<Back
     count: macros.length,
     takenAt: new Date().toISOString(),
     device,
+    encoding: 'gzip-b64',
   }
 
   // The manifest second, in its own call. On this device that ordering means the manifest never
@@ -274,10 +287,12 @@ export async function readBackup(): Promise<BackupReadResult> {
   // owed the difference -- one is worth retrying, the other is not.
   if (parts.some((part) => typeof part !== 'string')) return { status: 'incomplete' }
 
-  const serialized = (parts as string[]).join('')
   let macros: unknown
   try {
-    macros = JSON.parse(serialized) as unknown
+    // Decoding and parsing share an outcome on purpose. From the reader's side "the bytes did not
+    // decompress" and "the text was not JSON" are the same fact: something is there and it is not
+    // the library.
+    macros = JSON.parse(await decodeWith((parts as string[]).join(''), manifest.encoding)) as unknown
   } catch {
     return { status: 'corrupt' }
   }

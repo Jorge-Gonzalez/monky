@@ -279,7 +279,33 @@ other case worth serving, rolling back after a messy session. Forced snapshots a
 the byte budget, bounded at five so a run of deletes cannot pin the store open. Eight
 change-triggered writes now leave two snapshots rather than eight.
 
-**Compression of the sync copy was measured and deferred again, this time with numbers.** On a real
+**Compression was built, 2026-08-02.** The deferral below rested on an average of 284 bytes per
+macro, which came from a library padded with short test entries. Corrected against the real use
+case -- email notification templates -- the picture inverts: those macros run 1,100+ bytes each,
+because every HTML macro stores `text` and `html` side by side as near-duplicates, and a slot fills
+at roughly **38 of them**. That is an ordinary library, not a distant ceiling.
+
+Measured on distinct template-shaped content, gzip+base64 returns 11-15x, which is optimistic given
+the generator's vocabulary; 5-10x is the honest expectation, moving the ceiling to several hundred.
+Both objections below were rechecked and did not survive. Legibility costs little, because diagnosis
+has consistently come from the *local* copy and the snapshot payloads, which stay uncompressed --
+the sync copy is derived from them. And base64's pure-ASCII output makes a chunk's stringified size
+exactly its length plus two, so the one part of this system where the quota was unpredictable stops
+being so.
+
+The codec is its own module, because a subtly lossy one restores *almost* what was saved and nothing
+about that announces itself. It uses the platform's `CompressionStream` rather than a bundled
+library: a backup must be decodable by whatever version is installed when someone finally needs it,
+possibly after a reinstall, and a bundled compressor is a version to drift. The manifest records the
+encoding, so backups written before this keep restoring -- a backup is the one thing that cannot
+have a flag day. The checksum stays computed over the macros rather than the bytes, so a decoding
+fault lands on the same `corrupt` outcome as a stale chunk and adds no new failure mode.
+
+One defect worth recording: a transform stream rejects on *both* halves, so discarding the write
+side left an unhandled rejection on exactly the path whose job is to fail cleanly on a corrupt
+payload -- in a service worker, with nobody to catch it.
+
+**The original deferral, kept because the reasoning was sound and the input was not.** On a real
 28-macro library: gzip 76% smaller, gzip+base64 — what sync would actually hold — 68% smaller, a
 3.1× gain, moving the ceiling from ~157 macros to ~491. Not built, for two reasons. The library sits
 at 18% of a slot, so there is no need yet; and the legibility cost stopped being theoretical, since
