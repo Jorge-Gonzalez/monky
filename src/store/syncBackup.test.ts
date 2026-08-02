@@ -255,6 +255,33 @@ describe('writeBackup', () => {
     expect(store.sync.set.mock.calls.length).toBeLessThanOrEqual(halvings + 1)
   })
 
+  it('rewrites a backup left by an older encoding even when the macros have not changed', async () => {
+    // Otherwise the migration waits for the next edit, and a library that never changes again keeps
+    // a plain backup forever -- so the headroom compression exists to buy never arrives for the
+    // libraries closest to needing it.
+    const macros = libraryOf(3)
+    store.area.set(chunkKey('A', 0), JSON.stringify(macros))
+    store.area.set('backup-manifest', {
+      slot: 'A',
+      rev: 1,
+      chunks: 1,
+      checksum: checksumMacros(macros),
+      count: macros.length,
+      takenAt: '2026-08-01T10:00:00.000Z',
+      device: 'older-install',
+    })
+
+    const result = await writeBackup(macros, 'dev-1')
+    expect(result.status).toBe('written')
+    if (result.status !== 'written') return
+    expect(result.manifest.encoding).toBe('gzip-b64')
+    // And it still reads back as the same library.
+    const read = await readBackup()
+    expect(read.status).toBe('read')
+    if (read.status !== 'read') return
+    expect(read.macros).toEqual(macros)
+  })
+
   it('restores a backup written before compression existed', async () => {
     // A manifest with no `encoding` is what earlier versions wrote, and it has to keep restoring:
     // the copy someone reaches for may well predate the version reaching for it.

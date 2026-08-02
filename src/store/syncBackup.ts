@@ -71,6 +71,9 @@ const SLOT_BUDGET_BYTES = 45_000
  */
 const MAX_CHUNK_KEYS = 64
 
+/** What a write produces today. Named so the "is this already current" test cannot drift from it. */
+const CURRENT_ENCODING: BackupEncoding = 'gzip-b64'
+
 export type Slot = 'A' | 'B'
 
 export interface BackupManifest {
@@ -204,7 +207,14 @@ export async function writeBackup(macros: Macro[], device: string): Promise<Back
   const serialized = JSON.stringify(macros)
   const { checksum } = measureMacros(macros)
   const manifest = await readManifest()
-  if (manifest?.checksum === checksum) return { status: 'unchanged' }
+  // Unchanged means "what is stored is what we would write", which is a claim about the encoding as
+  // well as the content. Comparing the checksum alone -- it covers the macros, not the bytes --
+  // would leave a backup written by an older encoding in place until the library next changed, so a
+  // user who never edits again would never receive the migration, and the headroom it exists to buy
+  // would never arrive for the libraries closest to needing it.
+  if (manifest?.checksum === checksum && manifest.encoding === CURRENT_ENCODING) {
+    return { status: 'unchanged' }
+  }
 
   // Compressed first, then measured: the budget applies to what is actually stored, so the ceiling
   // is the compressed one. On a library of email templates -- text and html held side by side, each
@@ -244,7 +254,7 @@ export async function writeBackup(macros: Macro[], device: string): Promise<Back
     count: macros.length,
     takenAt: new Date().toISOString(),
     device,
-    encoding: 'gzip-b64',
+    encoding: CURRENT_ENCODING,
   }
 
   // The manifest second, in its own call. On this device that ordering means the manifest never
