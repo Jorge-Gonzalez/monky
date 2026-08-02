@@ -57,20 +57,33 @@ describe('splitIntoChunks', () => {
   // The measurement, not the guess. A serialized library is dense with quotes and each one doubles
   // under JSON.stringify, so a chunk sized by raw length can overshoot the 8192-byte item cap by a
   // fifth -- and the write then fails on a user's machine with nothing to see.
+  // Measured in UTF-8 bytes via TextEncoder, not String.length. The first version of these tests
+  // used `.length`, which counts UTF-16 units -- so they asserted the very model that was wrong and
+  // passed while real writes were rejected.
+  const cost = (chunk: string, index: number) =>
+    new TextEncoder().encode(JSON.stringify(chunk)).length + chunkKey('A', index).length
+
   it('keeps every chunk inside the item cap once stringified, with the key counted', () => {
-    const text = JSON.stringify(libraryOf(60))
-    const chunks = splitIntoChunks(text)
+    const chunks = splitIntoChunks(JSON.stringify(libraryOf(60)))
     for (const [index, chunk] of chunks.entries()) {
-      const cost = JSON.stringify(chunk).length + chunkKey('A', index).length
-      expect(cost).toBeLessThanOrEqual(SYNC_LIMITS.QUOTA_BYTES_PER_ITEM)
+      expect(cost(chunk, index)).toBeLessThanOrEqual(SYNC_LIMITS.QUOTA_BYTES_PER_ITEM)
     }
   })
 
   it('holds under text that is nothing but quotes, which is the worst case for escaping', () => {
     const chunks = splitIntoChunks('"'.repeat(20_000))
-    for (const chunk of chunks) {
-      expect(JSON.stringify(chunk).length + 12).toBeLessThanOrEqual(SYNC_LIMITS.QUOTA_BYTES_PER_ITEM)
-    }
+    chunks.forEach((chunk, index) => {
+      expect(cost(chunk, index)).toBeLessThanOrEqual(SYNC_LIMITS.QUOTA_BYTES_PER_ITEM)
+    })
+  })
+
+  it('counts multi-byte characters as the bytes they are', () => {
+    // The library this failed on was full of em dashes and bullets, three UTF-8 bytes each. Costing
+    // them one apiece is how a budget that looked measured came out a fifth short.
+    const chunks = splitIntoChunks('— • ñ '.repeat(4000))
+    chunks.forEach((chunk, index) => {
+      expect(cost(chunk, index)).toBeLessThanOrEqual(SYNC_LIMITS.QUOTA_BYTES_PER_ITEM)
+    })
   })
 
   it('rejoins to exactly what it was given', () => {
@@ -146,7 +159,7 @@ describe('writeBackup', () => {
     const result = await writeBackup(libraryOf(200, 900), 'dev-1')
     expect(result.status).toBe('too-large')
     if (result.status !== 'too-large') return
-    expect(result.needed).toBeGreaterThan(SYNC_LIMITS.MAX_CHUNKS)
+    expect(result.needed).toBeGreaterThan(SYNC_LIMITS.SLOT_BUDGET_BYTES)
     // Nothing written at all, so an over-quota library cannot leave a torn backup behind.
     expect(store.area.has('backup-manifest')).toBe(false)
   })
@@ -178,6 +191,47 @@ describe('writeBackup', () => {
 
     await writeBackup(libraryOf(2), 'dev-1')
     expect(store.area.has('macro-storage')).toBe(false)
+  })
+
+  it('shrinks the chunks and retries when Chrome rejects the per-item cap', async () => {
+    // The failure this was found by: chunks measured 7,827 and 744 UTF-8 bytes against a documented
+    // 8,192 cap, and Chrome still answered `Resource::kQuotaBytesPerItem quota exceeded`. Since the
+    // real accounting could not be derived from the documented one, the write adapts instead of
+    // trusting a second model.
+    let rejectAbove = 4_000
+    store.sync.set.mockImplementation((items: Record<string, unknown>) => {
+      const oversized = Object.values(items).some(
+        (v) => typeof v === 'string' && new TextEncoder().encode(v).length > rejectAbove
+      )
+      if (oversized) return Promise.reject(new Error('Resource::kQuotaBytesPerItem quota exceeded'))
+      Object.entries(items).forEach(([k, v]) => store.area.set(k, v))
+      return Promise.resolve()
+    })
+
+    const macros = libraryOf(20)
+    expect((await writeBackup(macros, 'dev-1')).status).toBe('written')
+
+    rejectAbove = Number.MAX_SAFE_INTEGER
+    const read = await readBackup()
+    expect(read.status).toBe('read')
+    if (read.status !== 'read') return
+    expect(read.macros).toEqual(macros)
+  })
+
+  it('does not retry smaller for a rejection that smaller writes cannot fix', async () => {
+    // A total-quota or rate-limit refusal is made worse by more, smaller writes, so it propagates
+    // to the caller, where the UI can say what actually happened.
+    store.sync.set.mockRejectedValue(new Error('MAX_WRITE_OPERATIONS_PER_MINUTE quota exceeded'))
+    await expect(writeBackup(libraryOf(3), 'dev-1')).rejects.toThrow('MAX_WRITE_OPERATIONS_PER_MINUTE')
+    expect(store.sync.set).toHaveBeenCalledTimes(1)
+  })
+
+  it('gives up rather than shrinking forever when nothing is small enough', async () => {
+    store.sync.set.mockRejectedValue(new Error('Resource::kQuotaBytesPerItem quota exceeded'))
+    await expect(writeBackup(libraryOf(3), 'dev-1')).rejects.toThrow('kQuotaBytesPerItem')
+    // Halving from the starting budget down to the floor, and no further.
+    const halvings = Math.floor(Math.log2(SYNC_LIMITS.CHUNK_CONTENT_BUDGET / SYNC_LIMITS.MIN_CHUNK_BUDGET)) + 1
+    expect(store.sync.set.mock.calls.length).toBeLessThanOrEqual(halvings + 1)
   })
 
   it('records the device that wrote it', async () => {

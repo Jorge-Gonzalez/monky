@@ -152,9 +152,9 @@ describe('runSyncBackup', () => {
 
   it('reports a library too large for the quota rather than failing silently', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
-    writeBackup.mockResolvedValue({ status: 'too-large', needed: 9 })
+    writeBackup.mockResolvedValue({ status: 'too-large', needed: 51_200 })
     await runSyncBackup()
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('9 sync chunks'))
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('51200 bytes'))
     warn.mockRestore()
   })
 

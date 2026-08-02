@@ -115,7 +115,7 @@ export function useSyncBackup(): SyncBackupState {
       } else if (result.status === 'unchanged') {
         flash(true, t('settings.cloudBackup.status.upToDate'))
       } else {
-        flash(false, t('settings.cloudBackup.status.tooLarge'))
+        flash(false, t('settings.cloudBackup.status.tooLarge', { kb: String(Math.round(result.needed / 1024)) }))
       }
     } catch (error: unknown) {
       // Verbatim rather than a friendly paraphrase: the message is the diagnosis here, and every

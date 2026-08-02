@@ -39,21 +39,36 @@ const QUOTA_BYTES = 102_400
 const QUOTA_BYTES_PER_ITEM = 8_192
 
 /**
- * How much of an item a chunk's *content* may claim.
+ * How much of an item a chunk's *content* may claim, as a starting guess rather than a fact.
  *
- * The quota counts the key's length plus the JSON stringification of the value, so the budget has
- * to leave room for the key, the two surrounding quotes, and whatever escaping costs. Escaping is
- * measured exactly below rather than guessed at, so this margin only covers the key and the quotes,
- * with room to spare.
+ * The documented rule is "the JSON stringification of its value plus its key length", and an
+ * earlier version of this file budgeted against a careful model of exactly that: escaping measured
+ * per character, 7,800 bytes of content, key and quotes covered by the margin. It produced chunks
+ * of 7,827 and 744 UTF-8 bytes against a documented cap of 8,192 -- and Chrome rejected the write
+ * with `Resource::kQuotaBytesPerItem quota exceeded`.
+ *
+ * So the real accounting is stricter than the documented one in some way this code could not
+ * derive. Rather than guess at a second model and find out the same way, the write below adapts:
+ * it starts here and halves on a per-item rejection until it fits. Being wrong is then a retry
+ * instead of a backup that never happens.
  */
-const CHUNK_CONTENT_BUDGET = 7_800
+const CHUNK_CONTENT_BUDGET = 6_000
+
+/** Below this the chunk count stops being worth the write operations; give up and report instead. */
+const MIN_CHUNK_BUDGET = 750
 
 /**
- * Two slots share one 102,400-byte quota, so a slot gets about 50 KB and no more than six chunks
- * fit in it. Past that the write would succeed into a quota it cannot afford to keep, so it is
- * refused with a reason the UI can show instead.
+ * Two slots share the 102,400-byte total, and the manifest and edit log need room beside them, so a
+ * slot gets roughly 45 KB. Checked against the serialized size directly rather than against a chunk
+ * count, because the chunk count now varies with whatever budget the write settled on.
  */
-const MAX_CHUNKS = 6
+const SLOT_BUDGET_BYTES = 45_000
+
+/**
+ * How far the stale-chunk sweep reaches. Generous, because it costs one `remove` of absent keys and
+ * the alternative is tracking a second slot's length through the manifest.
+ */
+const MAX_CHUNK_KEYS = 64
 
 export type Slot = 'A' | 'B'
 
@@ -80,6 +95,7 @@ export interface BackupManifest {
 export type BackupWriteResult =
   | { status: 'written'; manifest: BackupManifest }
   | { status: 'unchanged' }
+  /** `needed` is the serialized size in bytes, against SLOT_BUDGET_BYTES. */
   | { status: 'too-large'; needed: number }
 
 export type BackupReadResult =
@@ -97,14 +113,18 @@ export const chunkKey = (slot: Slot, index: number) => `backup${slot}:${index}`
  * dense with quotes, each of which doubles, so a "roughly 8 KB" guess can overshoot the item cap by
  * a fifth and fail the write with no way to see why.
  */
-function jsonCost(code: number): number {
-  if (code === 0x22 || code === 0x5c) return 2 // " and \
+function jsonCost(code: number, pairedSurrogate: boolean): number {
+  if (code === 0x22 || code === 0x5c) return 2 // \" and \\, both ASCII
   if (code === 0x08 || code === 0x09 || code === 0x0a || code === 0x0c || code === 0x0d) return 2
   if (code < 0x20) return 6 // \u00XX
-  // A lone surrogate is escaped as \uXXXX; a paired one is not. Charging both the escaped price
-  // over-estimates a pair by ten, which the budget can afford and which cannot fail a write.
-  if (code >= 0xd800 && code <= 0xdfff) return 6
-  return 1
+  if (code < 0x80) return 1
+  // UTF-8, not UTF-16 units. An em dash costs three bytes and a bullet three, and this library is
+  // full of both -- counting them as one each is how a "measured" budget silently under-counts.
+  if (code < 0x800) return 2
+  // A surrogate pair encodes one code point in four bytes, so two per half. A lone surrogate is
+  // escaped to \uXXXX, which is six ASCII bytes.
+  if (code >= 0xd800 && code <= 0xdfff) return pairedSurrogate ? 2 : 6
+  return 3
 }
 
 /**
@@ -120,20 +140,38 @@ export function splitIntoChunks(text: string, budget: number = CHUNK_CONTENT_BUD
   let cost = 0
   for (let index = 0; index < text.length; index++) {
     const code = text.charCodeAt(index)
-    const next = jsonCost(code)
+    const isLow = code >= 0xdc00 && code <= 0xdfff
+    const previous = index > 0 ? text.charCodeAt(index - 1) : 0
+    const isHigh = code >= 0xd800 && code <= 0xdbff
+    const next = text.length > index + 1 ? text.charCodeAt(index + 1) : 0
+    const paired =
+      (isHigh && next >= 0xdc00 && next <= 0xdfff) || (isLow && previous >= 0xd800 && previous <= 0xdbff)
     // Never cut between the halves of a surrogate pair: the two chunks would each carry a lone
     // surrogate, and the text would not survive being put back together.
-    const splitsPair =
-      code >= 0xdc00 && code <= 0xdfff && index > start && text.charCodeAt(index - 1) >= 0xd800 && text.charCodeAt(index - 1) <= 0xdbff
-    if (cost + next > budget && !splitsPair) {
+    const splitsPair = isLow && index > start && previous >= 0xd800 && previous <= 0xdbff
+    const charCost = jsonCost(code, paired)
+    if (cost + charCost > budget && !splitsPair) {
       chunks.push(text.slice(start, index))
       start = index
       cost = 0
     }
-    cost += next
+    cost += charCost
   }
   chunks.push(text.slice(start))
   return chunks
+}
+
+/** UTF-8 length, which is what a storage quota counts and what `String.length` is not. */
+const byteLength = (text: string): number => new TextEncoder().encode(text).length
+
+/** Whether a rejection is the per-item cap specifically, as opposed to the total or a rate limit. */
+function isPerItemQuotaError(error: unknown): boolean {
+  // Read off the value rather than through String(), which answers "[object Object]" for the plain
+  // objects chrome.* rejects with in places -- and would then match nothing, turning an adaptable
+  // failure back into a permanent one.
+  const message =
+    error instanceof Error ? error.message : typeof error === 'string' ? error : JSON.stringify(error)
+  return message.toLowerCase().includes('quotabytesperitem')
 }
 
 async function readManifest(): Promise<BackupManifest | null> {
@@ -161,10 +199,31 @@ export async function writeBackup(macros: Macro[], device: string): Promise<Back
   const manifest = await readManifest()
   if (manifest?.checksum === checksum) return { status: 'unchanged' }
 
-  const chunks = splitIntoChunks(serialized)
-  if (chunks.length > MAX_CHUNKS) return { status: 'too-large', needed: chunks.length }
+  const size = byteLength(serialized)
+  if (size > SLOT_BUDGET_BYTES) return { status: 'too-large', needed: size }
 
   const slot = standbySlot(manifest)
+
+  // Write the chunks, shrinking the budget until Chrome accepts them.
+  //
+  // Retrying is safe precisely because of the standby slot: everything here lands in the copy that
+  // is *not* live, and the manifest still points at the previous one, so a half-written attempt
+  // damages nothing and the next attempt simply overwrites it.
+  let budget = CHUNK_CONTENT_BUDGET
+  let chunks: string[] = []
+  for (;;) {
+    chunks = splitIntoChunks(serialized, budget)
+    try {
+      await chrome.storage.sync.set(Object.fromEntries(chunks.map((c, i) => [chunkKey(slot, i), c])))
+      break
+    } catch (error: unknown) {
+      // Only the per-item cap is worth retrying smaller. A total-quota or rate-limit rejection will
+      // not be helped by more, smaller writes -- it would be made worse by them.
+      if (!isPerItemQuotaError(error) || budget <= MIN_CHUNK_BUDGET) throw error
+      budget = Math.floor(budget / 2)
+    }
+  }
+
   const next: BackupManifest = {
     slot,
     rev: (manifest?.rev ?? 0) + 1,
@@ -175,10 +234,9 @@ export async function writeBackup(macros: Macro[], device: string): Promise<Back
     device,
   }
 
-  // Chunks first and the manifest second, in two calls. On this device that ordering means the
-  // manifest never names chunks that were not written. It cannot impose an order on a device
-  // receiving them, which is what the standby slot and the checksum are for.
-  await chrome.storage.sync.set(Object.fromEntries(chunks.map((c, i) => [chunkKey(slot, i), c])))
+  // The manifest second, in its own call. On this device that ordering means the manifest never
+  // names chunks that were not written. It cannot impose an order on a device receiving them, which
+  // is what the standby slot and the checksum are for.
   await chrome.storage.sync.set({ [MANIFEST_KEY]: next })
 
   // Chunks left in this slot by an earlier, larger backup. Restore already ignores them -- the
@@ -193,7 +251,7 @@ export async function writeBackup(macros: Macro[], device: string): Promise<Back
   // After the manifest, deliberately: an orphaned chunk costs space, whereas a chunk removed before
   // the manifest stopped pointing at it costs the backup.
   const tail: string[] = []
-  for (let index = chunks.length; index < MAX_CHUNKS; index++) tail.push(chunkKey(slot, index))
+  for (let index = chunks.length; index < MAX_CHUNK_KEYS; index++) tail.push(chunkKey(slot, index))
   if (tail.length > 0) await chrome.storage.sync.remove(tail)
 
   // Safe here and nowhere earlier: a complete, checksummed backup now exists in this same storage
@@ -256,4 +314,11 @@ export async function syncUsage(): Promise<SyncUsage> {
   return { used, total: QUOTA_BYTES, fraction: Math.min(1, used / QUOTA_BYTES) }
 }
 
-export const SYNC_LIMITS = { QUOTA_BYTES, QUOTA_BYTES_PER_ITEM, MAX_CHUNKS, CHUNK_CONTENT_BUDGET }
+export const SYNC_LIMITS = {
+  QUOTA_BYTES,
+  QUOTA_BYTES_PER_ITEM,
+  SLOT_BUDGET_BYTES,
+  CHUNK_CONTENT_BUDGET,
+  MIN_CHUNK_BUDGET,
+  MAX_CHUNK_KEYS,
+}

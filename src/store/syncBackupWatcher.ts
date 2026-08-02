@@ -34,7 +34,7 @@ export async function runSyncBackup(): Promise<void> {
     // standing condition the settings readout is there to show; logging it once per attempt would
     // bury the fact under repetition.
     console.warn(
-      `[MONKY] the macro library needs ${String(result.needed)} sync chunks and the quota allows fewer; ` +
+      `[MONKY] the macro library is ${String(result.needed)} bytes and no longer fits the browser account; ` +
         'the browser-account backup is not being updated. Local backups are unaffected.'
     )
   }

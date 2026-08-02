@@ -108,12 +108,12 @@ describe('useSyncBackup', () => {
     })
 
     it('surfaces a library that no longer fits', async () => {
-      writeBackup.mockResolvedValue({ status: 'too-large', needed: 9 })
+      writeBackup.mockResolvedValue({ status: 'too-large', needed: 51_200 })
       const { result } = renderHook(() => useSyncBackup())
       await act(async () => {
         await result.current.backupNow()
       })
-      expect(result.current.status).toEqual({ ok: false, message: 'settings.cloudBackup.status.tooLarge' })
+      expect(result.current.status).toEqual({ ok: false, message: 'settings.cloudBackup.status.tooLarge:50' })
     })
 
     it('surfaces the thrown message rather than swallowing it', async () => {
