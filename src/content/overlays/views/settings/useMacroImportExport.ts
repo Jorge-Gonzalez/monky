@@ -73,7 +73,7 @@ export function useMacroImportExport() {
         // Snapshot the library as it stands before an import changes it, forced past the
         // duplicate check. An import is one of the two operations most likely to want undoing,
         // and the burst of adds that follows would otherwise be the only thing recorded.
-        void takeSnapshot(macros, { force: true })
+        void takeSnapshot(macros, { force: true, reason: 'import' })
         const existing = new Set(macros.map((m) => m.command))
         const { added, skipped } = mergeImport(parsed, existing, addMacro)
         flash(

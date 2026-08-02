@@ -254,6 +254,53 @@ rather than added or removed, which leaves the total identical; it is tracked in
 sync, because "when did *this* machine last export" is the question worth answering — a file
 exported on the laptop is not on the desktop.
 
+## Amendment, 2026-08-02 — snapshot on danger, not on schedule
+
+The tiered retention this ADR argued for was sized as though snapshots were a general-purpose
+history. They are not, and using the thing made that plain: a few minutes of ordinary editing
+produced six near-identical full copies of the library.
+
+**The three failures are not alike, and only two of them are this feature's.** A bulk delete and a
+bad import are rare, catastrophic and whole-library — snapshots fit them exactly. Undoing a botched
+edit while composing a single macro is frequent, cheap, and *per-macro*: restoring the whole library
+to recover one macro's text discards everything done since, so this layer cannot serve it however
+many copies it keeps. The hourly tier was capturing precisely that third case, which is where the
+redundancy came from.
+
+**So the trigger changed rather than the storage.** The earlier draft's answer to "we might miss the
+important moment" was to snapshot more often. The better answer is to snapshot at the moments that
+are important: immediately before a delete, an import or a restore. Deleting — the most destructive
+operation the app offers, and offered over a multi-select — had no forced snapshot at all and relied
+on whatever the debounced timer happened to have caught. It has one now, and each forced snapshot
+records *why*, so the list reads "before deleting" rather than a fourth identical timestamp.
+
+Retention drops to two recent slots, no hourly tier, and one per day for a week — which covers the
+other case worth serving, rolling back after a messy session. Forced snapshots are evicted last in
+the byte budget, bounded at five so a run of deletes cannot pin the store open. Eight
+change-triggered writes now leave two snapshots rather than eight.
+
+**Compression of the sync copy was measured and deferred again, this time with numbers.** On a real
+28-macro library: gzip 76% smaller, gzip+base64 — what sync would actually hold — 68% smaller, a
+3.1× gain, moving the ceiling from ~157 macros to ~491. Not built, for two reasons. The library sits
+at 18% of a slot, so there is no need yet; and the legibility cost stopped being theoretical, since
+every bug found in this layer was diagnosed by reading the stored JSON. The trigger is now
+observable rather than a guess: revisit when the quota readout passes ~60%. If it is built, use the
+native `CompressionStream('gzip')` with base64 — no dependency to drift across a reinstall, and
+base64's pure-ASCII output would make chunk sizing deterministic, retiring the adaptive halving that
+the stricter-than-documented per-item accounting forced.
+
+One shortcut was considered and rejected: 26% of that payload is the `text` field of HTML macros,
+recomputable from `html` via `extractPlainText`, worth ~1.35× at no cost in opacity. But
+`macroStorage.ts` already holds the rule — *a backup that reshapes its input is not a backup* —
+written after that exact mistake once dropped `updated_at`. If the extractor ever changes, every
+restore quietly returns different text.
+
+**Prior art, corrected.** None of the three extensions examined keeps a local version history.
+Briskine requires an account and recovers from Firestore; Stylus delegates cross-device to
+Dropbox/Drive/WebDAV; AutoTextExpander stores one item per shortcut in sync with no history at all.
+This layer has no precedent in the category, which is a reason to keep it small rather than a reason
+to drop it — the bulk-delete case is real and unrecoverable without it.
+
 ## Consequences
 
 Macros no longer ride Chrome sync between devices. Given the 8 KB cap, they had not been for some

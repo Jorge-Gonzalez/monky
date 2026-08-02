@@ -18,6 +18,14 @@ function describeWhen(meta: SnapshotMeta, language: Lang, now: number): string {
   return t('settings.snapshots.earlier', { date, time })
 }
 
+/** The reason a snapshot exists, when it has one worth showing. */
+function describeReason(meta: SnapshotMeta): string | null {
+  if (meta.reason === 'delete') return t('settings.snapshots.reason.delete')
+  if (meta.reason === 'import') return t('settings.snapshots.reason.import')
+  if (meta.reason === 'restore') return t('settings.snapshots.reason.restore')
+  return null
+}
+
 export function SnapshotList({ language }: { language: Lang }) {
   const { snapshots, status, restore } = useMacroSnapshots()
   const [armedRev, setArmedRev] = useState<number | null>(null)
@@ -47,9 +55,13 @@ export function SnapshotList({ language }: { language: Lang }) {
           className="horizontal gap-sm padding-block-xs align-center justify-between"
         >
           <span className="vertical">
-            <span className="ink font-sm">{describeWhen(meta, language, now)}</span>
+            {/* Why first, when second. At the moment this list is read, "before you imported" is
+                what someone recognises; a timestamp is what they would have to reason from. */}
+            <span className="ink font-sm">{describeReason(meta) ?? describeWhen(meta, language, now)}</span>
             <span className="ink-soft font-xs tabular">
-              {t('settings.snapshots.count', { count: String(meta.count) })}
+              {describeReason(meta)
+                ? `${describeWhen(meta, language, now)} · ${t('settings.snapshots.count', { count: String(meta.count) })}`
+                : t('settings.snapshots.count', { count: String(meta.count) })}
             </span>
           </span>
 

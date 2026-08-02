@@ -150,7 +150,7 @@ describe('useSyncBackup', () => {
       })
       // Forced, because whatever is in the library right now is about to go, and whether it
       // happens to match the last snapshot is beside the point.
-      expect(takeSnapshot).toHaveBeenCalledWith(currentMacros, { force: true })
+      expect(takeSnapshot).toHaveBeenCalledWith(currentMacros, { force: true, reason: 'restore' })
       expect(setMacros).toHaveBeenCalledWith(restored)
     })
 

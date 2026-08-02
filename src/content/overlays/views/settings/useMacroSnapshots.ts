@@ -43,7 +43,7 @@ export function useMacroSnapshots() {
       // Forced, because this is the write that must never be coalesced away: whatever is in the
       // library right now is about to be replaced, and whether it happens to match the last
       // snapshot is beside the point.
-      await takeSnapshot(useMacroStore.getState().macros, { force: true })
+      await takeSnapshot(useMacroStore.getState().macros, { force: true, reason: 'restore' })
       useMacroStore.getState().setMacros(macros)
       await refresh()
       flash(true, t('settings.snapshots.status.restored', { count: String(macros.length) }))

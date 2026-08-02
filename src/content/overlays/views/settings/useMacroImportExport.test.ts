@@ -74,7 +74,7 @@ describe('useMacroImportExport', () => {
       result.current.importFromFile(new File(['[]'], 'macros.json', { type: 'application/json' }))
     })
 
-    await waitFor(() => expect(mockTakeSnapshot).toHaveBeenCalledWith([], { force: true }))
+    await waitFor(() => expect(mockTakeSnapshot).toHaveBeenCalledWith([], { force: true, reason: 'import' }))
     expect(mockTakeSnapshot.mock.invocationCallOrder[0]).toBeLessThan(
       mockAddMacro.mock.invocationCallOrder[0]
     )

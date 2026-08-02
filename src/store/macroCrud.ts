@@ -1,5 +1,6 @@
 import { useMacroStore } from './useMacroStore'
 import { getErrorMessage } from '../lib/errors'
+import { takeSnapshot } from './macroSnapshots'
 import type { Macro } from '../types'
 
 // Macro create/update/delete against the store, which is the only source of truth. Framework-free
@@ -38,6 +39,19 @@ export function updateMacro(id: string, data: Partial<Macro>): Result {
 // list half-deleted.
 export function deleteMacros(ids: string[]): Result {
   if (ids.length === 0) return { success: true }
+  const before = useMacroStore.getState().macros
+  // A snapshot of the library as it stands, forced past the duplicate check.
+  //
+  // This is the operation snapshots exist for. Import and restore already took one; deleting -- the
+  // most destructive thing the app offers, and offered over a multi-select -- did not, and relied
+  // on whatever the debounced timer happened to have caught beforehand. That was backwards: the
+  // retention tiers were compensating for not capturing the moment that actually matters.
+  //
+  // Not awaited, and the array is captured first: the delete must not wait on a storage write, and
+  // what gets snapshotted has to be the state from before it either way.
+  void takeSnapshot(before, { force: true, reason: 'delete' }).catch((error: unknown) => {
+    console.warn('[MONKY] could not snapshot before deleting:', error)
+  })
   useMacroStore.getState().deleteMacros(ids)
   return { success: true }
 }

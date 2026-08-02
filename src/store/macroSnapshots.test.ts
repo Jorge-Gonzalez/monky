@@ -48,6 +48,12 @@ const at = (rev: number, msAgo: number, checksum = `c${rev}`): SnapshotMeta => (
   count: 1,
 })
 
+/** A snapshot taken before something destructive, which is what `force` records. */
+const forced = (rev: number, msAgo: number, reason: 'delete' | 'import' | 'restore'): SnapshotMeta => ({
+  ...at(rev, msAgo),
+  reason,
+})
+
 /** Same, with a weight, for the tests that are about the byte budget rather than the clock. */
 const sized = (rev: number, msAgo: number, bytes: number): SnapshotMeta => ({
   ...at(rev, msAgo),
@@ -115,11 +121,11 @@ describe('snapshotBucket', () => {
 })
 
 describe('planRetention — the recent slots', () => {
-  it('keeps the five newest whatever their age', () => {
-    const entries = [at(9, 0), at(8, 1), at(7, 2), at(6, 3), at(5, 4), at(4, 40 * DAY)]
+  it('keeps the two newest whatever their age', () => {
+    const entries = [at(9, 0), at(8, 1), at(7, 40 * DAY)]
     const { keep, drop } = planRetention(entries, NOW)
-    expect(keep.map((e) => e.rev)).toEqual([9, 8, 7, 6, 5])
-    expect(drop.map((e) => e.rev)).toEqual([4])
+    expect(keep.map((e) => e.rev)).toEqual([9, 8])
+    expect(drop.map((e) => e.rev)).toEqual([7])
   })
 
   it('is not fooled by entries arriving out of order', () => {
@@ -128,57 +134,64 @@ describe('planRetention — the recent slots', () => {
   })
 })
 
-describe('planRetention — the hourly window', () => {
-  it('keeps one per hour for the last day, the newest in each', () => {
-    // Three in the same hour, three hours back. Only the newest of the three survives, and it
-    // survives on the hourly rule rather than on a recent slot.
-    const entries = [
-      at(1, 3 * HOUR),
-      at(2, 3 * HOUR - 60_000),
-      at(3, 3 * HOUR - 120_000),
-      at(4, 5 * HOUR),
-      at(5, 7 * HOUR),
-      at(6, 9 * HOUR),
-      at(7, 11 * HOUR),
-      at(8, 13 * HOUR),
-    ]
-    const { keep, drop } = planRetention(entries, NOW)
-    expect(keep.map((e) => e.rev).sort((a, b) => a - b)).toEqual([3, 4, 5, 6, 7, 8])
-    expect(drop.map((e) => e.rev).sort((a, b) => a - b)).toEqual([1, 2])
+describe('planRetention — forced snapshots', () => {
+  // The ones taken immediately before a delete, an import or a restore. They sit at the moments
+  // someone actually comes back for, and no other snapshot can reconstruct that moment, so they
+  // outlive both the recent slots and the daily tail.
+  it('keeps a forced snapshot the recent slots and the daily tail would both have dropped', () => {
+    const entries = [at(4, 0), at(3, 1), forced(2, 3 * DAY, 'delete'), at(1, 3 * DAY - 1000)]
+    const kept = planRetention(entries, NOW).keep.map((e) => e.rev)
+    expect(kept).toContain(2)
+    // rev 1 shares rev 2's day and is older, so the daily bucket does not take it either.
+    expect(kept).not.toContain(1)
   })
 
-  it('survives the mistake-noticed-later case', () => {
-    // The scenario the tiering exists for: a bad edit two hours ago, then a burst of work after
-    // it. A flat ring of five would have churned the pre-mistake state out; the hourly bucket
-    // for the earlier hour still holds it.
-    const good = at(1, 4 * HOUR)
-    const entries = [good, ...[2, 3, 4, 5, 6, 7].map((rev) => at(rev, HOUR - rev * 1000))]
-    expect(planRetention(entries, NOW).keep.map((e) => e.rev)).toContain(good.rev)
+  it('keeps a forced snapshot older than the daily window', () => {
+    const entries = [at(3, 0), at(2, 1), forced(1, 30 * DAY, 'import')]
+    expect(planRetention(entries, NOW).keep.map((e) => e.rev)).toContain(1)
+  })
+
+  it('lets forced snapshots age once there are too many of them', () => {
+    // A run of deletes should not pin the store open forever.
+    const many = [8, 7, 6, 5, 4, 3, 2, 1].map((rev) => forced(rev, (9 - rev) * 3 * DAY, 'delete'))
+    const kept = planRetention(many, NOW).keep.map((e) => e.rev)
+    expect(kept).toContain(8)
+    expect(kept).not.toContain(1)
+  })
+
+  it('treats a change-triggered snapshot as ordinary even though it carries a reason', () => {
+    const entries = [at(3, 0), at(2, 1), { ...at(1, 30 * DAY), reason: 'change' as const }]
+    expect(planRetention(entries, NOW).keep.map((e) => e.rev)).not.toContain(1)
   })
 })
 
-describe('planRetention — the daily window', () => {
+describe('planRetention — the daily tail', () => {
   // Revisions ascend with recency here, because that is what they do: each snapshot takes the
   // next revision and a later timestamp. An earlier draft of this test invented a fixture where
   // the highest revision was the oldest entry, and the recent slots -- which count by revision --
-  // duly kept the wrong five.
-  it('keeps one per day out to a fortnight, then stops', () => {
+  // duly kept the wrong ones.
+  it('keeps one per day out to a week, then stops', () => {
     const entries = [
       at(1, 40 * DAY),
-      at(2, 15 * DAY),
-      at(3, 13 * DAY),
+      at(2, 9 * DAY),
+      at(3, 6 * DAY),
       at(4, 5 * DAY),
       at(5, 2 * DAY),
       at(6, 2 * DAY - HOUR),
       at(7, 3 * HOUR),
-      at(8, 2 * HOUR),
-      at(9, HOUR),
-      at(10, 0),
+      at(8, 0),
     ]
     const { keep, drop } = planRetention(entries, NOW)
-    // 6 and 5 share a day; the newer wins. 2 is past the fortnight, 1 long past it.
-    expect(keep.map((e) => e.rev).sort((a, b) => a - b)).toEqual([3, 4, 6, 7, 8, 9, 10])
+    // 6 and 5 share a day; the newer wins. 2 is past the week, 1 long past it.
+    expect(keep.map((e) => e.rev).sort((a, b) => a - b)).toEqual([3, 4, 6, 7, 8])
     expect(drop.map((e) => e.rev).sort((a, b) => a - b)).toEqual([1, 2, 5])
+  })
+
+  it('no longer keeps an hourly tier, which served the case snapshots cannot help with', () => {
+    // Four snapshots in four separate hours of today. Only the two recent slots and today's daily
+    // bucket survive -- the rest were near-identical copies of a library mid-composition.
+    const entries = [at(4, 0), at(3, 2 * HOUR), at(2, 4 * HOUR), at(1, 6 * HOUR)]
+    expect(planRetention(entries, NOW).keep.map((e) => e.rev)).toEqual([4, 3])
   })
 })
 
@@ -216,49 +229,49 @@ describe('takeSnapshot — overlapping callers', () => {
 
 describe('planRetention — the byte budget', () => {
   // The tiers bound how many snapshots survive, never how large they are, so the wall moves with
-  // the library: ~42 copies of a 250 KB library is the whole 10 MB of chrome.storage.local.
+  // the library. Every case uses more entries than RECENT_KEEP on purpose: with two or fewer,
+  // everything is labelled `recent` and the tier ordering these exist for is never exercised while
+  // the assertions still pass.
   //
-  // Every case here uses more than RECENT_KEEP entries on purpose. An earlier draft used exactly
-  // five, which labels every one of them `recent` -- the assertions still passed, because
-  // oldest-first inside a single tier happens to give the same answer, so the tier ordering these
-  // tests exist for was never exercised at all.
-  //
-  // The budget is passed explicitly rather than leaning on the 5 MB default: that number is policy
-  // and should be free to move without rewriting the tests that describe the mechanism.
+  // The budget is passed explicitly rather than leaning on the default, which is policy and should
+  // be free to move without rewriting the tests that describe the mechanism.
   const ladder = (): SnapshotMeta[] => [
     sized(10, 0, 100), // recent
     sized(9, 60_000, 100), // recent
-    sized(8, 120_000, 100), // recent
-    sized(7, 180_000, 100), // recent
-    sized(6, 240_000, 100), // recent
-    sized(5, 2 * HOUR, 100), // hourly
-    sized(4, 5 * HOUR, 100), // hourly
-    sized(3, 2 * DAY, 100), // daily
-    sized(2, 4 * DAY, 100), // daily
-    sized(1, 6 * DAY, 100), // daily
+    sized(8, 1 * DAY, 100), // daily — also inside the floor
+    sized(7, 2 * DAY, 100), // daily
+    sized(6, 3 * DAY, 100), // daily
+    sized(5, 4 * DAY, 100), // daily
+    sized(4, 5 * DAY, 100), // daily
+    { ...sized(3, 6 * DAY, 100), reason: 'delete' as const }, // forced
   ]
 
   it('leaves the tiers alone while the set fits', () => {
     expect(planRetention(ladder(), NOW, { budgetBytes: 10_000 }).drop).toEqual([])
   })
 
-  it('gives up the daily tier before the hourly one', () => {
-    // Room for eight of the ten: both go from the daily end, and the hourly pair is untouched.
-    const { keep, drop } = planRetention(ladder(), NOW, { budgetBytes: 800 })
-    expect(drop.map((e) => e.rev)).toEqual([2, 1])
-    expect(keep.map((e) => e.rev)).toEqual([10, 9, 8, 7, 6, 5, 4, 3])
+  it('gives up the daily tail before anything else', () => {
+    const { drop } = planRetention(ladder(), NOW, { budgetBytes: 700 })
+    expect(drop.map((e) => e.rev)).toEqual([4])
   })
 
-  it('moves on to the hourly tier only once the daily one is exhausted', () => {
-    const { drop } = planRetention(ladder(), NOW, { budgetBytes: 600 })
-    expect(drop.map((e) => e.rev)).toEqual([4, 3, 2, 1])
+  it('spends the whole daily tail before touching a recent or forced snapshot', () => {
+    const { keep, drop } = planRetention(ladder(), NOW, { budgetBytes: 400 })
+    expect(drop.map((e) => e.rev)).toEqual([7, 6, 5, 4])
+    expect(keep.map((e) => e.rev)).toEqual([10, 9, 8, 3])
+  })
+
+  it('gives up a forced snapshot only when nothing cheaper is left', () => {
+    // Last out, because it sits at a moment no other snapshot can reconstruct.
+    const { keep } = planRetention(ladder(), NOW, { budgetBytes: 300 })
+    expect(keep.map((e) => e.rev)).toEqual([10, 9, 8])
   })
 
   it('gives up the least defensible entries first — those it could not place at all', () => {
     // rev 5 claims to be from the future, so it is kept only because the clock cannot be trusted.
     // That makes it the first thing to stop paying for.
     const entries = [...ladder().filter((e) => e.rev !== 5), sized(5, -2 * DAY, 100)]
-    expect(planRetention(entries, NOW, { budgetBytes: 900 }).drop.map((e) => e.rev)).toEqual([5])
+    expect(planRetention(entries, NOW, { budgetBytes: 700 }).drop.map((e) => e.rev)).toEqual([5])
   })
 
   it('keeps the three newest however small the budget', () => {
@@ -269,15 +282,14 @@ describe('planRetention — the byte budget', () => {
   })
 
   it('protects the newest by revision, not by timestamp', () => {
-    // A skewed clock must not argue the newest snapshots out of the floor. rev 10 says it is a
-    // week old; it is still the highest revision and still survives a budget of nothing.
+    // A skewed clock must not argue the newest snapshots out of the floor.
     const entries = [...ladder().filter((e) => e.rev !== 10), sized(10, 7 * DAY, 100)]
     expect(planRetention(entries, NOW, { budgetBytes: 10 }).keep.map((e) => e.rev)).toContain(10)
   })
 
   it('stops evicting the moment the set fits, rather than draining the tier', () => {
-    const { keep } = planRetention(ladder(), NOW, { budgetBytes: 900 })
-    expect(keep.map((e) => e.rev)).toEqual([10, 9, 8, 7, 6, 5, 4, 3, 2])
+    const { keep } = planRetention(ladder(), NOW, { budgetBytes: 700 })
+    expect(keep.map((e) => e.rev)).toEqual([10, 9, 8, 7, 6, 5, 3])
   })
 
   it('treats a snapshot written before the budget as weightless rather than as free to drop', () => {
@@ -363,23 +375,16 @@ describe('takeSnapshot', () => {
     for (let i = 0; i < 8; i++) await takeSnapshot([macro('a', `v${i}`)])
     const snapshots = await listSnapshots()
     expect(snapshots[0].rev).toBe(8)
-    // Five recent slots, and everything else fell in the same hour bucket.
-    expect(snapshots).toHaveLength(5)
+    // Two recent slots, and everything else fell in the same day bucket -- which the newest of
+    // them already holds. Eight change-triggered writes leave two snapshots, not eight.
+    expect(snapshots).toHaveLength(2)
   })
 
   it('removes the payloads of pruned snapshots rather than orphaning them', async () => {
     const { area } = installStorage()
     for (let i = 0; i < 8; i++) await takeSnapshot([macro('a', `v${i}`)])
     const payloadKeys = [...area.keys()].filter((key) => key.startsWith('macro-snapshot:'))
-    expect(payloadKeys.sort()).toEqual(
-      [
-        'macro-snapshot:4',
-        'macro-snapshot:5',
-        'macro-snapshot:6',
-        'macro-snapshot:7',
-        'macro-snapshot:8',
-      ].sort()
-    )
+    expect(payloadKeys.sort()).toEqual(['macro-snapshot:7', 'macro-snapshot:8'].sort())
   })
 
   it('never leaves an index entry without its payload', async () => {

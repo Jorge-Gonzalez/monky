@@ -60,6 +60,11 @@ const translations = {
         restore: 'Restore',
         confirm: 'Replace my macros',
         cancel: 'Cancel',
+        reason: {
+          delete: 'Before deleting',
+          import: 'Before importing',
+          restore: 'Before restoring',
+        },
         status: {
           restored: 'Restored {{count}} macros. The previous set was backed up first.',
           unreadable: 'That backup could not be read, so nothing was changed.',
@@ -282,6 +287,11 @@ const translations = {
         restore: 'Restaurar',
         confirm: 'Reemplazar mis macros',
         cancel: 'Cancelar',
+        reason: {
+          delete: 'Antes de borrar',
+          import: 'Antes de importar',
+          restore: 'Antes de restaurar',
+        },
         status: {
           restored: 'Se restauraron {{count}} macros. El conjunto anterior se copió antes.',
           unreadable: 'No se pudo leer esa copia, así que no se cambió nada.',

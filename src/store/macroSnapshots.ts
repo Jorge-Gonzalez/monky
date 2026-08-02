@@ -1,18 +1,19 @@
 // Automatic local backups of the macro library.
 //
-// This is the layer that protects against the user's own mistakes -- a bulk delete, a bad
-// import, an edit that turned out wrong -- which is a different failure from losing the device,
-// and needs a different answer. `chrome.storage.local` removes every constraint that made the
+// This is the layer that protects against two of the user's own mistakes -- a bulk delete and a bad
+// import -- which is a different failure from losing the device and needs a different answer. It
+// deliberately does not try to serve the third, undoing an edit while composing a single macro:
+// that is per-macro and frequent, and replacing the whole library to fix one macro's text would
+// discard everything done since. `chrome.storage.local` removes every constraint that made the
 // cross-device design interesting: no 8192-byte item cap, ~10 MB of quota, no propagation and so
 // no arrival order. A snapshot is therefore one key holding the whole serialized library. No
 // chunking, no alternating slots.
 //
-// The decision that actually matters here is retention, because the obvious policy defends the
-// wrong failure. A flat ring of "the last N snapshots" assumes mistakes are noticed immediately.
-// They are not: the user carries on working, each change writes another snapshot, and the last
-// good state is churned out of the buffer by the very edits made after the damage. So retention
-// is tiered -- a handful of recent changes, then one per hour for a day, then one per day for a
-// fortnight. A mistake found on Thursday is still recoverable from Monday.
+// The decision that actually matters here is when a snapshot is taken, and the answer arrived by
+// being wrong first. Taking one on a timer produces a pile of near-identical copies and still
+// misses the moment that counts; taking one immediately before a delete, an import or a restore
+// captures exactly the state someone will come back for. A short daily tail covers the other case
+// worth serving -- rolling back after a messy session -- and nothing else is kept.
 //
 // Snapshots hold macros only. Restoring last Tuesday's theme and language because the macro
 // library was wanted back is a surprise, and config is small and re-settable by hand.
@@ -21,17 +22,30 @@ import type { Macro } from '../types'
 const INDEX_KEY = 'macro-snapshots'
 const PAYLOAD_PREFIX = 'macro-snapshot:'
 
-const RECENT_KEEP = 5
+// Retention is deliberately thin, and the reasoning is worth keeping because it reverses an
+// earlier draft of this file.
+//
+// Snapshots serve exactly two failures well: a bulk delete, and "roll back to yesterday after a
+// messy session". Both are whole-library events, both are rare. The third thing people reach for --
+// undoing a botched edit while composing one macro -- is frequent and *cannot* be served by this at
+// all: restoring the whole library to fix one macro's text discards everything done since.
+//
+// The old tiering (five recent, one an hour for a day, one a day for a fortnight) was sized as
+// though snapshots were a general-purpose history. They are not, and the hourly tier in particular
+// was capturing the composing case it could never help with -- which is where the redundancy the
+// user objected to actually came from. So: snapshot when something dangerous is about to happen,
+// keep a short daily tail for the rollback case, and stop there.
+const RECENT_KEEP = 2
+/** Forced snapshots survive longest, but not without limit -- a run of deletes should still age. */
+const FORCED_KEEP = 5
 const HOUR_MS = 60 * 60 * 1000
 const DAY_MS = 24 * HOUR_MS
-const HOURLY_WINDOW_MS = DAY_MS
-const DAILY_WINDOW_MS = 14 * DAY_MS
+const DAILY_WINDOW_MS = 7 * DAY_MS
 
 /**
  * How much of `chrome.storage.local` the whole snapshot set may occupy.
  *
- * The tiers alone bound the snapshot *count* at about 42, not the bytes, so the wall moves with the
- * library: 42 copies of a 250 KB library is the entire 10 MB quota. Half of it is deliberately left
+ * The tiers bound the snapshot *count*, not the bytes, so the wall moves with the library. Half of it is deliberately left
  * free because the two failures are not comparable -- losing an old snapshot is a disappointment,
  * whereas filling the quota breaks the write of the live library, which is the thing all of this
  * exists to protect.
@@ -60,16 +74,32 @@ export interface SnapshotMeta {
    * which is the harmless direction to be wrong in.
    */
   bytes?: number
+  /**
+   * Why this snapshot was taken. Absent on snapshots written before reasons existed, and on the
+   * plain change-triggered ones, both of which mean the same thing here.
+   *
+   * It is what lets the list say "before you deleted 5 macros" instead of a fourth identical row of
+   * "today, 16:28" -- and that sentence is the whole difference between a list someone can act on
+   * at the moment of panic and one they have to decode.
+   */
+  reason?: SnapshotReason
 }
 
+export type SnapshotReason = 'change' | 'delete' | 'import' | 'restore'
+
+/** A snapshot taken because something destructive was about to happen, rather than because time passed. */
+const isForced = (entry: SnapshotMeta): boolean =>
+  entry.reason !== undefined && entry.reason !== 'change'
+
 /** Which rule earned an entry its place, and so the order in which places are given up. */
-type Tier = 'recent' | 'hourly' | 'daily' | 'unplaced'
+type Tier = 'forced' | 'recent' | 'daily' | 'unplaced'
 
 // Least valuable first. `unplaced` leads because those entries are kept only because their
 // timestamp could not be trusted enough to bucket them, so they are the least defensible thing to
-// be spending the budget on; `recent` is last because the fine grain is what a panicking user
-// reaches for.
-const EVICTION_ORDER: readonly Tier[] = ['unplaced', 'daily', 'hourly', 'recent']
+// be spending the budget on. `forced` is last: a snapshot taken immediately before a delete or an
+// import is the one someone will actually come looking for, and it is the only one whose moment
+// cannot be reconstructed from any other.
+const EVICTION_ORDER: readonly Tier[] = ['unplaced', 'daily', 'recent', 'forced']
 
 interface SnapshotIndex {
   rev: number
@@ -110,10 +140,9 @@ export function checksumMacros(macros: Macro[]): string {
  * Decide which snapshots survive. Pure, because this is the part most likely to be wrong and the
  * part whose wrongness is invisible until someone needs a backup that is no longer there.
  *
- * Within a bucket the newest wins, which is the conventional choice and the one that makes
- * "restore from earlier today" mean what it says. The cost is that a mistake made and then worked
- * on inside the same hour can lose its pre-mistake state from that hour's bucket -- the preceding
- * hour still has it, and the five recent slots cover the fine grain.
+ * Within a day the newest wins, which is the conventional choice and the one that makes "restore
+ * from yesterday" mean what it says. The fine grain that a bucket loses is covered by the forced
+ * snapshots, which sit at the moments worth returning to rather than at arbitrary times.
  */
 export function planRetention(
   entries: SnapshotMeta[],
@@ -123,7 +152,6 @@ export function planRetention(
   const newestFirst = [...entries].sort((a, b) => b.rev - a.rev)
   const tier = new Map<number, Tier>()
 
-  const seenHour = new Set<number>()
   const seenDay = new Set<number>()
   for (const entry of newestFirst) {
     const takenAt = Date.parse(entry.takenAt)
@@ -134,14 +162,7 @@ export function planRetention(
       tier.set(entry.rev, 'unplaced')
       continue
     }
-    const age = now - takenAt
-    if (age <= HOURLY_WINDOW_MS) {
-      const bucket = Math.floor(takenAt / HOUR_MS)
-      if (!seenHour.has(bucket)) {
-        seenHour.add(bucket)
-        tier.set(entry.rev, 'hourly')
-      }
-    } else if (age <= DAILY_WINDOW_MS) {
+    if (now - takenAt <= DAILY_WINDOW_MS) {
       const bucket = Math.floor(takenAt / DAY_MS)
       if (!seenDay.has(bucket)) {
         seenDay.add(bucket)
@@ -150,10 +171,11 @@ export function planRetention(
     }
   }
 
-  // Last, so that a recent entry which also happens to open an hourly bucket is labelled by the
-  // rule that should protect it longest. Membership is the same union as before; only the label
-  // differs, and the label is what the budget pass spends.
+  // Then recent, then forced, each overwriting the last. An entry can qualify under several rules
+  // and should be labelled by the one that protects it longest, because the label is what the
+  // budget pass spends.
   for (const entry of newestFirst.slice(0, RECENT_KEEP)) tier.set(entry.rev, 'recent')
+  for (const entry of newestFirst.filter(isForced).slice(0, FORCED_KEEP)) tier.set(entry.rev, 'forced')
 
   // The budget, spent cheapest-tier-first and oldest-first within a tier. The floor is taken by
   // revision rather than by timestamp so that a skewed clock cannot talk us out of the newest
@@ -214,8 +236,11 @@ async function readIndex(): Promise<SnapshotIndex> {
  *
  * Returns the snapshot written, or null when it was a duplicate.
  */
-export async function takeSnapshot(macros: Macro[], options: { force?: boolean } = {}): Promise<SnapshotMeta | null> {
-  return serialize(() => writeSnapshot(macros, options.force ?? false))
+export async function takeSnapshot(
+  macros: Macro[],
+  options: { force?: boolean; reason?: SnapshotReason } = {}
+): Promise<SnapshotMeta | null> {
+  return serialize(() => writeSnapshot(macros, options.force ?? false, options.reason ?? 'change'))
 }
 
 /**
@@ -245,7 +270,11 @@ function serialize<T>(work: () => Promise<T>): Promise<T> {
   return next
 }
 
-async function writeSnapshot(macros: Macro[], force: boolean): Promise<SnapshotMeta | null> {
+async function writeSnapshot(
+  macros: Macro[],
+  force: boolean,
+  reason: SnapshotReason
+): Promise<SnapshotMeta | null> {
   const { checksum, bytes } = measureMacros(macros)
   const index = await readIndex()
   // By revision rather than by position. The index is written sorted, so the first entry is
@@ -260,6 +289,7 @@ async function writeSnapshot(macros: Macro[], force: boolean): Promise<SnapshotM
     checksum,
     count: macros.length,
     bytes,
+    reason,
   }
   const { keep, drop } = planRetention([meta, ...index.entries], Date.now())
 

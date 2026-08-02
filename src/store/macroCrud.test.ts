@@ -12,14 +12,21 @@ const addMacro = vi.fn()
 const updateMacroInStore = vi.fn()
 const deleteMacrosInStore = vi.fn()
 
+const currentMacros = [{ id: '42', command: '/keep', text: 'still here' }]
 vi.mock('./useMacroStore', () => ({
   useMacroStore: {
     getState: () => ({
+      macros: currentMacros,
       addMacro,
       updateMacro: updateMacroInStore,
       deleteMacros: deleteMacrosInStore,
     }),
   },
+}))
+
+const takeSnapshot = vi.fn<(macros: unknown, opts: unknown) => Promise<null>>(() => Promise.resolve(null))
+vi.mock('./macroSnapshots', () => ({
+  takeSnapshot: (macros: unknown, opts: unknown) => takeSnapshot(macros, opts),
 }))
 
 // Format raw store error → friendly string. Its own mapping is covered in
@@ -92,6 +99,25 @@ describe('updateMacro', () => {
 })
 
 describe('deleteMacros', () => {
+  it('snapshots the library before deleting, and says why', () => {
+    // The operation snapshots exist for. Import and restore already took one; deleting -- the most
+    // destructive thing the app offers, over a multi-select -- did not, and relied on whatever the
+    // debounced timer happened to have caught first.
+    deleteMacros(['42'])
+    expect(takeSnapshot).toHaveBeenCalledWith(currentMacros, { force: true, reason: 'delete' })
+  })
+
+  it('captures the library as it was, not as the delete leaves it', () => {
+    deleteMacros(['42'])
+    const [snapshotted] = takeSnapshot.mock.calls[0]
+    expect(snapshotted).toBe(currentMacros)
+  })
+
+  it('does not snapshot when the selection is empty', () => {
+    deleteMacros([])
+    expect(takeSnapshot).not.toHaveBeenCalled()
+  })
+
   it('deletes from the store and reports success', () => {
     const result = deleteMacros(['42'])
 

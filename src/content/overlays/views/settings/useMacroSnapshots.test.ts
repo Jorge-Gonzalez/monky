@@ -58,7 +58,7 @@ describe('useMacroSnapshots', () => {
     await act(() => result.current.restore(1))
 
     // Forced, and before the replacement: this is the write that makes saying yes recoverable.
-    expect(takeSnapshot).toHaveBeenCalledWith(currentMacros, { force: true })
+    expect(takeSnapshot).toHaveBeenCalledWith(currentMacros, { force: true, reason: 'restore' })
     expect(takeSnapshot.mock.invocationCallOrder[0]).toBeLessThan(setMacros.mock.invocationCallOrder[0])
     expect(setMacros).toHaveBeenCalledWith(backup)
   })
