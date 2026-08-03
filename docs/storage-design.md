@@ -32,7 +32,7 @@ thing in this design, and it was got wrong once already.
 ## 2. The whole picture
 
 Elements are lettered and arrows numbered so they can be referred to precisely; both keys follow the
-diagram.
+diagram. **Orange marks the arrows that need a deliberate act** — everything else happens on its own.
 
 ```mermaid
 flowchart TB
@@ -59,7 +59,7 @@ flowchart TB
 
     OV -->|"8 · explicit"| FILE[["K · Layer 3<br/>monky-macros.json"]]
 
-    PREV -->|"9"| RP{{"L · restorePoints<br/>one list, source hidden"}}
+    PREV -->|"9"| RP{{"L · restorePoints<br/>one list, sources combined"}}
     SYNC -->|"10"| RP
     RP -.->|"11 · restore, explicit"| STORE
     FILE -.->|"12 · import, explicit"| STORE
@@ -68,6 +68,10 @@ flowchart TB
     classDef layer fill:#e2eeed,stroke:#0d6e6a,color:#123
     class LOCAL auth
     class PREV,SYNC,FILE layer
+
+    %% Orange marks the three arrows that require a deliberate act: 8, 11, 12.
+    %% Link indices are positional, counted from the first arrow declared above.
+    linkStyle 7,10,11 stroke:#d97706,stroke-width:2px,color:#d97706
 ```
 
 **Elements**
@@ -85,7 +89,7 @@ flowchart TB
 | **I** | `macro-previous` | Layer 1 — the last 2 libraries, each from before a destructive act (§4) |
 | **J** | Browser account | Layer 2 — chunked, compressed, A/B slots (§5) |
 | **K** | Export file | Layer 3 — the only copy that leaves the browser (§7) |
-| **L** | `restorePoints` | Gathers I and J into one list; the source never reaches the screen (§6) |
+| **L** | `restorePoints` | Combines I and J into one list, ordered by time; which source a point came from is not something the reader has to reason about (§6) |
 
 **Arrows**
 
@@ -104,7 +108,11 @@ flowchart TB
 | **11** | L → E | **explicit + confirmed** | replaces the live library; keeps its own way back first |
 | **12** | K → E | **explicit** | merges by command; duplicates skipped |
 
-Note the asymmetry between **4** and **5**: the same event, read two different ways, on purpose.
+The three orange arrows are exactly the three the rule in §6 names: **8** leaves the browser sandbox,
+**11** and **12** replace the live library. Every black arrow stays inside the extension's own storage
+and is additive, which is what lets it be automatic.
+
+Note also the asymmetry between **4** and **5**: the same event, read two different ways, on purpose.
 
 **One rule governs the whole diagram: `chrome.storage.local` (F) is the only thing ever read back.**
 Everything else is written to and read only on an explicit, user-initiated restore. Sync is never
@@ -129,7 +137,7 @@ the good local copy. The symptom was settings controls flickering back to old va
 | `backup-health` | how the last browser-account copy went | `backupHealth.ts` |
 | `device-id` | a uuid, minted on first use | `deviceId.ts` |
 | `last-export` | `{ at, checksum, count }` of the last export | `exportTracking.ts` |
-| `macros`, `pendingOps`, `access`, `refresh` | orphans from removed features | *nothing — see §8* |
+| `macros`, `pendingOps`, `access`, `refresh` | orphans from removed features | *nothing — see §10* |
 
 `device-id` deserves a note: **local storage does not sync, so a uuid written there is a per-device
 identity by construction.** No API and no fingerprinting. The browser offers nothing better —
