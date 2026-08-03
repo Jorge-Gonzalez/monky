@@ -16,9 +16,9 @@ vi.mock('../../../../lib/macroIO', () => ({
 }))
 vi.mock('../../../../lib/i18n', () => ({ t: (key: string) => key }))
 
-const mockTakeSnapshot = vi.fn()
-vi.mock('../../../../store/macroSnapshots', () => ({
-  takeSnapshot: (...args: any[]) => mockTakeSnapshot(...args),
+const mockKeepPrevious = vi.fn()
+vi.mock('../../../../store/macroPrevious', () => ({
+  keepPrevious: (...args: any[]) => mockKeepPrevious(...args),
 }))
 
 import { useMacroImportExport } from './useMacroImportExport'
@@ -66,7 +66,7 @@ describe('useMacroImportExport', () => {
     await waitFor(() => expect(result.current.status?.ok).toBe(true))
   })
 
-  it('backs the library up before importing over it, forced past the duplicate check', async () => {
+  it('keeps the library before importing over it', async () => {
     // An import is one of the two operations most likely to want undoing, and the burst of adds
     // that follows would otherwise be the only thing recorded.
     const { result } = renderHook(() => useMacroImportExport())
@@ -74,8 +74,8 @@ describe('useMacroImportExport', () => {
       result.current.importFromFile(new File(['[]'], 'macros.json', { type: 'application/json' }))
     })
 
-    await waitFor(() => expect(mockTakeSnapshot).toHaveBeenCalledWith([], { force: true, reason: 'import' }))
-    expect(mockTakeSnapshot.mock.invocationCallOrder[0]).toBeLessThan(
+    await waitFor(() => expect(mockKeepPrevious).toHaveBeenCalledWith([], 'import'))
+    expect(mockKeepPrevious.mock.invocationCallOrder[0]).toBeLessThan(
       mockAddMacro.mock.invocationCallOrder[0]
     )
   })
@@ -88,7 +88,7 @@ describe('useMacroImportExport', () => {
     })
 
     await waitFor(() => expect(result.current.status?.ok).toBe(false))
-    expect(mockTakeSnapshot).not.toHaveBeenCalled()
+    expect(mockKeepPrevious).not.toHaveBeenCalled()
   })
 
   it('reports an error status when the file is invalid', async () => {

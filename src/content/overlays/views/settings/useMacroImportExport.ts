@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useMacroStore } from '../../../../store/useMacroStore'
 import { serializeMacros, parseMacroImport, mergeImport } from '../../../../lib/macroIO'
-import { takeSnapshot } from '../../../../store/macroSnapshots'
+import { keepPrevious } from '../../../../store/macroPrevious'
 import { editsSince, readEditLog } from '../../../../store/editLog'
 import { hasDivergedFromExport, readLastExport, recordExport, type LastExport } from '../../../../store/exportTracking'
 import { t } from '../../../../lib/i18n'
@@ -70,10 +70,9 @@ export function useMacroImportExport() {
           flash(false, t('settings.importExport.status.noValidMacros'))
           return
         }
-        // Snapshot the library as it stands before an import changes it, forced past the
-        // duplicate check. An import is one of the two operations most likely to want undoing,
-        // and the burst of adds that follows would otherwise be the only thing recorded.
-        void takeSnapshot(macros, { force: true, reason: 'import' })
+        // Keep the library as it stands before an import merges over it. An import is one of the
+        // two operations most likely to want undoing.
+        void keepPrevious(macros, 'import')
         const existing = new Set(macros.map((m) => m.command))
         const { added, skipped } = mergeImport(parsed, existing, addMacro)
         flash(

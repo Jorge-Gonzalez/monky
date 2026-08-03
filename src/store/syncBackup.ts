@@ -17,7 +17,7 @@
 // Restore stays explicit. Overwriting a library is exactly the kind of thing a user should be
 // present for, and it is the one moment two devices' libraries meet.
 import type { Macro } from '../types'
-import { measureMacros } from './macroSnapshots'
+import { measureMacros } from './checksum'
 import { decodeWith, encodeBackup, type BackupEncoding } from './backupCodec'
 
 const MANIFEST_KEY = 'backup-manifest'

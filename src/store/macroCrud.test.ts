@@ -24,9 +24,9 @@ vi.mock('./useMacroStore', () => ({
   },
 }))
 
-const takeSnapshot = vi.fn<(macros: unknown, opts: unknown) => Promise<null>>(() => Promise.resolve(null))
-vi.mock('./macroSnapshots', () => ({
-  takeSnapshot: (macros: unknown, opts: unknown) => takeSnapshot(macros, opts),
+const keepPrevious = vi.fn<(macros: unknown, reason: unknown) => Promise<null>>(() => Promise.resolve(null))
+vi.mock('./macroPrevious', () => ({
+  keepPrevious: (macros: unknown, reason: unknown) => keepPrevious(macros, reason),
 }))
 
 // Format raw store error → friendly string. Its own mapping is covered in
@@ -99,23 +99,22 @@ describe('updateMacro', () => {
 })
 
 describe('deleteMacros', () => {
-  it('snapshots the library before deleting, and says why', () => {
-    // The operation snapshots exist for. Import and restore already took one; deleting -- the most
-    // destructive thing the app offers, over a multi-select -- did not, and relied on whatever the
-    // debounced timer happened to have caught first.
+  it('keeps the library before deleting, and says why', () => {
+    // The operation whole-library recovery exists for: a selection deleted by accident, typically
+    // discovered when a macro fails to expand weeks later.
     deleteMacros(['42'])
-    expect(takeSnapshot).toHaveBeenCalledWith(currentMacros, { force: true, reason: 'delete' })
+    expect(keepPrevious).toHaveBeenCalledWith(currentMacros, 'delete')
   })
 
   it('captures the library as it was, not as the delete leaves it', () => {
     deleteMacros(['42'])
-    const [snapshotted] = takeSnapshot.mock.calls[0]
-    expect(snapshotted).toBe(currentMacros)
+    const [kept] = keepPrevious.mock.calls[0]
+    expect(kept).toBe(currentMacros)
   })
 
-  it('does not snapshot when the selection is empty', () => {
+  it('keeps nothing when the selection is empty', () => {
     deleteMacros([])
-    expect(takeSnapshot).not.toHaveBeenCalled()
+    expect(keepPrevious).not.toHaveBeenCalled()
   })
 
   it('deletes from the store and reports success', () => {

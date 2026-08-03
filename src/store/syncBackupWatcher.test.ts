@@ -2,6 +2,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { Macro } from '../types'
 import type * as EditLogModule from './editLog'
+import type * as BackupHealthModule from './backupHealth'
 
 const listeners: ((before: Macro[] | null, after: Macro[]) => void)[] = []
 const loadStoredMacros = vi.fn<() => Promise<Macro[] | null>>()
@@ -12,6 +13,12 @@ vi.mock('../content/storage/macroStorage', () => ({
 }))
 
 vi.mock('../lib/deviceId', () => ({ deviceId: () => Promise.resolve('this-device') }))
+
+const recordBackupHealth = vi.fn()
+vi.mock('./backupHealth', async () => {
+  const actual = await vi.importActual<typeof BackupHealthModule>('./backupHealth')
+  return { ...actual, recordBackupHealth: (h: unknown) => recordBackupHealth(h) }
+})
 
 const writeBackup = vi.fn<() => Promise<{ status: string; needed?: number }>>()
 vi.mock('./syncBackup', () => ({ writeBackup: (...a: unknown[]) => writeBackup(...(a as [])) }))
@@ -136,6 +143,9 @@ describe('startSyncBackup', () => {
 })
 
 describe('runSyncBackup', () => {
+  // Every outcome is recorded rather than logged, because nothing here runs where a user could see
+  // a console: a rejection in a service worker reaches nobody, which is how a backup that had never
+  // once succeeded still said only "not backed up yet". The settings line reads what is recorded.
   it('backs up what is stored now, not what the change event carried', async () => {
     // By the time the alarm fires the library may have moved on again, and the newest state is the
     // one worth copying.
@@ -148,21 +158,32 @@ describe('runSyncBackup', () => {
     loadStoredMacros.mockResolvedValue(null)
     await runSyncBackup()
     expect(writeBackup).not.toHaveBeenCalled()
+    expect(recordBackupHealth).not.toHaveBeenCalled()
   })
 
-  it('reports a library too large for the quota rather than failing silently', async () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+  it('records a healthy backup, not only a broken one', async () => {
+    await runSyncBackup()
+    expect(recordBackupHealth).toHaveBeenCalledWith(expect.objectContaining({ status: 'ok' }))
+  })
+
+  it('records a library that no longer fits, with its size', async () => {
     writeBackup.mockResolvedValue({ status: 'too-large', needed: 51_200 })
     await runSyncBackup()
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('51200 bytes'))
-    warn.mockRestore()
+    expect(recordBackupHealth).toHaveBeenCalledWith(expect.objectContaining({ status: 'too-large', bytes: 51_200 }))
   })
 
-  it('says nothing when the backup was already up to date', async () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+  it('records a rejection with the message it carried', async () => {
+    writeBackup.mockRejectedValue(new Error('QUOTA_BYTES quota exceeded'))
+    await runSyncBackup()
+    expect(recordBackupHealth).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'failed', detail: 'QUOTA_BYTES quota exceeded' })
+    )
+  })
+
+  it('counts an unchanged backup as healthy', async () => {
+    // Nothing to write because nothing changed is the system working, not a fault.
     writeBackup.mockResolvedValue({ status: 'unchanged' })
     await runSyncBackup()
-    expect(warn).not.toHaveBeenCalled()
-    warn.mockRestore()
+    expect(recordBackupHealth).toHaveBeenCalledWith(expect.objectContaining({ status: 'ok' }))
   })
 })

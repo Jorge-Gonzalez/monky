@@ -7,8 +7,7 @@ import { SegmentedControl } from '../../../../../shared/ui/SegmentedControl'
 import { SelectableGroup } from '../../../../../shared/ui/SelectableGroup'
 import { t } from '../../../../../lib/i18n'
 import { SettingsSection, SettingsRow, SettingsDivider, SettingsButton } from './SettingsLayout'
-import { SnapshotList } from './SnapshotList'
-import { CloudBackup } from './CloudBackup'
+import { RestoreList } from './RestoreList'
 
 const SunIcon = () => (
   <svg
@@ -202,12 +201,8 @@ export function SettingsView(_props: BaseModalViewProps) {
             </div>
           </SettingsRow>
 
-          <SettingsRow label={t('settings.snapshots.title')}>
-            <SnapshotList language={language} />
-          </SettingsRow>
-
-          <SettingsRow label={t('settings.cloudBackup.title')}>
-            <CloudBackup language={language} />
+          <SettingsRow label={t('settings.recover.title')}>
+            <RestoreList language={language} />
           </SettingsRow>
         </SettingsSection>
 

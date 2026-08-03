@@ -10,17 +10,15 @@ import { useMacroImportExport } from '../useMacroImportExport'
 vi.mock('../../../../../lib/i18n', () => ({ t: (key: string) => key }))
 vi.mock('../../../../../options', () => ({ useOptions: vi.fn() }))
 vi.mock('../useMacroImportExport', () => ({ useMacroImportExport: vi.fn() }))
-// The cloud-backup row talks to chrome.storage.sync in an effect; this file is about wiring,
-// not about that conversation, which useSyncBackup's own tests cover.
-vi.mock('../useSyncBackup', () => ({
-  useSyncBackup: () => ({
-    manifest: null,
+// The recovery row reads storage in an effect; this file is about wiring, not about that
+// conversation, which useRestorePoints' own tests cover.
+vi.mock('../useRestorePoints', () => ({
+  useRestorePoints: () => ({
+    points: [],
+    health: null,
     usage: null,
-    log: [],
-    fromAnotherDevice: false,
     status: null,
     restore: vi.fn(),
-    backupNow: vi.fn(),
     refresh: vi.fn(),
   }),
 }))
@@ -86,8 +84,7 @@ describe('SettingsView', () => {
         'settings.colorTheme',
         'settings.language',
         'settings.importExport.title',
-        'settings.snapshots.title',
-        'settings.cloudBackup.title',
+        'settings.recover.title',
       ])
     })
   })

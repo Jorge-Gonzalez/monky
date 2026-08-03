@@ -9,7 +9,7 @@
 // answering. A file exported on a laptop is not on the desktop, so a synced timestamp would suppress
 // the nudge exactly where the file is missing.
 import type { Macro } from '../types'
-import { measureMacros } from './macroSnapshots'
+import { measureMacros } from './checksum'
 
 const KEY = 'last-export'
 

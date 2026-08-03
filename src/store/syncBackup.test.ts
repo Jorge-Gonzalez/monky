@@ -2,7 +2,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { Macro } from '../types'
 import { decodeBackup } from './backupCodec'
-import { checksumMacros } from './macroSnapshots'
+import { checksumMacros } from './checksum'
 import {
   chunkKey,
   readBackup,

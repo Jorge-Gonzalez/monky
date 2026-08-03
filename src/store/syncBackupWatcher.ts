@@ -14,6 +14,7 @@ import { listenStoredMacrosDiff, loadStoredMacros } from '../content/storage/mac
 import { deviceId } from '../lib/deviceId'
 import { appendEditEvents, summarizeChange } from './editLog'
 import { writeBackup } from './syncBackup'
+import { describeError, recordBackupHealth } from './backupHealth'
 
 const ALARM = 'sync-backup'
 const DELAY_MINUTES = 1
@@ -27,16 +28,20 @@ const DELAY_MINUTES = 1
 export async function runSyncBackup(): Promise<void> {
   const macros = await loadStoredMacros()
   if (macros === null) return
-  const device = await deviceId()
-  const result = await writeBackup(macros, device)
-  if (result.status === 'too-large') {
-    // Not a failure to retry. The library no longer fits the browser account's quota, which is a
-    // standing condition the settings readout is there to show; logging it once per attempt would
-    // bury the fact under repetition.
-    console.warn(
-      `[MONKY] the macro library is ${String(result.needed)} bytes and no longer fits the browser account; ` +
-        'the browser-account backup is not being updated. Local backups are unaffected.'
-    )
+  const at = new Date().toISOString()
+  // Every outcome is recorded, including success, because the settings line reports it rather than
+  // waiting to be asked. Nothing here runs where a user could see a thrown error: a rejection in a
+  // service worker reaches a console nobody has open, which is how a backup that had never once
+  // succeeded still said only "not backed up yet".
+  try {
+    const result = await writeBackup(macros, await deviceId())
+    if (result.status === 'too-large') {
+      await recordBackupHealth({ at, status: 'too-large', bytes: result.needed })
+      return
+    }
+    await recordBackupHealth({ at, status: 'ok' })
+  } catch (error: unknown) {
+    await recordBackupHealth({ at, status: 'failed', detail: describeError(error) })
   }
 }
 
@@ -73,8 +78,8 @@ export function startSyncBackup({ delayInMinutes = DELAY_MINUTES } = {}): void {
   chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name !== ALARM) return
     runSyncBackup().catch((error: unknown) => {
-      // No UI to surface this from, and a failed backup must never disturb the library it was
-      // copying: local storage already holds the good copy.
+      // runSyncBackup records its own outcome; this catches the storage write that records it,
+      // which is the one failure that cannot report itself.
       console.warn('[MONKY] browser-account backup failed:', error)
     })
   })

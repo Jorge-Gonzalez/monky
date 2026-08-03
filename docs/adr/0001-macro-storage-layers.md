@@ -327,6 +327,51 @@ Dropbox/Drive/WebDAV; AutoTextExpander stores one item per shortcut in sync with
 This layer has no precedent in the category, which is a reason to keep it small rather than a reason
 to drop it — the bulk-delete case is real and unrecoverable without it.
 
+## Amendment, 2026-08-03 — the history becomes a previous state, and recovery becomes one list
+
+Two objections, both from using the thing, and both correct.
+
+**The snapshot history was not a requirement of this kind of tool.** No comparable expander keeps
+one. The failure that actually motivated any of this was *the local data is gone*, and the
+browser-account backup answers it completely. What snapshots added was recovery from your own
+destructive act while local data is intact — real, but rare, and it does not need a browsable
+history to serve it.
+
+**And the complexity leaked into the interface.** The Data section had grown two recovery sections,
+each with a Restore button, sourced from different storage, with nothing to tell a person in trouble
+which they wanted. That is worse than one and arguably worse than none. The list was the defect more
+than the storage: a list asks "which one?", which requires a mental model of retention tiers that
+nobody should have to hold.
+
+So: **`macro-previous`** — one key, the last two libraries, each written immediately before a delete,
+import or restore, and never on an ordinary edit. No tiers, no eviction order, no calendar buckets,
+no byte budget, no serialisation queue. About 1,300 lines removed.
+
+Two, not one, because delete-then-import would otherwise lose the pre-delete state to the import.
+Explicitly *not* for the reason sync uses two slots: a single-key `chrome.storage.local.set` is
+atomic, so there is no torn write to defend against and the second entry buys depth alone.
+
+**Recovery is now one list, and the source is not a category the user reasons about.** Restore points
+are gathered from the previous states and the browser-account copy, sorted by time, de-duplicated
+between themselves — **never against the current library**, since hiding the backup whenever it
+matched what was loaded produced a backup with no visible way to restore from it and no way to check
+that it works. A backup you cannot exercise is a promise rather than a fact. Mechanism is hidden;
+meaning is not, so "from another device" stays.
+
+**The "back up now" button is gone**, and this reverses something added two days earlier. It existed
+because a sync failure had nowhere to surface: everything automatic runs in the service worker, where
+a rejection reaches a console nobody has open. But it contradicted the rule beside it — writes that
+stay inside the extension are automatic — and a failure you must think to press a button to discover
+is worse than one that simply tells you. Every attempt now records its outcome and the settings line
+states it.
+
+**What is still not served, deliberately:** undoing a botched edit while composing one macro. That is
+per-macro and frequent, the browser's own undo already handles it inside the editor, and replacing
+that with a persistent one would mean rebuilding an opaque platform stack to serve the cheapest
+failure. An undo/redo over CRUD operations is a better idea than either and is parked rather than
+rejected — linear time travel is a far simpler mental model than any list, and it deserves an
+interface designed rather than bolted on.
+
 ## Consequences
 
 Macros no longer ride Chrome sync between devices. Given the 8 KB cap, they had not been for some

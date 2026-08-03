@@ -2,10 +2,10 @@
 
 Companion to `adr/0001-macro-storage-layers.md`. The ADR records decisions in the order they were
 made, including the ones later reversed. This describes the system as it now stands, and explains
-the two parts that are least self-evident: **what the local snapshots are for**, and **why the
+the two parts that are least self-evident: **what the local copies are for**, and **why the
 browser-account backup uses two slots**.
 
-Status: current as of 2026-08-02.
+Status: current as of 2026-08-03.
 
 ---
 
@@ -23,8 +23,9 @@ Three ways, and they are not alike:
 | 2 | The machine dies, or the profile is wiped | rare | total | a copy **outside this profile** |
 | 3 | An edit to one macro goes wrong while composing | frequent | trivial | the **previous value of that macro** |
 
-The design serves 1 and 2 with a layer each. It deliberately does **not** serve 3 — see §4.1, because
-that omission is the single most misunderstood thing here.
+The design serves 1 and 2 with a layer each. **3 is served by the browser's own undo inside the
+content editor and by nothing else here** — see §4.1. That boundary is the single most misunderstood
+thing in this design, and it was got wrong once already.
 
 ---
 
@@ -49,20 +50,20 @@ flowchart TB
     LOCAL -->|"storage.onChanged"| DETECT["Content script<br/>macro detector"]
     LOCAL -->|"storage.onChanged"| WATCH["Background watchers"]
 
-    WATCH -->|"debounce 5 s"| SNAP[("Layer 1<br/>local snapshots<br/><b>macro-snapshot:N</b>")]
     WATCH -->|"alarm 1 min"| SYNC[("Layer 2<br/>browser account<br/><b>backupA/B + manifest</b>")]
-    CRUD -->|"forced, before danger"| SNAP
+    CRUD -->|"before delete / import / restore"| PREV[("Layer 1<br/>previous state<br/><b>macro-previous</b>")]
 
     OV -->|"explicit"| FILE[["Layer 3<br/>monky-macros.json"]]
 
-    SNAP -.->|"restore"| STORE
-    SYNC -.->|"restore, explicit"| STORE
+    PREV --> RP{{"restorePoints<br/>one list, source hidden"}}
+    SYNC --> RP
+    RP -.->|"restore, explicit"| STORE
     FILE -.->|"import"| STORE
 
     classDef auth fill:#0d6e6a,stroke:#0d6e6a,color:#fff
     classDef layer fill:#e2eeed,stroke:#0d6e6a,color:#123
     class LOCAL auth
-    class SNAP,SYNC,FILE layer
+    class PREV,SYNC,FILE layer
 ```
 
 **One rule governs the whole diagram: `chrome.storage.local` is the only thing ever read back.**
@@ -84,8 +85,8 @@ the good local copy. The symptom was settings controls flickering back to old va
 | Key | Holds | Written by |
 |---|---|---|
 | `macro-storage` | the live library + config, as one JSON string | zustand persist |
-| `macro-snapshots` | snapshot index: `{ rev, entries[] }` | `macroSnapshots.ts` |
-| `macro-snapshot:<rev>` | one snapshot payload — the macro array | `macroSnapshots.ts` |
+| `macro-previous` | the last **2** libraries, each from just before a destructive act | `macroPrevious.ts` |
+| `backup-health` | how the last browser-account copy went | `backupHealth.ts` |
 | `device-id` | a uuid, minted on first use | `deviceId.ts` |
 | `last-export` | `{ at, checksum, count }` of the last export | `exportTracking.ts` |
 | `macros`, `pendingOps`, `access`, `refresh` | orphans from removed features | *nothing — see §8* |
@@ -109,116 +110,71 @@ items, 1,800 writes/hour.
 
 ---
 
-## 4. Layer 1 — local snapshots
+## 4. Layer 1 — the previous state
 
 ### 4.1 What it is for, and what it is not for
 
 **For:** failure 1 — the user destroys their own library. A bulk delete over a multi-select, a bad
 import merged over the top.
 
-**Not for:** failure 3 — undoing a botched edit to a single macro. This is worth stating flatly
-because the feature *looks* like it should serve it and cannot: **restoring a snapshot replaces the
-entire library, discarding everything done since.** To recover one macro's previous text you would
-throw away every other change made in the meantime. No amount of snapshot frequency fixes that; it
-is the wrong shape, not the wrong resolution.
+**Not for:** failure 3 — undoing a botched edit to a single macro. Worth stating flatly, because this
+looks like it should serve that and cannot: **restoring replaces the entire library, discarding
+everything done since.** To recover one macro's previous text you would throw away every other change
+made in the meantime. That is the wrong shape, not the wrong resolution, and no amount of frequency
+fixes it. Composing is served by the browser's own undo inside the content editor, which is free,
+already works, and is not this layer's business.
 
-The first design missed this. Retention was five recent, one per hour for a day, one per day for a
-fortnight — sized as though this were a general-purpose history. In practice a few minutes of
-ordinary editing produced six near-identical full copies, because the hourly tier was diligently
-capturing failure 3, the one case it could never help with.
+### 4.2 What this replaced, and why
 
-### 4.2 The correction: snapshot on danger, not on schedule
+The first version was a browsable history: five recent copies, one per hour for a day, one per day
+for a fortnight, with retention tiers, an eviction order, calendar bucketing, a five-megabyte budget
+and a serialisation queue — about 1,300 lines. It was the wrong shape twice over.
 
-The earlier answer to *"we might miss the important moment"* was to snapshot more often. The better
-answer is to snapshot **at** the moments that are important.
+It could not serve failure 3, as above. And the history it *did* keep leaked into the interface as a
+list of near-identical rows, which a person who had just lost something had to decode before they
+could choose one. A few minutes of ordinary editing produced six of them, because the hourly tier was
+diligently capturing the one case it could never help with.
+
+Two corrections, in order:
+
+1. **Trigger on danger, not on schedule.** Snapshot *at* the moments that matter rather than often
+   enough to hope to catch one. Deleting — the most destructive act the app offers — had no such
+   capture at all and relied on whatever a debounced timer happened to have caught.
+2. **Then: if the trigger is a handful of moments, the history is a handful of copies.** Once that
+   was true, every tier, budget and bucket existed to manage something that no longer accumulated.
+
+What is left is one key holding the last **two** libraries, each written immediately before a
+destructive act and never on an ordinary edit. That last part is what keeps it useful: the realistic
+way a bulk delete is discovered in a text expander is typing a macro weeks later and getting nothing,
+and a copy that moved on every edit would have been overwritten long before.
 
 ```mermaid
 flowchart LR
-    subgraph forced["Forced — the reason this layer exists"]
-        D["bulk delete"] --> S
-        I["import"] --> S
-        R["restore"] --> S
-    end
-    subgraph timed["Change-triggered — a thin safety net"]
-        C["any macro change"] -->|"debounce 5 s"| S
-    end
-    S["takeSnapshot(macros, { force, reason })"]
-    S --> DD{"checksum ==<br/>newest?"}
-    DD -->|"yes, and not forced"| SKIP["skip"]
-    DD -->|"no, or forced"| W["write payload + index<br/>in one set()"]
-    W --> P["prune dropped payloads"]
+    D["bulk delete"] --> K
+    I["import"] --> K
+    R["restore"] --> K
+    K["keepPrevious(macros, reason)"] --> C{"same as<br/>newest?"}
+    C -->|"yes"| S["skip"]
+    C -->|"no"| W["one set() —<br/>newest first, keep 2"]
 ```
 
-Each forced snapshot records **why**, so the list reads *"Before deleting · today 16:28 · 28
-macros"* rather than a fourth identical timestamp. At the moment this list is read — someone has
-just lost something — the reason is what they recognise; a timestamp is what they would have to
-reason from.
+**Why two rather than one:** delete-then-import would otherwise leave only the pre-import state,
+having lost the pre-delete one to it. Two costs a second copy and no policy — keep the newest two.
 
-Deleting is the case that had *no* forced snapshot until recently. It is the most destructive action
-the app offers, it is offered over a multi-select, and it relied on whatever the debounced timer
-happened to have caught beforehand.
+**Why that is not the reason sync uses two slots.** There, a second slot exists because a write can
+tear or half-propagate and must not damage the readable copy. A single-key `chrome.storage.local.set`
+is atomic, so here the second entry buys depth and nothing else. The symmetry is a coincidence worth
+naming, so it does not imply a shared justification.
 
-### 4.3 Retention
+### 4.3 The interface, which was the real defect
 
-Two independent mechanisms: **tiers** decide what is worth keeping, **the byte budget** decides what
-survives when space runs short.
+The list was the problem more than the storage. A list asks *"which one?"*, which requires a mental
+model of retention tiers nobody should have to hold. And there were **two** of them — local history
+and browser-account backup, each with its own Restore button, sourced from different storage, with
+nothing to say which one a person in trouble wanted. That is worse than having one, and arguably
+worse than having none.
 
-| Tier | Rule | Kept |
-|---|---|---|
-| `forced` | taken before a delete / import / restore | most recent **5** |
-| `recent` | newest by revision | **2** |
-| `daily` | newest in each calendar day | **7 days** |
-| `unplaced` | timestamp unparseable or in the future | all — see below |
-
-An entry may qualify under several rules and is labelled by the one that protects it longest.
-Eviction runs the other way — **`unplaced` → `daily` → `recent` → `forced`** — oldest first within a
-tier, stopping the moment the set fits.
-
-`forced` is evicted last because a snapshot taken immediately before a delete sits at a moment no
-other snapshot can reconstruct. `unplaced` goes first because those entries are kept only on the
-grounds that their clock could not be trusted, which is the least defensible thing to spend space
-on.
-
-**The byte budget is 5 MB of `chrome.storage.local`'s 10 MB.** Half is deliberately left free, and
-the asymmetry is the reason: losing an old snapshot is a disappointment, whereas filling the quota
-breaks the write of the *live library*, which is the thing all of this exists to protect.
-
-**A floor of 3 newest survives any budget**, taken by revision rather than timestamp so a skewed
-clock cannot argue the newest snapshots out of protection. Without a floor, a library larger than
-the whole budget would retain nothing — being told backups exist and finding none is worse than
-never having offered them.
-
-Net effect: **eight change-triggered writes now leave two snapshots**, not eight.
-
-### 4.4 Why whole copies rather than diffs or per-macro history
-
-Both were considered and priced. Content-addressing macros by hash would cut history storage by
-roughly 8×, and the mechanism is small — maybe 80 lines. What is not small is the consequence:
-**once snapshots share blobs, deleting one requires knowing whether any other still references its
-macros.** That is mark-and-sweep. Get it wrong one way and blobs leak forever, defeating the point;
-get it wrong the other and a live blob is collected, producing a snapshot that silently fails to
-restore — destroying precisely the thing the feature exists to protect, discovered at the moment of
-panic.
-
-Today retention is a pure function over an array and deleting a snapshot is deleting one key.
-Nothing can be half-collected. Once the count dropped from ~42 possible to 3–5 actual, the
-redundancy that motivated the idea largely dissolved. **Reduce what you store before optimising how
-you store it.**
-
-### 4.5 Concurrency
-
-`takeSnapshot` is a read-modify-write over a single index key, and `chrome.storage` offers no
-transaction. Two overlapping calls both read the same index, both find their checksum different from
-the same newest entry, and both write. This was observed in the wild as revisions 5 and 6 holding
-byte-identical libraries.
-
-Callers are serialised through a promise chain, which survives a rejection so one failed snapshot
-cannot wedge every later one. It covers overlap **within one context**, which is where the observed
-duplicates came from. Cross-context overlap — the settings page forcing one while the worker's timer
-fires — is left alone deliberately: the cost is a duplicated snapshot, never a lost one, and the
-cure would be the cross-device lock this design has already rejected.
-
----
+So recovery is now one list, and the source is not a category the user reasons about — see §6.
 
 ## 5. Layer 2 — the browser-account backup
 
@@ -356,15 +312,75 @@ already exists replaces it, so rescheduling *is* the debounce, with no bookkeepi
 (The snapshot watcher's 5-second `setTimeout` is fine: the change event that schedules it has already
 reset the worker's idle countdown, and 5 s clears comfortably. A minute does not.)
 
-Restore stays **explicit**, and there is also a manual **"back up now"**. That button is worth having
-on its own terms — someone about to wipe a machine should not have to trust a timer — and it is the
-only path by which a sync write's failure reaches the person it affects. Everything automatic runs
-in the service worker, where a rejection reaches a console nobody has open. A backup that had never
-once succeeded still reported "not backed up yet" without ever explaining itself.
+Restore stays **explicit**. The backup half is entirely automatic, and how it went is reported
+passively rather than on request — see §6.
 
 ---
 
-## 6. Layer 3 — export, and the nudge
+## 6. Recovery, as one list
+
+The source of a restore point is **not** something the user reasons about. A restore point is a
+*moment* — when it was and why it exists — and the storage behind it never reaches the screen.
+
+```mermaid
+flowchart LR
+    P["macro-previous<br/>up to 2"] --> G["listRestorePoints()"]
+    B["backup-manifest<br/>the browser account"] --> G
+    G --> S["sort by time, newest first"]
+    S --> D["de-duplicate between entries"]
+    D --> L["one list:<br/>when · why · how many"]
+```
+
+This merges cleanly rather than papering over a conflict, because **the two sources are almost never
+both meaningful at once**. The browser-account copy holds the latest state, so on a working machine
+it is what you already have; it becomes the only thing that matters at the moment the local data is
+gone — which is exactly when the local entries do not exist either.
+
+**De-duplication is between entries, never against the current library.** An earlier draft hid the
+browser copy whenever it matched what was loaded — nearly always — and produced a backup with no
+visible way to restore from it and no way to check that it works. Restoring a copy identical to the
+current one is a harmless no-op, and being able to do it is the only proof the thing functions. **A
+backup you cannot exercise is a promise rather than a fact.**
+
+**Hide the mechanism, keep the meaning.** "Slot B", "chunk", "manifest" are mechanism and are gone.
+*From another device* is meaning — restoring a state another machine produced is materially
+different from restoring your own — and stays.
+
+### What is explicit and what is not
+
+| operation | automatic? | why |
+|---|---|---|
+| copy → browser account | **automatic** | additive; writing a copy destroys nothing |
+| copy → previous state | **automatic** | same, and it must happen *before* you act, so it cannot wait |
+| export → file | **explicit** | leaves the browser sandbox and lands on your disk |
+| **restore ← anywhere** | **explicit, always** | replaces the live library |
+
+> **Writes that stay inside the extension's own storage can be automatic. Anything that destroys the
+> live library, or anything that leaves the sandbox, is explicit.**
+
+A restore is itself destructive, so it keeps its own way back before it runs — otherwise recovering
+to the wrong moment would be the one act in the app with no undo.
+
+### The health line is a sentence, not a control
+
+There was briefly a **back up now** button. It existed for one good reason: everything automatic runs
+in the service worker, where a rejection reaches a console nobody has open, and a backup that had
+never once succeeded still reported only "not backed up yet". Pressing it was the only way to see the
+error.
+
+But it contradicted the rule above — an explicit write beside a claim that writes are automatic — and
+**a failure you have to think to press a button to discover is a worse design than one that simply
+tells you.** So every attempt records its outcome in `backup-health`, and the line under the list
+states it, becoming the error when there is one:
+
+> *No se pudo copiar: tus macros ya no caben en tu cuenta del navegador (48 KB).*
+
+What is lost is forcing a backup before wiping a machine. With a one-minute debounce and a line that
+says *al día*, waiting is not a hardship.
+
+---
+
+## 7. Layer 3 — export, and the nudge
 
 A JSON file the user downloads. The only copy that survives leaving the browser ecosystem entirely,
 and the only one that works signed out or on Firefox Android. Import merges by command; duplicates
@@ -381,7 +397,7 @@ has would be advertising a feature rather than warning about a gap.
 
 ---
 
-## 7. The edit log
+## 8. The edit log
 
 `{ at, dev, kind, n }`, last 12 entries, **in its own sync key**.
 
@@ -406,14 +422,14 @@ service-worker suspension to produce it.
 
 ---
 
-## 8. Failure coverage
+## 9. Failure coverage
 
 ```mermaid
 flowchart LR
-    F1["Bulk delete<br/>bad import"] --> L1["Layer 1<br/>local snapshots"]
+    F1["Bulk delete<br/>bad import"] --> L1["Layer 1<br/>previous state"]
     F2["Machine dies<br/>profile wiped"] --> L2["Layer 2<br/>browser account"]
     F3["Leaving the browser<br/>account loss"] --> L3["Layer 3<br/>export file"]
-    F4["Botched edit to<br/>one macro"] --> NONE["not served —<br/>wrong shape, see §4.1"]
+    F4["Botched edit to<br/>one macro"] --> NONE["the browser's own undo<br/>in the editor — see §4.1"]
 
     L1 -.->|"dies with the profile"| X1[" "]
     L2 -.->|"latest only, no history"| X2[" "]
@@ -425,20 +441,24 @@ flowchart LR
     style X3 fill:none,stroke:none
 ```
 
-**No layer substitutes for another.** Snapshots hold history but die with the profile. The browser
+**No layer substitutes for another.** The previous state is recent and dies with the profile. The browser
 account survives a reinstall but holds only the latest state — so a mistake that syncs before the
 device is lost is not recoverable from it. The export file survives everything and requires a human.
 
 ---
 
-## 9. Deliberately not built
+## 10. Deliberately not built
 
 | Idea | Why not |
 |---|---|
 | Per-record sync with merge | Needs tombstones and tombstone GC. The time-based answer is a known footgun — Cassandra's `gc_grace_seconds` resurrects deleted data on a node offline longer than it. A text expander is not edited from two devices at once. |
 | Single-device lease | Needs a coordinator sync cannot provide. And exclusion is not durability: locking a device out creates no copy. |
-| Content-addressed snapshots | ~8× on history, at the cost of reference counting whose failure mode is a silently unrestorable backup. See §4.4. |
-| IndexedDB for snapshots | Answers a quota question the 5 MB budget already answers. Does not touch redundancy or shape. |
+| A browsable snapshot history | Built, then removed. It could not serve the case people reach for, and its list was a worse interface than none. ~1,300 lines. |
+| Content-addressed history | ~8× on storage, at the cost of reference counting whose failure mode is a silently unrestorable backup. Moot once the history is two copies. |
+| Per-macro version history | Can version the elements, but cannot answer the question being asked: "what did my library look like" is a property of the whole ordered set, including which macros existed. Deleted ones have no key to hang history from. |
+| Persistent editor undo | The browser's undo stack is opaque — no API reads, serialises or restores it — so persisting it means replacing it with a worse one, to serve the cheapest failure. |
+| Undo/redo over CRUD | Genuinely attractive: linear time travel, and the user need not know what caused each step. Parked pending an interface, not rejected. |
+| IndexedDB | Answers a quota question that two copies do not raise. |
 | Dropping `text` from HTML macros in the backup | ~1.35× for free — but `macroStorage.ts` holds the rule *a backup that reshapes its input is not a backup*, written after that exact mistake once dropped `updated_at`. |
 | `unlimitedStorage` | Moves the wall rather than removing it. |
 | A hosted backend | Accounts, GDPR, support load — in exchange for something the browser already does, for a tool whose pitch is that it sees everything you type and keeps none of it. |
@@ -449,7 +469,7 @@ should be a decision rather than a side effect.
 
 ---
 
-## 10. Numbers, as measured
+## 11. Numbers, as measured
 
 | | |
 |---|---|
@@ -460,12 +480,12 @@ should be a decision rather than a side effect.
 | Email-template macro | ~1,180 bytes |
 | Slot ceiling, uncompressed | ~38 templates |
 | Slot ceiling, compressed | several hundred |
-| Snapshots after 8 change-triggered writes | 2 |
-| Snapshot budget | 5 MB of 10 MB |
+| Local recovery copies | **at most 2**, written only before a destructive act |
+| Lines the snapshot history cost | ~1,300, removed |
 
 ---
 
-## 11. Prior art, and what is unusual here
+## 12. Prior art, and what is unusual here
 
 Of three extensions examined, **none keeps a local version history.** Briskine requires an account
 and recovers from Firestore. Stylus delegates cross-device to Dropbox/Drive/WebDAV. AutoTextExpander
