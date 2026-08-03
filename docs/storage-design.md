@@ -108,9 +108,14 @@ flowchart TB
 | **11** | L → E | **explicit + confirmed** | replaces the live library; keeps its own way back first |
 | **12** | K → E | **explicit** | merges by command; duplicates skipped |
 
-The three orange arrows are exactly the three the rule in §6 names: **8** leaves the browser sandbox,
-**11** and **12** replace the live library. Every black arrow stays inside the extension's own storage
-and is additive, which is what lets it be automatic.
+The three orange arrows — **8**, **11** and **12** — are exactly the three the rule in §6 names: 8
+leaves the browser sandbox, 11 and 12 replace the live library. The other nine — **1–7, 9, 10** —
+stay inside the extension's own storage and are additive, which is what lets them happen on their
+own. They are drawn in whatever mermaid uses by default, so they carry no meaning beyond *not
+orange*.
+
+The two dotted arrows, **11** and **12**, encode something else again: they are the only ones that
+flow data *back into* the store rather than out of it.
 
 Note also the asymmetry between **4** and **5**: the same event, read two different ways, on purpose.
 
