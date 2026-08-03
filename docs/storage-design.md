@@ -58,7 +58,7 @@ flowchart TB
 
     OV -->|"9 · export"| FILE[["K · Layer 3<br/>monky-macros.json"]]
 
-    PREV -->|"10"| RP{{"L · restorePoints<br/>one list, sources combined"}}
+    PREV -->|"10"| RP{{"L · restorePoints<br/>both sources, newest first,<br/>duplicates dropped"}}
     SYNC -->|"11"| RP
     RP -.->|"12 · restore"| STORE
     FILE -.->|"13 · import"| STORE
@@ -97,7 +97,7 @@ flowchart TB
 | **I** | `macro-previous` | Layer 1 — the last 2 libraries, each from before a destructive act (§4) |
 | **J** | Browser account | Layer 2 — chunked, compressed, A/B slots (§5) |
 | **K** | Export file | Layer 3 — the only copy that leaves the browser (§7) |
-| **L** | `restorePoints` | Combines I and J into one list, ordered by time; which source a point came from is not something the reader has to reason about (§6) |
+| **L** | `restorePoints` | Combines I and J into one list **ordered by time, newest first**, then drops duplicates. Not local-first — a browser-account copy newer than a local one sorts above it. Which source a point came from is not something the reader has to reason about (§6) |
 
 **Arrows**
 
@@ -394,8 +394,8 @@ The source of a restore point is **not** something the user reasons about. A res
 flowchart LR
     P["macro-previous<br/>up to 2"] --> G["listRestorePoints()"]
     B["backup-manifest<br/>the browser account"] --> G
-    G --> S["sort by time, newest first"]
-    S --> D["de-duplicate between entries"]
+    G --> S["1 · sort by time<br/>newest first"]
+    S --> D["2 · drop duplicates<br/>by checksum, first wins"]
     D --> L["one list:<br/>when · why · how many"]
 ```
 
@@ -403,6 +403,16 @@ This merges cleanly rather than papering over a conflict, because **the two sour
 both meaningful at once**. The browser-account copy holds the latest state, so on a working machine
 it is what you already have; it becomes the only thing that matters at the moment the local data is
 gone — which is exactly when the local entries do not exist either.
+
+**The order is time, not source.** Both places are poured into one list and sorted newest first;
+nothing is preferred for being local or for being the backup. A browser-account copy written after
+your last delete sorts above the state kept before it, because that is the truth about when each one
+was made.
+
+**De-duplication runs after the sort, so the newer of two identical states survives.** That matters
+because the timestamp is what the user chooses by: when both sources hold the same library, the row
+they see is dated when that state was most recently captured, not when the older of the two copies
+happened to be written.
 
 **De-duplication is between entries, never against the current library.** An earlier draft hid the
 browser copy whenever it matched what was loaded — nearly always — and produced a backup with no
