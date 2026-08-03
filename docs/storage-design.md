@@ -31,8 +31,8 @@ thing in this design, and it was got wrong once already.
 
 ## 2. The whole picture
 
-Elements are lettered and arrows numbered so they can be referred to precisely; both keys follow the
-diagram. **Orange marks the arrows that need a deliberate act** — everything else happens on its own.
+Elements are lettered and arrows numbered so they can be referred to precisely. **Colour groups the
+arrows by what set them in motion**, and both keys follow the diagram.
 
 ```mermaid
 flowchart TB
@@ -48,31 +48,39 @@ flowchart TB
 
     surfaces -->|"1"| CRUD
     CRUD -->|"2"| STORE
-
     STORE -->|"3 · partialize → { macros, config }"| LOCAL[("F · chrome.storage.local<br/><b>macro-storage</b><br/>THE AUTHORITY")]
-
-    LOCAL -->|"4 · storage.onChanged"| DETECT["G · Content script<br/>macro detector"]
-    LOCAL -->|"5 · storage.onChanged"| WATCH["H · Background watcher"]
+    LOCAL -->|"4 · onChanged, narrowed"| DETECT["G · Content script<br/>macro detector"]
+    LOCAL -->|"5 · onChanged, verbatim"| WATCH["H · Background watcher"]
 
     WATCH -->|"6 · alarm, 1 min debounce"| SYNC[("J · Layer 2<br/>browser account<br/><b>backupA/B + manifest</b>")]
-    CRUD -->|"7 · before delete / import / restore"| PREV[("I · Layer 1<br/>previous state<br/><b>macro-previous</b>")]
+    CRUD -->|"7 · before a delete"| PREV[("I · Layer 1<br/>previous state<br/><b>macro-previous</b>")]
+    OV -->|"8 · before an import or a restore"| PREV
 
-    OV -->|"8 · explicit"| FILE[["K · Layer 3<br/>monky-macros.json"]]
+    OV -->|"9 · export"| FILE[["K · Layer 3<br/>monky-macros.json"]]
 
-    PREV -->|"9"| RP{{"L · restorePoints<br/>one list, sources combined"}}
-    SYNC -->|"10"| RP
-    RP -.->|"11 · restore, explicit"| STORE
-    FILE -.->|"12 · import, explicit"| STORE
+    PREV -->|"10"| RP{{"L · restorePoints<br/>one list, sources combined"}}
+    SYNC -->|"11"| RP
+    RP -.->|"12 · restore"| STORE
+    FILE -.->|"13 · import"| STORE
 
     classDef auth fill:#0d6e6a,stroke:#0d6e6a,color:#fff
     classDef layer fill:#e2eeed,stroke:#0d6e6a,color:#123
     class LOCAL auth
     class PREV,SYNC,FILE layer
 
-    %% Orange marks the three arrows that require a deliberate act: 8, 11, 12.
-    %% Link indices are positional, counted from the first arrow declared above.
-    linkStyle 7,10,11 stroke:#d97706,stroke-width:2px,color:#d97706
+    %% Link indices are positional, counted from the first arrow declared above, so inserting an
+    %% arrow earlier shifts every later one. All three groups are set explicitly; nothing is left to
+    %% whatever a given renderer uses by default.
+    linkStyle 0,1,2,3,4 stroke:#2563eb,stroke-width:2px,color:#2563eb
+    linkStyle 5,6,7,9,10 stroke:#94a3b8,stroke-width:1.5px,color:#94a3b8
+    linkStyle 8,11,12 stroke:#d97706,stroke-width:2px,color:#d97706
 ```
+
+| Colour | Arrows | What it means |
+|---|---|---|
+| 🔵 **blue** | 1–5 | **one editing action and everything it causes.** The user created, edited or deleted a macro; the rest follows without another decision. |
+| ⚪ **grey** | 6, 7, 8, 10, 11 | **copies the extension makes for itself**, and the reads that gather them. Nobody asks for these. |
+| 🟠 **orange** | 9, 12, 13 | **a deliberate act on the whole library.** These are the only ones a person chooses. |
 
 **Elements**
 
@@ -95,29 +103,36 @@ flowchart TB
 
 | | From → to | Trigger | Notes |
 |---|---|---|---|
-| **1** | A/B/C → D | a user action | every surface writes through the same path |
-| **2** | D → E | immediate | the store is the single source of truth |
-| **3** | E → F | every change | `partialize` decides what is worth persisting |
-| **4** | F → G | `storage.onChanged` | narrowed to the six fields expansion needs |
-| **5** | F → H | `storage.onChanged` | verbatim — a backup must not reshape its input |
-| **6** | H → J | alarm, 1-minute debounce | an alarm, not a timer: see §5.5 |
-| **7** | D → I | **before** a destructive act | never on an ordinary edit — that is what keeps it useful |
-| **8** | C → K | explicit | leaves the sandbox, so it is never automatic |
-| **9** | I → L | on reading the list | |
-| **10** | J → L | on reading the list | |
-| **11** | L → E | **explicit + confirmed** | replaces the live library; keeps its own way back first |
-| **12** | K → E | **explicit** | merges by command; duplicates skipped |
+| 🔵 **1** | A/B/C → D | a user action | every surface writes through the same path |
+| 🔵 **2** | D → E | immediate | the store is the single source of truth |
+| 🔵 **3** | E → F | every change | `partialize` decides what is worth persisting |
+| 🔵 **4** | F → G | `storage.onChanged` | narrowed to the six fields expansion needs |
+| 🔵 **5** | F → H | `storage.onChanged` | verbatim — a backup must not reshape its input |
+| ⚪ **6** | H → J | alarm, 1-minute debounce | an alarm, not a timer: see §5.5 |
+| ⚪ **7** | D → I | **before** a delete | `macroCrud.deleteMacros` |
+| ⚪ **8** | C → I | **before** an import or a restore | those two do not pass through `macroCrud` |
+| 🟠 **9** | C → K | explicit | leaves the sandbox, so it is never automatic |
+| ⚪ **10** | I → L | on opening the list | a read; changes nothing |
+| ⚪ **11** | J → L | on opening the list | a read; changes nothing |
+| 🟠 **12** | L → E | **explicit + confirmed** | replaces the live library; keeps its own way back first, via arrow 8 |
+| 🟠 **13** | K → E | **explicit** | merges by command; duplicates skipped |
 
-The three orange arrows — **8**, **11** and **12** — are exactly the three the rule in §6 names: 8
-leaves the browser sandbox, 11 and 12 replace the live library. The other nine — **1–7, 9, 10** —
-stay inside the extension's own storage and are additive, which is what lets them happen on their
-own. They are drawn in whatever mermaid uses by default, so they carry no meaning beyond *not
-orange*.
+Three things the colouring makes visible that prose had to assert:
 
-The two dotted arrows, **11** and **12**, encode something else again: they are the only ones that
+**Blue is one causal chain, not five decisions.** A single edit produces 1 → 2 → 3, and 4 and 5 follow
+from the same storage event. Nothing between them is a choice.
+
+**The orange arrows are exactly the three the rule in §6 names** — 9 leaves the browser sandbox, 12
+and 13 replace the live library. Every grey and blue arrow stays inside the extension's own storage
+and is additive, which is what lets it happen unattended.
+
+**Grey 7 and 8 do the same job from different places, and that is not an accident of drawing.** A
+delete goes through `macroCrud`; an import and a restore do not, so each keeps the previous state
+itself. Drawing them as one arrow out of D — which an earlier version of this diagram did — asserted
+a code path that does not exist.
+
+The two dotted arrows, **12** and **13**, encode something else again: they are the only ones that
 flow data *back into* the store rather than out of it.
-
-Note also the asymmetry between **4** and **5**: the same event, read two different ways, on purpose.
 
 **One rule governs the whole diagram: `chrome.storage.local` (F) is the only thing ever read back.**
 Everything else is written to and read only on an explicit, user-initiated restore. Sync is never
