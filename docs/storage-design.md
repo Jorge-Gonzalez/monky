@@ -31,34 +31,38 @@ thing in this design, and it was got wrong once already.
 
 ## 2. The whole picture
 
+Elements are lettered and arrows numbered so they can be referred to precisely; both keys follow the
+diagram.
+
 ```mermaid
 flowchart TB
     subgraph surfaces["Write surfaces"]
         direction LR
-        ED["Editor page"]
-        PO["Popup"]
-        OV["Overlay settings"]
+        ED["A · Editor page"]
+        PO["B · Popup"]
+        OV["C · Overlay settings"]
     end
 
-    CRUD["macroCrud<br/>create / update / delete"]
-    STORE["useMacroStore<br/>zustand + persist"]
+    CRUD["D · macroCrud<br/>create / update / delete"]
+    STORE["E · useMacroStore<br/>zustand + persist"]
 
-    surfaces --> CRUD --> STORE
+    surfaces -->|"1"| CRUD
+    CRUD -->|"2"| STORE
 
-    STORE -->|"partialize → { macros, config }"| LOCAL[("chrome.storage.local<br/><b>macro-storage</b><br/>THE AUTHORITY")]
+    STORE -->|"3 · partialize → { macros, config }"| LOCAL[("F · chrome.storage.local<br/><b>macro-storage</b><br/>THE AUTHORITY")]
 
-    LOCAL -->|"storage.onChanged"| DETECT["Content script<br/>macro detector"]
-    LOCAL -->|"storage.onChanged"| WATCH["Background watchers"]
+    LOCAL -->|"4 · storage.onChanged"| DETECT["G · Content script<br/>macro detector"]
+    LOCAL -->|"5 · storage.onChanged"| WATCH["H · Background watcher"]
 
-    WATCH -->|"alarm 1 min"| SYNC[("Layer 2<br/>browser account<br/><b>backupA/B + manifest</b>")]
-    CRUD -->|"before delete / import / restore"| PREV[("Layer 1<br/>previous state<br/><b>macro-previous</b>")]
+    WATCH -->|"6 · alarm, 1 min debounce"| SYNC[("J · Layer 2<br/>browser account<br/><b>backupA/B + manifest</b>")]
+    CRUD -->|"7 · before delete / import / restore"| PREV[("I · Layer 1<br/>previous state<br/><b>macro-previous</b>")]
 
-    OV -->|"explicit"| FILE[["Layer 3<br/>monky-macros.json"]]
+    OV -->|"8 · explicit"| FILE[["K · Layer 3<br/>monky-macros.json"]]
 
-    PREV --> RP{{"restorePoints<br/>one list, source hidden"}}
-    SYNC --> RP
-    RP -.->|"restore, explicit"| STORE
-    FILE -.->|"import"| STORE
+    PREV -->|"9"| RP{{"L · restorePoints<br/>one list, source hidden"}}
+    SYNC -->|"10"| RP
+    RP -.->|"11 · restore, explicit"| STORE
+    FILE -.->|"12 · import, explicit"| STORE
 
     classDef auth fill:#0d6e6a,stroke:#0d6e6a,color:#fff
     classDef layer fill:#e2eeed,stroke:#0d6e6a,color:#123
@@ -66,7 +70,43 @@ flowchart TB
     class PREV,SYNC,FILE layer
 ```
 
-**One rule governs the whole diagram: `chrome.storage.local` is the only thing ever read back.**
+**Elements**
+
+| | Element | What it is |
+|---|---|---|
+| **A** | Editor page | Full-page macro editor, `src/editor/` |
+| **B** | Popup | Quick add, site toggle |
+| **C** | Overlay settings | In-page settings, import/export, recovery |
+| **D** | `macroCrud` | create / update / delete; stamps `updated_at`; synchronous |
+| **E** | `useMacroStore` | Zustand + persist, key `macro-storage` |
+| **F** | `chrome.storage.local` | **The authority — the only thing ever read back** |
+| **G** | Macro detector | Content script; reads through `toMacros`, narrowed to what matching needs |
+| **H** | Background watcher | Service worker; reads the stored array verbatim |
+| **I** | `macro-previous` | Layer 1 — the last 2 libraries, each from before a destructive act (§4) |
+| **J** | Browser account | Layer 2 — chunked, compressed, A/B slots (§5) |
+| **K** | Export file | Layer 3 — the only copy that leaves the browser (§7) |
+| **L** | `restorePoints` | Gathers I and J into one list; the source never reaches the screen (§6) |
+
+**Arrows**
+
+| | From → to | Trigger | Notes |
+|---|---|---|---|
+| **1** | A/B/C → D | a user action | every surface writes through the same path |
+| **2** | D → E | immediate | the store is the single source of truth |
+| **3** | E → F | every change | `partialize` decides what is worth persisting |
+| **4** | F → G | `storage.onChanged` | narrowed to the six fields expansion needs |
+| **5** | F → H | `storage.onChanged` | verbatim — a backup must not reshape its input |
+| **6** | H → J | alarm, 1-minute debounce | an alarm, not a timer: see §5.5 |
+| **7** | D → I | **before** a destructive act | never on an ordinary edit — that is what keeps it useful |
+| **8** | C → K | explicit | leaves the sandbox, so it is never automatic |
+| **9** | I → L | on reading the list | |
+| **10** | J → L | on reading the list | |
+| **11** | L → E | **explicit + confirmed** | replaces the live library; keeps its own way back first |
+| **12** | K → E | **explicit** | merges by command; duplicates skipped |
+
+Note the asymmetry between **4** and **5**: the same event, read two different ways, on purpose.
+
+**One rule governs the whole diagram: `chrome.storage.local` (F) is the only thing ever read back.**
 Everything else is written to and read only on an explicit, user-initiated restore. Sync is never
 consulted during hydration.
 
