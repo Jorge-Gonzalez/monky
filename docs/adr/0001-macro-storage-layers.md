@@ -372,6 +372,41 @@ failure. An undo/redo over CRUD operations is a better idea than either and is p
 rejected — linear time travel is a far simpler mental model than any list, and it deserves an
 interface designed rather than bolted on.
 
+## Amendment, 2026-08-04 — three corrections from review
+
+**Hydration could destroy an unreadable library, and this was measured rather than feared.** A
+single truncated value in `macro-storage` made `JSON.parse` throw inside zustand's persist, which
+left the store at its seeded defaults -- seven demo macros -- and the next ordinary edit then wrote
+those demos straight over the bytes that had failed to parse. A string a person could very likely
+have repaired by hand, gone, silently, from one bad byte.
+
+That is the same shape as the bug this ADR was opened about: something that is not the authority
+winning, and overwriting what is. It reappeared one layer down, inside the module written to fix it.
+
+The adapter now distinguishes *absent* from *unreadable*. Absent is a first run and still seeds the
+samples. Unreadable quarantines the bytes under `macro-storage-unreadable` -- first failure only,
+since the earliest is closest to the good data -- and hydrates an **empty** library rather than
+null. Empty is what stops the seeded macros being written over the original, and it is also the
+honest answer: we do not know what was there, and presenting demos would look like a fresh install
+and invite someone to type over their own data. The recovery list still works, so `macro-previous`
+and the browser-account copy remain reachable.
+
+**The sensitive checkbox claimed encryption and there is none.** It read "Mark as sensitive
+(encrypted)" / "se encripta", while `is_sensitive` is written by the form, persisted, and read by
+nothing -- so those macros reach the browser account in plaintext like every other. That is a broken
+promise rather than a missing feature, and worse than the gaps around it, because someone marks
+their password-adjacent snippets on the strength of it. The word is removed. What the flag should
+actually *do* -- most plausibly, exclude those macros from the browser-account copy -- is a product
+decision and is deliberately not taken here.
+
+**One retention policy had been applied to four keys, and only two deserved it.** `access` and
+`refresh` are bearer tokens for the withdrawn backend. The reasoning that protected them -- removing
+a key is a data deletion -- belongs to `macros` and `pendingOps`, which can hold the only surviving
+copy of real macro content. It does not extend to credential material for a service that no longer
+exists: expired or not, that is a secret kept by accident, and keeping it is a choice rather than
+neutrality. They are removed once, at startup, by `legacyCleanup`. The two content keys are still
+left alone, for the original reason.
+
 ## Consequences
 
 Macros no longer ride Chrome sync between devices. Given the 8 KB cap, they had not been for some

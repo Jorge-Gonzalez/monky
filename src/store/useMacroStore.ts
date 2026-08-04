@@ -38,6 +38,32 @@ function commandExists(macros: Macro[], command: string, currentId?: Macro['id']
   return macros.some((m) => m.command === command && String(m.id) !== String(currentId))
 }
 
+/**
+ * Where the bytes go when `macro-storage` will not parse.
+ *
+ * Kept, never overwritten, and never read back automatically: the value of an unreadable authority
+ * is that a person can look at it. Only the first failure is preserved -- a later one would be
+ * further from the good data, and letting it overwrite the first would lose the better copy.
+ */
+const QUARANTINE_KEY = 'macro-storage-unreadable'
+
+/** A parseable envelope holding no macros, so hydration cannot invent any. */
+const EMPTY_LIBRARY = '{"state":{"macros":[],"config":{}},"version":0}'
+
+async function quarantineUnreadableAuthority(raw: string): Promise<void> {
+  const existing = await chrome.storage.local.get(QUARANTINE_KEY)
+  if (existing[QUARANTINE_KEY] === undefined) {
+    await chrome.storage.local.set({
+      [QUARANTINE_KEY]: { at: new Date().toISOString(), raw },
+    })
+  }
+  console.error(
+    `[MONKY] the stored macro library could not be parsed. The unreadable value has been kept under ` +
+      `"${QUARANTINE_KEY}" and the library has loaded empty rather than seeded, so nothing overwrites it. ` +
+      `Recovery points from before this are still available in settings.`
+  )
+}
+
 // The serialized value this context most recently wrote. Used to ignore the
 // storage.onChanged echo of our own writes (see the onChanged listener below),
 // which would otherwise re-read storage and re-notify subscribers needlessly.
@@ -72,7 +98,28 @@ let lastWrittenValue: string | null = null
 const chromeStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
     const local = await chrome.storage.local.get(name)
-    return (local[name] as string | undefined) ?? null
+    const raw = local[name] as string | undefined
+    // Genuinely nothing stored: a first run. Seeded defaults are the right answer.
+    if (raw === undefined) return null
+    try {
+      JSON.parse(raw)
+    } catch {
+      await quarantineUnreadableAuthority(raw)
+      // An empty library rather than null, and the difference is the whole point. Returning null
+      // would let the store hydrate to the seeded sample macros -- and the next ordinary edit would
+      // then persist those samples straight over the bytes that failed to parse.
+      //
+      // Measured, not feared: a single truncated value produced seven demo macros and a write that
+      // destroyed a string a person could very likely have repaired by hand. That is the same shape
+      // as the bug this file was rewritten to fix, one layer down: something that is not the
+      // authority winning, and overwriting what is.
+      //
+      // Empty is also the honest answer. We do not know what the library held, so presenting none
+      // is truthful where presenting demos would look like a fresh install and invite the user to
+      // start typing over their own data.
+      return EMPTY_LIBRARY
+    }
+    return raw
   },
   setItem: async (name: string, value: string): Promise<void> => {
     lastWrittenValue = value

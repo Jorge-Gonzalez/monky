@@ -174,7 +174,7 @@ const translations = {
     macroForm: {
       triggerLabel: 'Shortcut',
       textLabel: 'Text',
-      sensitiveLabel: 'Mark as sensitive (encrypted)',
+      sensitiveLabel: 'Mark as sensitive',
       updateButton: 'Update',
       saveButton: 'Save',
       cancelButton: 'Cancel',
@@ -386,7 +386,7 @@ const translations = {
     macroForm: {
       triggerLabel: 'Atajo',
       textLabel: 'Texto',
-      sensitiveLabel: 'Marcar como sensible (se encripta)',
+      sensitiveLabel: 'Marcar como sensible',
       updateButton: 'Actualizar',
       saveButton: 'Guardar',
       cancelButton: 'Cancelar',

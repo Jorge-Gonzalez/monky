@@ -1,4 +1,5 @@
 import { startSyncBackup } from '../store/syncBackupWatcher'
+import { removeObsoleteCredentials } from '../store/legacyCleanup'
 
 // The browser-account copy. Registered here because the service worker is the one context that sees
 // macro changes from every surface -- editor page, popup, content script -- so none of them has to
@@ -9,6 +10,12 @@ import { startSyncBackup } from '../store/syncBackupWatcher'
 // destructive act is kept by the operation itself, in macroPrevious, because a copy taken on a timer
 // captured the wrong moment and produced a pile of near-identical states nobody could choose between.
 startSyncBackup()
+
+// Bearer tokens for the withdrawn backend, which nothing reads and nothing should keep. Fire and
+// forget: it is a tidy-up, and failing at it must not stop the worker registering anything above.
+void removeObsoleteCredentials().catch((error: unknown) => {
+  console.warn('[MONKY] could not remove leftover credentials:', error)
+})
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   // Open the full-page editor (content scripts can't call chrome.tabs directly).
