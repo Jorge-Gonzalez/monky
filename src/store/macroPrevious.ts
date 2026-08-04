@@ -17,6 +17,7 @@
 // before then.
 import type { Macro } from '../types'
 import { measureMacros } from './checksum'
+import { LIBRARY_SCHEMA } from './libraryShape'
 
 const KEY = 'macro-previous'
 
@@ -40,6 +41,11 @@ export interface PreviousState {
   count: number
   /** For de-duplicating against other recovery sources holding the same library. */
   checksum: string
+  /**
+   * The library shape this entry holds. Absent means it predates versioning and reads as 1; a
+   * higher number than this build understands is refused rather than guessed at.
+   */
+  schema?: number
   macros: Macro[]
 }
 
@@ -75,6 +81,7 @@ export async function keepPrevious(macros: Macro[], reason: PreviousReason): Pro
     reason,
     count: macros.length,
     checksum,
+    schema: LIBRARY_SCHEMA,
     macros,
   }
   await chrome.storage.local.set({ [KEY]: { entries: [entry, ...entries].slice(0, KEEP) } satisfies Stored })

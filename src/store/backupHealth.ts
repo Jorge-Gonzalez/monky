@@ -24,6 +24,9 @@ export type BackupHealth =
   /** Anything else the platform rejected: no account, rate limit, total quota. */
   | { at: string; status: 'failed'; detail: string }
 
+/** What the settings line says, in the order of how much it should worry anyone. */
+export type BackupState = 'ok' | 'pending' | 'never' | 'failed' | 'too-large'
+
 export async function readBackupHealth(): Promise<BackupHealth | null> {
   const stored = await chrome.storage.local.get(KEY)
   const value = stored[KEY] as BackupHealth | undefined
@@ -49,4 +52,35 @@ export function describeError(error: unknown): string {
 /** Whether the browser-account copy is the library currently on this device. */
 export function backupIsCurrent(macros: Macro[], backupChecksum: string | undefined): boolean {
   return backupChecksum !== undefined && measureMacros(macros).checksum === backupChecksum
+}
+
+/**
+ * What to tell the user about the browser-account copy right now.
+ *
+ * Derived from the *current library* against the *committed backup*, not from the last attempt
+ * alone. The difference is a lie the earlier version could tell: a backup succeeds, the user edits
+ * three macros, the one-minute alarm has not fired yet -- and a line reading only the last outcome
+ * says "up to date" about a library that is not backed up. The helper to compare them existed and
+ * was never called, which is how the bug survived being written about.
+ *
+ * `pending` is the state that was missing, and it is the common one: for a minute after every edit,
+ * the honest answer is "protecting the latest changes", not "protected".
+ */
+export function describeBackupState(
+  macros: Macro[],
+  backupChecksum: string | undefined,
+  health: BackupHealth | null
+): BackupState {
+  if (backupChecksum === undefined) {
+    // Nothing committed. A failure explains why; otherwise it simply has not happened yet.
+    if (health?.status === 'too-large') return 'too-large'
+    if (health?.status === 'failed') return 'failed'
+    return 'never'
+  }
+  // A committed copy that matches what is loaded is the whole promise kept, whatever happened
+  // afterwards -- a later attempt that found nothing to do is not a fault.
+  if (backupIsCurrent(macros, backupChecksum)) return 'ok'
+  if (health?.status === 'too-large') return 'too-large'
+  if (health?.status === 'failed') return 'failed'
+  return 'pending'
 }

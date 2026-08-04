@@ -15,7 +15,8 @@ vi.mock('../useMacroImportExport', () => ({ useMacroImportExport: vi.fn() }))
 vi.mock('../useRestorePoints', () => ({
   useRestorePoints: () => ({
     points: [],
-    health: null,
+    state: 'never',
+    detail: null,
     usage: null,
     status: null,
     restore: vi.fn(),

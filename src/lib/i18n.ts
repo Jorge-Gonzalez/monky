@@ -67,6 +67,8 @@ const translations = {
         },
         health: {
           ok: 'Your macros are copied to your browser account on their own, in case you lose this computer.',
+          pending: 'Copying your latest changes to your browser account…',
+          never: 'Your macros will be copied to your browser account after the next change, in case you lose this computer.',
           room: '{{used}} KB of {{total}} KB used.',
           tooLarge: 'Your macros ({{kb}} KB) no longer fit your browser account, so that copy has stopped updating. Export them instead.',
           failed: 'Your macros could not be copied to your browser account: {{error}}',
@@ -76,6 +78,7 @@ const translations = {
           none: 'That copy is not there any more.',
           incomplete: 'That copy has only partly reached this device. Try again in a moment.',
           corrupt: 'That copy did not add up, so nothing was changed.',
+          tooNew: 'That copy was made by a newer version of Monky. Update the extension to use it.',
         },
       },
       importExport: {
@@ -279,6 +282,8 @@ const translations = {
         },
         health: {
           ok: 'Tus macros se copian solas a tu cuenta del navegador, por si pierdes este equipo.',
+          pending: 'Copiando tus últimos cambios a tu cuenta del navegador…',
+          never: 'Tus macros se copiarán a tu cuenta del navegador tras el próximo cambio, por si pierdes este equipo.',
           room: '{{used}} KB de {{total}} KB usados.',
           tooLarge: 'Tus macros ({{kb}} KB) ya no caben en tu cuenta del navegador, así que esa copia dejó de actualizarse. Expórtalas en su lugar.',
           failed: 'No se pudieron copiar tus macros a tu cuenta del navegador: {{error}}',
@@ -288,6 +293,7 @@ const translations = {
           none: 'Esa copia ya no está.',
           incomplete: 'Esa copia solo llegó en parte a este dispositivo. Inténtalo en un momento.',
           corrupt: 'Esa copia no cuadró, así que no se cambió nada.',
+          tooNew: 'Esa copia se hizo con una versión más nueva de Monky. Actualiza la extensión para usarla.',
         },
       },
       importExport: {

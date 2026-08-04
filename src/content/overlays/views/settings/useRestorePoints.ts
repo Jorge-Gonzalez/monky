@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useMacroStore } from '../../../../store/useMacroStore'
 import { listRestorePoints, type RestorePoint } from '../../../../store/restorePoints'
 import { keepPrevious } from '../../../../store/macroPrevious'
-import { readBackupHealth, type BackupHealth } from '../../../../store/backupHealth'
+import { describeBackupState, readBackupHealth, type BackupState } from '../../../../store/backupHealth'
 import { syncUsage, type SyncUsage } from '../../../../store/syncBackup'
 import { t } from '../../../../lib/i18n'
 
@@ -15,7 +15,10 @@ export type RestoreStatus = { ok: boolean; message: string } | null
 
 export interface RestorePointsState {
   points: RestorePoint[]
-  health: BackupHealth | null
+  /** Derived from the live library against the committed copy, not from the last attempt alone. */
+  state: BackupState
+  /** Only set when `state` is 'too-large' or 'failed', to say what went wrong. */
+  detail: string | null
   usage: SyncUsage | null
   status: RestoreStatus
   restore: (point: RestorePoint) => Promise<void>
@@ -24,7 +27,8 @@ export interface RestorePointsState {
 
 export function useRestorePoints(): RestorePointsState {
   const [points, setPoints] = useState<RestorePoint[]>([])
-  const [health, setHealth] = useState<BackupHealth | null>(null)
+  const [state, setState] = useState<BackupState>('never')
+  const [detail, setDetail] = useState<string | null>(null)
   const [usage, setUsage] = useState<SyncUsage | null>(null)
   const [status, setStatus] = useState<RestoreStatus>(null)
 
@@ -35,8 +39,18 @@ export function useRestorePoints(): RestorePointsState {
       syncUsage(),
     ])
     setPoints(nextPoints)
-    setHealth(nextHealth)
     setUsage(nextUsage)
+    // The committed copy's checksum comes off the restore point the backup contributed, so the
+    // comparison is against what is actually stored rather than what was last attempted.
+    const committed = nextPoints.find((point) => point.reason === 'automatic')?.checksum
+    setState(describeBackupState(useMacroStore.getState().macros, committed, nextHealth))
+    setDetail(
+      nextHealth?.status === 'too-large'
+        ? String(Math.round(nextHealth.bytes / 1024))
+        : nextHealth?.status === 'failed'
+          ? nextHealth.detail
+          : null
+    )
   }, [])
 
   useEffect(() => {
@@ -59,6 +73,7 @@ export function useRestorePoints(): RestorePointsState {
           none: 'settings.recover.status.none',
           incomplete: 'settings.recover.status.incomplete',
           corrupt: 'settings.recover.status.corrupt',
+          'too-new': 'settings.recover.status.tooNew',
         } as const
         flash(false, t(message[result.status]))
         await refresh()
@@ -75,5 +90,5 @@ export function useRestorePoints(): RestorePointsState {
     [refresh]
   )
 
-  return { points, health, usage, status, restore, refresh }
+  return { points, state, detail, usage, status, restore, refresh }
 }

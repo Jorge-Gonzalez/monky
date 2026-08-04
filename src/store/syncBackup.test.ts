@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { Macro } from '../types'
-import { decodeBackup } from './backupCodec'
+import { decodeBackup, encodeBackup } from './backupCodec'
 import { checksumMacros } from './checksum'
 import {
   chunkKey,
@@ -330,21 +330,98 @@ describe('readBackup', () => {
     expect((await readBackup()).status).toBe('incomplete')
   })
 
-  it('says corrupt when a stale chunk sits beside a fresh manifest', async () => {
-    // Everything present, everything decodable, and still the wrong library -- which is precisely
-    // why the checksum is in the manifest rather than trusting that a complete read is a good one.
-    // The stale chunk is a genuine payload from an earlier write, which is what propagation would
-    // actually leave behind, rather than a mangled string that would fail at the codec instead.
+  it('falls back to the previous generation when the live slot is corrupt', async () => {
+    // The difference between detecting a problem and surviving it. Two devices backing up at once
+    // can interleave chunks in the same standby slot; the checksum catches it, but a complete valid
+    // generation still sits in the other slot, and without this the reader reported failure while a
+    // good copy sat beside it.
+    const older = libraryOf(3)
+    await writeBackup(older, 'dev-1')
+    const newer = libraryOf(4)
+    await writeBackup(newer, 'dev-1')
+
+    const manifest = store.area.get('backup-manifest') as BackupManifest
+    store.area.set(chunkKey(manifest.slot, 0), await encodeBackup('[{"id":"junk"}]'))
+
+    const read = await readBackup()
+    expect(read.status).toBe('read')
+    if (read.status !== 'read') return
+    expect(read.macros).toEqual(older)
+    // Described by the generation actually returned, so the list shows when *that* copy was made.
+    expect(read.manifest.count).toBe(older.length)
+  })
+
+  it('does not fall back when the live slot is merely still arriving', async () => {
+    // 'incomplete' means propagation is in flight. Handing back an older library the user did not
+    // ask for would be worse than saying so and letting them try again.
     await writeBackup(libraryOf(3), 'dev-1')
+    await writeBackup(noisyLibrary(6), 'dev-1')
+    const manifest = store.area.get('backup-manifest') as BackupManifest
+    expect(manifest.chunks).toBeGreaterThan(1)
+    store.area.delete(chunkKey(manifest.slot, manifest.chunks - 1))
+    expect((await readBackup()).status).toBe('incomplete')
+  })
+
+  it('reports corrupt when neither generation is readable', async () => {
+    await writeBackup(libraryOf(3), 'dev-1')
+    await writeBackup(libraryOf(4), 'dev-1')
+    const manifest = store.area.get('backup-manifest') as BackupManifest
+    store.area.set(chunkKey(manifest.slot, 0), await encodeBackup('[{"id":"junk"}]'))
+    store.area.set(chunkKey(manifest.previous!.slot, 0), await encodeBackup('[{"id":"junk"}]'))
+    expect((await readBackup()).status).toBe('corrupt')
+  })
+
+  it('has nothing to fall back to on the very first backup', async () => {
+    await writeBackup(libraryOf(3), 'dev-1')
+    const manifest = store.area.get('backup-manifest') as BackupManifest
+    expect(manifest.previous).toBeUndefined()
+    store.area.set(chunkKey(manifest.slot, 0), await encodeBackup('[{"id":"junk"}]'))
+    expect((await readBackup()).status).toBe('corrupt')
+  })
+
+  it('refuses a copy written by a newer version rather than guessing at it', async () => {
+    await writeBackup(libraryOf(2), 'dev-1')
+    const manifest = store.area.get('backup-manifest') as BackupManifest
+    store.area.set('backup-manifest', { ...manifest, schema: 99 })
+    const read = await readBackup()
+    expect(read.status).toBe('too-new')
+    if (read.status !== 'too-new') return
+    expect(read.schema).toBe(99)
+  })
+
+  it('rejects a payload that passes its checksum but is not a usable library', async () => {
+    // Integrity and validity are different questions. Duplicate ids checksum perfectly well and
+    // would leave update and delete addressing two records at once.
+    const broken = [{ id: 'a', command: '/a', text: 'x' }, { id: 'a', command: '/b', text: 'y' }]
+    await writeBackup(broken as never, 'dev-1')
+    expect((await readBackup()).status).toBe('corrupt')
+  })
+
+  it('never hands back a stale chunk as though it were the current library', async () => {
+    // Everything present, everything decodable, and still not the library the manifest describes --
+    // which is why the checksum lives in the manifest rather than trusting that a complete read is a
+    // good one.
+    //
+    // This used to end in `corrupt`. It now ends in a deliberate fallback: the previous generation
+    // is returned *described as itself*, rather than a mixture arriving under the newer manifest's
+    // name. Detecting the problem was never the goal; surviving it is.
+    const older = libraryOf(3)
+    await writeBackup(older, 'dev-1')
     const first = store.area.get('backup-manifest') as BackupManifest
     const staleChunk = store.area.get(chunkKey(first.slot, 0)) as string
 
-    await writeBackup(libraryOf(4), 'dev-1')
+    const newer = libraryOf(4)
+    await writeBackup(newer, 'dev-1')
     const fresh = store.area.get('backup-manifest') as BackupManifest
     expect(fresh.chunks).toBe(1)
     store.area.set(chunkKey(fresh.slot, 0), staleChunk)
 
-    expect((await readBackup()).status).toBe('corrupt')
+    const read = await readBackup()
+    expect(read.status).toBe('read')
+    if (read.status !== 'read') return
+    expect(read.macros).not.toEqual(newer)
+    expect(read.macros).toEqual(older)
+    expect(read.manifest.count).toBe(older.length)
   })
 
   it('says corrupt rather than throwing when the chunks do not parse', async () => {

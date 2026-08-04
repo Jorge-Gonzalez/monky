@@ -19,6 +19,7 @@
 import type { Macro } from '../types'
 import { measureMacros } from './checksum'
 import { decodeWith, encodeBackup, type BackupEncoding } from './backupCodec'
+import { LIBRARY_SCHEMA, validateLibrary } from './libraryShape'
 
 const MANIFEST_KEY = 'backup-manifest'
 
@@ -94,6 +95,30 @@ export interface BackupManifest {
    * version restoring it.
    */
   encoding?: BackupEncoding
+  /**
+   * The library shape this copy holds. Absent means the copy predates versioning and is read as
+   * schema 1; a *higher* number than this build understands is refused rather than guessed at.
+   */
+  schema?: number
+  /**
+   * Enough about the slot this manifest replaced to read and validate it.
+   *
+   * Without it the standby slot is unreachable: it holds a complete previous copy, but nothing
+   * records how many chunks it has or what it should checksum to, so a reader finding the live slot
+   * corrupt had no way to fall back and simply reported failure while a good copy sat beside it.
+   */
+  previous?: PreviousGeneration
+}
+
+/** A complete earlier copy, still present in the slot this manifest is not using. */
+export interface PreviousGeneration {
+  slot: Slot
+  chunks: number
+  checksum: string
+  count: number
+  takenAt: string
+  encoding?: BackupEncoding
+  schema?: number
 }
 
 // Discriminated on a string rather than a boolean `ok`, which is not a style preference: this
@@ -113,6 +138,8 @@ export type BackupReadResult =
   | { status: 'none' }
   | { status: 'incomplete' }
   | { status: 'corrupt' }
+  /** Written by a newer version of the extension. Guessing at it would be worse than refusing. */
+  | { status: 'too-new'; schema: number }
 
 export const chunkKey = (slot: Slot, index: number) => `backup${slot}:${index}`
 
@@ -255,6 +282,21 @@ export async function writeBackup(macros: Macro[], device: string): Promise<Back
     takenAt: new Date().toISOString(),
     device,
     encoding: CURRENT_ENCODING,
+    schema: LIBRARY_SCHEMA,
+    // The manifest being replaced describes a slot that is still intact and is not the one being
+    // written, so it stays readable until the write after next reuses it.
+    previous:
+      manifest === null
+        ? undefined
+        : {
+            slot: manifest.slot,
+            chunks: manifest.chunks,
+            checksum: manifest.checksum,
+            count: manifest.count,
+            takenAt: manifest.takenAt,
+            encoding: manifest.encoding,
+            schema: manifest.schema,
+          },
   }
 
   // The manifest second, in its own call. On this device that ordering means the manifest never
@@ -284,12 +326,29 @@ export async function writeBackup(macros: Macro[], device: string): Promise<Back
   return { status: 'written', manifest: next }
 }
 
-/** Read back whatever the manifest currently points at, or say precisely why it could not. */
-export async function readBackup(): Promise<BackupReadResult> {
-  const manifest = await readManifest()
-  if (manifest === null) return { status: 'none' }
+/** What one slot yielded, before deciding whether to try the other. */
+type SlotRead =
+  | { status: 'read'; macros: Macro[] }
+  | { status: 'incomplete' }
+  | { status: 'corrupt' }
+  | { status: 'too-new'; schema: number }
 
-  const keys = Array.from({ length: manifest.chunks }, (_, index) => chunkKey(manifest.slot, index))
+/**
+ * Read and fully validate one generation: its chunks, its checksum, and its shape.
+ *
+ * The checksum only proves the bytes are the bytes that were written. It does not prove they are a
+ * usable library, so the structural check runs here too -- a payload with duplicate ids or a macro
+ * missing its command would otherwise pass every integrity test and then replace a working library
+ * with something the rest of the code cannot address.
+ */
+async function readGeneration(
+  slot: Slot,
+  chunks: number,
+  checksum: string,
+  encoding: BackupEncoding | undefined,
+  schema: number | undefined
+): Promise<SlotRead> {
+  const keys = Array.from({ length: chunks }, (_, index) => chunkKey(slot, index))
   const stored = await chrome.storage.sync.get(keys)
   const parts = keys.map((key): unknown => stored[key])
   // A missing chunk is the half-arrived case: the manifest reached this device before all of the
@@ -297,22 +356,71 @@ export async function readBackup(): Promise<BackupReadResult> {
   // owed the difference -- one is worth retrying, the other is not.
   if (parts.some((part) => typeof part !== 'string')) return { status: 'incomplete' }
 
-  let macros: unknown
+  let parsed: unknown
   try {
     // Decoding and parsing share an outcome on purpose. From the reader's side "the bytes did not
     // decompress" and "the text was not JSON" are the same fact: something is there and it is not
     // the library.
-    macros = JSON.parse(await decodeWith((parts as string[]).join(''), manifest.encoding)) as unknown
+    parsed = JSON.parse(await decodeWith((parts as string[]).join(''), encoding)) as unknown
   } catch {
     return { status: 'corrupt' }
   }
-  if (!Array.isArray(macros)) return { status: 'corrupt' }
   // The guard the whole A/B design exists to make possible: a stale chunk beside a fresh manifest
   // parses perfectly well and is still the wrong library.
-  if (measureMacros(macros as Macro[]).checksum !== manifest.checksum) {
+  if (!Array.isArray(parsed) || measureMacros(parsed as Macro[]).checksum !== checksum) {
     return { status: 'corrupt' }
   }
-  return { status: 'read', macros: macros as Macro[], manifest }
+  const check = validateLibrary(parsed, schema ?? 1)
+  if (check.status === 'too-new') return { status: 'too-new', schema: check.schema }
+  if (check.status === 'malformed') return { status: 'corrupt' }
+  return { status: 'read', macros: check.macros }
+}
+
+/**
+ * Read the committed copy, falling back to the previous one when it is unusable.
+ *
+ * The fallback is the difference between detecting a problem and surviving it. Two devices backing
+ * up at once can interleave chunks in the same standby slot: the checksum catches it, but the older
+ * slot still holds a complete, valid generation, and without a way to reach it the reader reported
+ * failure while a good copy sat beside it. That was the weakest claim in the design -- "there is no
+ * moment at which the readable copy is incomplete" holds for one writer, not two.
+ *
+ * `incomplete` on the live slot is *not* a reason to fall back. It means propagation is still in
+ * flight and the right answer is to wait, not to hand back an older library the user did not ask
+ * for.
+ */
+export async function readBackup(): Promise<BackupReadResult> {
+  const manifest = await readManifest()
+  if (manifest === null) return { status: 'none' }
+
+  const live = await readGeneration(
+    manifest.slot,
+    manifest.chunks,
+    manifest.checksum,
+    manifest.encoding,
+    manifest.schema
+  )
+  if (live.status === 'read') return { status: 'read', macros: live.macros, manifest }
+  if (live.status === 'incomplete') return { status: 'incomplete' }
+  if (live.status === 'too-new') return { status: 'too-new', schema: live.schema }
+
+  const previous = manifest.previous
+  if (previous === undefined) return { status: 'corrupt' }
+  const older = await readGeneration(
+    previous.slot,
+    previous.chunks,
+    previous.checksum,
+    previous.encoding,
+    previous.schema
+  )
+  if (older.status !== 'read') return { status: 'corrupt' }
+  // Reported as read, but described by the older generation -- so the list shows when *that* copy
+  // was made and how many macros it holds, rather than the timestamp of the one that failed.
+  return {
+    status: 'read',
+    macros: older.macros,
+    manifest: { ...manifest, ...previous, previous: undefined },
+  }
 }
 
 /** What the manifest says, without reassembling the library. For the UI's "last backed up" line. */

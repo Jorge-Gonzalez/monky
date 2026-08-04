@@ -16,6 +16,7 @@
 // is gone, which is exactly when the local entries do not exist either.
 import type { Macro } from '../types'
 import { readPrevious } from './macroPrevious'
+import { validateLibrary } from './libraryShape'
 import { backupStatus, readBackup } from './syncBackup'
 import { readEditLog } from './editLog'
 import { deviceId } from '../lib/deviceId'
@@ -28,6 +29,8 @@ export type RestoreRead =
   | { status: 'none' }
   | { status: 'incomplete' }
   | { status: 'corrupt' }
+  /** Written by a newer version of the extension than the one reading it. */
+  | { status: 'too-new'; schema: number }
 
 export interface RestorePoint {
   /** Stable across refreshes, for list keys and for arming a confirmation. */
@@ -66,7 +69,15 @@ export async function listRestorePoints(): Promise<RestorePoint[]> {
     // A local pre-destruction state was, by definition, produced on this machine.
     fromAnotherDevice: false,
     checksum: entry.checksum,
-    read: () => Promise.resolve({ status: 'read', macros: entry.macros }),
+    // Validated on the way out rather than trusted. A local copy can be damaged by the same things
+    // that damage the live library -- a bad write, a failed migration -- and restoring an unusable
+    // one over a working library is the outcome this whole layer exists to prevent.
+    read: () => {
+      const check = validateLibrary(entry.macros, entry.schema ?? 1)
+      if (check.status === 'too-new') return Promise.resolve({ status: 'too-new', schema: check.schema })
+      if (check.status === 'malformed') return Promise.resolve({ status: 'corrupt' })
+      return Promise.resolve({ status: 'read', macros: check.macros })
+    },
   }))
 
   if (manifest !== null) {

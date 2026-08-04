@@ -7,7 +7,7 @@
 import { useState } from 'react'
 import type { Lang } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
-import type { BackupHealth } from '../../../../../store/backupHealth'
+import type { BackupState } from '../../../../../store/backupHealth'
 import type { SyncUsage } from '../../../../../store/syncBackup'
 import { useRestorePoints } from '../useRestorePoints'
 import { SettingsButton } from './SettingsLayout'
@@ -38,14 +38,24 @@ const REASON_KEY = {
  * It used to be a "back up now" button, which contradicted the rule beside it -- writes that stay
  * inside the extension are automatic -- and made a failure something you had to think to go looking
  * for. Saying it plainly is strictly better than offering a button that reveals it.
+ *
+ * The sentence describes the state of the *library*, not of the last attempt. Reading only the last
+ * outcome lets it say "protected" during the minute between an edit and the alarm, which is the one
+ * moment the claim is false.
  */
-function healthLine(health: BackupHealth | null, usage: SyncUsage | null): { text: string; bad: boolean } {
-  if (health?.status === 'too-large') {
-    return { text: t('settings.recover.health.tooLarge', { kb: String(Math.round(health.bytes / 1024)) }), bad: true }
+function healthLine(
+  state: BackupState,
+  detail: string | null,
+  usage: SyncUsage | null
+): { text: string; bad: boolean } {
+  if (state === 'too-large') {
+    return { text: t('settings.recover.health.tooLarge', { kb: detail ?? '?' }), bad: true }
   }
-  if (health?.status === 'failed') {
-    return { text: t('settings.recover.health.failed', { error: health.detail }), bad: true }
+  if (state === 'failed') {
+    return { text: t('settings.recover.health.failed', { error: detail ?? '' }), bad: true }
   }
+  if (state === 'never') return { text: t('settings.recover.health.never'), bad: false }
+  if (state === 'pending') return { text: t('settings.recover.health.pending'), bad: false }
   const room =
     usage === null
       ? ''
@@ -57,9 +67,9 @@ function healthLine(health: BackupHealth | null, usage: SyncUsage | null): { tex
 }
 
 export function RestoreList({ language }: { language: Lang }) {
-  const { points, health, usage, status, restore } = useRestorePoints()
+  const { points, state, detail, usage, status, restore } = useRestorePoints()
   const [armedId, setArmedId] = useState<string | null>(null)
-  const line = healthLine(health, usage)
+  const line = healthLine(state, detail, usage)
 
   return (
     <div
