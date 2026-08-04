@@ -407,6 +407,52 @@ exists: expired or not, that is a secret kept by accident, and keeping it is a c
 neutrality. They are removed once, at startup, by `legacyCleanup`. The two content keys are still
 left alone, for the original reason.
 
+## Amendment, 2026-08-04 (second) — corrections from the review of the design document
+
+Four code changes and a set of wording fixes, all from a review that read the system rather than the
+original strategy note.
+
+**Backup health described the last attempt, not the library.** A backup succeeds, three macros are
+edited, the alarm has not fired -- and a line derived from the last outcome alone said "protected"
+about a library that was not. `backupIsCurrent` had been written for exactly this comparison and was
+never called. State is now derived from the live library's checksum against the committed copy's,
+and the missing state is the common one: `pending`, true for a minute after every edit.
+
+**A/B protects one writer, and the claim had not said so.** "There is no moment at which the readable
+copy is incomplete" holds for a single logical writer. Two devices backing up in the same minute both
+read "A is live", both choose B, and interleave chunks there. The checksum caught that -- but
+detection is not recovery, and the manifest then pointed at a broken slot while a complete valid
+generation sat unreachable in the other, because nothing recorded its length or checksum. The
+manifest now carries a `previous` description of the generation it replaced, and a corrupt live slot
+falls back to it. `incomplete` deliberately does not fall back: propagation is still in flight, and
+returning an older library nobody asked for is worse than saying so.
+
+**A checksum is integrity, not validity.** It proves the bytes are the bytes written. Duplicate ids,
+a macro with no command, or a record from a future release all checksum perfectly and would then
+replace a working library with something the rest of the code cannot address. One `validateLibrary`
+now guards every route in -- browser copy, local previous states, imported file -- so a shape one
+path rejects cannot arrive through another. Duplicate ids are refused, because `updateMacro` and
+`deleteMacros` both address a macro by id. Duplicate commands are tolerated: they degrade matching,
+which the editor surfaces, and refusing an entire recovery over one is the wrong trade at the moment
+somebody is trying to get their work back.
+
+**Both envelopes record their schema**, and a copy from a newer release is refused rather than
+guessed at. This cannot be retrofitted -- every copy written before today has none and reads as 1 --
+which is the argument for doing it before there are more of them.
+
+There is no migration yet, so there is no migration code path. **When one is added, a `keepPrevious`
+checkpoint must be taken before it runs.** A faulty migration is the failure this design otherwise
+has no answer to: it transforms the authority, and the automatic backup then copies the damage to the
+browser account a minute later. Recorded here rather than added as an unused code path.
+
+**Wording corrected in the design document.** Import *merges* by command and does not replace, so the
+governing rule now reads "materially changes the whole library" rather than "destroys or replaces" --
+restore replaces, import merges, and a merge has a duplicate policy that a replacement does not.
+`chrome.storage.local` is "the only source used to hydrate normal application state", not "the only
+thing ever read back", which was wrong twice over since both recovery sources are read. And the
+browser account offers one state as a product promise while physically retaining the previous
+generation as a fallback -- an implementation fact that is now stated where it used to be denied.
+
 ## Consequences
 
 Macros no longer ride Chrome sync between devices. Given the 8 KB cap, they had not been for some

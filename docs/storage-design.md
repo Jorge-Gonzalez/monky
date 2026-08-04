@@ -5,7 +5,7 @@ made, including the ones later reversed. This describes the system as it now sta
 the two parts that are least self-evident: **what the local copies are for**, and **why the
 browser-account backup uses two slots**.
 
-Status: current as of 2026-08-03.
+Status: current as of 2026-08-04.
 
 ---
 
@@ -95,7 +95,7 @@ flowchart TB
 | **G** | Macro detector | Content script; reads through `toMacros`, narrowed to what matching needs |
 | **H** | Background watcher | Service worker; reads the stored array verbatim |
 | **I** | `macro-previous` | Layer 1 — the last 2 libraries, each from before a destructive act (§4) |
-| **J** | Browser account | Layer 2 — chunked, compressed, A/B slots (§5) |
+| **J** | Browser account | Layer 2 — chunked, compressed, A/B slots (§5). Requires no *Monky* account; it does require the user's browser sync account and settings |
 | **K** | Export file | Layer 3 — the only copy that leaves the browser (§7) |
 | **L** | `restorePoints` | Combines I and J into one list **ordered by time, newest first**, then drops duplicates. Not local-first — a browser-account copy newer than a local one sorts above it. Which source a point came from is not something the reader has to reason about (§6) |
 
@@ -115,7 +115,7 @@ flowchart TB
 | ⚪ **10** | I → L | on opening the list | a read; changes nothing |
 | ⚪ **11** | J → L | on opening the list | a read; changes nothing |
 | 🟠 **12** | L → E | **explicit + confirmed** | replaces the live library; keeps its own way back first, via arrow 8 |
-| 🟠 **13** | K → E | **explicit** | merges by command; duplicates skipped |
+| 🟠 **13** | K → E | **explicit** | *merges*, it does not replace — see below |
 
 Three things the colouring makes visible that prose had to assert:
 
@@ -123,8 +123,8 @@ Three things the colouring makes visible that prose had to assert:
 from the same storage event. Nothing between them is a choice.
 
 **The orange arrows are exactly the three the rule in §6 names** — 9 leaves the browser sandbox, 12
-and 13 replace the live library. Every grey and blue arrow stays inside the extension's own storage
-and is additive, which is what lets it happen unattended.
+replaces the live library, 13 merges into it. Every grey and blue arrow stays inside the extension's
+own storage and is additive, which is what lets it happen unattended.
 
 **Grey 7 and 8 do the same job from different places, and that is not an accident of drawing.** A
 delete goes through `macroCrud`; an import and a restore do not, so each keeps the previous state
@@ -134,9 +134,10 @@ a code path that does not exist.
 The two dotted arrows, **12** and **13**, encode something else again: they are the only ones that
 flow data *back into* the store rather than out of it.
 
-**One rule governs the whole diagram: `chrome.storage.local` (F) is the only thing ever read back.**
-Everything else is written to and read only on an explicit, user-initiated restore. Sync is never
-consulted during hydration.
+**One rule governs the whole diagram: `chrome.storage.local` (F) is the only source used to hydrate
+normal application state.** The other stores are read too — that is what recovery is — but only on an
+explicit, user-initiated restore, never at startup. "The only thing ever read back" was the earlier
+wording and it was wrong twice over: `macro-previous` and the browser copy are both read.
 
 That rule exists because it was once violated. Reads preferred sync and fell back to local, while
 writes went to local always and sync inside a swallowed `catch`. Once the state outgrew sync's
@@ -248,7 +249,9 @@ So recovery is now one list, and the source is not a category the user reasons a
 
 ### 5.1 The substrate is hostile, and every decision here is a response to that
 
-`chrome.storage.sync` is the only place that survives a reinstall without an account. It has three
+`chrome.storage.sync` is the only place that survives a reinstall without a **Monky** account — it
+does depend on the user's browser sync account being present and enabled, which is a distinction
+worth keeping: "no account" is not true, "no account of ours" is. It has three
 properties that make it unsuitable for what it is being used for:
 
 1. **An item caps at 8,192 bytes.** A macro library is bigger. → *chunking*
@@ -292,8 +295,30 @@ sequenceDiagram
     Note over S: the pre-layer-2 copy, safe to drop<br/>only now a verified one exists
 ```
 
-Everything before the manifest write is invisible; everything after is committed. There is no moment
-at which the readable copy is incomplete.
+Everything before the manifest write is invisible; everything after is committed.
+
+**That claim holds for one writer.** It was previously stated without the qualifier, and the
+qualifier is load-bearing. Two devices backing up within the same minute both read "A is live", both
+choose B, and interleave their chunks there. The checksum catches the mixture — but detection is not
+recovery, and for a while the design stopped at detection: the manifest pointed at a broken slot
+while a complete, valid generation sat untouched in the other one, unreachable because nothing
+recorded how long it was or what it should checksum to.
+
+So the manifest now carries a **`previous`** description of the generation it replaced, and a
+corrupt live slot falls back to it:
+
+- live slot valid → use it.
+- live slot **incomplete** → say so, and stop. Propagation is still in flight; handing back an older
+  library nobody asked for is worse than asking them to wait a moment.
+- live slot **corrupt** → read and fully validate `previous`; use it if it stands, and report it
+  *described as itself*, so the list shows when that copy was made rather than the timestamp of the
+  one that failed.
+- neither → corrupt.
+
+The honest statement of the guarantee is therefore: **A/B publication protects against an
+interrupted or partly-propagated write from a single logical writer, and the checksum plus the
+fallback turn cross-device interference into the loss of one generation rather than the loss of the
+backup.**
 
 **Cost:** half the quota, ~45 KB per slot. That is the trade, and it is why compression mattered.
 
@@ -311,6 +336,24 @@ failed" would hide that.
 
 The checksum is computed over the **macros**, never over the stored bytes. So a decoding fault lands
 on the same `corrupt` outcome as a stale chunk, and compression introduced no new failure mode.
+
+**A checksum is an integrity check, not a validity check.** It proves the bytes are the bytes that
+were written; it says nothing about whether they are a usable library. Duplicate ids, a macro with
+no command, or a record from a future release all checksum perfectly and would then replace a
+working library with something the rest of the code cannot address. So every route into the store —
+the browser copy, the local previous states, and an imported file — passes through one
+`validateLibrary`, and a shape one path rejects cannot arrive through another.
+
+Duplicate **ids** are refused: `updateMacro` and `deleteMacros` both address a macro by id, so two
+records sharing one is a library where those operations are undefined. Duplicate **commands** are
+tolerated — they degrade matching, which the editor surfaces and the user can fix, and refusing an
+entire recovery over one is the wrong trade at the moment somebody is trying to get their work back.
+
+Both envelopes also record the **schema** they were written under, and a copy from a newer release is
+refused rather than guessed at. There is no migration path yet because there has been no migration;
+when one is added, ADR 0001 records that a `keepPrevious` checkpoint must be taken before it runs —
+a faulty migration is the one failure that transforms the authority *and* gets faithfully copied to
+the browser account a minute later.
 
 ### 5.3 Chunking, and a lesson about measurement
 
@@ -433,8 +476,21 @@ different from restoring your own — and stays.
 | export → file | **explicit** | leaves the browser sandbox and lands on your disk |
 | **restore ← anywhere** | **explicit, always** | replaces the live library |
 
-> **Writes that stay inside the extension's own storage can be automatic. Anything that destroys the
-> live library, or anything that leaves the sandbox, is explicit.**
+> **Writes that stay inside the extension's own storage can be automatic. Anything that materially
+> changes the whole library, or anything that leaves the sandbox, is explicit and keeps a recovery
+> point first.**
+
+An earlier wording said *destroys or replaces*, which quietly mis-described import. Restore and
+import are not the same operation and should not be collapsed:
+
+- **Restore** *replaces* the library with a chosen earlier state.
+- **Import** *merges* a file into it, skipping macros whose `command` already exists.
+- **Export** copies the library out, changing nothing.
+
+Import keeps a recovery point for the same reason restore does — it is one broad, hard-to-unpick
+mutation — but calling it destructive was wrong, and the distinction matters because a merge has a
+duplicate policy and a replacement does not. Monky's is **by command**: an incoming macro whose
+command already exists is skipped, and the existing one is left untouched.
 
 A restore is itself destructive, so it keeps its own way back before it runs — otherwise recovering
 to the wrong moment would be the one act in the app with no undo.
@@ -449,7 +505,23 @@ error.
 But it contradicted the rule above — an explicit write beside a claim that writes are automatic — and
 **a failure you have to think to press a button to discover is a worse design than one that simply
 tells you.** So every attempt records its outcome in `backup-health`, and the line under the list
-states it, becoming the error when there is one:
+states it, becoming the error when there is one.
+
+**The line describes the library, not the last attempt**, and the difference is a lie the first
+version could tell. A backup succeeds; the user edits three macros; the alarm has not fired yet — and
+a sentence derived from the last outcome alone says *protected* about a library that is not. So the
+state is computed from the live library's checksum against the committed copy's:
+
+| state | meaning |
+|---|---|
+| **ok** | the committed copy *is* the library on this device |
+| **pending** | the library has moved on; a backup is scheduled |
+| **never** | nothing committed yet |
+| **failed** | the platform refused, and the message says how |
+| **too-large** | the library no longer fits the quota — a standing condition, not a blip |
+
+`pending` is the state that was missing and it is the common one: for a minute after every edit, the
+honest answer is "copying your latest changes".
 
 > *No se pudo copiar: tus macros ya no caben en tu cuenta del navegador (48 KB).*
 
@@ -519,9 +591,11 @@ flowchart LR
     style X3 fill:none,stroke:none
 ```
 
-**No layer substitutes for another.** The previous state is recent and dies with the profile. The browser
-account survives a reinstall but holds only the latest state — so a mistake that syncs before the
-device is lost is not recoverable from it. The export file survives everything and requires a human.
+**No layer substitutes for another.** The previous state is recent and dies with the profile. The
+browser account survives a reinstall and offers one state — so a mistake that syncs before the device
+is lost is not recoverable from it. (Physically it also retains the previous generation in the
+standby slot, but that is an implementation fallback for a corrupt live slot, per §5.2, not a second
+entry anyone is offered.) The export file survives everything and requires a human.
 
 ---
 
