@@ -15,7 +15,7 @@ A text expander holds content its user typed once and expects to have forever. L
 recoverable by any means the app provides — there is no server holding a copy. So the storage design
 is mostly a question of *which ways can this be lost, and what answers each one*.
 
-Three ways, and they are not alike:
+Four ways, and they are not alike:
 
 | # | How the library is lost | Frequency | Cost | Natural shape of the fix |
 |---|---|---|---|---|
@@ -31,7 +31,7 @@ thing in this design, and it was got wrong once already.
 **4 is the one added last**, after a review pointed out that a mistake made by the *extension* is not
 covered by copies taken before the *user* does something. Half of it is answered (§2.1, the hydration
 guard); the other half is a standing requirement rather than code, because the migration it guards
-does not exist yet (§5.4).
+does not exist yet (§5.2).
 
 ---
 
@@ -97,7 +97,7 @@ flowchart TB
 | **C** | Overlay settings | In-page settings, import/export, recovery |
 | **D** | `macroCrud` | create / update / delete; stamps `updated_at`; synchronous |
 | **E** | `useMacroStore` | Zustand + persist, key `macro-storage` |
-| **F** | `chrome.storage.local` | **The authority — the only thing ever read back** |
+| **F** | `chrome.storage.local` | **The authority — the only source hydration reads** |
 | **G** | Macro detector | Content script; reads through `toMacros`, narrowed to what matching needs |
 | **H** | Background watcher | Service worker; reads the stored array verbatim |
 | **I** | `macro-previous` | Layer 1 — the last 2 libraries, each from before a destructive act (§4) |
@@ -145,6 +145,12 @@ normal application state.** The other stores are read too — that is what recov
 explicit, user-initiated restore, never at startup. "The only thing ever read back" was the earlier
 wording and it was wrong twice over: `macro-previous` and the browser copy are both read.
 
+That rule exists because it was once violated. Reads preferred sync and fell back to local, while
+writes went to local always and sync inside a swallowed `catch`. Once the state outgrew sync's
+8,192-byte item cap the sync write began rejecting, its copy froze — and a frozen copy is not
+`null`, so it kept winning the read. The store hydrated stale and wrote the stale state back over
+the good local copy. The symptom was settings controls flickering back to old values.
+
 ### 2.1 What happens when the authority itself is unreadable
 
 The rule above says the live library is the only thing hydration reads. It does not say what happens
@@ -171,12 +177,6 @@ own data. Recovery still works, so `macro-previous` and the browser copy remain 
 
 Only the **first** failure is quarantined. A later, more damaged value must not replace the copy
 closest to the good data.
-
-That rule exists because it was once violated. Reads preferred sync and fell back to local, while
-writes went to local always and sync inside a swallowed `catch`. Once the state outgrew sync's
-8,192-byte item cap the sync write began rejecting, its copy froze — and a frozen copy is not
-`null`, so it kept winning the read. The store hydrated stale and wrote the stale state back over
-the good local copy. The symptom was settings controls flickering back to old values.
 
 ---
 
@@ -374,9 +374,20 @@ on the same `corrupt` outcome as a stale chunk, and compression introduced no ne
 **A checksum is an integrity check, not a validity check.** It proves the bytes are the bytes that
 were written; it says nothing about whether they are a usable library. Duplicate ids, a macro with
 no command, or a record from a future release all checksum perfectly and would then replace a
-working library with something the rest of the code cannot address. So every route into the store —
-the browser copy, the local previous states, and an imported file — passes through one
-`validateLibrary`, and a shape one path rejects cannot arrive through another.
+working library with something the rest of the code cannot address. So both routes that carry a
+**whole library** — the browser copy and the local previous states — pass through one
+`validateLibrary`, and a shape one rejects cannot arrive through the other.
+
+**Import is deliberately not one of them**, and the asymmetry is worth stating because it looks like
+an omission. An export strips ids, so an imported file is a *fragment without identities*:
+`mergeImport` mints a fresh id for every record, which is why duplicate ids — the thing
+`validateLibrary` exists to catch — cannot arise from that path at all. `parseMacroImport` checks
+what such a fragment does have, `command` and `text`.
+
+The two also fail differently, on purpose. A backup with one bad record is **refused whole**; an
+import file with one bad record **drops it and takes the rest**. A partial import is useful — you
+asked for some macros and got most of them. A partial restore is not: it would silently hand back
+less than the library you chose, at the moment you are least able to notice.
 
 Duplicate **ids** are refused: `updateMacro` and `deleteMacros` both address a macro by id, so two
 records sharing one is a library where those operations are undefined. Duplicate **commands** are
@@ -454,8 +465,10 @@ service worker is torn down when idle and takes pending timers with it, so a one
 would simply never fire and the backup would silently not happen. Creating an alarm with a name that
 already exists replaces it, so rescheduling *is* the debounce, with no bookkeeping.
 
-(The snapshot watcher's 5-second `setTimeout` is fine: the change event that schedules it has already
-reset the worker's idle countdown, and 5 s clears comfortably. A minute does not.)
+(An earlier local-snapshot watcher did use a 5-second `setTimeout`, and that was fine for a different
+reason: the change event scheduling it had already reset the worker's idle countdown, and 5 s cleared
+comfortably. A minute does not. That watcher is gone — the previous state is now kept by the
+operation itself — so this is the only debounce left, and it could never have been a timer.)
 
 Restore stays **explicit**. The backup half is entirely automatic, and how it went is reported
 passively rather than on request — see §6.
@@ -568,13 +581,21 @@ says *al día*, waiting is not a hardship.
 
 A JSON file the user downloads. The only copy that survives leaving the browser ecosystem entirely,
 and the only one that works signed out or on Firefox Android. Import merges by command; duplicates
-are skipped, and a forced snapshot is taken first.
+are skipped, and `keepPrevious` records the library first.
 
 Its one weakness is that it depends on somebody remembering, which is closed by a **nudge**:
-*"37 changes since your last export, 2 Aug."* Compared **by checksum, not by count** — the commonest
-drift is a macro *edited* rather than added or removed, which leaves the total identical. Tracked in
-**local** storage rather than sync, because "when did *this* machine last export" is the question
-worth answering: a file exported on the laptop is not on the desktop.
+*"37 changes since your last export, 2 Aug."*
+
+*Whether* the library has drifted is decided **by checksum, not by count** — the commonest drift is a
+macro *edited* rather than added or removed, which leaves the total identical. Tracked in **local**
+storage rather than sync, because "when did *this* machine last export" is the question worth
+answering: a file exported on the laptop is not on the desktop.
+
+*How much* it has drifted is summed from the **edit log**, and inherits that log's limits: it counts
+macros touched rather than distinct changes, and the log holds twelve entries, so a long gap since
+the last export undercounts. The UI says "more than N" when the log has been trimmed past the export
+timestamp. If that ever feels like false precision, the checksum alone supports the simpler sentence
+— *your macros have changed since your last export* — and nothing else would need to move.
 
 The nudge only ever appears to someone who has exported at least once. Prompting a user who never
 has would be advertising a feature rather than warning about a gap.
@@ -604,6 +625,14 @@ know what happened.
 The diff comes from `storage.onChanged`'s `oldValue`, so nothing has to be remembered across a
 service-worker suspension to produce it.
 
+**It is advisory, and nothing may depend on it being complete.** One synced key holding a list,
+appended to by read-modify-write with no compare-and-swap: two devices can read the same log, append
+different entries, and the later write discards the earlier one. That is acceptable for supplementary
+wording and unacceptable for anything else, so **the edit log must never decide whether a restore is
+safe**. The manifest's own `device` and `takenAt` are stronger facts and are what the restore list
+actually uses; the log only refines the *phrasing*. If per-device history is ever genuinely needed, a
+key per device removes the append conflict — but nothing needs it today.
+
 ---
 
 ## 9. Failure coverage
@@ -617,7 +646,7 @@ flowchart LR
     F5["Extension damages<br/>the library itself"] --> L4["hydration guard §2.1<br/>+ pre-migration checkpoint,<br/>required but not yet needed"]
 
     L1 -.->|"dies with the profile"| X1[" "]
-    L2 -.->|"latest only, no history"| X2[" "]
+    L2 -.->|"one state offered"| X2[" "]
     L3 -.->|"needs a human"| X3[" "]
 
     style NONE fill:#f5e2de,stroke:#9a3527,color:#333

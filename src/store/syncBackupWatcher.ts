@@ -3,9 +3,12 @@
 // The debounce is an alarm rather than a setTimeout, and that is not a style choice. An MV3 service
 // worker is torn down when it goes idle, taking every pending timer with it: a one-minute
 // setTimeout would simply not fire, and the backup would silently not happen. Alarms survive
-// suspension and wake the worker, which is the only mechanism that can debounce across it. The
-// local snapshot watcher can keep its 5 s setTimeout because the change event that schedules it has
-// already reset the idle countdown and 5 s clears comfortably; a minute does not.
+// suspension and wake the worker, which is the only mechanism that can debounce across it.
+//
+// An earlier local-snapshot watcher did use a 5 s setTimeout, and got away with it for a different
+// reason: the change event scheduling it had already reset the worker's idle countdown, and 5 s
+// cleared comfortably. A minute does not. That watcher is gone -- the previous state is now kept by
+// the operation itself -- so this is the only debounce left, and it could never have been a timer.
 //
 // Creating an alarm with a name that already exists replaces it, so rescheduling on every change is
 // the debounce, with no bookkeeping of our own.
