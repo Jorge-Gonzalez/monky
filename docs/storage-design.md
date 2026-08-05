@@ -22,10 +22,16 @@ Three ways, and they are not alike:
 | 1 | The user destroys it themselves — bulk delete, bad import | rare | total | a copy of the **whole library**, from just before |
 | 2 | The machine dies, or the profile is wiped | rare | total | a copy **outside this profile** |
 | 3 | An edit to one macro goes wrong while composing | frequent | trivial | the **previous value of that macro** |
+| 4 | **The extension damages the library itself** — unreadable bytes, a faulty migration, a bad release | rare | total | a copy from **before the code ran**, and a refusal to overwrite what it cannot read |
 
 The design serves 1 and 2 with a layer each. **3 is served by the browser's own undo inside the
 content editor and by nothing else here** — see §4.1. That boundary is the single most misunderstood
 thing in this design, and it was got wrong once already.
+
+**4 is the one added last**, after a review pointed out that a mistake made by the *extension* is not
+covered by copies taken before the *user* does something. Half of it is answered (§2.1, the hydration
+guard); the other half is a standing requirement rather than code, because the migration it guards
+does not exist yet (§5.4).
 
 ---
 
@@ -139,6 +145,33 @@ normal application state.** The other stores are read too — that is what recov
 explicit, user-initiated restore, never at startup. "The only thing ever read back" was the earlier
 wording and it was wrong twice over: `macro-previous` and the browser copy are both read.
 
+### 2.1 What happens when the authority itself is unreadable
+
+The rule above says the live library is the only thing hydration reads. It does not say what happens
+when that read fails — and the answer used to be the worst one available.
+
+A single truncated value made `JSON.parse` throw inside the persist middleware, which left the store
+at its seeded defaults: seven demo macros. **The next ordinary edit then wrote those demos over the
+bytes that had failed to parse.** A string a person could very likely have repaired by hand,
+destroyed silently, by one bad byte. This was measured, not feared.
+
+It is the same shape as the bug that produced the rule in the first place — something that is not the
+authority winning, and overwriting what is — reappearing one layer down inside the module written to
+fix it.
+
+The adapter now separates **absent** from **unreadable**:
+
+- **Absent** → a first run. Seed the samples, as before.
+- **Unreadable** → copy the bytes to `macro-storage-unreadable` and hydrate an **empty** library.
+
+Empty is the load-bearing part. Returning null lets the store fall back to the demos, and the demos
+are what get written over the original. Empty is also the honest answer: we do not know what was
+there, and presenting samples would look like a fresh install and invite someone to type over their
+own data. Recovery still works, so `macro-previous` and the browser copy remain reachable.
+
+Only the **first** failure is quarantined. A later, more damaged value must not replace the copy
+closest to the good data.
+
 That rule exists because it was once violated. Reads preferred sync and fell back to local, while
 writes went to local always and sync inside a swallowed `catch`. Once the state outgrew sync's
 8,192-byte item cap the sync write began rejecting, its copy froze — and a frozen copy is not
@@ -156,9 +189,10 @@ the good local copy. The symptom was settings controls flickering back to old va
 | `macro-storage` | the live library + config, as one JSON string | zustand persist |
 | `macro-previous` | the last **2** libraries, each from just before a destructive act | `macroPrevious.ts` |
 | `backup-health` | how the last browser-account copy went | `backupHealth.ts` |
+| `macro-storage-unreadable` | the bytes of a library that would not parse, kept once (§2.1) | `useMacroStore.ts` |
 | `device-id` | a uuid, minted on first use | `deviceId.ts` |
 | `last-export` | `{ at, checksum, count }` of the last export | `exportTracking.ts` |
-| `macros`, `pendingOps`, `access`, `refresh` | orphans from removed features | *nothing — see §10* |
+| `macros`, `pendingOps` | orphans that may hold macro content — left in place on purpose (§10) | *nothing* |
 
 `device-id` deserves a note: **local storage does not sync, so a uuid written there is a per-device
 identity by construction.** No API and no fingerprinting. The browser offers nothing better —
@@ -169,7 +203,7 @@ identity by construction.** No API and no fingerprinting. The browser offers not
 
 | Key | Holds |
 |---|---|
-| `backup-manifest` | which slot is live, plus revision, chunk count, checksum, macro count, timestamp, device, encoding |
+| `backup-manifest` | which slot is live, plus revision, chunk count, checksum, macro count, timestamp, device, encoding, **schema**, and **`previous`** — enough about the generation it replaced to read and validate it (§5.2) |
 | `backupA:0…n` | slot A payload chunks |
 | `backupB:0…n` | slot B payload chunks |
 | `edit-log` | last 12 `{ at, dev, kind, n }` entries |
@@ -580,12 +614,14 @@ flowchart LR
     F2["Machine dies<br/>profile wiped"] --> L2["Layer 2<br/>browser account"]
     F3["Leaving the browser<br/>account loss"] --> L3["Layer 3<br/>export file"]
     F4["Botched edit to<br/>one macro"] --> NONE["the browser's own undo<br/>in the editor — see §4.1"]
+    F5["Extension damages<br/>the library itself"] --> L4["hydration guard §2.1<br/>+ pre-migration checkpoint,<br/>required but not yet needed"]
 
     L1 -.->|"dies with the profile"| X1[" "]
     L2 -.->|"latest only, no history"| X2[" "]
     L3 -.->|"needs a human"| X3[" "]
 
     style NONE fill:#f5e2de,stroke:#9a3527,color:#333
+    style L4 fill:#f2e9d6,stroke:#8f6416,color:#333
     style X1 fill:none,stroke:none
     style X2 fill:none,stroke:none
     style X3 fill:none,stroke:none
@@ -615,9 +651,14 @@ entry anyone is offered.) The export file survives everything and requires a hum
 | `unlimitedStorage` | Moves the wall rather than removing it. |
 | A hosted backend | Accounts, GDPR, support load — in exchange for something the browser already does, for a tool whose pitch is that it sees everything you type and keeps none of it. |
 
-The orphaned local keys (`macros`, `pendingOps`, `access`, `refresh`) are left in place on purpose.
-`pendingOps` can carry macro content from queued creates, so removing it is a data deletion and
-should be a decision rather than a side effect.
+`macros` and `pendingOps` are left in place on purpose: both can carry macro content — `pendingOps`
+from creates that never reached the network — so removing them is a data deletion and should be a
+decision rather than a side effect of an upgrade.
+
+`access` and `refresh` **are** removed, once, at startup. They held bearer tokens for the withdrawn
+backend, and the reasoning that protects the other two does not reach them: credential material for a
+service that no longer exists is a secret kept by accident, not data someone might want back. One
+policy had been applied to all four keys and only two ever deserved it.
 
 ---
 
