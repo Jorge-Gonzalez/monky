@@ -297,11 +297,34 @@ properties that make it unsuitable for what it is being used for:
 
 ### 5.2 Why two slots — the key idea
 
-The question this document exists to answer.
+The question this document exists to answer, and the one most often asked about it is the reasonable
+version: *the local library is the authority and it already keeps previous copies — so why does the
+browser account need two of anything?*
 
-**`chrome.storage.sync` gives exactly one atomic operation: writing a single key.** There is no
-multi-key transaction, no compare-and-swap, no conditional write. A `set()` with four keys may land
-as four separate events, in any order, on any device.
+**They are not two backups.** They are one backup, plus the only way to write it safely.
+
+#### What a single slot would do
+
+Imagine it: `backup:0…n`, plus a manifest naming the chunk count and checksum.
+
+A backup is **always at least two keys** — the payload and the pointer that describes it — and
+`chrome.storage.sync` can write only **one key atomically**. There is no multi-key transaction, no
+compare-and-swap, no conditional write. So with one slot there is no safe order:
+
+| order | interrupted halfway leaves | reader sees |
+|---|---|---|
+| manifest **last** | new data described by an old manifest — wrong checksum, wrong count | `corrupt` |
+| manifest **first** | a manifest describing data that has not arrived, over a payload already partly overwritten | `incomplete` |
+
+Either way the interrupted write does **not** leave you the old backup. It leaves a mixture
+belonging to neither. So every backup write would put the existing backup at risk — and
+"interrupted" is not exotic here: an MV3 service worker can be terminated between two `await`s, the
+browser can quit, the machine can sleep.
+
+Note this has nothing to do with how many chunks a library needs. A one-chunk library is still a
+payload key and a pointer key, so a single slot is unsafe at any size.
+
+#### Two slots make an order exist
 
 So the design uses the one atomic thing it has as a **commit pointer**:
 
@@ -355,6 +378,27 @@ fallback turn cross-device interference into the loss of one generation rather t
 backup.**
 
 **Cost:** half the quota, ~45 KB per slot. That is the trade, and it is why compression mattered.
+
+#### Why the local copies need none of this, and why the two "2"s are unrelated
+
+`macro-previous` is **one key**. A single-key `chrome.storage.local.set` either lands or it does not,
+so no intermediate state exists and there is nothing to protect against. Its second entry buys
+something else entirely:
+
+| | why two | could it be one? |
+|---|---|---|
+| `macro-previous` (local) | **depth** — surviving a delete *followed by* an import | yes; it is a policy choice |
+| sync slots A and B | **atomicity** — a multi-key write with no transaction | **no; it is structural** |
+
+The coincidence of the number is worth naming precisely because it invites the wrong inference.
+
+**And the browser copy cannot lean on the local one.** It exists for the moment the profile is gone —
+at which point the local previous copies are gone too. It has to be self-sufficient, and the worst
+case is not abstract: the interrupted write could be the one running when the machine dies.
+
+That the standby slot *happens* to hold the previous generation — which the fallback above now uses —
+is a **consequence** of this design rather than its purpose. Describing it as "we keep two backups"
+is what makes the question arise in the first place.
 
 **What the checksum adds on top.** Slot switching orders things on the *writing* device. It cannot
 order them on a *receiving* one — and since arrival order is undocumented, a device may see a fresh
