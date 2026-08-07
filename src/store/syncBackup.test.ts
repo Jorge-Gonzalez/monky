@@ -125,6 +125,24 @@ describe('splitIntoChunks', () => {
     expect(chunks.join('')).toBe(text)
   })
 
+  it('sizes the budget from the platform cap rather than a guess', () => {
+    // Measured in Chrome by binary search on a scratch key: 8,180 bytes fit under a 10-character
+    // key, which is exactly 8192 - 10 - 2. The documented rule is right and the overhead is just the
+    // two quotes JSON.stringify puts round a string, so the budget is derived from the cap and only
+    // the margin is chosen.
+    expect(SYNC_LIMITS.CHUNK_CONTENT_BUDGET).toBe(
+      SYNC_LIMITS.QUOTA_BYTES_PER_ITEM - SYNC_LIMITS.MAX_CHUNK_KEY_LENGTH - 2 - 64
+    )
+  })
+
+  it('never produces a key longer than the length the budget was derived from', () => {
+    // The budget subtracts MAX_CHUNK_KEY_LENGTH once. If a key could exceed it the arithmetic would
+    // be wrong in the one direction that costs a rejected write.
+    for (let index = 0; index < SYNC_LIMITS.MAX_CHUNK_KEYS; index++) {
+      expect(chunkKey('A', index).length).toBeLessThanOrEqual(SYNC_LIMITS.MAX_CHUNK_KEY_LENGTH)
+    }
+  })
+
   it('returns one empty chunk for empty text rather than nothing at all', () => {
     // A library emptied to zero macros still has to be backed up; zero chunks would read back as
     // "no backup" and quietly resurrect the macros the user deleted.

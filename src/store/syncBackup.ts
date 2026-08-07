@@ -40,21 +40,44 @@ const LEGACY_KEY = 'macro-storage'
 const QUOTA_BYTES = 102_400
 const QUOTA_BYTES_PER_ITEM = 8_192
 
+/** The longest chunk key this can produce: `backupA:63`. Part of what the quota charges. */
+const MAX_CHUNK_KEY_LENGTH = 10
+
+/** The two quotes `JSON.stringify` puts around a string value. Measured, not assumed -- see below. */
+const JSON_STRING_QUOTES = 2
+
 /**
- * How much of an item a chunk's *content* may claim, as a starting guess rather than a fact.
- *
- * The documented rule is "the JSON stringification of its value plus its key length", and an
- * earlier version of this file budgeted against a careful model of exactly that: escaping measured
- * per character, 7,800 bytes of content, key and quotes covered by the margin. It produced chunks
- * of 7,827 and 744 UTF-8 bytes against a documented cap of 8,192 -- and Chrome rejected the write
- * with `Resource::kQuotaBytesPerItem quota exceeded`.
- *
- * So the real accounting is stricter than the documented one in some way this code could not
- * derive. Rather than guess at a second model and find out the same way, the write below adapts:
- * it starts here and halves on a per-item rejection until it fits. Being wrong is then a retry
- * instead of a backup that never happens.
+ * Slack against a platform that might not charge identically everywhere. Generous, because the cost
+ * of being 64 bytes conservative is nothing and the cost of being one byte over is a rejected write.
  */
-const CHUNK_CONTENT_BUDGET = 6_000
+const CHUNK_BUDGET_MARGIN = 64
+
+/**
+ * How much of an item a chunk's *content* may claim -- derived now, having previously been guessed.
+ *
+ * The history is worth keeping because the conclusion drawn from it was wrong. An early version
+ * modelled the documented rule ("the JSON stringification of its value plus its key length") and
+ * still had a write rejected with `Resource::kQuotaBytesPerItem`, so this file concluded the real
+ * accounting must be stricter than documented in some underivable way, and fell back to a
+ * deliberately conservative 6,000.
+ *
+ * Measured in Chrome afterwards by binary search on a scratch key: the largest payload that fits
+ * under a 10-character key is **8,180 bytes**, which is exactly `8192 - 10 - 2`. The documented rule
+ * is precisely right and the overhead is just the two quotes. Whatever rejected that early write, it
+ * was not a hidden surcharge -- and the guess it produced was costing about 35% more chunks than
+ * necessary ever since.
+ *
+ * What made the difference is that chunks are **base64** now. Before compression they were raw JSON,
+ * dense with quotes and multi-byte characters, and their stringified cost had to be modelled. Base64
+ * is pure ASCII with nothing to escape, so `JSON.stringify(chunk).length` is exactly
+ * `chunk.length + 2` and there is nothing left to estimate.
+ *
+ * The halving retry below stays regardless. It stops being the thing that discovers the budget and
+ * becomes what it should always have been: the guard for a measured assumption turning out wrong on
+ * a browser this was not measured on.
+ */
+const CHUNK_CONTENT_BUDGET =
+  QUOTA_BYTES_PER_ITEM - MAX_CHUNK_KEY_LENGTH - JSON_STRING_QUOTES - CHUNK_BUDGET_MARGIN
 
 /** Below this the chunk count stops being worth the write operations; give up and report instead. */
 const MIN_CHUNK_BUDGET = 750
@@ -454,4 +477,5 @@ export const SYNC_LIMITS = {
   CHUNK_CONTENT_BUDGET,
   MIN_CHUNK_BUDGET,
   MAX_CHUNK_KEYS,
+  MAX_CHUNK_KEY_LENGTH,
 }

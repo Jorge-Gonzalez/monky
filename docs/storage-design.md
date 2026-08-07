@@ -484,8 +484,9 @@ Worse, the tests measured cost with `String.length`, which counts UTF-16 units r
 **Code and tests agreed with each other about the wrong thing**, so twenty green tests coexisted with
 a write that had never once succeeded.
 
-The real accounting is stricter than the documented one in some way this code cannot derive from
-outside the browser. Guessing at a second model risked the same outcome, so the write **adapts**:
+The conclusion drawn at the time was that the real accounting must be stricter than the documented
+one in some underivable way, so the budget dropped to a deliberately conservative 6,000 and the write
+**adapts**:
 
 ```mermaid
 flowchart TB
@@ -501,6 +502,36 @@ flowchart TB
 Retrying is safe *because* of the standby slot: every attempt lands in the copy that is not live, so
 a half-written attempt damages nothing and the next simply overwrites it. A property added for torn
 writes turned out to underwrite this too.
+
+#### The conclusion was wrong, and measuring settled it
+
+Binary search on a scratch key in Chrome: the largest payload that fits under a 10-character key is
+**8,180 bytes** — exactly `8192 − 10 − 2`. The documented rule is precisely right and the only
+overhead is the two quotes `JSON.stringify` puts around a string. There is no hidden surcharge, and
+the 6,000 guess had been costing roughly 35% more chunks than necessary ever since.
+
+What changed in between is that chunks are **base64** now. Before compression they were raw JSON,
+dense with quotes and multi-byte characters, and their stringified cost had to be *modelled*. Base64
+is pure ASCII with nothing to escape, so a chunk's cost is exactly `length + 2` and there is nothing
+left to estimate. The budget is therefore derived rather than chosen:
+
+```
+CHUNK_CONTENT_BUDGET = QUOTA_BYTES_PER_ITEM − MAX_CHUNK_KEY_LENGTH − JSON_STRING_QUOTES − MARGIN
+                     = 8192 − 10 − 2 − 64  =  8116
+```
+
+The 64-byte margin is slack for a browser this was not measured on; being conservative by 64 bytes
+costs nothing, being over by one costs a rejected write.
+
+**What actually rejected that first write is still unknown.** The measurement rules out the
+explanation this file gave for three commits, and compression removed the variable before anyone
+could isolate it — the old chunks were the only ones whose cost had to be estimated. Recorded as
+unexplained rather than quietly dropped, because a rejection nobody understood is a worse thing to
+forget than a bug that was fixed.
+
+The halving retry stays regardless. It stops being the thing that *discovers* the budget and becomes
+what it should always have been: the guard for a measured assumption turning out wrong somewhere it
+was not measured.
 
 ### 5.4 Compression
 
