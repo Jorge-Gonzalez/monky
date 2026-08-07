@@ -324,6 +324,33 @@ browser can quit, the machine can sleep.
 Note this has nothing to do with how many chunks a library needs. A one-chunk library is still a
 payload key and a pointer key, so a single slot is unsafe at any size.
 
+#### "Could it not just verify after writing, and fix what it finds?"
+
+The natural objection, and the instinct is sound — that is exactly what §5.3's adaptive chunk sizing
+does. But it depends on the second slot rather than replacing it, for three reasons.
+
+**Verification detects; it cannot undo.** With one slot, by the time anything can be verified the old
+backup has already been overwritten. Knowing it is broken does not bring it back, and the only repair
+available is *to write again* — the same act that just failed. If the retry fails too, there is now
+nothing, where a moment earlier there was a stale but valid copy. With two slots the retry is free:
+it lands in the standby again and the live copy stays valid throughout. This is not hypothetical —
+the adaptive write may rewrite several times with different chunk counts, and with one slot every
+attempt would damage the previous backup.
+
+**It is not only crashes.** The extension can be running perfectly and still leave a partial write: a
+quota rejection between two chunks, a rate limit, the adaptive retry itself, or another device
+writing at the same moment. In each case the process is alive and aware — and the data it overwrote
+is still gone.
+
+**Verification is local; the reader often is not.** This copy exists so a *different installation*
+can read it, and propagation is incremental and unordered. A write can verify perfectly here while
+another machine sees a fresh manifest beside a chunk that has not arrived. **You cannot verify what
+another device will see.** Only a structure that is correct at every intermediate moment survives
+that, which is precisely what "never write into the copy the manifest names" buys.
+
+Verification is the detector; the standby slot is the undo. The design uses both, and only one of
+them preserves anything.
+
 #### Two slots make an order exist
 
 So the design uses the one atomic thing it has as a **commit pointer**:
