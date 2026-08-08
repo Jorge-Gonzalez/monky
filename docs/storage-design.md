@@ -591,15 +591,23 @@ Compression only pays on content that repeats, which makes anything random in th
 in a way nothing else is. Ids are the only such field, and they were being minted two different ways.
 
 The same library, held in both browsers, showed it. The Chrome copy stored 29 macros in a 2,631-byte
-chunk; the Firefox copy stored **28** macros — fewer, and less text — in **2,875**. The gap was the
-ids. Chrome's had been typed in one at a time and were `Date.now()` timestamps sharing nearly every
-character; Firefox's library had arrived by import, and import minted a `crypto.randomUUID()` per
-macro. A UUID is ~122 bits of entropy, which is exactly the input gzip cannot shrink, so 28 of them
-cost roughly 450 bytes against about 100 for the same number of timestamps.
+chunk; the Firefox copy stored **28** macros — fewer, and less text — in **2,875**. Chrome's ids had
+been typed in one at a time and were `Date.now()` timestamps; Firefox's library had arrived by
+import, and import minted a `crypto.randomUUID()` per macro. A UUID is ~122 bits of entropy, which
+is exactly the input gzip cannot shrink.
 
-An imported library therefore paid about **9% more quota than the same macros typed by hand**,
-permanently, for nothing — and importing is the normal way to arrive from another expander, so the
-cost fell on exactly the libraries least likely to have been measured.
+That 9.3% gap *understates* the effect, because the Firefox copy also held less content. Re-encoding
+one fixed 29-macro library three ways isolates it:
+
+| ids | gzip | base64 chunk |
+| --- | ---: | ---: |
+| batch base-36, shared prefix | 1,688 | ~2,252 |
+| `Date.now()`, minted months apart | 1,890 | ~2,520 |
+| `crypto.randomUUID()` | 2,426 | ~3,236 |
+
+**The id scheme alone moves the payload by 44%** between best and worst, on content that is otherwise
+byte-identical. Importing is the normal way to arrive from another expander, so the worst case fell
+on exactly the libraries least likely to have been measured.
 
 Timestamps were not the fix on their own. Two macros minted in the same millisecond get the same id;
 `addMacro` guards duplicate *commands* only; and the structural check in §6 rejects duplicate ids as
