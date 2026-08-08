@@ -1,10 +1,11 @@
 import { startSyncBackup } from '../store/syncBackupWatcher'
 import { removeObsoleteCredentials } from '../store/legacyCleanup'
 
-// The browser-account copy. Registered here because the service worker is the one context that sees
+// The browser-account copy. Registered here because the background is the one context that sees
 // macro changes from every surface -- editor page, popup, content script -- so none of them has to
-// know a backup exists. Registration is a storage listener, which is what wakes the worker, so it
-// survives suspension.
+// know a backup exists. Registration is a storage listener, which is what wakes the background, so
+// it survives suspension. That holds on both engines: Chrome runs this as an MV3 service worker,
+// Firefox as a non-persistent event page, and both suspend it when idle and revive it on the event.
 //
 // There is no local counterpart on this signal any more. The library as it stood before a
 // destructive act is kept by the operation itself, in macroPrevious, because a copy taken on a timer

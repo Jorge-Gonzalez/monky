@@ -3,11 +3,18 @@
   "name": "Monky - Macro Text Expander",
   "version": "0.1.0",
   "description": "Reemplaza macros por texto en inputs y textareas con prefijos configurables.",
-  "permissions": ["storage", "alarms", "tabs"],
+  "permissions": [
+    "storage",
+    "alarms",
+    "tabs"
+  ],
   "browser_specific_settings": {
     "gecko": {
       "id": "monky@jorge.gonzalez",
-      "strict_min_version": "121.0"
+      "strict_min_version": "121.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   },
   "content_security_policy": {
@@ -15,8 +22,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ],
@@ -37,13 +48,23 @@
     "default_title": "Monky - Macro Text Expander"
   },
   "background": {
-    "service_worker": "background.js"
+    "scripts": [
+      "background.js"
+    ]
   },
-  "options_page": "src/options/index.html",
+  "options_ui": {
+    "page": "src/options/index.html",
+    "open_in_tab": true
+  },
   "web_accessible_resources": [
     {
-      "resources": ["src/editor/index.html", "fonts/ibm-plex-sans-var.woff2"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "src/editor/index.html",
+        "fonts/ibm-plex-sans-var.woff2"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ]
 }
