@@ -47,7 +47,7 @@ export function deleteMacros(ids: string[]): Result {
   //
   // Not awaited, and the array is captured first: the delete must not wait on a storage write, and
   // what gets kept has to be the state from before it either way.
-  void keepPrevious(before, 'delete').catch((error: unknown) => {
+  void keepPrevious({ macros: before, config: useMacroStore.getState().config }, 'delete').catch((error: unknown) => {
     console.warn('[MONKY] could not keep the previous library before deleting:', error)
   })
   useMacroStore.getState().deleteMacros(ids)

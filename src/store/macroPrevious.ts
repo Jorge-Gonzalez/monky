@@ -15,9 +15,9 @@
 // useful: the realistic way a bulk delete is discovered in a text expander is typing a macro weeks
 // later and getting nothing, and a copy that moved on every edit would have been overwritten long
 // before then.
-import type { Macro } from '../types'
-import { measureMacros } from './checksum'
-import { LIBRARY_SCHEMA } from './libraryShape'
+import type { Config, Macro } from '../types'
+import { measureSerialized } from './checksum'
+import { LIBRARY_SCHEMA, serializeLibrary, type LibraryPayload } from './libraryShape'
 
 const KEY = 'macro-previous'
 
@@ -47,6 +47,14 @@ export interface PreviousState {
    */
   schema?: number
   macros: Macro[]
+  /**
+   * The settings as they stood too. Absent on entries written before schema 2.
+   *
+   * Restoring from the browser account can now change preferences as well as macros -- another
+   * device's prefixes arriving is exactly the case -- so an undo that put the macros back and left
+   * the settings where the restore had moved them would not be an undo.
+   */
+  config?: Partial<Config>
 }
 
 interface Stored {
@@ -71,8 +79,11 @@ export async function readPrevious(): Promise<PreviousState[]> {
  * Skips a write identical to the newest entry -- undoing a restore and immediately restoring again
  * should not spend both slots on the same library.
  */
-export async function keepPrevious(macros: Macro[], reason: PreviousReason): Promise<PreviousState | null> {
-  const { checksum } = measureMacros(macros)
+export async function keepPrevious(library: LibraryPayload, reason: PreviousReason): Promise<PreviousState | null> {
+  const { macros, config } = library
+  // Serialized through the same function the backup uses. The recovery list decides two sources
+  // hold the same library by comparing these checksums, so they have to be computed identically.
+  const { checksum } = measureSerialized(serializeLibrary({ macros, config }))
   const entries = await readPrevious()
   if (entries[0]?.checksum === checksum) return null
 
@@ -83,6 +94,7 @@ export async function keepPrevious(macros: Macro[], reason: PreviousReason): Pro
     checksum,
     schema: LIBRARY_SCHEMA,
     macros,
+    config,
   }
   await chrome.storage.local.set({ [KEY]: { entries: [entry, ...entries].slice(0, KEEP) } satisfies Stored })
   return entry

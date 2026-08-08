@@ -10,6 +10,7 @@ import { keepPrevious } from '../../../../store/macroPrevious'
 import { describeBackupState, readBackupHealth, type BackupState } from '../../../../store/backupHealth'
 import { syncUsage, type SyncUsage } from '../../../../store/syncBackup'
 import { t } from '../../../../lib/i18n'
+import { kilobytes } from '../../../../lib/kilobytes'
 
 export type RestoreStatus = { ok: boolean; message: string } | null
 
@@ -45,10 +46,11 @@ export function useRestorePoints(): RestorePointsState {
     // The committed copy's checksum comes off the restore point the backup contributed, so the
     // comparison is against what is actually stored rather than what was last attempted.
     const committed = nextPoints.find((point) => point.reason === 'automatic')?.checksum
-    setState(describeBackupState(useMacroStore.getState().macros, committed, nextHealth))
+    const { macros, config } = useMacroStore.getState()
+    setState(describeBackupState({ macros, config }, committed, nextHealth))
     setDetail(
       nextHealth?.status === 'too-large'
-        ? String(Math.round(nextHealth.bytes / 1024))
+        ? kilobytes(nextHealth.bytes)
         : nextHealth?.status === 'failed'
           ? nextHealth.detail
           : null
@@ -84,8 +86,13 @@ export function useRestorePoints(): RestorePointsState {
 
       // The restore is itself destructive, so it leaves its own way back. Without this, recovering
       // to the wrong moment would be the one act in the app with no undo.
-      await keepPrevious(useMacroStore.getState().macros, 'restore')
-      useMacroStore.getState().setMacros(result.macros)
+      const store = useMacroStore.getState()
+      await keepPrevious({ macros: store.macros, config: store.config }, 'restore')
+      store.setMacros(result.macros)
+      // Settings only when the copy carried them. Every copy written before schema 2 holds macros
+      // alone, and reading that absence as "no preferences" would reset this device's prefixes on
+      // every restore from an older backup -- macros back, none of them triggering.
+      if (result.config !== undefined) store.setConfig(result.config)
       await refresh()
       flash(true, t('settings.recover.status.restored', { count: String(result.macros.length) }))
     },

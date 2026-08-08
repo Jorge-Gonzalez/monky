@@ -2,12 +2,13 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { renderHook, act, waitFor } from '@testing-library/preact'
 
+const currentConfig = { prefixes: ['/'], language: 'en' }
 const mockAddMacro = vi.fn()
 const mockParseMacroImport = vi.fn()
 const mockMergeImport = vi.fn()
 
 vi.mock('../../../../store/useMacroStore', () => ({
-  useMacroStore: (selector: any) => selector({ macros: [], addMacro: mockAddMacro }),
+  useMacroStore: (selector: any) => selector({ macros: [], config: currentConfig, addMacro: mockAddMacro }),
 }))
 vi.mock('../../../../lib/macroIO', () => ({
   serializeMacros: vi.fn(() => '[]'),
@@ -76,7 +77,7 @@ describe('useMacroImportExport', () => {
       result.current.importFromFile(new File(['[]'], 'macros.json', { type: 'application/json' }))
     })
 
-    await waitFor(() => expect(mockKeepPrevious).toHaveBeenCalledWith([], 'import'))
+    await waitFor(() => expect(mockKeepPrevious).toHaveBeenCalledWith({ macros: [], config: currentConfig }, 'import'))
     expect(mockKeepPrevious.mock.invocationCallOrder[0]).toBeLessThan(
       mockAddMacro.mock.invocationCallOrder[0]
     )

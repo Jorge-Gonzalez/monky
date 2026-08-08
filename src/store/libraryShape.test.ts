@@ -23,8 +23,45 @@ describe('validateLibrary', () => {
     expect(validateLibrary([{ id: 'a', command: '/a', text: '' }]).status).toBe('valid')
   })
 
-  it('rejects something that is not an array', () => {
-    expect(validateLibrary({ macros: [] })).toEqual({ status: 'malformed', why: 'not an array' })
+  it.each([
+    ['a bare string', 'macros'],
+    ['a number', 7],
+    ['null', null],
+    ['an object with no macros in it', { config: { language: 'es' } }],
+    ['an object whose macros are not a list', { macros: 'lots' }],
+  ])('rejects %s', (_what, value) => {
+    expect(validateLibrary(value)).toEqual({ status: 'malformed', why: 'not a macro library' })
+  })
+
+  it('accepts the envelope shape as readily as a bare array', () => {
+    // Two shapes on purpose: every copy written before schema 2 is a bare array, and those have to
+    // keep restoring -- a backup is the one thing that cannot have a flag day.
+    const macros = [{ id: 'a', command: '/a', text: 'x' }]
+    expect(validateLibrary({ macros })).toEqual({ status: 'valid', macros, config: undefined })
+    expect(validateLibrary(macros)).toEqual({ status: 'valid', macros, config: undefined })
+  })
+
+  it('carries settings out when a copy holds them', () => {
+    const macros = [{ id: 'a', command: '/a', text: 'x' }]
+    const check = validateLibrary({ macros, config: { language: 'es', prefixes: ['!'] } })
+    expect(check).toMatchObject({ status: 'valid', config: { language: 'es', prefixes: ['!'] } })
+  })
+
+  it('drops unusable prefixes rather than refusing the library', () => {
+    // The one preference that can leave a restore present but inert -- every macro back, none of
+    // them triggering. Dropping it falls back to the default; refusing the copy would cost someone
+    // their macros over a setting.
+    const macros = [{ id: 'a', command: '/a', text: 'x' }]
+    for (const prefixes of ['/', [], [''], [1, 2], null]) {
+      const check = validateLibrary({ macros, config: { language: 'es', prefixes } })
+      expect(check.status).toBe('valid')
+      expect(check.status === 'valid' && check.config).toEqual({ language: 'es' })
+    }
+  })
+
+  it('ignores settings that are not an object, and keeps the macros', () => {
+    const macros = [{ id: 'a', command: '/a', text: 'x' }]
+    expect(validateLibrary({ macros, config: 'dark' })).toEqual({ status: 'valid', macros, config: undefined })
   })
 
   it.each([

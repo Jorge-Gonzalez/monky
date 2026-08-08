@@ -19,6 +19,7 @@ type MacroStore = {
   setTheme: (theme: ThemeMode) => void
   setColorTheme: (colorTheme: ColorTheme) => void
   setLanguage: (language: Lang) => void
+  setConfig: (config: Partial<Config>) => void
 }
 
 /**
@@ -168,6 +169,10 @@ export const useMacroStore = create<MacroStore>()(
       setTheme: (theme: ThemeMode) => set((s) => ({ config: { ...s.config, theme } })),
       setColorTheme: (colorTheme: ColorTheme) => set((s) => ({ config: { ...s.config, colorTheme } })),
       setLanguage: (language: Lang) => set((s) => ({ config: { ...s.config, language } })),
+      // Merged over what is there rather than replacing it, because the caller is a restore and a
+      // copy may predate a preference: an older backup that never knew about a field must leave
+      // this device's value alone rather than blanking it.
+      setConfig: (config: Partial<Config>) => set((s) => ({ config: { ...s.config, ...config } })),
       setSuggestionsPlacement: (placement: verticalPlacement) =>
         set((s) => ({ config: { ...s.config, suggestionsPopupPlacement: placement } })),
       toggleSiteDisabled: (hostname: string) =>

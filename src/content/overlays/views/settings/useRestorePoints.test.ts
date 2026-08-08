@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { renderHook, act, waitFor } from '@testing-library/preact'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { Macro } from '../../../../types'
+import type { Config, Macro } from '../../../../types'
 import type { RestorePoint, RestoreRead } from '../../../../store/restorePoints'
 import type { BackupHealth } from '../../../../store/backupHealth'
 import type * as BackupHealthModule from '../../../../store/backupHealth'
@@ -34,8 +34,10 @@ vi.mock('../../../../store/syncBackup', () => ({ syncUsage: () => syncUsage() })
 
 const setMacros = vi.fn()
 const currentMacros: Macro[] = [{ id: 'live', command: '/live', text: 'now' }]
+const currentConfig: Partial<Config> = { prefixes: ['/'], language: 'en' }
+const setConfig = vi.fn()
 vi.mock('../../../../store/useMacroStore', () => ({
-  useMacroStore: { getState: () => ({ macros: currentMacros, setMacros }) },
+  useMacroStore: { getState: () => ({ macros: currentMacros, config: currentConfig, setMacros, setConfig }) },
 }))
 
 import { useRestorePoints } from './useRestorePoints'
@@ -87,8 +89,13 @@ describe('useRestorePoints', () => {
     })
 
     it('says ok when the committed copy is the library on this device', async () => {
-      const { checksumMacros } = await import('../../../../store/checksum')
-      listRestorePoints.mockResolvedValue([automatic(checksumMacros(currentMacros))])
+      // Through the same pair the writer uses. Currency is a claim about the whole copy now --
+      // macros and settings -- so a checksum over the macros alone would report a device that had
+      // just changed its prefixes as backed up.
+      const { measureSerialized } = await import('../../../../store/checksum')
+      const { serializeLibrary } = await import('../../../../store/libraryShape')
+      const committed = measureSerialized(serializeLibrary({ macros: currentMacros, config: currentConfig })).checksum
+      listRestorePoints.mockResolvedValue([automatic(committed)])
       const { result } = renderHook(() => useRestorePoints())
       await waitFor(() => expect(result.current.state).toBe('ok'))
     })
@@ -126,8 +133,31 @@ describe('useRestorePoints', () => {
       await act(async () => {
         await result.current.restore(p)
       })
-      expect(keepPrevious).toHaveBeenCalledWith(currentMacros, 'restore')
+      expect(keepPrevious).toHaveBeenCalledWith({ macros: currentMacros, config: currentConfig }, 'restore')
       expect(setMacros).toHaveBeenCalledWith(restored)
+    })
+
+    it('applies the settings the copy carried', async () => {
+      const config = { prefixes: ['!'], language: 'es' as const }
+      const p = point(() => Promise.resolve({ status: 'read', macros: restored, config }))
+      const { result } = renderHook(() => useRestorePoints())
+      await act(async () => {
+        await result.current.restore(p)
+      })
+      expect(setConfig).toHaveBeenCalledWith(config)
+    })
+
+    it('leaves this device’s settings alone when the copy predates them', async () => {
+      // Every copy written before schema 2 holds macros only. Reading that absence as "no
+      // preferences" would reset the prefixes on every restore from an older backup -- macros
+      // back, none of them triggering, which is the exact failure including config exists to stop.
+      const p = point(() => Promise.resolve({ status: 'read', macros: restored }))
+      const { result } = renderHook(() => useRestorePoints())
+      await act(async () => {
+        await result.current.restore(p)
+      })
+      expect(setMacros).toHaveBeenCalledWith(restored)
+      expect(setConfig).not.toHaveBeenCalled()
     })
 
     it('keeps it before, not after', async () => {

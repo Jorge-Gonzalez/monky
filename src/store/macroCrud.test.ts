@@ -13,10 +13,12 @@ const updateMacroInStore = vi.fn()
 const deleteMacrosInStore = vi.fn()
 
 const currentMacros = [{ id: '42', command: '/keep', text: 'still here' }]
+const currentConfig = { prefixes: ['/'], language: 'en' }
 vi.mock('./useMacroStore', () => ({
   useMacroStore: {
     getState: () => ({
       macros: currentMacros,
+      config: currentConfig,
       addMacro,
       updateMacro: updateMacroInStore,
       deleteMacros: deleteMacrosInStore,
@@ -128,13 +130,13 @@ describe('deleteMacros', () => {
     // The operation whole-library recovery exists for: a selection deleted by accident, typically
     // discovered when a macro fails to expand weeks later.
     deleteMacros(['42'])
-    expect(keepPrevious).toHaveBeenCalledWith(currentMacros, 'delete')
+    expect(keepPrevious).toHaveBeenCalledWith({ macros: currentMacros, config: currentConfig }, 'delete')
   })
 
   it('captures the library as it was, not as the delete leaves it', () => {
     deleteMacros(['42'])
     const [kept] = keepPrevious.mock.calls[0]
-    expect(kept).toBe(currentMacros)
+    expect((kept as { macros: unknown }).macros).toBe(currentMacros)
   })
 
   it('keeps nothing when the selection is empty', () => {

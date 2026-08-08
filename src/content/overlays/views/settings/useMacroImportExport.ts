@@ -21,6 +21,7 @@ export interface ExportNudge {
 export function useMacroImportExport() {
   const macros = useMacroStore((s) => s.macros)
   const addMacro = useMacroStore((s) => s.addMacro)
+  const config = useMacroStore((s) => s.config)
   const [status, setStatus] = useState<ImportStatus>(null)
   const [nudge, setNudge] = useState<ExportNudge | null>(null)
 
@@ -72,7 +73,7 @@ export function useMacroImportExport() {
         }
         // Keep the library as it stands before an import merges over it. An import is one of the
         // two operations most likely to want undoing.
-        void keepPrevious(macros, 'import')
+        void keepPrevious({ macros, config }, 'import')
         const { added, skipped } = mergeImport(parsed, macros, addMacro)
         flash(
           true,

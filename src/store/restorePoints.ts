@@ -14,7 +14,7 @@
 // both meaningful at once. The browser-account copy holds the latest state, so on a working machine
 // it is what you already have; it becomes the only thing that matters at the moment the local data
 // is gone, which is exactly when the local entries do not exist either.
-import type { Macro } from '../types'
+import type { Config, Macro } from '../types'
 import { readPrevious } from './macroPrevious'
 import { validateLibrary } from './libraryShape'
 import { backupStatus, readBackup, type BackupManifest } from './syncBackup'
@@ -25,7 +25,7 @@ export type RestoreReason = 'delete' | 'import' | 'restore' | 'automatic'
 
 /** What reading a restore point produced. Mirrors the backup's own outcomes, since one source has them. */
 export type RestoreRead =
-  | { status: 'read'; macros: Macro[] }
+  | { status: 'read'; macros: Macro[]; config?: Partial<Config> }
   | { status: 'none' }
   | { status: 'incomplete' }
   | { status: 'corrupt' }
@@ -81,10 +81,10 @@ export async function listRestorePoints(): Promise<RestorePoint[]> {
     // that damage the live library -- a bad write, a failed migration -- and restoring an unusable
     // one over a working library is the outcome this whole layer exists to prevent.
     read: () => {
-      const check = validateLibrary(entry.macros, entry.schema ?? 1)
+      const check = validateLibrary({ macros: entry.macros, config: entry.config }, entry.schema ?? 1)
       if (check.status === 'too-new') return Promise.resolve({ status: 'too-new', schema: check.schema })
       if (check.status === 'malformed') return Promise.resolve({ status: 'corrupt' })
-      return Promise.resolve({ status: 'read', macros: check.macros })
+      return Promise.resolve({ status: 'read', macros: check.macros, config: check.config })
     },
   }))
 

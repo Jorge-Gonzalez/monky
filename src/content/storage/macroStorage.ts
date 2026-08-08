@@ -1,11 +1,11 @@
-import type { Macro } from '../../types'
+import type { Config, Macro } from '../../types'
 
 // The store is persisted by zustand under 'macro-storage', which chrome.storage may hand
 // back either as the object itself or as a JSON string. Everything read here is untrusted
 // on the way in, so it is parsed defensively and narrowed once.
 
 /** The envelope zustand's persist middleware writes. */
-type PersistedEnvelope = { state?: { macros?: unknown } }
+type PersistedEnvelope = { state?: { macros?: unknown; config?: unknown } }
 
 /**
  * A macro as it may appear in storage. Every field but the id may be missing or carry the
@@ -13,15 +13,19 @@ type PersistedEnvelope = { state?: { macros?: unknown } }
  */
 type StoredMacro = Partial<Macro> & { id: Macro['id']; trigger?: string }
 
-function readMacros(raw: unknown): unknown {
+function readState(raw: unknown): PersistedEnvelope['state'] {
   try {
     const envelope =
       typeof raw === 'string' ? (JSON.parse(raw) as PersistedEnvelope) : (raw as PersistedEnvelope)
-    return envelope?.state?.macros
+    return envelope?.state
   } catch (error) {
     console.warn('[MONKY] Error parsing storage:', error)
     return undefined
   }
+}
+
+function readMacros(raw: unknown): unknown {
+  return readState(raw)?.macros
 }
 
 function toMacros(raw: unknown): Macro[] {
@@ -51,11 +55,27 @@ export async function loadMacros(): Promise<Macro[]> {
  * way, which is why this reads the array rather than adding one name to the narrowing.
  */
 export async function loadStoredMacros(): Promise<Macro[] | null> {
+  return (await loadStoredLibrary())?.macros ?? null
+}
+
+/**
+ * Macros and settings together, which is what a copy of the library means.
+ *
+ * Read in one pass rather than by two calls: the two must describe the same moment, and a backup
+ * that paired one read's macros with another read's prefixes would be a copy of a state that never
+ * existed.
+ */
+export async function loadStoredLibrary(): Promise<{ macros: Macro[]; config?: Partial<Config> } | null> {
   const result = await chrome.storage.local.get('macro-storage')
-  const stored = readMacros(result['macro-storage'])
+  const state = readState(result['macro-storage'])
   // null rather than [] for absent or unreadable storage, so a caller can tell "no library yet"
   // from "a library with nothing in it" -- a backup should not record the second as the first.
-  return Array.isArray(stored) ? (stored as Macro[]) : null
+  if (!Array.isArray(state?.macros)) return null
+  const config = state?.config
+  return {
+    macros: state.macros as Macro[],
+    config: typeof config === 'object' && config !== null ? (config as Partial<Config>) : undefined,
+  }
 }
 
 export function listenStoredMacrosChange(callback: (macros: Macro[]) => void): void {

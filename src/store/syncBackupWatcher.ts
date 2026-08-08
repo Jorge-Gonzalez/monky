@@ -13,7 +13,7 @@
 // Creating an alarm with a name that already exists replaces it, so rescheduling on every change is
 // the debounce, with no bookkeeping of our own.
 import type { Macro } from '../types'
-import { listenStoredMacrosDiff, loadStoredMacros } from '../content/storage/macroStorage'
+import { listenStoredMacrosDiff, loadStoredLibrary } from '../content/storage/macroStorage'
 import { deviceId } from '../lib/deviceId'
 import { appendEditEvents, summarizeChange } from './editLog'
 import { writeBackup } from './syncBackup'
@@ -29,15 +29,15 @@ const DELAY_MINUTES = 1
  * fires the library may have moved on again, and the newest state is the one worth backing up.
  */
 export async function runSyncBackup(): Promise<void> {
-  const macros = await loadStoredMacros()
-  if (macros === null) return
+  const library = await loadStoredLibrary()
+  if (library === null) return
   const at = new Date().toISOString()
   // Every outcome is recorded, including success, because the settings line reports it rather than
   // waiting to be asked. Nothing here runs where a user could see a thrown error: a rejection in a
   // service worker reaches a console nobody has open, which is how a backup that had never once
   // succeeded still said only "not backed up yet".
   try {
-    const result = await writeBackup(macros, await deviceId())
+    const result = await writeBackup(library, await deviceId())
     if (result.status === 'too-large') {
       await recordBackupHealth({ at, status: 'too-large', bytes: result.needed })
       return

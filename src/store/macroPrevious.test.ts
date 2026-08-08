@@ -29,31 +29,31 @@ beforeEach(() => {
 
 describe('keepPrevious', () => {
   it('keeps the library and says why', async () => {
-    const entry = await keepPrevious([macro('a'), macro('b')], 'delete')
+    const entry = await keepPrevious({ macros: [macro('a'), macro('b')] }, 'delete')
     expect(entry).toMatchObject({ reason: 'delete', count: 2 })
     expect((await readPrevious())[0].macros).toEqual([macro('a'), macro('b')])
   })
 
   it('puts the newest first', async () => {
-    await keepPrevious([macro('a')], 'delete')
-    await keepPrevious([macro('a'), macro('b')], 'import')
+    await keepPrevious({ macros: [macro('a')] }, 'delete')
+    await keepPrevious({ macros: [macro('a'), macro('b')] }, 'import')
     expect((await readPrevious()).map((e) => e.reason)).toEqual(['import', 'delete'])
   })
 
   it('keeps two, so delete-then-import does not lose the pre-delete state to the import', async () => {
     // The whole reason for a second entry. One slot and the import would have overwritten the
     // library from before the delete, which is the state actually worth having.
-    await keepPrevious([macro('a'), macro('b'), macro('c')], 'delete')
-    await keepPrevious([macro('a')], 'import')
+    await keepPrevious({ macros: [macro('a'), macro('b'), macro('c')] }, 'delete')
+    await keepPrevious({ macros: [macro('a')] }, 'import')
     const entries = await readPrevious()
     expect(entries).toHaveLength(PREVIOUS_KEEP)
     expect(entries[1].macros).toHaveLength(3)
   })
 
   it('drops the oldest beyond that', async () => {
-    await keepPrevious([macro('a')], 'delete')
-    await keepPrevious([macro('a'), macro('b')], 'import')
-    await keepPrevious([macro('a'), macro('b'), macro('c')], 'restore')
+    await keepPrevious({ macros: [macro('a')] }, 'delete')
+    await keepPrevious({ macros: [macro('a'), macro('b')] }, 'import')
+    await keepPrevious({ macros: [macro('a'), macro('b'), macro('c')] }, 'restore')
     const entries = await readPrevious()
     expect(entries).toHaveLength(PREVIOUS_KEEP)
     expect(entries.map((e) => e.count)).toEqual([3, 2])
@@ -61,8 +61,8 @@ describe('keepPrevious', () => {
 
   it('does not spend both slots on the same library', async () => {
     const macros = [macro('a')]
-    await keepPrevious(macros, 'restore')
-    expect(await keepPrevious(macros, 'restore')).toBeNull()
+    await keepPrevious({ macros: macros }, 'restore')
+    expect(await keepPrevious({ macros: macros }, 'restore')).toBeNull()
     expect(await readPrevious()).toHaveLength(1)
   })
 

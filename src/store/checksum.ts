@@ -20,12 +20,23 @@ function fnv1a(text: string): string {
 }
 
 /**
+ * Digest and size of text that has already been serialized.
+ *
+ * The backup checksums through here rather than re-serializing what it parsed, and that is what
+ * lets one comparison cover two envelope shapes. A reader has the decoded text in hand -- byte for
+ * byte the string the writer measured -- so it can verify integrity *before* parsing and without
+ * knowing whether the payload is a bare array or `{ macros, config }`.
+ */
+export function measureSerialized(serialized: string): { checksum: string; bytes: number } {
+  return { checksum: `${serialized.length}-${fnv1a(serialized)}`, bytes: serialized.length }
+}
+
+/**
  * Digest and size in one pass, because both come from the same serialization and computing it twice
  * to learn two facts about it would be silly.
  */
 export function measureMacros(macros: Macro[]): { checksum: string; bytes: number } {
-  const serialized = JSON.stringify(macros)
-  return { checksum: `${serialized.length}-${fnv1a(serialized)}`, bytes: serialized.length }
+  return measureSerialized(JSON.stringify(macros))
 }
 
 export function checksumMacros(macros: Macro[]): string {

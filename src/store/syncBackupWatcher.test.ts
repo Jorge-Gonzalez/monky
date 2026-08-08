@@ -5,11 +5,11 @@ import type * as EditLogModule from './editLog'
 import type * as BackupHealthModule from './backupHealth'
 
 const listeners: ((before: Macro[] | null, after: Macro[]) => void)[] = []
-const loadStoredMacros = vi.fn<() => Promise<Macro[] | null>>()
+const loadStoredLibrary = vi.fn<() => Promise<{ macros: Macro[]; config?: Record<string, unknown> } | null>>()
 
 vi.mock('../content/storage/macroStorage', () => ({
   listenStoredMacrosDiff: (cb: (before: Macro[] | null, after: Macro[]) => void) => listeners.push(cb),
-  loadStoredMacros: () => loadStoredMacros(),
+  loadStoredLibrary: () => loadStoredLibrary(),
 }))
 
 vi.mock('../lib/deviceId', () => ({ deviceId: () => Promise.resolve('this-device') }))
@@ -40,7 +40,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   writeBackup.mockResolvedValue({ status: 'written' })
   appendEditEvents.mockResolvedValue(null)
-  loadStoredMacros.mockResolvedValue([macro('a')])
+  loadStoredLibrary.mockResolvedValue({ macros: [macro('a')] })
   const handlers: ((a: { name: string }) => void)[] = []
   alarms = {
     create: vi.fn().mockResolvedValue(undefined),
@@ -149,13 +149,13 @@ describe('runSyncBackup', () => {
   it('backs up what is stored now, not what the change event carried', async () => {
     // By the time the alarm fires the library may have moved on again, and the newest state is the
     // one worth copying.
-    loadStoredMacros.mockResolvedValue([macro('newest')])
+    loadStoredLibrary.mockResolvedValue({ macros: [macro('newest')] })
     await runSyncBackup()
-    expect(writeBackup).toHaveBeenCalledWith([macro('newest')], 'this-device')
+    expect(writeBackup).toHaveBeenCalledWith({ macros: [macro('newest')] }, 'this-device')
   })
 
   it('does nothing when storage holds no readable library', async () => {
-    loadStoredMacros.mockResolvedValue(null)
+    loadStoredLibrary.mockResolvedValue(null)
     await runSyncBackup()
     expect(writeBackup).not.toHaveBeenCalled()
     expect(recordBackupHealth).not.toHaveBeenCalled()

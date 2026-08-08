@@ -153,7 +153,7 @@ describe('splitIntoChunks', () => {
 describe('writeBackup', () => {
   it('writes chunks and a manifest, and reads back what went in', async () => {
     const macros = libraryOf(3)
-    const written = await writeBackup(macros, 'dev-1')
+    const written = await writeBackup({ macros: macros }, 'dev-1')
     expect(written.status).toBe('written')
 
     const read = await readBackup()
@@ -163,39 +163,39 @@ describe('writeBackup', () => {
   })
 
   it('starts in slot A and alternates, so a write never touches the readable copy', async () => {
-    await writeBackup(libraryOf(2), 'dev-1')
+    await writeBackup({ macros: libraryOf(2) }, 'dev-1')
     expect((store.area.get('backup-manifest') as BackupManifest).slot).toBe('A')
-    await writeBackup(libraryOf(3), 'dev-1')
+    await writeBackup({ macros: libraryOf(3) }, 'dev-1')
     expect((store.area.get('backup-manifest') as BackupManifest).slot).toBe('B')
-    await writeBackup(libraryOf(4), 'dev-1')
+    await writeBackup({ macros: libraryOf(4) }, 'dev-1')
     expect((store.area.get('backup-manifest') as BackupManifest).slot).toBe('A')
   })
 
   it('leaves the previous slot intact after a new write', async () => {
     const first = libraryOf(2)
-    await writeBackup(first, 'dev-1')
-    await writeBackup(libraryOf(3), 'dev-1')
+    await writeBackup({ macros: first }, 'dev-1')
+    await writeBackup({ macros: libraryOf(3) }, 'dev-1')
     // Slot A still holds the first library: that is what makes a failed write survivable.
     const stillThere = await decodeBackup(store.area.get(chunkKey('A', 0)) as string)
-    expect(JSON.parse(stillThere)).toEqual(first)
+    expect(JSON.parse(stillThere)).toEqual({ macros: first })
   })
 
   it('advances the revision monotonically', async () => {
-    await writeBackup(libraryOf(2), 'dev-1')
-    await writeBackup(libraryOf(3), 'dev-1')
+    await writeBackup({ macros: libraryOf(2) }, 'dev-1')
+    await writeBackup({ macros: libraryOf(3) }, 'dev-1')
     expect((store.area.get('backup-manifest') as BackupManifest).rev).toBe(2)
   })
 
   it('skips a write whose library is already backed up', async () => {
     const macros = libraryOf(2)
-    await writeBackup(macros, 'dev-1')
+    await writeBackup({ macros: macros }, 'dev-1')
     store.sync.set.mockClear()
-    expect((await writeBackup(macros, 'dev-1')).status).toBe('unchanged')
+    expect((await writeBackup({ macros: macros }, 'dev-1')).status).toBe('unchanged')
     expect(store.sync.set).not.toHaveBeenCalled()
   })
 
   it('refuses a library too large for the quota instead of half-writing it', async () => {
-    const result = await writeBackup(noisyLibrary(40), 'dev-1')
+    const result = await writeBackup({ macros: noisyLibrary(40) }, 'dev-1')
     expect(result.status).toBe('too-large')
     if (result.status !== 'too-large') return
     expect(result.needed).toBeGreaterThan(SYNC_LIMITS.SLOT_BUDGET_BYTES)
@@ -206,11 +206,11 @@ describe('writeBackup', () => {
   it('removes chunks left over when a backup shrinks within the same slot', async () => {
     // A->B->A, where the third write is smaller than the first. Without cleanup the tail chunks of
     // that first write sit in slot A forever: restore ignores them, and the quota does not.
-    await writeBackup(noisyLibrary(8), 'dev-1') // slot A, several chunks
+    await writeBackup({ macros: noisyLibrary(8) }, 'dev-1') // slot A, several chunks
     const grew = (store.area.get('backup-manifest') as BackupManifest).chunks
     expect(grew).toBeGreaterThan(1)
-    await writeBackup(libraryOf(2), 'dev-1') // slot B
-    await writeBackup(libraryOf(1), 'dev-1') // slot A again, one chunk
+    await writeBackup({ macros: libraryOf(2) }, 'dev-1') // slot B
+    await writeBackup({ macros: libraryOf(1) }, 'dev-1') // slot A again, one chunk
 
     const manifest = store.area.get('backup-manifest') as BackupManifest
     expect(manifest.slot).toBe('A')
@@ -224,11 +224,11 @@ describe('writeBackup', () => {
     // That key held the only cross-device copy there was. Removing it before a complete backup
     // exists would be deleting a backup, not tidying one up.
     store.area.set('macro-storage', '{"state":{"macros":[]}}')
-    const tooBig = await writeBackup(noisyLibrary(40), 'dev-1')
+    const tooBig = await writeBackup({ macros: noisyLibrary(40) }, 'dev-1')
     expect(tooBig.status).toBe('too-large')
     expect(store.area.has('macro-storage')).toBe(true)
 
-    await writeBackup(libraryOf(2), 'dev-1')
+    await writeBackup({ macros: libraryOf(2) }, 'dev-1')
     expect(store.area.has('macro-storage')).toBe(false)
   })
 
@@ -248,7 +248,7 @@ describe('writeBackup', () => {
     })
 
     const macros = libraryOf(20)
-    expect((await writeBackup(macros, 'dev-1')).status).toBe('written')
+    expect((await writeBackup({ macros: macros }, 'dev-1')).status).toBe('written')
 
     rejectAbove = Number.MAX_SAFE_INTEGER
     const read = await readBackup()
@@ -261,13 +261,13 @@ describe('writeBackup', () => {
     // A total-quota or rate-limit refusal is made worse by more, smaller writes, so it propagates
     // to the caller, where the UI can say what actually happened.
     store.sync.set.mockRejectedValue(new Error('MAX_WRITE_OPERATIONS_PER_MINUTE quota exceeded'))
-    await expect(writeBackup(libraryOf(3), 'dev-1')).rejects.toThrow('MAX_WRITE_OPERATIONS_PER_MINUTE')
+    await expect(writeBackup({ macros: libraryOf(3) }, 'dev-1')).rejects.toThrow('MAX_WRITE_OPERATIONS_PER_MINUTE')
     expect(store.sync.set).toHaveBeenCalledTimes(1)
   })
 
   it('gives up rather than shrinking forever when nothing is small enough', async () => {
     store.sync.set.mockRejectedValue(new Error('Resource::kQuotaBytesPerItem quota exceeded'))
-    await expect(writeBackup(libraryOf(3), 'dev-1')).rejects.toThrow('kQuotaBytesPerItem')
+    await expect(writeBackup({ macros: libraryOf(3) }, 'dev-1')).rejects.toThrow('kQuotaBytesPerItem')
     // Halving from the starting budget down to the floor, and no further.
     const halvings = Math.floor(Math.log2(SYNC_LIMITS.CHUNK_CONTENT_BUDGET / SYNC_LIMITS.MIN_CHUNK_BUDGET)) + 1
     expect(store.sync.set.mock.calls.length).toBeLessThanOrEqual(halvings + 1)
@@ -289,7 +289,7 @@ describe('writeBackup', () => {
       device: 'older-install',
     })
 
-    const result = await writeBackup(macros, 'dev-1')
+    const result = await writeBackup({ macros: macros }, 'dev-1')
     expect(result.status).toBe('written')
     if (result.status !== 'written') return
     expect(result.manifest.encoding).toBe('gzip-b64')
@@ -320,15 +320,58 @@ describe('writeBackup', () => {
     expect(read.status).toBe('read')
     if (read.status !== 'read') return
     expect(read.macros).toEqual(macros)
+    // No settings, because that copy predates them -- and absent must stay absent rather than
+    // arriving as an empty object, which the restore path would apply over this device's own.
+    expect(read.config).toBeUndefined()
+  })
+
+  it('carries the settings back with the macros', async () => {
+    // The point of including them: a restore that returns every macro under default prefixes is a
+    // library that is present and inert.
+    const macros = libraryOf(2)
+    const config = { prefixes: ['!'], language: 'es' as const, theme: 'dark' as const }
+    await writeBackup({ macros, config }, 'dev-1')
+
+    const read = await readBackup()
+    expect(read.status).toBe('read')
+    if (read.status !== 'read') return
+    expect(read.macros).toEqual(macros)
+    expect(read.config).toEqual(config)
+  })
+
+  it('backs up again when only a setting changed', async () => {
+    // The skip-if-unchanged test compares a checksum. While that covered the macros alone, changing
+    // a prefix reported "unchanged" and the setting never reached the copy that exists to survive
+    // losing the machine.
+    const macros = libraryOf(2)
+    await writeBackup({ macros, config: { prefixes: ['/'] } }, 'dev-1')
+    const second = await writeBackup({ macros, config: { prefixes: ['!'] } }, 'dev-1')
+    expect(second.status).toBe('written')
+
+    const read = await readBackup()
+    expect(read.status === 'read' && read.config).toEqual({ prefixes: ['!'] })
+  })
+
+  it('still skips a write when neither macros nor settings moved', async () => {
+    const library = { macros: libraryOf(2), config: { prefixes: ['/'] } }
+    await writeBackup(library, 'dev-1')
+    expect((await writeBackup(library, 'dev-1')).status).toBe('unchanged')
+  })
+
+  it('declares the schema it wrote, so an older build refuses rather than misreads', async () => {
+    // An older reader meeting the object payload would find "not an array", call it malformed and
+    // fall back as though the copy were damaged. The version is what turns that into `too-new`.
+    await writeBackup({ macros: libraryOf(2), config: { language: 'es' } }, 'dev-1')
+    expect((store.area.get('backup-manifest') as BackupManifest).schema).toBe(2)
   })
 
   it('marks what it wrote, so a later reader does not have to guess', async () => {
-    await writeBackup(libraryOf(2), 'dev-1')
+    await writeBackup({ macros: libraryOf(2) }, 'dev-1')
     expect((store.area.get('backup-manifest') as BackupManifest).encoding).toBe('gzip-b64')
   })
 
   it('records the device that wrote it', async () => {
-    await writeBackup(libraryOf(1), 'laptop')
+    await writeBackup({ macros: libraryOf(1) }, 'laptop')
     expect((store.area.get('backup-manifest') as BackupManifest).device).toBe('laptop')
   })
 })
@@ -341,7 +384,7 @@ describe('readBackup', () => {
   it('says incomplete when the manifest arrived ahead of its chunks', async () => {
     // The case the A/B design exists for. Cross-device arrival order for a multi-key set() is
     // undocumented, so a manifest can land beside chunks that have not.
-    await writeBackup(noisyLibrary(8), 'dev-1')
+    await writeBackup({ macros: noisyLibrary(8) }, 'dev-1')
     const manifest = store.area.get('backup-manifest') as BackupManifest
     expect(manifest.chunks).toBeGreaterThan(1)
     store.area.delete(chunkKey(manifest.slot, manifest.chunks - 1))
@@ -354,9 +397,9 @@ describe('readBackup', () => {
     // generation still sits in the other slot, and without this the reader reported failure while a
     // good copy sat beside it.
     const older = libraryOf(3)
-    await writeBackup(older, 'dev-1')
+    await writeBackup({ macros: older }, 'dev-1')
     const newer = libraryOf(4)
-    await writeBackup(newer, 'dev-1')
+    await writeBackup({ macros: newer }, 'dev-1')
 
     const manifest = store.area.get('backup-manifest') as BackupManifest
     store.area.set(chunkKey(manifest.slot, 0), await encodeBackup('[{"id":"junk"}]'))
@@ -372,8 +415,8 @@ describe('readBackup', () => {
   it('does not fall back when the live slot is merely still arriving', async () => {
     // 'incomplete' means propagation is in flight. Handing back an older library the user did not
     // ask for would be worse than saying so and letting them try again.
-    await writeBackup(libraryOf(3), 'dev-1')
-    await writeBackup(noisyLibrary(6), 'dev-1')
+    await writeBackup({ macros: libraryOf(3) }, 'dev-1')
+    await writeBackup({ macros: noisyLibrary(6) }, 'dev-1')
     const manifest = store.area.get('backup-manifest') as BackupManifest
     expect(manifest.chunks).toBeGreaterThan(1)
     store.area.delete(chunkKey(manifest.slot, manifest.chunks - 1))
@@ -381,8 +424,8 @@ describe('readBackup', () => {
   })
 
   it('reports corrupt when neither generation is readable', async () => {
-    await writeBackup(libraryOf(3), 'dev-1')
-    await writeBackup(libraryOf(4), 'dev-1')
+    await writeBackup({ macros: libraryOf(3) }, 'dev-1')
+    await writeBackup({ macros: libraryOf(4) }, 'dev-1')
     const manifest = store.area.get('backup-manifest') as BackupManifest
     store.area.set(chunkKey(manifest.slot, 0), await encodeBackup('[{"id":"junk"}]'))
     store.area.set(chunkKey(manifest.previous!.slot, 0), await encodeBackup('[{"id":"junk"}]'))
@@ -390,7 +433,7 @@ describe('readBackup', () => {
   })
 
   it('has nothing to fall back to on the very first backup', async () => {
-    await writeBackup(libraryOf(3), 'dev-1')
+    await writeBackup({ macros: libraryOf(3) }, 'dev-1')
     const manifest = store.area.get('backup-manifest') as BackupManifest
     expect(manifest.previous).toBeUndefined()
     store.area.set(chunkKey(manifest.slot, 0), await encodeBackup('[{"id":"junk"}]'))
@@ -398,7 +441,7 @@ describe('readBackup', () => {
   })
 
   it('refuses a copy written by a newer version rather than guessing at it', async () => {
-    await writeBackup(libraryOf(2), 'dev-1')
+    await writeBackup({ macros: libraryOf(2) }, 'dev-1')
     const manifest = store.area.get('backup-manifest') as BackupManifest
     store.area.set('backup-manifest', { ...manifest, schema: 99 })
     const read = await readBackup()
@@ -411,7 +454,7 @@ describe('readBackup', () => {
     // Integrity and validity are different questions. Duplicate ids checksum perfectly well and
     // would leave update and delete addressing two records at once.
     const broken = [{ id: 'a', command: '/a', text: 'x' }, { id: 'a', command: '/b', text: 'y' }]
-    await writeBackup(broken as never, 'dev-1')
+    await writeBackup({ macros: broken as never }, 'dev-1')
     expect((await readBackup()).status).toBe('corrupt')
   })
 
@@ -424,12 +467,12 @@ describe('readBackup', () => {
     // is returned *described as itself*, rather than a mixture arriving under the newer manifest's
     // name. Detecting the problem was never the goal; surviving it is.
     const older = libraryOf(3)
-    await writeBackup(older, 'dev-1')
+    await writeBackup({ macros: older }, 'dev-1')
     const first = store.area.get('backup-manifest') as BackupManifest
     const staleChunk = store.area.get(chunkKey(first.slot, 0)) as string
 
     const newer = libraryOf(4)
-    await writeBackup(newer, 'dev-1')
+    await writeBackup({ macros: newer }, 'dev-1')
     const fresh = store.area.get('backup-manifest') as BackupManifest
     expect(fresh.chunks).toBe(1)
     store.area.set(chunkKey(fresh.slot, 0), staleChunk)
@@ -443,14 +486,14 @@ describe('readBackup', () => {
   })
 
   it('says corrupt rather than throwing when the chunks do not parse', async () => {
-    await writeBackup(libraryOf(2), 'dev-1')
+    await writeBackup({ macros: libraryOf(2) }, 'dev-1')
     const manifest = store.area.get('backup-manifest') as BackupManifest
     store.area.set(chunkKey(manifest.slot, 0), '{{{not json')
     expect((await readBackup()).status).toBe('corrupt')
   })
 
   it('round-trips an emptied library rather than reporting it as absent', async () => {
-    await writeBackup([], 'dev-1')
+    await writeBackup({ macros: [] }, 'dev-1')
     const read = await readBackup()
     expect(read.status).toBe('read')
     if (read.status !== 'read') return
@@ -463,7 +506,7 @@ describe('readBackup', () => {
       macro('newlines', 'a\nb\tc\r\nd'),
       macro('unicode', '😀 ñ 中文 '),
     ]
-    await writeBackup(awkward, 'dev-1')
+    await writeBackup({ macros: awkward }, 'dev-1')
     const read = await readBackup()
     expect(read.status).toBe('read')
     if (read.status !== 'read') return

@@ -16,10 +16,10 @@
 //
 // Restore stays explicit. Overwriting a library is exactly the kind of thing a user should be
 // present for, and it is the one moment two devices' libraries meet.
-import type { Macro } from '../types'
-import { measureMacros } from './checksum'
+import type { Config, Macro } from '../types'
+import { measureSerialized } from './checksum'
 import { decodeWith, encodeBackup, type BackupEncoding } from './backupCodec'
-import { LIBRARY_SCHEMA, validateLibrary } from './libraryShape'
+import { LIBRARY_SCHEMA, serializeLibrary, validateLibrary, type LibraryPayload } from './libraryShape'
 
 const MANIFEST_KEY = 'backup-manifest'
 
@@ -157,7 +157,7 @@ export type BackupWriteResult =
   | { status: 'too-large'; needed: number }
 
 export type BackupReadResult =
-  | { status: 'read'; macros: Macro[]; manifest: BackupManifest }
+  | { status: 'read'; macros: Macro[]; config?: Partial<Config>; manifest: BackupManifest }
   | { status: 'none' }
   | { status: 'incomplete' }
   | { status: 'corrupt' }
@@ -253,15 +253,23 @@ const standbySlot = (manifest: BackupManifest | null): Slot =>
  * Skips a write whose checksum matches what is already backed up, which makes calling this on every
  * change cheap and keeps the write quota irrelevant rather than merely survivable.
  */
-export async function writeBackup(macros: Macro[], device: string): Promise<BackupWriteResult> {
-  const serialized = JSON.stringify(macros)
-  const { checksum } = measureMacros(macros)
+export async function writeBackup(library: LibraryPayload, device: string): Promise<BackupWriteResult> {
+  const { macros, config } = library
+  // Both, in one envelope, checksummed together. Macros without preferences is a restore that comes
+  // back present but inert -- every macro returned under default prefixes, none of them triggering
+  // -- so the settings are part of what "your macros are copied" has to mean.
+  const serialized = serializeLibrary({ macros, config })
+  const { checksum } = measureSerialized(serialized)
   const manifest = await readManifest()
   // Unchanged means "what is stored is what we would write", which is a claim about the encoding as
-  // well as the content. Comparing the checksum alone -- it covers the macros, not the bytes --
+  // well as the content. Comparing the checksum alone -- it covers the payload, not the bytes --
   // would leave a backup written by an older encoding in place until the library next changed, so a
   // user who never edits again would never receive the migration, and the headroom it exists to buy
   // would never arrive for the libraries closest to needing it.
+  //
+  // Covering config here is also what makes a preference change back itself up at all: checksumming
+  // the macros alone would report "unchanged" after someone edited their prefixes, and the setting
+  // would never reach the copy that exists to survive losing the machine.
   if (manifest?.checksum === checksum && manifest.encoding === CURRENT_ENCODING) {
     return { status: 'unchanged' }
   }
@@ -351,7 +359,7 @@ export async function writeBackup(macros: Macro[], device: string): Promise<Back
 
 /** What one slot yielded, before deciding whether to try the other. */
 type SlotRead =
-  | { status: 'read'; macros: Macro[] }
+  | { status: 'read'; macros: Macro[]; config?: Partial<Config> }
   | { status: 'incomplete' }
   | { status: 'corrupt' }
   | { status: 'too-new'; schema: number }
@@ -384,19 +392,23 @@ async function readGeneration(
     // Decoding and parsing share an outcome on purpose. From the reader's side "the bytes did not
     // decompress" and "the text was not JSON" are the same fact: something is there and it is not
     // the library.
-    parsed = JSON.parse(await decodeWith((parts as string[]).join(''), encoding)) as unknown
+    const text = await decodeWith((parts as string[]).join(''), encoding)
+    // The guard the whole A/B design exists to make possible: a stale chunk beside a fresh manifest
+    // parses perfectly well and is still the wrong library.
+    //
+    // Checked against the decoded *text*, which is byte for byte the string the writer measured.
+    // That is what lets one comparison serve both envelope shapes: it never has to know whether
+    // this copy holds a bare array or `{ macros, config }`, and re-serializing what was parsed --
+    // the older approach -- would have had to.
+    if (measureSerialized(text).checksum !== checksum) return { status: 'corrupt' }
+    parsed = JSON.parse(text) as unknown
   } catch {
-    return { status: 'corrupt' }
-  }
-  // The guard the whole A/B design exists to make possible: a stale chunk beside a fresh manifest
-  // parses perfectly well and is still the wrong library.
-  if (!Array.isArray(parsed) || measureMacros(parsed as Macro[]).checksum !== checksum) {
     return { status: 'corrupt' }
   }
   const check = validateLibrary(parsed, schema ?? 1)
   if (check.status === 'too-new') return { status: 'too-new', schema: check.schema }
   if (check.status === 'malformed') return { status: 'corrupt' }
-  return { status: 'read', macros: check.macros }
+  return { status: 'read', macros: check.macros, config: check.config }
 }
 
 /**
@@ -423,7 +435,7 @@ export async function readBackup(): Promise<BackupReadResult> {
     manifest.encoding,
     manifest.schema
   )
-  if (live.status === 'read') return { status: 'read', macros: live.macros, manifest }
+  if (live.status === 'read') return { status: 'read', macros: live.macros, config: live.config, manifest }
   if (live.status === 'incomplete') return { status: 'incomplete' }
   if (live.status === 'too-new') return { status: 'too-new', schema: live.schema }
 
@@ -442,6 +454,7 @@ export async function readBackup(): Promise<BackupReadResult> {
   return {
     status: 'read',
     macros: older.macros,
+    config: older.config,
     manifest: { ...manifest, ...previous, previous: undefined },
   }
 }

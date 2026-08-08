@@ -12,8 +12,8 @@
 //
 // Local, not synced. "Did the copy from *this* machine succeed" is the question, and another
 // device's answer would be misleading.
-import type { Macro } from '../types'
-import { measureMacros } from './checksum'
+import { measureSerialized } from './checksum'
+import { serializeLibrary, type LibraryPayload } from './libraryShape'
 
 const KEY = 'backup-health'
 
@@ -49,9 +49,15 @@ export function describeError(error: unknown): string {
   return JSON.stringify(error)
 }
 
-/** Whether the browser-account copy is the library currently on this device. */
-export function backupIsCurrent(macros: Macro[], backupChecksum: string | undefined): boolean {
-  return backupChecksum !== undefined && measureMacros(macros).checksum === backupChecksum
+/**
+ * Whether the browser-account copy is the library currently on this device.
+ *
+ * Compares the whole payload, macros and settings together, because that is what the copy holds.
+ * Comparing macros alone would report "backed up" to somebody who had just changed their prefixes
+ * -- true of their macros, and false of the thing the sentence is about.
+ */
+export function backupIsCurrent(library: LibraryPayload, backupChecksum: string | undefined): boolean {
+  return backupChecksum !== undefined && measureSerialized(serializeLibrary(library)).checksum === backupChecksum
 }
 
 /**
@@ -67,7 +73,7 @@ export function backupIsCurrent(macros: Macro[], backupChecksum: string | undefi
  * the honest answer is "protecting the latest changes", not "protected".
  */
 export function describeBackupState(
-  macros: Macro[],
+  library: LibraryPayload,
   backupChecksum: string | undefined,
   health: BackupHealth | null
 ): BackupState {
@@ -79,7 +85,7 @@ export function describeBackupState(
   }
   // A committed copy that matches what is loaded is the whole promise kept, whatever happened
   // afterwards -- a later attempt that found nothing to do is not a fault.
-  if (backupIsCurrent(macros, backupChecksum)) return 'ok'
+  if (backupIsCurrent(library, backupChecksum)) return 'ok'
   if (health?.status === 'too-large') return 'too-large'
   if (health?.status === 'failed') return 'failed'
   return 'pending'
