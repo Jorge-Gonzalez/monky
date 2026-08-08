@@ -523,6 +523,31 @@ CHUNK_CONTENT_BUDGET = QUOTA_BYTES_PER_ITEM − MAX_CHUNK_KEY_LENGTH − JSON_ST
 The 64-byte margin is slack for a browser this was not measured on; being conservative by 64 bytes
 costs nothing, being over by one costs a rejected write.
 
+#### Firefox agrees, to the byte
+
+The other browser has since been measured too, by loading the Firefox build as a temporary add-on
+under Firefox 152 and writing to `storage.sync` from the background page:
+
+- An 8,116-byte value under a 10-character key is **accepted**, so the budget above transfers intact.
+- Writing those items in a loop, the **twelfth succeeds and the thirteenth is refused** with
+  `QuotaExceededError`. `getBytesInUse(null)` then reports **97,536** — exactly
+  `12 × (10 + 8,116 + 2)`. Firefox charges `key.length + JSON.stringify(value).length`, the same
+  rule Chrome's binary search implied, and enforces the same **102,400** total.
+
+So both engines share one accounting rule and one ceiling, and the margin is now slack for a third
+engine rather than for the second.
+
+One difference worth knowing: Firefox does **not** expose `QUOTA_BYTES`, `QUOTA_BYTES_PER_ITEM` or
+`MAX_ITEMS` on `storage.sync` — they read as `undefined`. This code never asked the platform for
+them; they are literals in `syncBackup.ts`. That was a portability decision rather than a
+convenience one, and the measurement is what makes hardcoding honest: had the budget been derived
+from `chrome.storage.sync.QUOTA_BYTES_PER_ITEM` at runtime, the chunker would have computed a `NaN`
+budget on Firefox and failed on the first backup.
+
+The measurement used a temporary profile with no Firefox Account attached, so the quota was enforced
+by the local store standing in for the synced one. It bounds the per-item and total limits, which is
+what the chunker needs; it says nothing about server-side limits once an account is attached.
+
 **What actually rejected that first write is still unknown.** The measurement rules out the
 explanation this file gave for three commits, and compression removed the variable before anyone
 could isolate it — the old chunks were the only ones whose cost had to be estimated. Recorded as
