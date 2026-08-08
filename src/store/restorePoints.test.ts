@@ -53,6 +53,19 @@ beforeEach(() => {
 })
 
 describe('listRestorePoints', () => {
+  it('still offers the local states when the browser account cannot be read at all', async () => {
+    // sync can be unavailable for reasons that say nothing about this device's own copies: no
+    // browser account, sync disabled by policy, an API a platform does not implement. Showing an
+    // empty list to someone who has just deleted something, with readable local states sitting
+    // right there, is the failure this guards.
+    readPrevious.mockResolvedValue([previous()])
+    backupStatus.mockRejectedValue(new Error('storage.sync unavailable'))
+    readEditLog.mockRejectedValue(new Error('storage.sync unavailable'))
+    const points = await listRestorePoints()
+    expect(points).toHaveLength(1)
+    expect(points[0].reason).toBe('delete')
+  })
+
   it('offers nothing before anything has been kept or backed up', async () => {
     expect(await listRestorePoints()).toEqual([])
   })

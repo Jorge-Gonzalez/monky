@@ -36,7 +36,9 @@ export function useRestorePoints(): RestorePointsState {
     const [nextPoints, nextHealth, nextUsage] = await Promise.all([
       listRestorePoints(),
       readBackupHealth(),
-      syncUsage(),
+      // A readout, not a fact anyone acts on. Before this it could reject and take the whole
+      // recovery panel with it -- the least important thing on screen emptying the most important.
+      syncUsage().catch((): SyncUsage | null => null),
     ])
     setPoints(nextPoints)
     setUsage(nextUsage)

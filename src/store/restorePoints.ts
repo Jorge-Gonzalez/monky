@@ -17,8 +17,8 @@
 import type { Macro } from '../types'
 import { readPrevious } from './macroPrevious'
 import { validateLibrary } from './libraryShape'
-import { backupStatus, readBackup } from './syncBackup'
-import { readEditLog } from './editLog'
+import { backupStatus, readBackup, type BackupManifest } from './syncBackup'
+import { readEditLog, type EditEvent } from './editLog'
 import { deviceId } from '../lib/deviceId'
 
 export type RestoreReason = 'delete' | 'import' | 'restore' | 'automatic'
@@ -54,10 +54,18 @@ export interface RestorePoint {
  * current one is a harmless no-op, and being able to do it is the only proof the thing functions.
  */
 export async function listRestorePoints(): Promise<RestorePoint[]> {
+  // The browser-account reads are allowed to fail without taking the local ones with them.
+  //
+  // `chrome.storage.sync` can be unavailable for reasons that have nothing to do with this device's
+  // own recovery copies -- no browser account, sync disabled by policy, or a platform that does not
+  // implement part of the API. Letting that reject the whole gather would mean a person who has
+  // just deleted something is shown an empty list, with the perfectly readable local states sitting
+  // right there. The design's own rule applies inside this function: the least-depended-on layer
+  // failing must not remove the most-depended-on.
   const [previous, manifest, log, thisDevice] = await Promise.all([
     readPrevious(),
-    backupStatus(),
-    readEditLog(),
+    backupStatus().catch((): BackupManifest | null => null),
+    readEditLog().catch((): EditEvent[] => []),
     deviceId(),
   ])
 
