@@ -90,55 +90,103 @@ describe('parseMacroImport', () => {
 // ─── mergeImport ──────────────────────────────────────────────────────────────
 
 describe('mergeImport', () => {
-  it('adds macros not present in existing set', () => {
-    const add = vi.fn(() => ({ success: true }))
-    const { added } = mergeImport([{ command: '/sig', text: 'Jorge' }], new Set(), add)
+  // Collects what actually reached the store, which is where ids become observable.
+  const collector = (success = true) => {
+    const landed: Macro[] = []
+    const add = vi.fn((m: Macro) => {
+      landed.push(m)
+      return { success }
+    })
+    return { add, landed }
+  }
+
+  it('adds macros not present in the library', () => {
+    const { add } = collector()
+    const { added } = mergeImport([{ command: '/sig', text: 'Jorge' }], [], add)
     expect(add).toHaveBeenCalledTimes(1)
     expect(added).toBe(1)
   })
 
   it('skips macros whose command already exists', () => {
-    const add = vi.fn(() => ({ success: true }))
-    const { added, skipped } = mergeImport([{ command: '/sig', text: 'Jorge' }], new Set(['/sig']), add)
+    const { add } = collector()
+    const { added, skipped } = mergeImport([{ command: '/sig', text: 'Jorge' }], [plain('/sig', 'old')], add)
     expect(add).not.toHaveBeenCalled()
     expect(added).toBe(0)
     expect(skipped).toBe(1)
   })
 
   it('counts add failures as skipped', () => {
-    const add = vi.fn(() => ({ success: false }))
-    const { added, skipped } = mergeImport([{ command: '/sig', text: 'Jorge' }], new Set(), add)
+    const { add } = collector(false)
+    const { added, skipped } = mergeImport([{ command: '/sig', text: 'Jorge' }], [], add)
     expect(added).toBe(0)
     expect(skipped).toBe(1)
   })
 
-  it('assigns a fresh id to each imported macro', () => {
-    let captured: Macro | undefined
-    const add = vi.fn((m: Macro) => {
-      captured = m
-      return { success: true }
-    })
-    mergeImport([{ command: '/sig', text: 'Jorge' }], new Set(), add)
-    expect(captured?.id).toBeDefined()
-    expect(typeof captured?.id).toBe('string')
+  it('mints an id when the file does not carry one', () => {
+    const { add, landed } = collector()
+    mergeImport([{ command: '/sig', text: 'Jorge' }], [], add)
+    expect(typeof landed[0].id).toBe('string')
+    expect(landed[0].id).not.toBe('')
+  })
+
+  it('keeps the id the file supplies, so one file loads the same library everywhere', () => {
+    // Ids are opaque, so honouring them costs nothing -- and it is the only way two machines fed
+    // the same file end up with the same library rather than two that merely look alike.
+    const { add, landed } = collector()
+    mergeImport([{ command: '/sig', text: 'Jorge', id: 'mfa1x2k' }], [], add)
+    expect(landed[0].id).toBe('mfa1x2k')
+  })
+
+  it('refuses a supplied id the library is already using', () => {
+    // Duplicate ids are what validateLibrary rejects, so accepting one here would write a library
+    // that works until the day someone needs to restore it.
+    const { add, landed } = collector()
+    mergeImport([{ command: '/new', text: 'x', id: '7' }], [plain('/old', 'y', 7)], add)
+    expect(String(landed[0].id)).not.toBe('7')
+  })
+
+  it('gives every macro in one batch a distinct id', () => {
+    // The whole batch is minted inside a single millisecond, which is exactly the case a bare
+    // timestamp gets wrong.
+    const { add, landed } = collector()
+    mergeImport(
+      Array.from({ length: 25 }, (_, i) => ({ command: `/m${i}`, text: 'x' })),
+      [],
+      add
+    )
+    expect(new Set(landed.map((m) => String(m.id))).size).toBe(25)
+  })
+
+  it('mints ids that share a prefix, because that is what makes a library compress', () => {
+    // Not cosmetic: every id is written to the browser-account backup against a fixed quota, and
+    // random ids are the one input gzip cannot shrink.
+    const { add, landed } = collector()
+    mergeImport(
+      Array.from({ length: 10 }, (_, i) => ({ command: `/m${i}`, text: 'x' })),
+      [],
+      add
+    )
+    const ids = landed.map((m) => String(m.id))
+    const prefix = Date.now().toString(36).slice(0, 6)
+    expect(ids.every((id) => id.startsWith(prefix))).toBe(true)
   })
 
   it('handles an empty incoming list', () => {
-    const add = vi.fn(() => ({ success: true }))
-    const result = mergeImport([], new Set(), add)
+    const { add } = collector()
+    const result = mergeImport([], [], add)
     expect(add).not.toHaveBeenCalled()
     expect(result).toEqual({ added: 0, skipped: 0 })
   })
 
   it('correctly tallies mixed added and skipped', () => {
-    const add = vi.fn(() => ({ success: true }))
+    const { add } = collector()
     const result = mergeImport(
       [
         { command: '/a', text: '1' },
         { command: '/b', text: '2' },
         { command: '/c', text: '3' },
       ],
-      new Set(['/b']),
+      [plain('/b', 'existing')],
       add
     )
     expect(result.added).toBe(2)

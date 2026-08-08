@@ -67,6 +67,31 @@ describe('createMacro', () => {
     // Raw store error is threaded through the formatter with the macro's command.
     expect(result).toEqual({ success: false, error: `friendly(${DUP}|/sig)` })
   })
+
+  it('never repeats an id, even for macros created in the same millisecond', () => {
+    // `Date.now().toString()` handed both of these the same id. Nothing complained at the time --
+    // addMacro guards duplicate commands, not duplicate ids -- and validateLibrary rejects
+    // duplicate ids as malformed, so the result was a library the app would write happily and then
+    // refuse to restore. Time is frozen here because that is the case, not an unlucky one.
+    const original = [...currentMacros]
+    vi.useFakeTimers()
+    try {
+      addMacro.mockImplementation((macro: { id: string }) => {
+        currentMacros.push(macro as (typeof currentMacros)[number])
+        return { success: true }
+      })
+      createMacro({ command: '/one', text: 'a', contentType: 'text/plain' })
+      createMacro({ command: '/two', text: 'b', contentType: 'text/plain' })
+
+      const ids = currentMacros.map((macro) => String(macro.id))
+      expect(ids).toHaveLength(original.length + 2)
+      expect(new Set(ids).size).toBe(ids.length)
+    } finally {
+      vi.useRealTimers()
+      currentMacros.length = 0
+      currentMacros.push(...original)
+    }
+  })
 })
 
 describe('updateMacro', () => {

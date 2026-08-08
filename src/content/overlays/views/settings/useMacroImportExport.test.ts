@@ -59,7 +59,9 @@ describe('useMacroImportExport', () => {
     await waitFor(() => expect(mockParseMacroImport).toHaveBeenCalledWith(expect.any(String)))
     expect(mockMergeImport).toHaveBeenCalledWith(
       expect.arrayContaining([expect.objectContaining({ command: '/uno' })]),
-      expect.any(Set),
+      // The library itself, not just its commands: mergeImport needs the ids too, so that an id a
+      // file supplies can be checked against the ones already in use.
+      expect.any(Array),
       expect.any(Function)
     )
     expect(mockAddMacro).toHaveBeenCalled()

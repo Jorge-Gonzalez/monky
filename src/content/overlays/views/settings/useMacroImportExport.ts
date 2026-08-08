@@ -73,8 +73,7 @@ export function useMacroImportExport() {
         // Keep the library as it stands before an import merges over it. An import is one of the
         // two operations most likely to want undoing.
         void keepPrevious(macros, 'import')
-        const existing = new Set(macros.map((m) => m.command))
-        const { added, skipped } = mergeImport(parsed, existing, addMacro)
+        const { added, skipped } = mergeImport(parsed, macros, addMacro)
         flash(
           true,
           skipped > 0

@@ -1,5 +1,6 @@
 import { useMacroStore } from './useMacroStore'
 import { getErrorMessage } from '../lib/errors'
+import { freshId, takenIds } from '../lib/macroId'
 import { keepPrevious } from './macroPrevious'
 import type { Macro } from '../types'
 
@@ -16,8 +17,9 @@ export type Result = { success: boolean; error?: string }
 type NewMacro = Omit<Macro, 'id'>
 
 export function createMacro(data: NewMacro): Result {
-  const macro = { id: Date.now().toString(), ...data, updated_at: new Date().toISOString() } as Macro
-  const result = useMacroStore.getState().addMacro(macro)
+  const state = useMacroStore.getState()
+  const macro = { id: freshId(takenIds(state.macros)), ...data, updated_at: new Date().toISOString() } as Macro
+  const result = state.addMacro(macro)
   if (!result.success) {
     return { success: false, error: getErrorMessage(result.error, macro.command) }
   }

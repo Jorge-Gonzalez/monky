@@ -585,6 +585,33 @@ Measured on the real library: **3.03×** (8,218 bytes → 2,708 characters). On 
 it reaches 11–15× synthetically; **5–10× is the honest expectation**, and the template case is
 precisely the one that was going to hit the ceiling.
 
+#### The shape of an id is a storage decision
+
+Compression only pays on content that repeats, which makes anything random in the payload expensive
+in a way nothing else is. Ids are the only such field, and they were being minted two different ways.
+
+The same library, held in both browsers, showed it. The Chrome copy stored 29 macros in a 2,631-byte
+chunk; the Firefox copy stored **28** macros — fewer, and less text — in **2,875**. The gap was the
+ids. Chrome's had been typed in one at a time and were `Date.now()` timestamps sharing nearly every
+character; Firefox's library had arrived by import, and import minted a `crypto.randomUUID()` per
+macro. A UUID is ~122 bits of entropy, which is exactly the input gzip cannot shrink, so 28 of them
+cost roughly 450 bytes against about 100 for the same number of timestamps.
+
+An imported library therefore paid about **9% more quota than the same macros typed by hand**,
+permanently, for nothing — and importing is the normal way to arrive from another expander, so the
+cost fell on exactly the libraries least likely to have been measured.
+
+Timestamps were not the fix on their own. Two macros minted in the same millisecond get the same id;
+`addMacro` guards duplicate *commands* only; and the structural check in §6 rejects duplicate ids as
+malformed. Those three compose into a library the app writes happily and then refuses to restore.
+`macroId.ts` now mints both paths' ids from one function: a base-36 timestamp, plus a counter when
+that is already taken, so uniqueness is by construction rather than by probability and a batch still
+shares a prefix.
+
+Import also honours an id a file supplies, when it is free. Exports omit ids, so this changes nothing
+for a normal round trip; it exists so that one hand-written file can produce the *same* library on
+two machines rather than two libraries that merely look alike.
+
 ### 5.5 Debounce
 
 The backup is debounced by **one minute, on a `chrome.alarms` alarm — never a `setTimeout`.** An MV3
