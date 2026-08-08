@@ -7,6 +7,7 @@
 import { useState } from 'react'
 import type { Lang } from '../../../../../types'
 import { t } from '../../../../../lib/i18n'
+import { kilobytes } from '../../../../../lib/kilobytes'
 import type { BackupState } from '../../../../../store/backupHealth'
 import type { SyncUsage } from '../../../../../store/syncBackup'
 import { useRestorePoints } from '../useRestorePoints'
@@ -46,7 +47,8 @@ const REASON_KEY = {
 function healthLine(
   state: BackupState,
   detail: string | null,
-  usage: SyncUsage | null
+  usage: SyncUsage | null,
+  language: Lang
 ): { text: string; bad: boolean } {
   if (state === 'too-large') {
     return { text: t('settings.recover.health.tooLarge', { kb: detail ?? '?' }), bad: true }
@@ -60,8 +62,8 @@ function healthLine(
     usage === null
       ? ''
       : ` ${t('settings.recover.health.room', {
-          used: String(Math.round(usage.used / 1024)),
-          total: String(Math.round(usage.total / 1024)),
+          used: kilobytes(usage.used, language),
+          total: kilobytes(usage.total, language),
         })}`
   return { text: `${t('settings.recover.health.ok')}${room}`, bad: false }
 }
@@ -69,7 +71,7 @@ function healthLine(
 export function RestoreList({ language }: { language: Lang }) {
   const { points, state, detail, usage, status, restore } = useRestorePoints()
   const [armedId, setArmedId] = useState<string | null>(null)
-  const line = healthLine(state, detail, usage)
+  const line = healthLine(state, detail, usage, language)
 
   return (
     <div
