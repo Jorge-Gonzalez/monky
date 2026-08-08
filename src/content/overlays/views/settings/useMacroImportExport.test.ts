@@ -4,16 +4,20 @@ import { renderHook, act, waitFor } from '@testing-library/preact'
 
 const currentConfig = { prefixes: ['/'], language: 'en' }
 const mockAddMacro = vi.fn()
+const mockSetPrefixes = vi.fn()
 const mockParseMacroImport = vi.fn()
 const mockMergeImport = vi.fn()
+const mockPrefixesToAdopt = vi.fn((..._args: any[]): string[] => [])
 
 vi.mock('../../../../store/useMacroStore', () => ({
-  useMacroStore: (selector: any) => selector({ macros: [], config: currentConfig, addMacro: mockAddMacro }),
+  useMacroStore: (selector: any) =>
+    selector({ macros: [], config: currentConfig, addMacro: mockAddMacro, setPrefixes: mockSetPrefixes }),
 }))
 vi.mock('../../../../lib/macroIO', () => ({
   serializeMacros: vi.fn(() => '[]'),
   parseMacroImport: (...args: any[]) => mockParseMacroImport(...args),
   mergeImport: (...args: any[]) => mockMergeImport(...args),
+  prefixesToAdopt: (...args: any[]) => mockPrefixesToAdopt(...args),
 }))
 vi.mock('../../../../lib/i18n', () => ({ t: (key: string) => key }))
 
@@ -44,7 +48,8 @@ describe('useMacroImportExport', () => {
       })
     )
     mockAddMacro.mockReturnValue({ success: true })
-    mockParseMacroImport.mockReturnValue([{ command: '/uno', text: 'Uno', contentType: 'text/plain' }])
+    mockParseMacroImport.mockReturnValue({ macros: [{ command: '/uno', text: 'Uno', contentType: 'text/plain' }] })
+    mockPrefixesToAdopt.mockReturnValue([])
     mockMergeImport.mockImplementation((parsed: any[], _existing: any, addFn: (m: any) => any) => {
       parsed.forEach((m) => addFn(m))
       return { added: parsed.length, skipped: 0 }
@@ -84,7 +89,7 @@ describe('useMacroImportExport', () => {
   })
 
   it('does not back up when the file holds nothing worth importing', async () => {
-    mockParseMacroImport.mockReturnValueOnce([])
+    mockParseMacroImport.mockReturnValueOnce({ macros: [] })
     const { result } = renderHook(() => useMacroImportExport())
     void act(() => {
       result.current.importFromFile(new File(['[]'], 'macros.json', { type: 'application/json' }))
@@ -92,6 +97,27 @@ describe('useMacroImportExport', () => {
 
     await waitFor(() => expect(result.current.status?.ok).toBe(false))
     expect(mockKeepPrevious).not.toHaveBeenCalled()
+  })
+
+  it('adopts a prefix the incoming macros need, without disturbing the ones already set', () => {
+    // An import merges. The recipient's own triggers must survive accepting somebody else's pack.
+    mockPrefixesToAdopt.mockReturnValue(['!'])
+    const { result } = renderHook(() => useMacroImportExport())
+    void act(() => {
+      result.current.importFromFile(new File(['[]'], 'macros.json', { type: 'application/json' }))
+    })
+
+    return waitFor(() => expect(mockSetPrefixes).toHaveBeenCalledWith(['/', '!']))
+  })
+
+  it('leaves prefixes untouched when the file needs none added', async () => {
+    const { result } = renderHook(() => useMacroImportExport())
+    void act(() => {
+      result.current.importFromFile(new File(['[]'], 'macros.json', { type: 'application/json' }))
+    })
+
+    await waitFor(() => expect(result.current.status?.ok).toBe(true))
+    expect(mockSetPrefixes).not.toHaveBeenCalled()
   })
 
   it('reports an error status when the file is invalid', async () => {

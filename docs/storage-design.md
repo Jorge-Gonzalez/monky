@@ -779,6 +779,32 @@ A JSON file the user downloads. The only copy that survives leaving the browser 
 and the only one that works signed out or on Firefox Android. Import merges by command; duplicates
 are skipped, and `keepPrevious` records the library first.
 
+### It is two things at once, and shareable wins
+
+This file is a personal archive *and* the thing people send each other, and those pull opposite
+ways: the archive wants everything, the shared pack wants nothing of the sender in it. The textbook
+answer is to split it, and a second "preferences" file was considered and rejected as more machinery
+than the problem is worth.
+
+So the line runs through what the data **is**, not what the file is for. A theme, a language and a
+list of disabled sites are the sender's preferences and stay out — nobody importing a macro pack
+wants their colours changed, and `disabledSites` is browsing-adjacent data that has no business in a
+file people forward. **Prefixes are not a preference.** `/brb` is `/` plus `brb`; strip the prefix
+and the command in the file is not a command. They travel as part of the macros, and only they do.
+
+**Import adds prefixes, it never replaces them.** A restore replaces the library, so adopting its
+settings wholesale is coherent; an import *merges*, and taking the sender's list would silently
+repoint the recipient's own triggers because they accepted somebody's macros. The union is narrowed
+further to prefixes an incoming command actually starts with, so a file cannot quietly grow the list
+with characters nothing in it uses.
+
+The accepted cost, stated rather than hidden: **an export is not a complete personal backup.**
+Restoring from one returns the macros working and the interface at its defaults. §3 is the layer that
+keeps everything.
+
+The bare array stays a valid file, so every export ever produced still imports, and a hand-written
+array — far likelier than a hand-written envelope — still works.
+
 Its one weakness is that it depends on somebody remembering, which is closed by a **nudge**:
 *"37 changes since your last export, 2 Aug."*
 

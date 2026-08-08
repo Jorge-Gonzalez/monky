@@ -92,6 +92,7 @@ const translations = {
         status: {
           added: '{{count}} added',
           addedWithSkipped: '{{added}} added, {{skipped}} skipped (duplicate command)',
+          addedWithPrefixes: '{{count}} added. {{prefixes}} added to your prefixes so they work.',
           invalidFile: 'Invalid file — expected a JSON array',
           noValidMacros: 'No valid macros found in file',
         },
@@ -307,6 +308,7 @@ const translations = {
         status: {
           added: '{{count}} agregados',
           addedWithSkipped: '{{added}} agregados, {{skipped}} omitidos (comando duplicado)',
+          addedWithPrefixes: '{{count}} agregados. Se añadió {{prefixes}} a tus prefijos para que funcionen.',
           invalidFile: 'Archivo inválido — se esperaba un array JSON',
           noValidMacros: 'No se encontraron macros válidas en el archivo',
         },

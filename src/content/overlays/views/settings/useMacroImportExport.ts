@@ -2,7 +2,7 @@
 // "conversation" out of SettingsView (which is about config settings).
 import { useCallback, useEffect, useState } from 'react'
 import { useMacroStore } from '../../../../store/useMacroStore'
-import { serializeMacros, parseMacroImport, mergeImport } from '../../../../lib/macroIO'
+import { serializeMacros, parseMacroImport, mergeImport, prefixesToAdopt } from '../../../../lib/macroIO'
 import { keepPrevious } from '../../../../store/macroPrevious'
 import { editsSince, readEditLog } from '../../../../store/editLog'
 import { hasDivergedFromExport, readLastExport, recordExport, type LastExport } from '../../../../store/exportTracking'
@@ -22,6 +22,7 @@ export function useMacroImportExport() {
   const macros = useMacroStore((s) => s.macros)
   const addMacro = useMacroStore((s) => s.addMacro)
   const config = useMacroStore((s) => s.config)
+  const setPrefixes = useMacroStore((s) => s.setPrefixes)
   const [status, setStatus] = useState<ImportStatus>(null)
   const [nudge, setNudge] = useState<ExportNudge | null>(null)
 
@@ -48,7 +49,7 @@ export function useMacroImportExport() {
   }, [refreshNudge])
 
   const exportMacros = () => {
-    const json = serializeMacros(macros)
+    const json = serializeMacros(macros, config.prefixes)
     const blob = new Blob([json], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -67,19 +68,28 @@ export function useMacroImportExport() {
     reader.onload = () => {
       try {
         const parsed = parseMacroImport(reader.result as string)
-        if (parsed.length === 0) {
+        if (parsed.macros.length === 0) {
           flash(false, t('settings.importExport.status.noValidMacros'))
           return
         }
         // Keep the library as it stands before an import merges over it. An import is one of the
         // two operations most likely to want undoing.
         void keepPrevious({ macros, config }, 'import')
-        const { added, skipped } = mergeImport(parsed, macros, addMacro)
+        const { added, skipped } = mergeImport(parsed.macros, macros, addMacro)
+        // Added after the macros, and only what they need. A prefix the recipient already has is
+        // not re-added, and one the file declares but no command uses is not adopted at all.
+        const adopted = prefixesToAdopt(parsed, config.prefixes)
+        if (adopted.length > 0) setPrefixes([...config.prefixes, ...adopted])
         flash(
           true,
-          skipped > 0
-            ? t('settings.importExport.status.addedWithSkipped', { added, skipped })
-            : t('settings.importExport.status.added', { count: added })
+          adopted.length > 0
+            ? t('settings.importExport.status.addedWithPrefixes', {
+                count: added,
+                prefixes: adopted.join(' '),
+              })
+            : skipped > 0
+              ? t('settings.importExport.status.addedWithSkipped', { added, skipped })
+              : t('settings.importExport.status.added', { count: added })
         )
       } catch {
         flash(false, t('settings.importExport.status.invalidFile'))

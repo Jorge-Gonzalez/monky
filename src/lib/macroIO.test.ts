@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { serializeMacros, parseMacroImport, mergeImport } from './macroIO'
+import { serializeMacros, parseMacroImport, mergeImport, prefixesToAdopt } from './macroIO'
 import type { Macro } from '../types'
 
 const plain = (command: string, text: string, id: string | number = '1'): Macro => ({
@@ -46,6 +46,21 @@ describe('serializeMacros', () => {
   it('returns an empty array for an empty macro list', () => {
     expect(JSON.parse(serializeMacros([]))).toEqual([])
   })
+
+  it('writes the prefixes the commands are written against', () => {
+    // A shared pack whose commands start with ! is useless to somebody who types /, so the prefix
+    // travels as part of the macros. Preferences -- theme, language, disabled sites -- do not:
+    // this file is one people send each other.
+    const file = JSON.parse(serializeMacros([plain('!sig', 'Jorge')], ['!', '/']))
+    expect(file.config).toEqual({ prefixes: ['!', '/'] })
+    expect(file.macros).toHaveLength(1)
+    expect(file.config).not.toHaveProperty('theme')
+    expect(file.config).not.toHaveProperty('disabledSites')
+  })
+
+  it('still writes a bare array when there are no prefixes to declare', () => {
+    expect(JSON.parse(serializeMacros([plain('/sig', 'Jorge')]))).toHaveLength(1)
+  })
 })
 
 // ─── parseMacroImport ─────────────────────────────────────────────────────────
@@ -53,37 +68,92 @@ describe('serializeMacros', () => {
 describe('parseMacroImport', () => {
   it('parses a valid JSON array of macros', () => {
     const json = JSON.stringify([{ command: '/sig', text: 'Jorge' }])
-    expect(parseMacroImport(json)).toHaveLength(1)
+    expect(parseMacroImport(json).macros).toHaveLength(1)
   })
 
   it('throws on invalid JSON', () => {
-    expect(() => parseMacroImport('not json')).toThrow()
+    expect(() => parseMacroImport('not json').macros).toThrow()
   })
 
-  it('throws when root is not an array', () => {
+  it('throws when the root is neither a macro array nor an envelope', () => {
     expect(() => parseMacroImport(JSON.stringify({ command: '/sig', text: 'hi' }))).toThrow()
   })
 
   it('filters out items missing command', () => {
     const json = JSON.stringify([{ text: 'no command here' }])
-    expect(parseMacroImport(json)).toHaveLength(0)
+    expect(parseMacroImport(json).macros).toHaveLength(0)
   })
 
   it('filters out items missing text', () => {
     const json = JSON.stringify([{ command: '/sig' }])
-    expect(parseMacroImport(json)).toHaveLength(0)
+    expect(parseMacroImport(json).macros).toHaveLength(0)
   })
 
   it('filters out non-object entries', () => {
     const json = JSON.stringify([null, 42, 'string', { command: '/sig', text: 'ok' }])
     const result = parseMacroImport(json)
-    expect(result).toHaveLength(1)
-    expect(result[0].command).toBe('/sig')
+    expect(result.macros).toHaveLength(1)
+    expect(result.macros[0].command).toBe('/sig')
   })
 
   it('preserves optional fields like contentType', () => {
     const json = JSON.stringify([{ command: '/sig', text: 'Jorge', contentType: 'text/html' }])
-    expect(parseMacroImport(json)[0].contentType).toBe('text/html')
+    expect(parseMacroImport(json).macros[0].contentType).toBe('text/html')
+  })
+
+  it('reads an envelope, and a bare array just the same', () => {
+    // Every file exported before prefixes travelled is a bare array, and a hand-written one is far
+    // likelier to be an array than an envelope. Both have to keep working.
+    const macros = [{ command: '/sig', text: 'Jorge' }]
+    expect(parseMacroImport(JSON.stringify(macros)).macros).toHaveLength(1)
+    const envelope = parseMacroImport(JSON.stringify({ macros, config: { prefixes: ['/'] } }))
+    expect(envelope.macros).toHaveLength(1)
+    expect(envelope.prefixes).toEqual(['/'])
+  })
+
+  it('ignores prefixes that are not a list of non-empty strings', () => {
+    const macros = [{ command: '/sig', text: 'Jorge' }]
+    for (const prefixes of ['/', [''], [1], null]) {
+      expect(parseMacroImport(JSON.stringify({ macros, config: { prefixes } })).prefixes).toBeUndefined()
+    }
+  })
+})
+
+// ─── prefixesToAdopt ─────────────────────────────────────────────────────────
+
+describe('prefixesToAdopt', () => {
+  const file = (prefixes: string[] | undefined, ...commands: string[]) => ({
+    macros: commands.map((command) => ({ command, text: 'x' })),
+    prefixes,
+  })
+
+  it('adopts a prefix the incoming macros need and this library lacks', () => {
+    // Without it the pack arrives complete and expands nothing, which is the whole reason prefixes
+    // travel with a shared file at all.
+    expect(prefixesToAdopt(file(['!'], '!hi'), ['/'])).toEqual(['!'])
+  })
+
+  it('reports only what is missing, so the recipient’s list is added to and never restated', () => {
+    // An import merges; a restore replaces. Handing back the sender's whole list would let the
+    // caller overwrite the recipient's own triggers with it.
+    expect(prefixesToAdopt(file(['/', '!'], '/one', '!two'), ['/'])).toEqual(['!'])
+  })
+
+  it('adopts nothing already configured', () => {
+    expect(prefixesToAdopt(file(['/'], '/hi'), ['/', ';'])).toEqual([])
+  })
+
+  it('ignores a declared prefix no incoming command uses', () => {
+    // Otherwise a file could quietly grow the list with characters nothing in it needs.
+    expect(prefixesToAdopt(file(['!', '#', '%'], '!hi'), ['/'])).toEqual(['!'])
+  })
+
+  it('matches a multi-character prefix by what the command starts with', () => {
+    expect(prefixesToAdopt(file(['//'], '//hi'), ['/'])).toEqual(['//'])
+  })
+
+  it('adopts nothing from a file that declares no prefixes', () => {
+    expect(prefixesToAdopt(file(undefined, '!hi'), ['/'])).toEqual([])
   })
 })
 
