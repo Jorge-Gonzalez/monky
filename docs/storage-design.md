@@ -5,7 +5,7 @@ made, including the ones later reversed. This describes the system as it now sta
 the two parts that are least self-evident: **what the local copies are for**, and **why the
 browser-account backup uses two slots**.
 
-Status: current as of 2026-08-04.
+Status: current as of 2026-08-08.
 
 ---
 
@@ -187,7 +187,7 @@ closest to the good data.
 | Key | Holds | Written by |
 |---|---|---|
 | `macro-storage` | the live library + config, as one JSON string | zustand persist |
-| `macro-previous` | the last **2** libraries, each from just before a destructive act | `macroPrevious.ts` |
+| `macro-previous` | the last **2** libraries — macros *and* settings — each from just before a destructive act | `macroPrevious.ts` |
 | `backup-health` | how the last browser-account copy went | `backupHealth.ts` |
 | `macro-storage-unreadable` | the bytes of a library that would not parse, kept once (§2.1) | `useMacroStore.ts` |
 | `device-id` | a uuid, minted on first use | `deviceId.ts` |
@@ -204,12 +204,41 @@ identity by construction.** No API and no fingerprinting. The browser offers not
 | Key | Holds |
 |---|---|
 | `backup-manifest` | which slot is live, plus revision, chunk count, checksum, macro count, timestamp, device, encoding, **schema**, and **`previous`** — enough about the generation it replaced to read and validate it (§5.2) |
-| `backupA:0…n` | slot A payload chunks |
-| `backupB:0…n` | slot B payload chunks |
+| `backupA:0…n` | slot A payload chunks — `{ macros, config }`, gzipped and base64'd |
+| `backupB:0…n` | slot B payload chunks — same |
 | `edit-log` | last 12 `{ at, dev, kind, n }` entries |
 
 Hard limits, all of them the platform's: **102,400 bytes total**, **8,192 bytes per item**, 512
 items, 1,800 writes/hour.
+
+### What a copy contains, and why settings are in it
+
+A copy is `{ macros, config }` — the library **and** the preferences — checksummed together.
+
+Macros alone was a copy that restored to something present and inert. `prefixes` is the reason: it
+is what the detector matches on, so a library restored on a new machine under the default `/` and
+`;` when the user types `!` comes back complete, visible in the editor, and expanding nothing. Every
+other preference is a smaller version of the same thing — the interface returning in the wrong
+language, the wrong theme — and none of them are recoverable from the macros.
+
+Three consequences worth stating, because each one is a place this could have gone wrong:
+
+- **The checksum covers both.** Not for integrity alone: the skip-if-unchanged test compares it, so a
+  checksum over the macros would have reported "unchanged" after somebody edited their prefixes and
+  the setting would never have reached the copy that exists to survive losing the machine.
+- **Absent settings stay absent.** Every copy written before schema 2 holds a bare array. Reading
+  that as *no preferences* and applying it would reset this device's prefixes on every restore from
+  an older backup — causing, precisely, the failure this feature exists to prevent.
+- **A bad preference never costs you the macros.** `config` is validated loosely and merged over the
+  defaults; only `prefixes` gets a check of its own, and a malformed one is dropped rather than
+  applied. Refusing a whole recovery over somebody's theme would be the same bad trade as refusing
+  one over a duplicate command (§6).
+
+The local previous states carry settings on the same terms, because restoring from another device
+can now change preferences — so an undo that put the macros back and left the settings where the
+restore moved them would not be an undo.
+
+Cost: about 150 bytes against a 45,000-byte slot.
 
 ---
 
@@ -536,6 +565,11 @@ under Firefox 152 and writing to `storage.sync` from the background page:
 
 So both engines share one accounting rule and one ceiling, and the margin is now slack for a third
 engine rather than for the second.
+
+Later, on live data, the two builds were compared directly: the same 29-macro library, the same ids,
+written by each browser's own build. Chrome stored it in **2,267** bytes and Firefox in **2,283** —
+apart by **0.71%**, against a cross-engine gzip difference measured independently at **0.70%**. The
+manifests were byte-identical at 345. Whatever the two builds differ in, it is not what they write.
 
 One difference worth knowing: Firefox does **not** expose `QUOTA_BYTES`, `QUOTA_BYTES_PER_ITEM` or
 `MAX_ITEMS` on `storage.sync` — they read as `undefined`. This code never asked the platform for

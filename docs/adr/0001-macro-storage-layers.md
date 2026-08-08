@@ -453,6 +453,51 @@ thing ever read back", which was wrong twice over since both recovery sources ar
 browser account offers one state as a product promise while physically retaining the previous
 generation as a fallback -- an implementation fact that is now stated where it used to be denied.
 
+## Amendment, 2026-08-08 — the copy holds settings, and one id scheme replaces two
+
+**Both builds verified against each other for the first time**, which is what surfaced all of this.
+Firefox had never been loadable — its content script was emitted as an ES module, which is a syntax
+error where a content script is injected — so `chrome.storage.sync` had only ever been exercised on
+one engine. With both running, three things came out of comparing them.
+
+**Ids were being minted two ways, and one of them was expensive.** `createMacro` used
+`Date.now().toString()`; `mergeImport` used `crypto.randomUUID()`. A UUID is ~122 bits of entropy,
+which is exactly what gzip cannot shrink, so a library that arrived by *import* — the normal way to
+come from another expander — paid for randomness in every backup, forever. Measured over one fixed
+29-macro library, the id scheme alone moved the compressed payload 44% between best and worst.
+
+Timestamps alone were not the fix either: two macros minted in the same millisecond share an id,
+`addMacro` guards duplicate *commands* only, and `validateLibrary` rejects duplicate ids as
+malformed. Composed, those three let the app write a library it would afterwards refuse to restore.
+`macroId.ts` now mints both paths — base-36 timestamp plus a counter when taken — so uniqueness is
+by construction rather than by probability, and a batch still shares a prefix, which is what makes
+it compress. **The shape of an id is a storage decision**, and that is the durable lesson here.
+
+`mergeImport` also honours an id a file supplies when it is free. Exports omit ids, so ordinary round
+trips are unchanged; it exists so one file can produce the *same* library on two machines instead of
+two that merely look alike.
+
+**Settings are now part of a copy — schema 2.** The payload is `{ macros, config }`. Macros alone was
+a copy that restored to something present and inert: `prefixes` is what the detector matches on, so a
+library restored under the default `/` and `;` by someone who types `!` comes back complete and
+expands nothing. The checksum covers both, which is not only integrity — the skip-if-unchanged test
+compares it, so a macros-only checksum meant a changed prefix reported "unchanged" and never reached
+the copy at all.
+
+Two asymmetries were deliberate. **Absent settings stay absent**: every pre-schema-2 copy is a bare
+array, and reading that as "no preferences" would reset this device's prefixes on every restore from
+an older backup — causing the exact failure the feature prevents. And **a malformed preference never
+costs the macros**: `config` is merged over defaults and only `prefixes` is checked, with a bad one
+dropped rather than applied. Refusing a recovery over somebody's theme would be the same bad trade as
+refusing one over a duplicate command.
+
+The version bump matters more than the shape does. An older build meeting the object payload would
+find "not an array", call it malformed, and fall back as though the copy were damaged; with the
+schema recorded it says `too-new`, which is true and actionable.
+
+**Consequence for the standing migration requirement above:** schema 2 is the first version this
+system can migrate *from*, so the `keepPrevious`-before-migration rule stops being hypothetical.
+
 ## Consequences
 
 Macros no longer ride Chrome sync between devices. Given the 8 KB cap, they had not been for some
